@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoonSiteUA</title>
+<meta name="description" content="Buscamos en la Tierra los mejores lugares para ensayar bases en la Luna y misiones a Marte, con datos de la NASA y exploradores sobre el terreno.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Un solo mundo visual: sala de control nocturna. Fondo regolito azulado, acento óxido marciano, plata lunar como segundo color.
+   Layout: columna de lectura de ~70ch para el relato; la demo se abre a ancho completo como un panel de instrumentos. */
+:root {
+  --bg: #0c111d;
+  --panel: #141b2b;
+  --panel-2: #1a2336;
+  --line: #29344d;
+  --text: #ebe7df;
+  --muted: #9da6ba;
+  --accent: #e7794b;
+  --moon: #c7d1e4;
+  --ok: #4cc38a;
+  --warn: #f0a33c;
+  --idle: #8d95a9;
+  --bad: #e2596b;
+  --f-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--text); font: 16px/1.6 var(--f-body); }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.15; text-wrap: balance; margin: 0; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.1rem); }
+h3 { font-size: 1.15rem; }
+p { margin: 0; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.wrap { width: min(1180px, 100% - 32px); margin-inline: auto; }
+.read { max-width: 70ch; }
+.stack { display: grid; gap: 14px; }
+.muted { color: var(--muted); }
+.kicker { font: 500 .78rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+
+/* nav */
+nav.top { position: sticky; top: 0; z-index: 10; background: rgba(12,17,29,.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 54px; overflow-x: auto; }
+nav.top b { font-family: var(--f-display); font-size: 1.1rem; white-space: nowrap; }
+nav.top b span { color: var(--accent); }
+nav.top a { color: var(--muted); text-decoration: none; font-size: .9rem; white-space: nowrap; }
+nav.top a:hover { color: var(--text); }
+
+section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+section > .wrap > .head { display: grid; gap: 10px; margin-bottom: 28px; }
+
+/* hero */
+.hero { padding: 56px 0 48px; }
+.hero h1 { font-size: clamp(2.2rem, 5.5vw, 3.6rem); }
+.hero h1 em { font-style: normal; color: var(--accent); }
+.hero .lead { font-size: 1.15rem; color: var(--muted); margin-top: 16px; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; margin-top: 32px; }
+.fact { border-left: 2px solid var(--accent); padding: 4px 0 4px 14px; }
+.fact b { display: block; font: 600 1.5rem/1.2 var(--f-display); }
+.fact span { color: var(--muted); font-size: .92rem; }
+.cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 500 .95rem var(--f-body); text-decoration: none; cursor: pointer; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0e08; }
+.btn:hover { border-color: var(--moon); }
+
+/* pipeline */
+.pipe { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.pipe > div { padding: 22px; display: grid; gap: 8px; align-content: start; background: var(--panel); }
+.pipe > div + div { border-left: 1px solid var(--line); }
+.pipe .n { font: 500 .8rem var(--f-mono); color: var(--accent); }
+@media (max-width: 760px) { .pipe { grid-template-columns: 1fr; } .pipe > div + div { border-left: 0; border-top: 1px solid var(--line); } }
+
+/* demo */
+.demo-bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { background: transparent; color: var(--muted); border: 0; padding: 9px 14px; font: 500 .88rem var(--f-body); cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--panel-2); color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
+.chk { display: inline-flex; gap: 8px; align-items: center; color: var(--muted); font-size: .9rem; }
+.banner { font-size: .85rem; color: var(--warn); border: 1px dashed rgba(240,163,60,.5); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px; }
+.demo { display: grid; grid-template-columns: minmax(0, 1.55fr) minmax(300px, 1fr); grid-template-areas: "maps ficha" "rank ficha"; gap: 16px; align-items: start; }
+@media (max-width: 920px) { .demo { grid-template-columns: 1fr; grid-template-areas: "maps" "ficha" "rank"; } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.maps { display: grid; gap: 10px; padding: 12px; }
+.maps svg { width: 100%; height: auto; display: block; }
+.maps .cap { font: 500 .75rem var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.land { fill: #222c43; stroke: #33405e; stroke-width: .5; }
+.grat { fill: none; stroke: #1a2236; }
+.site { cursor: pointer; stroke: var(--bg); stroke-width: 1.5; }
+.site.sel { stroke: var(--text); stroke-width: 2.5; }
+.site.dim { opacity: .25; }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: .8rem; color: var(--muted); }
+.ramp { width: 120px; height: 8px; border-radius: 4px; background: linear-gradient(90deg, #34446f, #9a6b86, var(--accent)); }
+
+.ficha { padding: 18px; display: grid; gap: 14px; align-content: start; }
+.ficha .top { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.iap { text-align: right; }
+.iap b { font: 700 2.4rem/1 var(--f-display); color: var(--accent); }
+.iap span { display: block; font: 500 .72rem var(--f-mono); color: var(--muted); }
+.pills { display: flex; gap: 6px; flex-wrap: wrap; }
+.pill { font: 500 .74rem var(--f-mono); padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); }
+.pill.gris { color: var(--idle); border-color: var(--idle); }
+.pill.naranja { color: var(--warn); border-color: var(--warn); }
+.pill.verde { color: var(--ok); border-color: var(--ok); }
+.pill.nuevo { color: var(--moon); border-color: var(--moon); }
+.radar { width: 100%; max-width: 400px; margin-inline: auto; display: block; }
+.axes { display: grid; gap: 6px; font-size: .86rem; }
+.axrow { display: grid; grid-template-columns: 118px 1fr 40px; gap: 8px; align-items: center; }
+.bar { position: relative; height: 8px; background: var(--panel-2); border-radius: 4px; }
+.bar i { position: absolute; inset: 0 auto 0 0; border-radius: 4px; background: var(--moon); opacity: .85; }
+.bar u { position: absolute; top: -3px; width: 2px; height: 14px; background: var(--accent); }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 480px) { .two { grid-template-columns: 1fr; } .axrow { grid-template-columns: 96px 1fr 36px; } }
+.ficha ul { margin: 6px 0 0; padding-left: 18px; font-size: .9rem; }
+.ficha h4 { margin: 0; font: 600 .82rem var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.ok-t { color: var(--ok); } .bad-t { color: var(--bad); }
+
+.rank { padding: 8px; }
+@media (max-width: 480px) { .rank button { grid-template-columns: 22px minmax(0, 1fr) 56px 42px; } }
+.rank button { display: grid; grid-template-columns: 28px minmax(0, 1fr) 1fr 48px; gap: 10px; align-items: center; width: 100%; background: none; border: 0; color: var(--text); padding: 7px 8px; border-radius: 6px; cursor: pointer; text-align: left; font: inherit; font-size: .9rem; }
+.rank button:hover, .rank button.sel { background: var(--panel-2); }
+.rank .bar i { background: var(--accent); }
+.rank .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+details.weights { margin-top: 12px; }
+details.weights summary { cursor: pointer; color: var(--muted); font-size: .9rem; }
+.wgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 8px 18px; margin-top: 12px; }
+.wgrid label { display: grid; grid-template-columns: 1fr 34px; font-size: .85rem; color: var(--muted); }
+.wgrid input { grid-column: 1 / -1; accent-color: var(--accent); }
+
+/* juego */
+.game { display: grid; grid-template-columns: 1fr auto 1fr; gap: 16px; align-items: stretch; }
+@media (max-width: 700px) { .game { grid-template-columns: 1fr; } .vs { justify-self: center; } }
+.gcard { padding: 20px; display: grid; gap: 10px; text-align: left; cursor: pointer; color: var(--text); font: inherit; }
+.gcard:hover { border-color: var(--moon); }
+.gcard.win { border-color: var(--ok); }
+.gcard.lose { border-color: var(--bad); }
+.gcard h3 { font-size: 1.3rem; }
+.vs { align-self: center; font: 600 1.2rem var(--f-display); color: var(--muted); }
+.gres { margin-top: 16px; padding: 16px 18px; display: grid; gap: 8px; }
+
+/* método */
+table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--panel); }
+.formula { font: 500 1.05rem var(--f-mono); padding: 16px 18px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; overflow-x: auto; white-space: nowrap; }
+.grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+.grid3 .card { padding: 18px; display: grid; gap: 8px; align-content: start; }
+.beacon { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 8px; vertical-align: -1px; }
+
+/* bases virtuales */
+.base-svg { width: 100%; max-width: 520px; display: block; }
+
+/* vídeo */
+.video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
+
+.road { display: grid; gap: 0; border-left: 2px solid var(--line); margin-left: 6px; }
+.road > div { padding: 0 0 22px 22px; position: relative; display: grid; gap: 4px; }
+.road > div::before { content: ""; position: absolute; left: -7px; top: 6px; width: 12px; height: 12px; border-radius: 50%; background: var(--bg); border: 2px solid var(--accent); }
+.road > div.now::before { background: var(--accent); }
+
+footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
+@media (prefers-reduced-motion: no-preference) { .site, .rank button, .gcard { transition: opacity .2s, background .2s, border-color .2s; } }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Secciones">
+  <div class="wrap">
+    <b>MoonSite<span>UA</span></b>
+    <a href="#idea">Idea</a><a href="#demo">Demo</a><a href="#juego">Juego</a><a href="#metodo">Método</a>
+    <a href="#validacion">Validación</a><a href="#comunidad">Comunidad</a><a href="#datos">Datos</a><a href="#video">Vídeo</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="kicker">NASA Space Apps Challenge 2026 · Análogos terrestres de la Luna y Marte</p>
+    <h1 style="margin-top:12px">La Tierra como <em>campo de pruebas</em> para vivir en la Luna y Marte</h1>
+    <p class="lead read">MoonSiteUA compara cada rincón del planeta con las futuras bases lunares y los lugares de aterrizaje en Marte usando datos abiertos de la NASA. Después, exploradores sobre el terreno confirman los mejores candidatos y los convierten en bases virtuales compartidas.</p>
+    <div class="facts">
+      <div class="fact"><b>9 ejes</b><span>de comparación calculados con satélites NASA</span></div>
+      <div class="fact"><b>4 destinos</b><span>polo sur lunar, tubos de lava, Jezero y Arcadia Planitia</span></div>
+      <div class="fact"><b>3 balizas</b><span>gris, naranja y verde según la validación en campo</span></div>
+    </div>
+    <div class="cta"><a class="btn primary" href="#demo">Probar la demo</a><a class="btn" href="#video">Ver el vídeo</a></div>
+  </div>
+</header>
+
+<section id="idea">
+  <div class="wrap">
+    <div class="head read">
+      <p class="kicker">El reto y nuestra respuesta</p>
+      <h2>Buscar análogos con datos, no solo por cómo se ven</h2>
+      <p class="muted">Los análogos clásicos (Atacama, Haughton, Death Valley) están bien estudiados, pero ninguno reproduce otro planeta entero. El reto pide encontrar lugares nuevos, explicar en qué se parecen y en qué no, y mostrar cómo ayudan a explorar. Lo resolvemos en tres capas.</p>
+    </div>
+    <div class="pipe">
+      <div><span class="n">01 · SATÉLITE</span><h3>El motor descubre</h3><p class="muted">Cruzamos temperatura, vegetación, lluvia, relieve, mineralogía, polvo y nieve de misiones NASA y calculamos el Índice de Analogía Planetaria de cada zona. Las mejores aparecen en el mapa como Zonas de Interés sin explorar.</p></div>
+      <div><span class="n">02 · CAMPO</span><h3>Los exploradores verifican</h3><p class="muted">Personas en el lugar suben medidas con el móvil (pendiente, altitud, tipo de suelo, fotos) y, con un sensor externo, temperatura y humedad. El consenso entre exploradores independientes cambia la baliza de gris a naranja y a verde.</p></div>
+      <div><span class="n">03 · COMUNIDAD</span><h3>Se construyen bases</h3><p class="muted">Cada análogo confirmado se convierte en una base espacial virtual. Quien lo descubre funda el primer módulo y cada nuevo explorador acopla el suyo. Las misiones dirigidas llevan a la gente a los datos que faltan.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="head read">
+      <p class="kicker">Demo interactiva</p>
+      <h2>¿Qué lugar de la Tierra se parece más a…?</h2>
+      <p class="muted">Elige un destino. El color de cada punto es su Índice de Analogía Planetaria (IAP). Pulsa un sitio para ver su ficha: el radar compara el lugar (relleno) con el destino (línea discontinua).</p>
+    </div>
+    <div class="banner" id="demoBanner" hidden>Valores de demostración estimados a mano. El script de Earth Engine del repositorio calcula los reales con datos NASA y la web se regenera con ellos.</div>
+    <div class="demo-bar">
+      <div class="seg" id="targetSeg" role="group" aria-label="Destino"></div>
+      <label class="chk"><input type="checkbox" id="onlyNew"> Solo análogos poco estudiados</label>
+    </div>
+    <div class="demo">
+      <div class="card maps" style="grid-area:maps">
+        <svg id="worldMap" role="img" aria-label="Mapa mundial de sitios candidatos"></svg>
+        <span class="cap">Detalle · España peninsular y Canarias</span>
+        <svg id="iberiaMap" role="img" aria-label="Mapa de España con sitios candidatos"></svg>
+        <div class="legend"><span>IAP</span><span class="mono">30</span><span class="ramp"></span><span class="mono">80</span>
+          <span><span class="beacon" style="background:var(--ok)"></span>confirmado</span>
+          <span><span class="beacon" style="background:var(--warn)"></span>en verificación</span>
+          <span><span class="beacon" style="background:var(--idle)"></span>descubrimiento</span></div>
+      </div>
+      <div class="card ficha" id="ficha" aria-live="polite" style="grid-area:ficha"></div>
+      <div style="grid-area:rank; display:grid; gap:12px; align-content:start">
+        <div class="card rank" id="rank" aria-label="Ranking"></div>
+        <details class="weights card" style="padding:12px 16px; margin:0">
+          <summary>Ajustar la importancia de cada eje</summary>
+          <div class="wgrid" id="weights"></div>
+          <button class="btn" id="resetW" style="margin-top:12px">Restablecer pesos del destino</button>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="juego">
+  <div class="wrap">
+    <div class="head read">
+      <p class="kicker">Modo juego</p>
+      <h2>¿Cuál es mejor análogo?</h2>
+      <p class="muted" id="gameQ"></p>
+    </div>
+    <div class="game" id="game"></div>
+    <div class="card gres" id="gameRes" hidden></div>
+    <div class="cta"><button class="btn" id="gameNext">Otra pareja</button><span class="muted mono" id="gameScore" style="align-self:center"></span></div>
+  </div>
+</section>
+
+<section id="metodo">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Método</p>
+      <h2>Índice de Analogía Planetaria</h2>
+      <p class="muted">Cada variable física se convierte en un eje de 0 a 1, donde 1 es lo más extremo que ofrece la Tierra. Los valores reales de la Luna y Marte casi siempre superan ese rango; entonces el destino se fija en 1 y lo documentamos como límite de la analogía.</p>
+    </div>
+    <div class="formula">IAP = 100 · Σ wᵢ · (1 − |xᵢ − tᵢ|) / Σ wᵢ</div>
+    <p class="read muted">xᵢ es el valor del lugar en el eje i, tᵢ el del destino y wᵢ la importancia del eje para ese destino. La nota global ordena candidatos; la similitud por eje explica por qué. Así un sitio puede ser un gran análogo geológico y uno malo térmico, que es justo lo que pide el reto.</p>
+    <div class="tbl"><table id="axesTable"><thead><tr><th>Eje</th><th>Dato NASA</th><th>Conversión a 0-1</th></tr></thead><tbody></tbody></table></div>
+    <div class="grid3" id="limits"></div>
+  </div>
+</section>
+
+<section id="validacion">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Ciencia ciudadana con control de calidad</p>
+      <h2>Balizas por consenso</h2>
+      <p class="muted">El satélite dice dónde mirar; el campo confirma lo que el satélite no ve, como la química del suelo, las cuevas o la textura del terreno. Ninguna persona sola puede confirmar un análogo.</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><h3><span class="beacon" style="background:var(--idle)"></span>Gris · descubrimiento</h3><p class="muted">Un explorador sube el primer reporte válido. El punto existe en el mapa pero no tiene validez científica.</p></div>
+      <div class="card"><h3><span class="beacon" style="background:var(--warn)"></span>Naranja · en verificación</h3><p class="muted">Dos o más exploradores independientes coinciden dentro de la tolerancia de cada medida.</p></div>
+      <div class="card"><h3><span class="beacon" style="background:var(--ok)"></span>Verde · análogo confirmado</h3><p class="muted">Cinco o más exploradores, en al menos dos días distintos, coinciden entre sí y con el dato satelital.</p></div>
+      <div class="card"><h3><span class="beacon" style="background:var(--bad)"></span>Disputa</h3><p class="muted">Hay reportes suficientes pero se contradicen. El nodo genera una misión de desempate en lugar de avanzar.</p></div>
+    </div>
+    <div class="card" style="padding:18px; display:grid; gap:8px; border-color:var(--moon)">
+      <p class="kicker" style="color:var(--moon)">Nivel 3 · Escalado robótico</p>
+      <h3>Donde no debe ir una persona, va un robot</h3>
+      <p class="muted read">Si una zona tiene un IAP alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.</p>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Qué se mide</th><th>Con qué</th><th>Tolerancia</th><th>Por qué así</th></tr></thead>
+      <tbody>
+        <tr><td>Pendiente</td><td>Inclinómetro del móvil</td><td class="mono">± 4°</td><td>Todos los móviles tienen acelerómetro; se compara con NASADEM.</td></tr>
+        <tr><td>Altitud</td><td>GPS + barómetro</td><td class="mono">± 25 m</td><td>El barómetro afina la altitud del GPS en la mayoría de gama media.</td></tr>
+        <tr><td>Tipo de suelo</td><td>Lista cerrada + foto en vivo</td><td class="mono">60 % de acuerdo</td><td>Basalto, arcilla, yeso, arena, sal… Elegir de una lista hace comparables los reportes.</td></tr>
+        <tr><td>Temperatura</td><td>Sensor Bluetooth emparejado</td><td class="mono">± 3 °C de anomalía</td><td>Los móviles no tienen termómetro ambiental. Se compara la diferencia con el satélite del mismo momento, no el valor bruto.</td></tr>
+        <tr><td>Humedad</td><td>Sensor Bluetooth emparejado</td><td class="mono">± 12 %</td><td>Igual que la temperatura: sin sensor externo no cuenta.</td></tr>
+      </tbody>
+    </table></div>
+    <p class="read muted">La lógica completa está en <span class="mono">backend/verification.py</span> con tests. Un explorador cuenta una vez por nodo, cada cuenta necesita un teléfono verificado, un dispositivo no puede usarse con varias cuentas y solo valen fotos tomadas con la cámara de la app. Los reportes offline se validan con la posición sellada en la captura.</p>
+  </div>
+</section>
+
+<section id="comunidad">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Gamificación</p>
+      <h2>Exploradores, misiones y bases virtuales</h2>
+      <p class="muted">Los incentivos premian el dato útil, no la cantidad. El sistema detecta qué falta en cada nodo y lanza misiones para cubrirlo.</p>
+    </div>
+    <div class="grid3">
+      <div class="card"><h3>Puntos de Exploración</h3><p class="muted">Por validar puntos, subir fotos y medir. Se canjean por cosméticos de la base virtual. Las medidas que luego resultan inconsistentes no puntúan.</p></div>
+      <div class="card"><h3>Puntos de Misión</h3><p class="muted">Escasos. Por liderar expediciones validadas o completar objetivos de alto valor. Se canjean por pins y parches de misión, financiados con patrocinio.</p></div>
+      <div class="card"><h3>Misiones dirigidas</h3><p class="muted">Ejemplo: «Tabernas tiene pendiente y suelo validados pero le falta humedad: lecturas con higrómetro, puntuación ×3». Nunca se generan en espacios protegidos ni zonas peligrosas.</p></div>
+      <div class="card"><h3>Misiones globales</h3><p class="muted">Retos mensuales como «Documenta 3 zonas kársticas este mes». Cuentan sitios distintos, así que no compensa repetir el mismo.</p></div>
+      <div class="card"><h3>Insignias</h3><p class="muted">Pionero (título inmutable para quien documenta primero un análogo que llega a verde), Expedición offline, Especialista en basalto o en karst y misiones completadas.</p></div>
+    </div>
+    <div class="card" style="padding:18px; display:grid; gap:12px">
+      <h3>Base virtual de un análogo confirmado</h3>
+      <svg class="base-svg" viewBox="0 0 520 170" role="img" aria-label="Esquema de una base virtual con módulo fundador y módulos acoplados">
+        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#9da6ba">
+          <rect x="190" y="55" width="140" height="60" rx="30" fill="#e7794b" opacity=".9"/>
+          <text x="260" y="90" text-anchor="middle" fill="#1a0e08" font-weight="600">Módulo Génesis</text>
+          <line x1="190" y1="85" x2="140" y2="85" stroke="#29344d" stroke-width="6"/><line x1="330" y1="85" x2="380" y2="85" stroke="#29344d" stroke-width="6"/>
+          <line x1="260" y1="55" x2="260" y2="30" stroke="#29344d" stroke-width="6"/><line x1="260" y1="115" x2="260" y2="140" stroke="#29344d" stroke-width="6"/>
+          <rect x="40" y="65" width="100" height="40" rx="20" fill="#1a2336" stroke="#c7d1e4"/><text x="90" y="89" text-anchor="middle">explorador 2</text>
+          <rect x="380" y="65" width="100" height="40" rx="20" fill="#1a2336" stroke="#c7d1e4"/><text x="430" y="89" text-anchor="middle">explorador 3</text>
+          <rect x="210" y="2" width="100" height="28" rx="14" fill="#1a2336" stroke="#c7d1e4"/><text x="260" y="20" text-anchor="middle">explorador 4</text>
+          <rect x="210" y="140" width="100" height="28" rx="14" fill="#1a2336" stroke="#4cc38a" stroke-dasharray="4 3"/><text x="260" y="158" text-anchor="middle" fill="#4cc38a">próximo módulo</text>
+        </g>
+      </svg>
+      <p class="muted read">El fundador elige los dos colores de la base y decora el primer módulo. Cada explorador que valida datos en persona acopla su módulo. Las bases más visitadas crecen hasta convertirse en colonias.</p>
+    </div>
+  </div>
+</section>
+
+<section id="seguridad">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Seguridad, privacidad y ética</p>
+      <h2>Datos fiables sin poner a nadie en riesgo</h2>
+    </div>
+    <div class="grid3">
+      <div class="card"><h3>Una persona, una cuenta</h3><p class="muted">Registro con Google o Apple y verificación por SMS: un teléfono único por perfil, guardado solo como hash. Se suma la verificación del dispositivo (Play Integrity / App Attest). Sin pedir DNI.</p></div>
+      <div class="card"><h3>Modo Expedición offline</h3><p class="muted">Sin cobertura en cuevas o desiertos, el GPS sigue funcionando: la app sella posición, hora, foto y medidas en el momento de la captura y firma el paquete. Al sincronizar comprueba la firma, que no hayan pasado más de 14 días y que el viaje hasta allí sea posible.</p></div>
+      <div class="card"><h3>Contra envíos desde el sofá</h3><p class="muted">La geovalla se aplica a la posición de la captura y se amplía con el tiempo transcurrido (30 km + 120 km/h). Quien «estuvo» en Tabernas no puede sincronizar una hora después desde otro continente.</p></div>
+      <div class="card"><h3>Seguridad física</h3><p class="muted">Sin misiones en espacios protegidos, propiedades privadas, cuevas sin acceso autorizado ni zonas peligrosas. Antes de cada expedición offline: avisos de calor y aislamiento y una lista de comprobación (agua, ruta compartida).</p></div>
+      <div class="card"><h3>Privacidad (RGPD)</h3><p class="muted">El GPS solo se pide al capturar y al sincronizar, nunca en segundo plano. Los recorridos no se publican: el mapa muestra nodos, no personas.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="datos">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Datos abiertos</p>
+      <h2>Fuentes que usamos</h2>
+    </div>
+    <div class="tbl"><table>
+      <thead><tr><th>Cuerpo</th><th>Fuente</th><th>Para qué</th></tr></thead>
+      <tbody>
+        <tr><td>Tierra</td><td>MODIS MOD11A2 (temperatura de superficie, 1 km)</td><td>Ejes de frío y amplitud térmica</td></tr>
+        <tr><td>Tierra</td><td>MODIS MOD13A2 (NDVI, 1 km)</td><td>Eje de suelo sin vegetación</td></tr>
+        <tr><td>Tierra</td><td>GPM IMERG V07 mensual (0,1°)</td><td>Eje de aridez</td></tr>
+        <tr><td>Tierra</td><td>NASADEM (30 m)</td><td>Altitud y pendiente</td></tr>
+        <tr><td>Tierra</td><td>ASTER GED AG100 (emisividad térmica, 100 m)</td><td>Indicador de roca basáltica</td></tr>
+        <tr><td>Tierra</td><td>MODIS MOD08_M3 (aerosoles) y MOD10A1 (nieve)</td><td>Ejes de polvo y hielo</td></tr>
+        <tr><td>Tierra</td><td>Copernicus Sentinel (ESA), RADARSAT (CSA), G-Portal (JAXA)</td><td>Ampliaciones: radar para rugosidad y humedad, imágenes de detalle</td></tr>
+        <tr><td>Luna</td><td>LRO Diviner, LOLA, LEND, Mini-RF, LROC (PDS)</td><td>Perfiles del polo sur y de los mares basálticos</td></tr>
+        <tr><td>Marte</td><td>Perseverance MEDA, MRO CRISM/HiRISE, SWIM (SHARAD)</td><td>Perfiles de Jezero y Arcadia Planitia</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted read">Enlaces: <a href="https://search.earthdata.nasa.gov/">NASA Earthdata Search</a> · <a href="https://worldview.earthdata.nasa.gov/">NASA Worldview</a> · <a href="https://pds.nasa.gov/">NASA PDS</a> · <a href="https://pds-geosciences.wustl.edu/missions/lro/diviner.htm">LRO Diviner</a> · <a href="https://swim.psi.edu/">SWIM</a> · <a href="https://dataspace.copernicus.eu/">Copernicus Data Space</a> · <a href="https://gportal.jaxa.jp/">JAXA G-Portal</a></p>
+  </div>
+</section>
+
+<section id="video">
+  <div class="wrap stack" style="gap:20px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">Demo en vídeo · 30 s</p>
+      <h2>MoonSiteUA en medio minuto</h2>
+    </div>
+    <!-- Sustituir este bloque por el vídeo final, p. ej.:
+         <video src="demo.mp4" controls style="width:100%;border-radius:10px"></video>
+         o un iframe de YouTube si la web se sirve desde GitHub Pages. -->
+    <div class="card video"><div class="stack"><b style="font-family:var(--f-display);font-size:1.3rem">Vídeo de la demo</b><span class="muted">Se publicará aquí antes del cierre del hackathon.</span></div></div>
+  </div>
+</section>
+
+<section id="ruta">
+  <div class="wrap stack" style="gap:20px">
+    <div class="head read" style="margin:0"><p class="kicker">Hoja de ruta</p><h2>De la demo a la app</h2></div>
+    <div class="road read">
+      <div class="now"><b>Hackathon · noviembre 2026</b><span class="muted">Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.</span></div>
+      <div><b>MVP</b><span class="muted">App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.</span></div>
+      <div><b>Piloto</b><span class="muted">Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.</span></div>
+      <div><b>Escala</b><span class="muted">Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.</span></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap stack">
+    <b style="font-family:var(--f-display);color:var(--text)">MoonSite<span style="color:var(--accent)">UA</span></b>
+    <span>Equipo de la Universidad de Alicante · NASA Space Apps Challenge 2026 · Reto «Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars».</span>
+    <span>Datos de NASA y de las agencias socias. Este proyecto no está respaldado por la NASA.</span>
+  </div>
+</footer>
+
+<script>
+const D = /*__DATA__*/null;
+const AXES = ['aridez','desnudez','frio','amplitud','mafico','relieve','altitud','polvo','hielo'];
+const LBL = {aridez:'Aridez', desnudez:'Sin vegetación', frio:'Frío', amplitud:'Amplitud térmica', mafico:'Roca basáltica', relieve:'Pendiente', altitud:'Altitud', polvo:'Polvo', hielo:'Hielo / nieve'};
+const SRC = {
+  aridez: ['GPM IMERG V07', '0 mm/año → 1 · 3000 mm/año → 0 (log)'],
+  desnudez: ['MODIS MOD13A2 NDVI', 'NDVI 0,05 → 1 · 0,5 → 0'],
+  frio: ['MODIS MOD11A2 LST', '+30 °C → 0 · −50 °C → 1'],
+  amplitud: ['MODIS MOD11A2 día − noche', '0 °C → 0 · 40 °C → 1'],
+  mafico: ['ASTER GED, bandas 10-14', 'cociente 0,85 (silíceo) → 0 · 0,98 (basáltico) → 1'],
+  relieve: ['NASADEM', '0° → 0 · 25° → 1'],
+  altitud: ['NASADEM', '0 m → 0 · 5000 m → 1 (baja presión, UV)'],
+  polvo: ['MODIS MOD08_M3 AOD', '0 → 0 · 0,6 → 1'],
+  hielo: ['MODIS MOD10A1', 'fracción de días con nieve o hielo']
+};
+const BEACON = {verde: ['var(--ok)', 'Análogo confirmado'], naranja: ['var(--warn)', 'En verificación'], gris: ['var(--idle)', 'Descubrimiento']};
+const NS = 'http://www.w3.org/2000/svg';
+const $ = (s) => document.querySelector(s);
+const clamp = (v) => Math.max(0, Math.min(1, v));
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// Misma fórmula que engine/analog_score.py
+function normalize(s) {
+  return {
+    aridez: clamp(1 - Math.log10(s.precip_mm + 1) / Math.log10(3001)),
+    desnudez: clamp(1 - (s.ndvi_max - 0.05) / 0.45),
+    frio: clamp((30 - s.lst_media_c) / 80),
+    amplitud: clamp(s.lst_amplitud_c / 40),
+    mafico: clamp((s.mafico_ratio - 0.85) / 0.13),
+    relieve: clamp(s.pendiente_deg / 25),
+    altitud: clamp(s.altitud_m / 5000),
+    polvo: clamp(s.aod / 0.6),
+    hielo: clamp(s.nieve_frac)
+  };
+}
+function score(ax, t, w) {
+  const sim = {}; let acc = 0, sw = 0;
+  for (const a of AXES) { sim[a] = 1 - Math.abs(ax[a] - t.valores[a]); acc += w[a] * sim[a]; sw += w[a]; }
+  const strong = AXES.filter((a) => sim[a] >= 0.75 && w[a] > 0).sort((a, b) => sim[b] * w[b] - sim[a] * w[a]).slice(0, 3);
+  const weak = AXES.filter((a) => sim[a] < 0.6 && w[a] > 0).sort((a, b) => sim[a] - sim[b] || w[b] - w[a]).slice(0, 3);
+  return {iap: sw ? Math.round(1000 * acc / sw) / 10 : 0, sim, strong, weak};
+}
+
+const sites = D.sites.map((s) => ({...s, ax: normalize(s)}));
+const state = {t: D.targets[0], w: {...D.targets[0].pesos}, onlyNew: false, sel: null};
+
+function ramp(v) {
+  const x = clamp((v - 30) / 50);
+  const stops = [[52, 68, 111], [154, 107, 134], [231, 121, 75]];
+  const i = x < 0.5 ? 0 : 1, f = x < 0.5 ? x * 2 : (x - 0.5) * 2;
+  const c = stops[i].map((v0, k) => Math.round(v0 + (stops[i + 1][k] - v0) * f));
+  return `rgb(${c.join(',')})`;
+}
+function results() {
+  return sites.map((s) => ({s, r: score(s.ax, state.t, state.w)})).sort((a, b) => b.r.iap - a.r.iap);
+}
+
+// ---------------------------------------------------------------- mapas
+function drawMap(svg, m, r) {
+  svg.setAttribute('viewBox', `0 0 ${m.w} ${m.h}`);
+  svg.innerHTML = '';
+  const land = document.createElementNS(NS, 'path'); land.setAttribute('d', m.d); land.setAttribute('class', 'land'); svg.append(land);
+  for (const f of m.frames || []) {
+    const rc = document.createElementNS(NS, 'rect');
+    rc.setAttribute('x', f[0]); rc.setAttribute('y', f[1]); rc.setAttribute('width', f[2]); rc.setAttribute('height', f[3]);
+    rc.setAttribute('fill', '#141b2b'); rc.setAttribute('stroke', '#33405e'); rc.setAttribute('stroke-dasharray', '3 3');
+    const tx = document.createElementNS(NS, 'text'); tx.setAttribute('x', f[0] + 6); tx.setAttribute('y', f[1] + 14);
+    tx.setAttribute('font-size', 11); tx.setAttribute('fill', '#9da6ba'); tx.setAttribute('font-family', 'IBM Plex Mono, monospace'); tx.textContent = f[4];
+    svg.append(rc, tx);
+  }
+  if (m.d2) { const l2 = document.createElementNS(NS, 'path'); l2.setAttribute('d', m.d2); l2.setAttribute('class', 'land'); svg.append(l2); }
+  const sorted = [...r].sort((a, b) => a.r.iap - b.r.iap);
+  for (const {s, r: res} of sorted) {
+    const p = m.pts[s.id]; if (!p) continue;
+    const g = document.createElementNS(NS, 'g');
+    const ring = document.createElementNS(NS, 'circle');
+    ring.setAttribute('cx', p[0]); ring.setAttribute('cy', p[1]); ring.setAttribute('r', m.w > 600 ? 9 : 10);
+    ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', BEACON[s.baliza][0]); ring.setAttribute('stroke-width', 2);
+    const c = document.createElementNS(NS, 'circle');
+    c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', m.w > 600 ? 6 : 7);
+    c.setAttribute('fill', ramp(res.iap));
+    c.setAttribute('class', 'site' + (state.sel === s.id ? ' sel' : ''));
+    if (state.onlyNew && s.conocido) g.setAttribute('opacity', .2);
+    c.setAttribute('tabindex', 0); c.setAttribute('role', 'button');
+    c.setAttribute('aria-label', `${s.nombre}, IAP ${res.iap}`);
+    const tt = document.createElementNS(NS, 'title'); tt.textContent = `${s.nombre} · IAP ${res.iap}`; c.append(tt);
+    c.addEventListener('click', () => select(s.id));
+    c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(s.id); } });
+    g.append(ring, c); svg.append(g);
+  }
+}
+
+// ---------------------------------------------------------------- radar
+function radar(sim, ax, t) {
+  const W = 400, H = 300, cx = W / 2, cy = H / 2 + 6, R = 98, n = AXES.length;
+  const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * R * v, cy + Math.sin(a) * R * v]; };
+  let s = `<svg class="radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="Radar del sitio frente al destino">`;
+  for (const k of [0.25, 0.5, 0.75, 1]) s += `<polygon points="${AXES.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" stroke="#29344d"/>`;
+  AXES.forEach((a, i) => {
+    const [x, y] = pt(i, 1); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#29344d"/>`;
+    const [lx, ly] = pt(i, 1.2);
+    const anchor = Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end';
+    s += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="10.5" fill="#9da6ba" font-family="IBM Plex Sans, sans-serif">${LBL[a]}</text>`;
+  });
+  s += `<polygon points="${AXES.map((a, i) => pt(i, t.valores[a]).join(',')).join(' ')}" fill="none" stroke="#c7d1e4" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s += `<polygon points="${AXES.map((a, i) => pt(i, ax[a]).join(',')).join(' ')}" fill="rgba(231,121,75,.28)" stroke="#e7794b" stroke-width="2"/>`;
+  AXES.forEach((a, i) => { const [x, y] = pt(i, ax[a]); s += `<circle cx="${x}" cy="${y}" r="2.6" fill="#e7794b"/>`; });
+  return s + '</svg>';
+}
+
+// ---------------------------------------------------------------- ficha
+function missions(s) {
+  if (s.baliza === 'verde') return [];
+  const all = [['Pendiente con el inclinómetro del móvil', '×2'], ['Tipo de suelo con foto en vivo', '×2'], ['Humedad con higrómetro Bluetooth', '×3'], ['Temperatura con sensor externo al mediodía', '×3']];
+  return s.baliza === 'gris' ? all.slice(0, 3) : all.slice(2);
+}
+function renderFicha(rows) {
+  const row = rows.find((x) => x.s.id === state.sel) || rows[0];
+  state.sel = row.s.id;
+  const {s, r} = row, t = state.t;
+  const b = BEACON[s.baliza];
+  const ms = missions(s);
+  $('#ficha').innerHTML = `
+    <div class="top"><div class="stack" style="gap:6px"><h3 style="font-size:1.35rem">${esc(s.nombre)}</h3>
+      <div class="pills"><span class="pill">${esc(s.pais)}</span><span class="pill ${s.conocido ? '' : 'nuevo'}">${s.conocido ? 'Análogo conocido' : 'Poco estudiado'}</span><span class="pill ${s.baliza}">${b[1]}</span></div></div>
+      <div class="iap"><b class="mono">${r.iap.toFixed(1)}</b><span>IAP · ${esc(t.cuerpo)}</span></div></div>
+    <p class="muted" style="font-size:.92rem">${esc(s.nota)}</p>
+    ${radar(r.sim, s.ax, t)}
+    <div class="two">
+      <div><h4 class="ok-t">Se parece en</h4><ul>${r.strong.map((a) => `<li>${LBL[a]}</li>`).join('') || '<li class="muted">ningún eje destaca</li>'}</ul></div>
+      <div><h4 class="bad-t">Se aleja en</h4><ul>${r.weak.map((a) => `<li>${LBL[a]}</li>`).join('') || '<li class="muted">ningún eje falla claramente</li>'}</ul></div>
+    </div>
+    <p class="muted mono" style="font-size:.74rem">Barra: valor del lugar · marca naranja: valor del destino · %: similitud del eje</p>
+    <div class="axes" aria-label="Valor del sitio por eje; la marca naranja es el destino">
+      ${AXES.map((a) => `<div class="axrow"><span class="muted">${LBL[a]}</span><span class="bar"><i style="width:${(s.ax[a] * 100).toFixed(0)}%"></i><u style="left:calc(${(t.valores[a] * 100).toFixed(0)}% - 1px)"></u></span><span class="mono" style="text-align:right">${Math.round(r.sim[a] * 100)}%</span></div>`).join('')}
+    </div>
+    <div><h4>Lo que la Tierra no puede imitar</h4><ul>${t.limites.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
+    <div><h4>Misiones abiertas</h4>${ms.length ? `<ul>${ms.map((m) => `<li>${m[0]} <span class="mono" style="color:var(--accent)">${m[1]}</span></li>`).join('')}</ul>` : '<p class="muted" style="font-size:.9rem;margin-top:6px">Análogo confirmado. Base virtual abierta a nuevos módulos.</p>'}</div>`;
+}
+
+function renderRank(rows) {
+  const list = state.onlyNew ? rows.filter((x) => !x.s.conocido) : rows;
+  $('#rank').innerHTML = list.map(({s, r}, i) => `<button data-id="${s.id}" class="${s.id === state.sel ? 'sel' : ''}"><span class="mono muted">${i + 1}</span><span class="nm">${esc(s.nombre)}</span><span class="bar"><i style="width:${r.iap}%"></i></span><span class="mono" style="text-align:right">${r.iap.toFixed(1)}</span></button>`).join('');
+  $('#rank').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => select(bt.dataset.id)));
+}
+
+function render() {
+  const rows = results();
+  if (state.onlyNew && rows.find((x) => x.s.id === state.sel)?.s.conocido) state.sel = rows.find((x) => !x.s.conocido).s.id;
+  if (!state.sel) state.sel = (state.onlyNew ? rows.find((x) => !x.s.conocido) : rows[0]).s.id;
+  renderFicha(rows);
+  drawMap($('#worldMap'), D.map.world, rows);
+  drawMap($('#iberiaMap'), D.map.iberia, rows);
+  renderRank(rows);
+}
+function select(id) { state.sel = id; render(); }
+
+function renderControls() {
+  $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(' (regiones Artemis III)', '').replace(' (hielo para misiones humanas)', '').replace(' (delta antiguo)', ''))}</button>`).join('');
+  $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
+    state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
+    renderControls(); render(); renderLimits(); newGame();
+  }));
+  $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
+  AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
+}
+$('#resetW').addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
+$('#onlyNew').addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
+
+// ---------------------------------------------------------------- método
+function renderMethod() {
+  $('#axesTable tbody').innerHTML = AXES.map((a) => `<tr><td><b>${LBL[a]}</b></td><td>${SRC[a][0]}</td><td class="muted">${SRC[a][1]}</td></tr>`).join('');
+}
+function renderLimits() {
+  $('#limits').innerHTML = D.targets.map((t) => `<div class="card"><h3>${esc(t.nombre)}</h3><p class="muted" style="font-size:.9rem">${esc(t.contexto)}</p><p class="mono" style="font-size:.78rem;color:var(--moon)">${t.fuentes.map(esc).join(' · ')}</p></div>`).join('');
+}
+
+// ---------------------------------------------------------------- juego
+const game = {pair: null, done: false, ok: 0, n: 0};
+function newGame() {
+  const pool = [...sites]; const a = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
+  let b, tries = 0;
+  do { b = pool[Math.floor(Math.random() * pool.length)]; tries++; }
+  while (Math.abs(score(a.ax, state.t, state.t.pesos).iap - score(b.ax, state.t, state.t.pesos).iap) < 3 && tries < 30);
+  game.pair = [a, b]; game.done = false;
+  $('#gameQ').textContent = `Destino: ${state.t.nombre}. Elige el lugar de la Tierra que crees que se parece más. Ojo: lo que parece desierto no siempre gana.`;
+  $('#game').innerHTML = game.pair.map((s, i) => `${i === 1 ? '<span class="vs">VS</span>' : ''}<button class="card gcard" data-i="${i}"><span class="pill ${s.conocido ? '' : 'nuevo'}" style="justify-self:start">${esc(s.pais)}</span><h3>${esc(s.nombre)}</h3><span class="muted" style="font-size:.9rem">${esc(s.nota.split('.')[0])}.</span></button>`).join('');
+  $('#gameRes').hidden = true;
+  $('#game').querySelectorAll('.gcard').forEach((c) => c.addEventListener('click', () => answer(+c.dataset.i)));
+  $('#gameScore').textContent = game.n ? `Aciertos: ${game.ok} de ${game.n}` : '';
+}
+function answer(i) {
+  if (game.done) return; game.done = true;
+  const rs = game.pair.map((s) => score(s.ax, state.t, state.t.pesos));
+  const win = rs[0].iap >= rs[1].iap ? 0 : 1;
+  game.n++; if (i === win) game.ok++;
+  $('#game').querySelectorAll('.gcard').forEach((c, k) => c.classList.add(k === win ? 'win' : 'lose'));
+  const W = game.pair[win], L = game.pair[1 - win];
+  const keys = AXES.filter((a) => state.t.pesos[a] >= 1).sort((a, b) => Math.abs(rs[win].sim[b] - rs[1 - win].sim[b]) - Math.abs(rs[win].sim[a] - rs[1 - win].sim[a])).slice(0, 2);
+  $('#gameRes').hidden = false;
+  $('#gameRes').innerHTML = `<b style="font-family:var(--f-display);font-size:1.2rem" class="${i === win ? 'ok-t' : 'bad-t'}">${i === win ? '¡Correcto!' : 'Esta vez no.'}</b>
+    <p><b>${esc(W.nombre)}</b> <span class="mono">${rs[win].iap.toFixed(1)}</span> frente a <b>${esc(L.nombre)}</b> <span class="mono">${rs[1 - win].iap.toFixed(1)}</span>.</p>
+    <p class="muted">Lo decide sobre todo: ${keys.map((a) => `${LBL[a].toLowerCase()} (${Math.round(rs[win].sim[a] * 100)} % frente a ${Math.round(rs[1 - win].sim[a] * 100)} %)`).join(' y ')}.</p>`;
+  $('#gameScore').textContent = `Aciertos: ${game.ok} de ${game.n}`;
+}
+$('#gameNext').addEventListener('click', newGame);
+
+$('#demoBanner').hidden = !D.demo;
+renderControls(); renderMethod(); renderLimits(); render(); newGame();
+</script>
+</body>
+</html>
