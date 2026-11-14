@@ -135,7 +135,7 @@ Abrir http://localhost:8000. La base de datos (`app/moonsite.db`) se crea sola c
 |---|---|
 | `regiones` + `region_padres` | Jerarquía provincia → país → unión / estado / continente. Relación N:M: España pertenece a la UE y a Europa. Incluye las 50 provincias españolas, Ceuta y Melilla |
 | `usuarios`, `sesiones` | Cuentas con usuario, correo y teléfono `UNIQUE` |
-| `movimientos` + vista `saldos` | Libro de Moon y Marth Coins: cada moneda ganada o gastada queda registrada con su motivo |
+| `movimientos` + vista `saldos` | Libro de Moon y Mars Coins: cada moneda ganada o gastada queda registrada con su motivo |
 | `zonas` | Puntos recomendados (motor + datos NASA) y zonas comunitarias |
 | `reportes` | Fotos con ubicación, tipo de suelo, vegetación, pendiente, altitud y la comparación |
 | `bases` | Una por zona (`zona_id UNIQUE`); dos colores elegidos por el fundador |
@@ -146,7 +146,7 @@ Abrir http://localhost:8000. La base de datos (`app/moonsite.db`) se crea sola c
 
 ### Monedas
 
-| | Moon Coins (virtuales) | Marth Coins (premium) |
+| | Moon Coins (virtuales) | Mars Coins (premium) |
 |---|---|---|
 | Cómo se ganan | Registro (+100), primer acceso del día (+10), objetivos fáciles (+20 a +60) | Objetivos difíciles: fundar una base (+2), 3 zonas recomendadas (+3), 3 países (+6), 20 fotos al mes en zonas recomendadas (+3), la base llega a planta 2 (+2) o planta 5 (+5) |
 | Para qué | Muebles de la habitación (30 a 200) | Premios físicos (4 a 60) |
@@ -204,11 +204,12 @@ backend/
   verification.py       Balizas por consenso, OTP, Modo Expedición offline, misiones locales y globales, escalado robótico (nivel 3)
   test_verification.py  Tests (pytest)
 web/
-  template.html         Web del proyecto (demo, juego, método, validación…)
-  build.mjs             Genera web/index.html con los datos y los mapas
-  index.html            Web generada, lista para GitHub Pages
+  template.html         Plantilla de la web, con bloques <!--PAGE id--> por apartado
+  build.mjs             Genera una página por apartado (index, demo, juego, app, metodo,
+                        validacion, comunidad, seguridad, datos, video) en web/ y docs/
+  *.html                Páginas generadas
 docs/
-  index.html            Copia de la web para GitHub Pages
+  *.html                Copia de las páginas para GitHub Pages
 documentacion/
   README_TECNICO.md     Este documento
   DATOS.md              Datos y recursos del reto, qué usar y cómo

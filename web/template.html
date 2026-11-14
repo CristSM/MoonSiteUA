@@ -30,6 +30,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--text); font: 16px/1.6 var(--f-body); }
 a { color: var(--accent); }
@@ -48,8 +49,9 @@ p { margin: 0; }
 /* nav */
 nav.top { position: sticky; top: 0; z-index: 10; background: rgba(12,17,29,.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
 nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 54px; overflow-x: auto; }
-nav.top b { font-family: var(--f-display); font-size: 1.1rem; white-space: nowrap; }
-nav.top b span { color: var(--accent); }
+nav.top .brand { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; white-space: nowrap; color: var(--text); margin-right: 6px; }
+nav.top .brand span { color: var(--accent); }
+nav.top a[aria-current="page"] { color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
 nav.top a { color: var(--muted); text-decoration: none; font-size: .9rem; white-space: nowrap; }
 nav.top a:hover { color: var(--text); }
 
@@ -166,8 +168,13 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .merch figure { margin: 0; display: grid; gap: 6px; }
 .merch svg { width: 100%; height: auto; border-radius: 8px; display: block; }
 .merch figcaption { font-size: .82rem; color: var(--muted); }
-#coinMoon svg, #coinMarth svg { width: 64px; height: 64px; }
+#coinMoon svg, #coinMars svg { width: 64px; height: 64px; }
 @media (max-width: 700px) { .levels { grid-template-columns: repeat(3, 1fr); } }
+
+.apart a { text-decoration: none; color: var(--text); display: grid; gap: 6px; padding: 18px; }
+.apart a:hover { border-color: var(--accent); }
+.apart b { font-family: var(--f-display); font-size: 1.1rem; }
+.apart .n { font: 500 .78rem var(--f-mono); color: var(--accent); }
 
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
@@ -184,12 +191,12 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
 <body>
 <nav class="top" aria-label="Secciones">
   <div class="wrap">
-    <b>MoonSite<span>UA</span></b>
-    <a href="#idea">Idea</a><a href="#demo">Demo</a><a href="#juego">Juego</a><a href="#app">App</a><a href="#metodo">Método</a>
-    <a href="#validacion">Validación</a><a href="#comunidad">Comunidad</a><a href="#datos">Datos</a><a href="#video">Vídeo</a>
+    <a class="brand" href="index.html">MoonSite<span>UA</span></a>
+    <!--NAV-->
   </div>
 </nav>
 
+<!--PAGE inicio-->
 <header class="hero">
   <div class="wrap">
     <p class="kicker">NASA Space Apps Challenge 2026 · Análogos terrestres de la Luna y Marte</p>
@@ -200,10 +207,12 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
       <div class="fact"><b>4 destinos</b><span>polo sur lunar, tubos de lava, Jezero y Arcadia Planitia</span></div>
       <div class="fact"><b>3 balizas</b><span>gris, naranja y verde según la validación en campo</span></div>
     </div>
-    <div class="cta"><a class="btn primary" href="#demo">Probar la demo</a><a class="btn" href="#video">Ver el vídeo</a></div>
+    <div class="cta"><a class="btn primary" href="demo.html">Probar la demo</a><a class="btn" href="video.html">Ver el vídeo</a></div>
   </div>
 </header>
+<!--/PAGE-->
 
+<!--PAGE inicio-->
 <section id="idea">
   <div class="wrap">
     <div class="head read">
@@ -218,7 +227,17 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     </div>
   </div>
 </section>
+<!--/PAGE-->
+<!--PAGE inicio-->
+<section id="apartados">
+  <div class="wrap stack" style="gap:20px">
+    <div class="head read" style="margin:0"><p class="kicker">Apartados</p><h2>Explora el proyecto</h2></div>
+    <div class="grid3 apart"><!--APARTADOS--></div>
+  </div>
+</section>
+<!--/PAGE-->
 
+<!--PAGE demo-->
 <section id="demo">
   <div class="wrap">
     <div class="head read">
@@ -253,7 +272,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     </div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE juego-->
 <section id="juego">
   <div class="wrap">
     <div class="head read">
@@ -261,12 +282,15 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
       <h2>¿Cuál es mejor análogo?</h2>
       <p class="muted" id="gameQ"></p>
     </div>
+    <div class="seg" id="gameSeg" role="group" aria-label="Destino" style="margin-bottom:16px"></div>
     <div class="game" id="game"></div>
     <div class="card gres" id="gameRes" hidden></div>
     <div class="cta"><button class="btn" id="gameNext">Otra pareja</button><span class="muted mono" id="gameScore" style="align-self:center"></span></div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE metodo-->
 <section id="metodo">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -280,7 +304,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <div class="grid3" id="limits"></div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE app-->
 <section id="app">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -290,7 +316,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     </div>
     <div class="grid3">
       <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMoon"></span><div class="stack" style="gap:4px"><h3>Moon Coins</h3><p class="muted">Virtuales y fáciles de ganar: 100 al registrarte, 10 por el primer acceso de cada día y objetivos sencillos. Sirven para comprar muebles.</p></div></div>
-      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMarth"></span><div class="stack" style="gap:4px"><h3>Marth Coins</h3><p class="muted">Escasas: objetivos difíciles como fundar una base, visitar tres zonas o subir fotos en tres países. Se canjean por premios físicos.</p></div></div>
+      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMars"></span><div class="stack" style="gap:4px"><h3>Mars Coins</h3><p class="muted">Escasas: objetivos difíciles como fundar una base, visitar tres zonas o subir fotos en tres países. Se canjean por premios físicos.</p></div></div>
     </div>
     <div class="stack" style="gap:10px">
       <h3>La base crece una planta cada 5 exploradores</h3>
@@ -303,13 +329,15 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
         <div class="seg" id="roomSeg" role="group" aria-label="Ejemplos de habitación"></div></div>
     </div>
     <div class="stack" style="gap:10px">
-      <h3>Premios físicos con Marth Coins</h3>
+      <h3>Premios físicos con Mars Coins</h3>
       <div class="merch" id="merch"></div>
       <p class="muted read">Diseños originales de MoonSiteUA. No llevan logotipos de la NASA: su uso en productos necesita autorización de la agencia.</p>
     </div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE validacion-->
 <section id="validacion">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -341,7 +369,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <p class="read muted">La lógica completa está en <span class="mono">backend/verification.py</span> con tests. Un explorador cuenta una vez por nodo, cada cuenta necesita un teléfono verificado, un dispositivo no puede usarse con varias cuentas y solo valen fotos tomadas con la cámara de la app. Los reportes offline se validan con la posición sellada en la captura.</p>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE comunidad-->
 <section id="comunidad">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -374,7 +404,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     </div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE seguridad-->
 <section id="seguridad">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -390,7 +422,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     </div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE datos-->
 <section id="datos">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
@@ -414,7 +448,9 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <p class="muted read">Enlaces: <a href="https://search.earthdata.nasa.gov/">NASA Earthdata Search</a> · <a href="https://worldview.earthdata.nasa.gov/">NASA Worldview</a> · <a href="https://pds.nasa.gov/">NASA PDS</a> · <a href="https://pds-geosciences.wustl.edu/missions/lro/diviner.htm">LRO Diviner</a> · <a href="https://swim.psi.edu/">SWIM</a> · <a href="https://dataspace.copernicus.eu/">Copernicus Data Space</a> · <a href="https://gportal.jaxa.jp/">JAXA G-Portal</a></p>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE video-->
 <section id="video">
   <div class="wrap stack" style="gap:20px">
     <div class="head read" style="margin:0">
@@ -427,19 +463,22 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <div class="card video"><div class="stack"><b style="font-family:var(--f-display);font-size:1.3rem">Vídeo de la demo</b><span class="muted">Se publicará aquí antes del cierre del hackathon.</span></div></div>
   </div>
 </section>
+<!--/PAGE-->
 
+<!--PAGE inicio-->
 <section id="ruta">
   <div class="wrap stack" style="gap:20px">
     <div class="head read" style="margin:0"><p class="kicker">Hoja de ruta</p><h2>De la demo a la app</h2></div>
     <div class="road read">
       <div class="now"><b>Hackathon · noviembre 2026</b><span class="muted">Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.</span></div>
-      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Marth Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
+      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Mars Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
       <div><b>MVP</b><span class="muted">App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.</span></div>
       <div><b>Piloto</b><span class="muted">Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.</span></div>
       <div><b>Escala</b><span class="muted">Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.</span></div>
     </div>
   </div>
 </section>
+<!--/PAGE-->
 
 <footer>
   <div class="wrap stack">
@@ -597,6 +636,7 @@ function renderRank(rows) {
 }
 
 function render() {
+  if (!$('#ficha')) return;
   const rows = results();
   if (state.onlyNew && rows.find((x) => x.s.id === state.sel)?.s.conocido) state.sel = rows.find((x) => !x.s.conocido).s.id;
   if (!state.sel) state.sel = (state.onlyNew ? rows.find((x) => !x.s.conocido) : rows[0]).s.id;
@@ -608,6 +648,7 @@ function render() {
 function select(id) { state.sel = id; render(); }
 
 function renderControls() {
+  if (!$('#targetSeg')) return;
   $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(' (regiones Artemis III)', '').replace(' (hielo para misiones humanas)', '').replace(' (delta antiguo)', ''))}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
     state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
@@ -616,20 +657,24 @@ function renderControls() {
   $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
   AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
 }
-$('#resetW').addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
-$('#onlyNew').addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
+$('#resetW')?.addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
+$('#onlyNew')?.addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
 
 // ---------------------------------------------------------------- método
 function renderMethod() {
+  if (!$('#axesTable')) return;
   $('#axesTable tbody').innerHTML = AXES.map((a) => `<tr><td><b>${LBL[a]}</b></td><td>${SRC[a][0]}</td><td class="muted">${SRC[a][1]}</td></tr>`).join('');
 }
 function renderLimits() {
+  if (!$('#limits')) return;
   $('#limits').innerHTML = D.targets.map((t) => `<div class="card"><h3>${esc(t.nombre)}</h3><p class="muted" style="font-size:.9rem">${esc(t.contexto)}</p><p class="mono" style="font-size:.78rem;color:var(--moon)">${t.fuentes.map(esc).join(' · ')}</p></div>`).join('');
 }
 
 // ---------------------------------------------------------------- juego
 const game = {pair: null, done: false, ok: 0, n: 0};
 function newGame() {
+  if (!$('#game')) return;
+  renderGameSeg();
   const pool = [...sites]; const a = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
   let b, tries = 0;
   do { b = pool[Math.floor(Math.random() * pool.length)]; tries++; }
@@ -655,14 +700,20 @@ function answer(i) {
     <p class="muted">Lo decide sobre todo: ${keys.map((a) => `${LBL[a].toLowerCase()} (${Math.round(rs[win].sim[a] * 100)} % frente a ${Math.round(rs[1 - win].sim[a] * 100)} %)`).join(' y ')}.</p>`;
   $('#gameScore').textContent = `Aciertos: ${game.ok} de ${game.n}`;
 }
-$('#gameNext').addEventListener('click', newGame);
+$('#gameNext')?.addEventListener('click', newGame);
+function renderGameSeg() {
+  const g = $('#gameSeg'); if (!g) return;
+  g.innerHTML = D.targets.map((x) => `<button data-id="${x.id}" aria-pressed="${x.id === state.t.id}">${esc(x.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
+  g.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { state.t = D.targets.find((x) => x.id === b.dataset.id); state.w = {...state.t.pesos}; newGame(); }));
+}
 
-$('#demoBanner').hidden = !D.demo;
+if ($('#demoBanner')) $('#demoBanner').hidden = !D.demo;
 renderControls(); renderMethod(); renderLimits(); render(); newGame();
 
 // ---------------------------------------------------------------- diseños de la app
+if ($('#levels')) {
 $('#coinMoon').innerHTML = Disenos.moneda('moon', 64);
-$('#coinMarth').innerHTML = Disenos.moneda('marth', 64);
+$('#coinMars').innerHTML = Disenos.moneda('mars', 64);
 $('#levels').innerHTML = [1, 2, 3, 4, 5].map((l) => `<figure>${Disenos.base(l, '#e7794b', '#2a6fdb', l * 5 - 2)}<figcaption>Nivel ${l}${l === 5 ? '+' : ''} · ${l === 5 ? '21 o más' : (l * 5 - 4) + '-' + l * 5} exploradores</figcaption></figure>`).join('');
 const ROOMS = [
   {nombre: 'Consola', numero: 3, planta: 1, cama: 'cama_capsula', escritorio: 'escritorio_consola', color1: '#e7794b', color2: '#2a6fdb', decoraciones: {pared_izq: 'ventana_tierra', pared_der: 'bandera_base', suelo: 'planta_hidroponica', techo: 'lampara_orbital', alfombra: 'alfombra_hex'}},
@@ -678,7 +729,8 @@ $('#roomSeg').innerHTML = ROOMS.map((r) => `<button>${r.nombre}</button>`).join(
 $('#roomSeg').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => showRoom(i)));
 showRoom(0);
 const MERCH = {pegatinas: 'Pegatinas · 4', pin_luna: 'Pin Polo Sur · 8', pin_marte: 'Pin Jezero · 8', parche_mision: 'Parche de misión · 12', taza: 'Taza · 18', gorra: 'Gorra · 25', camiseta: 'Camiseta · 35', sudadera: 'Sudadera · 60'};
-$('#merch').innerHTML = Object.entries(MERCH).map(([k, v]) => `<figure>${Disenos.premio(k)}<figcaption>${v} Marth</figcaption></figure>`).join('');
+$('#merch').innerHTML = Object.entries(MERCH).map(([k, v]) => `<figure>${Disenos.premio(k)}<figcaption>${v} Mars</figcaption></figure>`).join('');
+}
 </script>
 </body>
 </html>

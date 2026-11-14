@@ -188,7 +188,7 @@ def comprar(clave: str, u=Depends(usuario)):
 
 @app.get("/api/premios")
 def premios():
-    return [{**dict(p), "con_talla": p["clave"] in L.CON_TALLA} for p in con.execute("SELECT * FROM premios ORDER BY precio_marth")]
+    return [{**dict(p), "con_talla": p["clave"] in L.CON_TALLA} for p in con.execute("SELECT * FROM premios ORDER BY precio_mars")]
 
 
 @app.post("/api/premios/{clave}/canjear")

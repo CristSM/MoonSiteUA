@@ -43,6 +43,36 @@ const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sit
 const html = read('template.html')
   .replace('/*__DATA__*/null', JSON.stringify(data))
   .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'));
-writeFileSync(new URL('index.html', here), html);
-writeFileSync(new URL('../docs/index.html', here), html);  // GitHub Pages sirve /docs
-console.log(`index.html: ${(html.length / 1024).toFixed(0)} KB, ${sites.sites.length} sitios, demo=${data.demo}`);
+
+// ---------------------------------------------------------------- páginas
+// La plantilla marca bloques con <!--PAGE id--> ... <!--/PAGE-->. Cada página
+// lleva la cabecera y el pie comunes más sus bloques.
+const PAGES = [
+  ['inicio', 'index.html', 'Inicio', 'La idea, cómo funciona y la hoja de ruta.'],
+  ['demo', 'demo.html', 'Demo', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
+  ['juego', 'juego.html', 'Juego', '¿Cuál es mejor análogo? Pon a prueba tu intuición.'],
+  ['app', 'app.html', 'La app', 'Cuentas, Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
+  ['metodo', 'metodo.html', 'Método', 'El Índice de Analogía Planetaria y sus 9 ejes.'],
+  ['validacion', 'validacion.html', 'Validación', 'Balizas por consenso y escalado robótico.'],
+  ['comunidad', 'comunidad.html', 'Comunidad', 'Puntos, misiones, insignias y bases virtuales.'],
+  ['seguridad', 'seguridad.html', 'Seguridad', 'Una persona, una cuenta; modo expedición offline; privacidad.'],
+  ['datos', 'datos.html', 'Datos', 'Las fuentes de la NASA y las agencias socias.'],
+  ['video', 'video.html', 'Vídeo', 'MoonSiteUA en 30 segundos.'],
+];
+const first = html.indexOf('<!--PAGE ');
+const footer = html.indexOf('<footer>');
+const head = html.slice(0, first), tail = html.slice(footer);
+const blocks = {};
+for (const m of html.slice(first, footer).matchAll(/<!--PAGE (\w+)-->([\s\S]*?)<!--\/PAGE-->/g)) (blocks[m[1]] ||= []).push(m[2]);
+
+const out = [new URL('./', here), new URL('../docs/', here)];
+for (const [id, file, label] of PAGES) {
+  const nav = PAGES.filter(([pid]) => pid !== 'inicio')
+    .map(([pid, f, l]) => `<a href="${f}"${pid === id ? ' aria-current="page"' : ''}>${l}</a>`).join('');
+  const apartados = PAGES.filter(([pid]) => pid !== 'inicio')
+    .map(([, f, l, d], i) => `<a class="card" href="${f}"><span class="n">${String(i + 1).padStart(2, '0')}</span><b>${l}</b><span class="muted">${d}</span></a>`).join('');
+  const page = (head.replace('<!--NAV-->', nav).replace('<title>MoonSiteUA</title>', `<title>${id === 'inicio' ? 'MoonSiteUA' : `MoonSiteUA · ${label}`}</title>`)
+    + blocks[id].join('\n') + tail).replace('<!--APARTADOS-->', apartados);
+  for (const dir of out) writeFileSync(new URL(file, dir), page);
+}
+console.log(`${PAGES.length} páginas · ${sites.sites.length} sitios · demo=${data.demo}`);

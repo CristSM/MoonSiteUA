@@ -21,7 +21,7 @@
       ${Array.from({length: 24}, (_, i) => { const a = i * Math.PI / 12; return `<line x1="${32 + Math.cos(a) * 27}" y1="${32 + Math.sin(a) * 27}" x2="${32 + Math.cos(a) * 29}" y2="${32 + Math.sin(a) * 29}" stroke="${NAVY}" stroke-width="1.4"/>`; }).join('')}
       ${face}
       <path d="M10 44 Q32 60 54 44" stroke="${moon ? '#cfd6e4' : '#ffb48c'}" stroke-width="1.6" fill="none" stroke-dasharray="2 2"/>`,
-      `width="${size}" height="${size}" role="img" aria-label="${moon ? 'Moon Coin' : 'Marth Coin'}"`);
+      `width="${size}" height="${size}" role="img" aria-label="${moon ? 'Moon Coin' : 'Mars Coin'}"`);
   }
 
   // ------------------------------------------------------------ edificio de la base
@@ -150,7 +150,7 @@
       <text x="${cx}" y="${cy + r * .72}" text-anchor="middle" font-size="${r * .1}" fill="${WHITE}" font-family="Arial, sans-serif" letter-spacing="1">ROVER HUMANO</text>`;
   }
   const P = {
-    pegatinas: () => `<rect width="140" height="140" fill="#eef1f6"/><g transform="rotate(-8 50 50)"><circle cx="45" cy="45" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('moon'), 21, 21, 48)}</g><g transform="rotate(10 95 50)"><circle cx="98" cy="48" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('marth'), 74, 24, 48)}</g><rect x="22" y="80" width="96" height="46" rx="10" fill="${WHITE}" stroke="#ccd"/><text x="70" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="${NAVY}" font-family="Arial">ROVER</text><text x="70" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="${RED}" font-family="Arial">HUMANO</text>`,
+    pegatinas: () => `<rect width="140" height="140" fill="#eef1f6"/><g transform="rotate(-8 50 50)"><circle cx="45" cy="45" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('moon'), 21, 21, 48)}</g><g transform="rotate(10 95 50)"><circle cx="98" cy="48" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('mars'), 74, 24, 48)}</g><rect x="22" y="80" width="96" height="46" rx="10" fill="${WHITE}" stroke="#ccd"/><text x="70" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="${NAVY}" font-family="Arial">ROVER</text><text x="70" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="${RED}" font-family="Arial">HUMANO</text>`,
     pin_luna: () => `<rect width="140" height="140" fill="#eef1f6"/><circle cx="70" cy="70" r="48" fill="#c9a43a"/><circle cx="70" cy="70" r="42" fill="${NAVY}"/><circle cx="70" cy="70" r="30" fill="#e9ecf2"/><path d="M70 40 a30 30 0 0 0 0 60 a14 30 0 0 1 0 -60z" fill="#2b3245" opacity=".85"/><circle cx="62" cy="62" r="5" fill="#c9cfdb"/><circle cx="80" cy="66" r="7" fill="#c9cfdb"/><text x="70" y="128" text-anchor="middle" font-size="10" fill="${NAVY}" font-family="monospace">POLO SUR</text>`,
     pin_marte: () => `<rect width="140" height="140" fill="#eef1f6"/><circle cx="70" cy="70" r="48" fill="#c9a43a"/><circle cx="70" cy="70" r="42" fill="#2a1410"/><circle cx="70" cy="70" r="30" fill="#d4643a"/><path d="M56 62 l10 8 -4 10 m4 -10 l12 4" stroke="#8e3a20" stroke-width="3" fill="none"/><circle cx="70" cy="70" r="12" fill="none" stroke="#a8432a" stroke-width="2"/><text x="70" y="128" text-anchor="middle" font-size="10" fill="${NAVY}" font-family="monospace">JEZERO</text>`,
     parche_mision: () => `<rect width="140" height="140" fill="#eef1f6"/>${parche()}`,

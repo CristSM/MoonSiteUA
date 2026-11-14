@@ -94,18 +94,18 @@ OBJETIVOS = [
     ("fotos_semana", "individual", "semanal", "foto", "Sube 5 fotos esta semana", 5, "moon", 60),
     ("primera_base", "individual", "unico", "unirse_base", "Funda una base o únete a una", 1, "moon", 50),
     ("decorador", "individual", "unico", "personalizar", "Personaliza tu habitación", 1, "moon", 30),
-    ("pionero", "individual", "unico", "fundar", "Pionero: funda la base de una zona", 1, "marth", 2),
-    ("tres_zonas", "individual", "unico", "zona_nueva", "Visita 3 zonas recomendadas distintas", 3, "marth", 3),
-    ("fotos_mes_zonas", "individual", "mensual", "foto_zona", "Sube 20 fotos en zonas recomendadas este mes", 20, "marth", 3),
-    ("tres_paises", "individual", "unico", "pais_nuevo", "Sube fotos en 3 países distintos", 3, "marth", 6),
+    ("pionero", "individual", "unico", "fundar", "Pionero: funda la base de una zona", 1, "mars", 2),
+    ("tres_zonas", "individual", "unico", "zona_nueva", "Visita 3 zonas recomendadas distintas", 3, "mars", 3),
+    ("fotos_mes_zonas", "individual", "mensual", "foto_zona", "Sube 20 fotos en zonas recomendadas este mes", 20, "mars", 3),
+    ("tres_paises", "individual", "unico", "pais_nuevo", "Sube fotos en 3 países distintos", 3, "mars", 6),
     ("base_fotos_semana", "base", "semanal", "foto_base", "La base suma 10 fotos esta semana", 10, "moon", 40),
-    ("base_fotos_mes", "base", "mensual", "foto_base", "La base suma 50 fotos este mes", 50, "marth", 2),
-    ("base_planta_2", "base", "unico", "miembro_base", "La base llega a la planta 2 (6 miembros)", 6, "marth", 2),
-    ("base_planta_5", "base", "unico", "miembro_base", "La base llega a la planta 5 (21 miembros)", 21, "marth", 5),
+    ("base_fotos_mes", "base", "mensual", "foto_base", "La base suma 50 fotos este mes", 50, "mars", 2),
+    ("base_planta_2", "base", "unico", "miembro_base", "La base llega a la planta 2 (6 miembros)", 6, "mars", 2),
+    ("base_planta_5", "base", "unico", "miembro_base", "La base llega a la planta 5 (21 miembros)", 21, "mars", 5),
 ]
 
 # ------------------------------------------------------------------ premios
-# (clave, nombre, descripción, precio en Marth Coins, stock)
+# (clave, nombre, descripción, precio en Mars Coins, stock)
 PREMIOS = [
     ("pegatinas", "Pack de pegatinas", "Seis pegatinas de vinilo: monedas, bases y los cuatro destinos.", 4, 300),
     ("pin_luna", "Pin «Polo Sur»", "Pin esmaltado de la Luna con el cráter Shackleton en sombra.", 8, 150),
@@ -147,5 +147,5 @@ def seed(con: sqlite3.Connection) -> None:
     cur.executemany("INSERT OR IGNORE INTO muebles (clave, tipo, hueco, nombre, precio_moon) VALUES (?, ?, ?, ?, ?)", MUEBLES)
     cur.executemany("""INSERT OR IGNORE INTO objetivos (clave, ambito, periodo, evento, titulo, meta, moneda, recompensa)
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", OBJETIVOS)
-    cur.executemany("INSERT OR IGNORE INTO premios (clave, nombre, descripcion, precio_marth, stock) VALUES (?, ?, ?, ?, ?)", PREMIOS)
+    cur.executemany("INSERT OR IGNORE INTO premios (clave, nombre, descripcion, precio_mars, stock) VALUES (?, ?, ?, ?, ?)", PREMIOS)
     con.commit()

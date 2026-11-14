@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS sesiones (
 CREATE TABLE IF NOT EXISTS movimientos (
     id          INTEGER PRIMARY KEY,
     usuario_id  INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
-    moneda      TEXT NOT NULL CHECK (moneda IN ('moon', 'marth')),
+    moneda      TEXT NOT NULL CHECK (moneda IN ('moon', 'mars')),
     cantidad    INTEGER NOT NULL CHECK (cantidad <> 0),   -- positivo gana, negativo gasta
     motivo      TEXT NOT NULL,
     fecha       TEXT NOT NULL DEFAULT (datetime('now'))
@@ -58,7 +58,7 @@ CREATE INDEX IF NOT EXISTS ix_mov_usuario ON movimientos(usuario_id, moneda);
 CREATE VIEW IF NOT EXISTS saldos AS
 SELECT u.id AS usuario_id,
        COALESCE(SUM(CASE WHEN m.moneda = 'moon'  THEN m.cantidad END), 0) AS moon,
-       COALESCE(SUM(CASE WHEN m.moneda = 'marth' THEN m.cantidad END), 0) AS marth
+       COALESCE(SUM(CASE WHEN m.moneda = 'mars' THEN m.cantidad END), 0) AS mars
 FROM usuarios u LEFT JOIN movimientos m ON m.usuario_id = u.id
 GROUP BY u.id;
 
@@ -160,7 +160,7 @@ CREATE TABLE IF NOT EXISTS objetivos (
     evento      TEXT NOT NULL,                   -- qué acción suma progreso
     titulo      TEXT NOT NULL,
     meta        INTEGER NOT NULL CHECK (meta > 0),
-    moneda      TEXT NOT NULL CHECK (moneda IN ('moon', 'marth')),
+    moneda      TEXT NOT NULL CHECK (moneda IN ('moon', 'mars')),
     recompensa  INTEGER NOT NULL CHECK (recompensa > 0)
 );
 
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS premios (
     clave        TEXT NOT NULL UNIQUE,
     nombre       TEXT NOT NULL,
     descripcion  TEXT NOT NULL,
-    precio_marth INTEGER NOT NULL CHECK (precio_marth > 0),
+    precio_mars INTEGER NOT NULL CHECK (precio_mars > 0),
     stock        INTEGER NOT NULL CHECK (stock >= 0)
 );
 

@@ -164,13 +164,13 @@ def mover(con, uid: int, moneda: str, cantidad: int, motivo: str) -> None:
 
 
 def saldo(con, uid: int) -> dict:
-    r = con.execute("SELECT moon, marth FROM saldos WHERE usuario_id = ?", (uid,)).fetchone()
-    return {"moon": r["moon"], "marth": r["marth"]}
+    r = con.execute("SELECT moon, mars FROM saldos WHERE usuario_id = ?", (uid,)).fetchone()
+    return {"moon": r["moon"], "mars": r["mars"]}
 
 
 def cobrar(con, uid: int, moneda: str, cantidad: int, motivo: str) -> None:
     if saldo(con, uid)[moneda] < cantidad:
-        nombre = "Moon Coins" if moneda == "moon" else "Marth Coins"
+        nombre = "Moon Coins" if moneda == "moon" else "Mars Coins"
         raise ErrorJuego(f"No tienes suficientes {nombre}.", status=402)
     mover(con, uid, moneda, -cantidad, motivo)
 
@@ -522,7 +522,7 @@ def canjear(con, uid: int, clave: str, direccion: str, talla: str | None) -> dic
         raise ErrorJuego("Elige una talla.", "talla")
     if len((direccion or "").strip()) < 10:
         raise ErrorJuego("Escribe la dirección de envío completa.", "direccion")
-    cobrar(con, uid, "marth", p["precio_marth"], f"Canje: {p['nombre']}")
+    cobrar(con, uid, "mars", p["precio_mars"], f"Canje: {p['nombre']}")
     con.execute("UPDATE premios SET stock = stock - 1 WHERE id = ?", (p["id"],))
     cur = con.execute("INSERT INTO canjes (usuario_id, premio_id, talla, direccion) VALUES (?, ?, ?, ?)",
                       (uid, p["id"], talla if clave in CON_TALLA else None, direccion.strip()[:300]))

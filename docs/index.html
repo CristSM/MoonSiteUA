@@ -30,6 +30,7 @@
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html, body { margin: 0; }
 body { background: var(--bg); color: var(--text); font: 16px/1.6 var(--f-body); }
 a { color: var(--accent); }
@@ -48,8 +49,9 @@ p { margin: 0; }
 /* nav */
 nav.top { position: sticky; top: 0; z-index: 10; background: rgba(12,17,29,.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
 nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 54px; overflow-x: auto; }
-nav.top b { font-family: var(--f-display); font-size: 1.1rem; white-space: nowrap; }
-nav.top b span { color: var(--accent); }
+nav.top .brand { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; white-space: nowrap; color: var(--text); margin-right: 6px; }
+nav.top .brand span { color: var(--accent); }
+nav.top a[aria-current="page"] { color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
 nav.top a { color: var(--muted); text-decoration: none; font-size: .9rem; white-space: nowrap; }
 nav.top a:hover { color: var(--text); }
 
@@ -166,8 +168,13 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .merch figure { margin: 0; display: grid; gap: 6px; }
 .merch svg { width: 100%; height: auto; border-radius: 8px; display: block; }
 .merch figcaption { font-size: .82rem; color: var(--muted); }
-#coinMoon svg, #coinMarth svg { width: 64px; height: 64px; }
+#coinMoon svg, #coinMars svg { width: 64px; height: 64px; }
 @media (max-width: 700px) { .levels { grid-template-columns: repeat(3, 1fr); } }
+
+.apart a { text-decoration: none; color: var(--text); display: grid; gap: 6px; padding: 18px; }
+.apart a:hover { border-color: var(--accent); }
+.apart b { font-family: var(--f-display); font-size: 1.1rem; }
+.apart .n { font: 500 .78rem var(--f-mono); color: var(--accent); }
 
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
@@ -184,11 +191,11 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
 <body>
 <nav class="top" aria-label="Secciones">
   <div class="wrap">
-    <b>MoonSite<span>UA</span></b>
-    <a href="#idea">Idea</a><a href="#demo">Demo</a><a href="#juego">Juego</a><a href="#app">App</a><a href="#metodo">Método</a>
-    <a href="#validacion">Validación</a><a href="#comunidad">Comunidad</a><a href="#datos">Datos</a><a href="#video">Vídeo</a>
+    <a class="brand" href="index.html">MoonSite<span>UA</span></a>
+    <a href="demo.html">Demo</a><a href="juego.html">Juego</a><a href="app.html">La app</a><a href="metodo.html">Método</a><a href="validacion.html">Validación</a><a href="comunidad.html">Comunidad</a><a href="seguridad.html">Seguridad</a><a href="datos.html">Datos</a><a href="video.html">Vídeo</a>
   </div>
 </nav>
+
 
 <header class="hero">
   <div class="wrap">
@@ -200,9 +207,10 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
       <div class="fact"><b>4 destinos</b><span>polo sur lunar, tubos de lava, Jezero y Arcadia Planitia</span></div>
       <div class="fact"><b>3 balizas</b><span>gris, naranja y verde según la validación en campo</span></div>
     </div>
-    <div class="cta"><a class="btn primary" href="#demo">Probar la demo</a><a class="btn" href="#video">Ver el vídeo</a></div>
+    <div class="cta"><a class="btn primary" href="demo.html">Probar la demo</a><a class="btn" href="video.html">Ver el vídeo</a></div>
   </div>
 </header>
+
 
 <section id="idea">
   <div class="wrap">
@@ -219,228 +227,27 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
   </div>
 </section>
 
-<section id="demo">
-  <div class="wrap">
-    <div class="head read">
-      <p class="kicker">Demo interactiva</p>
-      <h2>¿Qué lugar de la Tierra se parece más a…?</h2>
-      <p class="muted">Elige un destino. El color de cada punto es su Índice de Analogía Planetaria (IAP). Pulsa un sitio para ver su ficha: el radar compara el lugar (relleno) con el destino (línea discontinua).</p>
-    </div>
-    <div class="banner" id="demoBanner" hidden>Valores de demostración estimados a mano. El script de Earth Engine del repositorio calcula los reales con datos NASA y la web se regenera con ellos.</div>
-    <div class="demo-bar">
-      <div class="seg" id="targetSeg" role="group" aria-label="Destino"></div>
-      <label class="chk"><input type="checkbox" id="onlyNew"> Solo análogos poco estudiados</label>
-    </div>
-    <div class="demo">
-      <div class="card maps" style="grid-area:maps">
-        <svg id="worldMap" role="img" aria-label="Mapa mundial de sitios candidatos"></svg>
-        <span class="cap">Detalle · España peninsular y Canarias</span>
-        <svg id="iberiaMap" role="img" aria-label="Mapa de España con sitios candidatos"></svg>
-        <div class="legend"><span>IAP</span><span class="mono">30</span><span class="ramp"></span><span class="mono">80</span>
-          <span><span class="beacon" style="background:var(--ok)"></span>confirmado</span>
-          <span><span class="beacon" style="background:var(--warn)"></span>en verificación</span>
-          <span><span class="beacon" style="background:var(--idle)"></span>descubrimiento</span></div>
-      </div>
-      <div class="card ficha" id="ficha" aria-live="polite" style="grid-area:ficha"></div>
-      <div style="grid-area:rank; display:grid; gap:12px; align-content:start">
-        <div class="card rank" id="rank" aria-label="Ranking"></div>
-        <details class="weights card" style="padding:12px 16px; margin:0">
-          <summary>Ajustar la importancia de cada eje</summary>
-          <div class="wgrid" id="weights"></div>
-          <button class="btn" id="resetW" style="margin-top:12px">Restablecer pesos del destino</button>
-        </details>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section id="juego">
-  <div class="wrap">
-    <div class="head read">
-      <p class="kicker">Modo juego</p>
-      <h2>¿Cuál es mejor análogo?</h2>
-      <p class="muted" id="gameQ"></p>
-    </div>
-    <div class="game" id="game"></div>
-    <div class="card gres" id="gameRes" hidden></div>
-    <div class="cta"><button class="btn" id="gameNext">Otra pareja</button><span class="muted mono" id="gameScore" style="align-self:center"></span></div>
-  </div>
-</section>
-
-<section id="metodo">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Método</p>
-      <h2>Índice de Analogía Planetaria</h2>
-      <p class="muted">Cada variable física se convierte en un eje de 0 a 1, donde 1 es lo más extremo que ofrece la Tierra. Los valores reales de la Luna y Marte casi siempre superan ese rango; entonces el destino se fija en 1 y lo documentamos como límite de la analogía.</p>
-    </div>
-    <div class="formula">IAP = 100 · Σ wᵢ · (1 − |xᵢ − tᵢ|) / Σ wᵢ</div>
-    <p class="read muted">xᵢ es el valor del lugar en el eje i, tᵢ el del destino y wᵢ la importancia del eje para ese destino. La nota global ordena candidatos; la similitud por eje explica por qué. Así un sitio puede ser un gran análogo geológico y uno malo térmico, que es justo lo que pide el reto.</p>
-    <div class="tbl"><table id="axesTable"><thead><tr><th>Eje</th><th>Dato NASA</th><th>Conversión a 0-1</th></tr></thead><tbody></tbody></table></div>
-    <div class="grid3" id="limits"></div>
-  </div>
-</section>
-
-<section id="app">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">La app</p>
-      <h2>Tu cuenta, tus fotos, tu base</h2>
-      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Sube fotos, las compara con el punto recomendado más cercano y gana monedas.</p>
-    </div>
-    <div class="grid3">
-      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMoon"></span><div class="stack" style="gap:4px"><h3>Moon Coins</h3><p class="muted">Virtuales y fáciles de ganar: 100 al registrarte, 10 por el primer acceso de cada día y objetivos sencillos. Sirven para comprar muebles.</p></div></div>
-      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMarth"></span><div class="stack" style="gap:4px"><h3>Marth Coins</h3><p class="muted">Escasas: objetivos difíciles como fundar una base, visitar tres zonas o subir fotos en tres países. Se canjean por premios físicos.</p></div></div>
-    </div>
-    <div class="stack" style="gap:10px">
-      <h3>La base crece una planta cada 5 exploradores</h3>
-      <p class="muted read">Una base por zona. Quien la funda elige sus dos colores. Cada planta tiene 5 habitaciones (las ventanas encendidas están ocupadas). Del nivel 5 en adelante el edificio se mantiene.</p>
-      <div class="levels" id="levels"></div>
-    </div>
-    <div class="demo" style="grid-template-areas:none;grid-template-columns:minmax(0,1.3fr) minmax(260px,1fr)">
-      <div class="card" style="padding:12px" id="roomDemo"></div>
-      <div class="stack"><h3>Tu habitación</h3><p class="muted">Tamaño estándar. Cambias el color de paredes y suelo y eliges una cama, un escritorio y una decoración por hueco: pared izquierda, pared derecha, techo, rincón y alfombra. Los muebles se compran con Moon Coins.</p>
-        <div class="seg" id="roomSeg" role="group" aria-label="Ejemplos de habitación"></div></div>
-    </div>
-    <div class="stack" style="gap:10px">
-      <h3>Premios físicos con Marth Coins</h3>
-      <div class="merch" id="merch"></div>
-      <p class="muted read">Diseños originales de MoonSiteUA. No llevan logotipos de la NASA: su uso en productos necesita autorización de la agencia.</p>
-    </div>
-  </div>
-</section>
-
-<section id="validacion">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Ciencia ciudadana con control de calidad</p>
-      <h2>Balizas por consenso</h2>
-      <p class="muted">El satélite dice dónde mirar; el campo confirma lo que el satélite no ve, como la química del suelo, las cuevas o la textura del terreno. Ninguna persona sola puede confirmar un análogo.</p>
-    </div>
-    <div class="grid3">
-      <div class="card"><h3><span class="beacon" style="background:var(--idle)"></span>Gris · descubrimiento</h3><p class="muted">Un explorador sube el primer reporte válido. El punto existe en el mapa pero no tiene validez científica.</p></div>
-      <div class="card"><h3><span class="beacon" style="background:var(--warn)"></span>Naranja · en verificación</h3><p class="muted">Dos o más exploradores independientes coinciden dentro de la tolerancia de cada medida.</p></div>
-      <div class="card"><h3><span class="beacon" style="background:var(--ok)"></span>Verde · análogo confirmado</h3><p class="muted">Cinco o más exploradores, en al menos dos días distintos, coinciden entre sí y con el dato satelital.</p></div>
-      <div class="card"><h3><span class="beacon" style="background:var(--bad)"></span>Disputa</h3><p class="muted">Hay reportes suficientes pero se contradicen. El nodo genera una misión de desempate en lugar de avanzar.</p></div>
-    </div>
-    <div class="card" style="padding:18px; display:grid; gap:8px; border-color:var(--moon)">
-      <p class="kicker" style="color:var(--moon)">Nivel 3 · Escalado robótico</p>
-      <h3>Donde no debe ir una persona, va un robot</h3>
-      <p class="muted read">Si una zona tiene un IAP alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.</p>
-    </div>
-    <div class="tbl"><table>
-      <thead><tr><th>Qué se mide</th><th>Con qué</th><th>Tolerancia</th><th>Por qué así</th></tr></thead>
-      <tbody>
-        <tr><td>Pendiente</td><td>Inclinómetro del móvil</td><td class="mono">± 4°</td><td>Todos los móviles tienen acelerómetro; se compara con NASADEM.</td></tr>
-        <tr><td>Altitud</td><td>GPS + barómetro</td><td class="mono">± 25 m</td><td>El barómetro afina la altitud del GPS en la mayoría de gama media.</td></tr>
-        <tr><td>Tipo de suelo</td><td>Lista cerrada + foto en vivo</td><td class="mono">60 % de acuerdo</td><td>Basalto, arcilla, yeso, arena, sal… Elegir de una lista hace comparables los reportes.</td></tr>
-        <tr><td>Temperatura</td><td>Sensor Bluetooth emparejado</td><td class="mono">± 3 °C de anomalía</td><td>Los móviles no tienen termómetro ambiental. Se compara la diferencia con el satélite del mismo momento, no el valor bruto.</td></tr>
-        <tr><td>Humedad</td><td>Sensor Bluetooth emparejado</td><td class="mono">± 12 %</td><td>Igual que la temperatura: sin sensor externo no cuenta.</td></tr>
-      </tbody>
-    </table></div>
-    <p class="read muted">La lógica completa está en <span class="mono">backend/verification.py</span> con tests. Un explorador cuenta una vez por nodo, cada cuenta necesita un teléfono verificado, un dispositivo no puede usarse con varias cuentas y solo valen fotos tomadas con la cámara de la app. Los reportes offline se validan con la posición sellada en la captura.</p>
-  </div>
-</section>
-
-<section id="comunidad">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Gamificación</p>
-      <h2>Exploradores, misiones y bases virtuales</h2>
-      <p class="muted">Los incentivos premian el dato útil, no la cantidad. El sistema detecta qué falta en cada nodo y lanza misiones para cubrirlo.</p>
-    </div>
-    <div class="grid3">
-      <div class="card"><h3>Puntos de Exploración</h3><p class="muted">Por validar puntos, subir fotos y medir. Se canjean por cosméticos de la base virtual. Las medidas que luego resultan inconsistentes no puntúan.</p></div>
-      <div class="card"><h3>Puntos de Misión</h3><p class="muted">Escasos. Por liderar expediciones validadas o completar objetivos de alto valor. Se canjean por pins y parches de misión, financiados con patrocinio.</p></div>
-      <div class="card"><h3>Misiones dirigidas</h3><p class="muted">Ejemplo: «Tabernas tiene pendiente y suelo validados pero le falta humedad: lecturas con higrómetro, puntuación ×3». Nunca se generan en espacios protegidos ni zonas peligrosas.</p></div>
-      <div class="card"><h3>Misiones globales</h3><p class="muted">Retos mensuales como «Documenta 3 zonas kársticas este mes». Cuentan sitios distintos, así que no compensa repetir el mismo.</p></div>
-      <div class="card"><h3>Insignias</h3><p class="muted">Pionero (título inmutable para quien documenta primero un análogo que llega a verde), Expedición offline, Especialista en basalto o en karst y misiones completadas.</p></div>
-    </div>
-    <div class="card" style="padding:18px; display:grid; gap:12px">
-      <h3>Base virtual de un análogo confirmado</h3>
-      <svg class="base-svg" viewBox="0 0 520 170" role="img" aria-label="Esquema de una base virtual con módulo fundador y módulos acoplados">
-        <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#9da6ba">
-          <rect x="190" y="55" width="140" height="60" rx="30" fill="#e7794b" opacity=".9"/>
-          <text x="260" y="90" text-anchor="middle" fill="#1a0e08" font-weight="600">Módulo Génesis</text>
-          <line x1="190" y1="85" x2="140" y2="85" stroke="#29344d" stroke-width="6"/><line x1="330" y1="85" x2="380" y2="85" stroke="#29344d" stroke-width="6"/>
-          <line x1="260" y1="55" x2="260" y2="30" stroke="#29344d" stroke-width="6"/><line x1="260" y1="115" x2="260" y2="140" stroke="#29344d" stroke-width="6"/>
-          <rect x="40" y="65" width="100" height="40" rx="20" fill="#1a2336" stroke="#c7d1e4"/><text x="90" y="89" text-anchor="middle">explorador 2</text>
-          <rect x="380" y="65" width="100" height="40" rx="20" fill="#1a2336" stroke="#c7d1e4"/><text x="430" y="89" text-anchor="middle">explorador 3</text>
-          <rect x="210" y="2" width="100" height="28" rx="14" fill="#1a2336" stroke="#c7d1e4"/><text x="260" y="20" text-anchor="middle">explorador 4</text>
-          <rect x="210" y="140" width="100" height="28" rx="14" fill="#1a2336" stroke="#4cc38a" stroke-dasharray="4 3"/><text x="260" y="158" text-anchor="middle" fill="#4cc38a">próximo módulo</text>
-        </g>
-      </svg>
-      <p class="muted read">El fundador elige los dos colores de la base y decora el primer módulo. Cada explorador que valida datos en persona acopla su módulo. Las bases más visitadas crecen hasta convertirse en colonias.</p>
-    </div>
-  </div>
-</section>
-
-<section id="seguridad">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Seguridad, privacidad y ética</p>
-      <h2>Datos fiables sin poner a nadie en riesgo</h2>
-    </div>
-    <div class="grid3">
-      <div class="card"><h3>Una persona, una cuenta</h3><p class="muted">Registro con Google o Apple y verificación por SMS: un teléfono único por perfil, guardado solo como hash. Se suma la verificación del dispositivo (Play Integrity / App Attest). Sin pedir DNI.</p></div>
-      <div class="card"><h3>Modo Expedición offline</h3><p class="muted">Sin cobertura en cuevas o desiertos, el GPS sigue funcionando: la app sella posición, hora, foto y medidas en el momento de la captura y firma el paquete. Al sincronizar comprueba la firma, que no hayan pasado más de 14 días y que el viaje hasta allí sea posible.</p></div>
-      <div class="card"><h3>Contra envíos desde el sofá</h3><p class="muted">La geovalla se aplica a la posición de la captura y se amplía con el tiempo transcurrido (30 km + 120 km/h). Quien «estuvo» en Tabernas no puede sincronizar una hora después desde otro continente.</p></div>
-      <div class="card"><h3>Seguridad física</h3><p class="muted">Sin misiones en espacios protegidos, propiedades privadas, cuevas sin acceso autorizado ni zonas peligrosas. Antes de cada expedición offline: avisos de calor y aislamiento y una lista de comprobación (agua, ruta compartida).</p></div>
-      <div class="card"><h3>Privacidad (RGPD)</h3><p class="muted">El GPS solo se pide al capturar y al sincronizar, nunca en segundo plano. Los recorridos no se publican: el mapa muestra nodos, no personas.</p></div>
-    </div>
-  </div>
-</section>
-
-<section id="datos">
-  <div class="wrap stack" style="gap:28px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Datos abiertos</p>
-      <h2>Fuentes que usamos</h2>
-    </div>
-    <div class="tbl"><table>
-      <thead><tr><th>Cuerpo</th><th>Fuente</th><th>Para qué</th></tr></thead>
-      <tbody>
-        <tr><td>Tierra</td><td>MODIS MOD11A2 (temperatura de superficie, 1 km)</td><td>Ejes de frío y amplitud térmica</td></tr>
-        <tr><td>Tierra</td><td>MODIS MOD13A2 (NDVI, 1 km)</td><td>Eje de suelo sin vegetación</td></tr>
-        <tr><td>Tierra</td><td>GPM IMERG V07 mensual (0,1°)</td><td>Eje de aridez</td></tr>
-        <tr><td>Tierra</td><td>NASADEM (30 m)</td><td>Altitud y pendiente</td></tr>
-        <tr><td>Tierra</td><td>ASTER GED AG100 (emisividad térmica, 100 m)</td><td>Indicador de roca basáltica</td></tr>
-        <tr><td>Tierra</td><td>MODIS MOD08_M3 (aerosoles) y MOD10A1 (nieve)</td><td>Ejes de polvo y hielo</td></tr>
-        <tr><td>Tierra</td><td>Copernicus Sentinel (ESA), RADARSAT (CSA), G-Portal (JAXA)</td><td>Ampliaciones: radar para rugosidad y humedad, imágenes de detalle</td></tr>
-        <tr><td>Luna</td><td>LRO Diviner, LOLA, LEND, Mini-RF, LROC (PDS)</td><td>Perfiles del polo sur y de los mares basálticos</td></tr>
-        <tr><td>Marte</td><td>Perseverance MEDA, MRO CRISM/HiRISE, SWIM (SHARAD)</td><td>Perfiles de Jezero y Arcadia Planitia</td></tr>
-      </tbody>
-    </table></div>
-    <p class="muted read">Enlaces: <a href="https://search.earthdata.nasa.gov/">NASA Earthdata Search</a> · <a href="https://worldview.earthdata.nasa.gov/">NASA Worldview</a> · <a href="https://pds.nasa.gov/">NASA PDS</a> · <a href="https://pds-geosciences.wustl.edu/missions/lro/diviner.htm">LRO Diviner</a> · <a href="https://swim.psi.edu/">SWIM</a> · <a href="https://dataspace.copernicus.eu/">Copernicus Data Space</a> · <a href="https://gportal.jaxa.jp/">JAXA G-Portal</a></p>
-  </div>
-</section>
-
-<section id="video">
+<section id="apartados">
   <div class="wrap stack" style="gap:20px">
-    <div class="head read" style="margin:0">
-      <p class="kicker">Demo en vídeo · 30 s</p>
-      <h2>MoonSiteUA en medio minuto</h2>
-    </div>
-    <!-- Sustituir este bloque por el vídeo final, p. ej.:
-         <video src="demo.mp4" controls style="width:100%;border-radius:10px"></video>
-         o un iframe de YouTube si la web se sirve desde GitHub Pages. -->
-    <div class="card video"><div class="stack"><b style="font-family:var(--f-display);font-size:1.3rem">Vídeo de la demo</b><span class="muted">Se publicará aquí antes del cierre del hackathon.</span></div></div>
+    <div class="head read" style="margin:0"><p class="kicker">Apartados</p><h2>Explora el proyecto</h2></div>
+    <div class="grid3 apart"><a class="card" href="demo.html"><span class="n">01</span><b>Demo</b><span class="muted">Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.</span></a><a class="card" href="juego.html"><span class="n">02</span><b>Juego</b><span class="muted">¿Cuál es mejor análogo? Pon a prueba tu intuición.</span></a><a class="card" href="app.html"><span class="n">03</span><b>La app</b><span class="muted">Cuentas, Moon y Mars Coins, bases por niveles, habitaciones y premios.</span></a><a class="card" href="metodo.html"><span class="n">04</span><b>Método</b><span class="muted">El Índice de Analogía Planetaria y sus 9 ejes.</span></a><a class="card" href="validacion.html"><span class="n">05</span><b>Validación</b><span class="muted">Balizas por consenso y escalado robótico.</span></a><a class="card" href="comunidad.html"><span class="n">06</span><b>Comunidad</b><span class="muted">Puntos, misiones, insignias y bases virtuales.</span></a><a class="card" href="seguridad.html"><span class="n">07</span><b>Seguridad</b><span class="muted">Una persona, una cuenta; modo expedición offline; privacidad.</span></a><a class="card" href="datos.html"><span class="n">08</span><b>Datos</b><span class="muted">Las fuentes de la NASA y las agencias socias.</span></a><a class="card" href="video.html"><span class="n">09</span><b>Vídeo</b><span class="muted">MoonSiteUA en 30 segundos.</span></a></div>
   </div>
 </section>
+
 
 <section id="ruta">
   <div class="wrap stack" style="gap:20px">
     <div class="head read" style="margin:0"><p class="kicker">Hoja de ruta</p><h2>De la demo a la app</h2></div>
     <div class="road read">
       <div class="now"><b>Hackathon · noviembre 2026</b><span class="muted">Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.</span></div>
-      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Marth Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
+      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Mars Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
       <div><b>MVP</b><span class="muted">App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.</span></div>
       <div><b>Piloto</b><span class="muted">Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.</span></div>
       <div><b>Escala</b><span class="muted">Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.</span></div>
     </div>
   </div>
 </section>
-
 <footer>
   <div class="wrap stack">
     <b style="font-family:var(--f-display);color:var(--text)">MoonSite<span style="color:var(--accent)">UA</span></b>
@@ -472,7 +279,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
       ${Array.from({length: 24}, (_, i) => { const a = i * Math.PI / 12; return `<line x1="${32 + Math.cos(a) * 27}" y1="${32 + Math.sin(a) * 27}" x2="${32 + Math.cos(a) * 29}" y2="${32 + Math.sin(a) * 29}" stroke="${NAVY}" stroke-width="1.4"/>`; }).join('')}
       ${face}
       <path d="M10 44 Q32 60 54 44" stroke="${moon ? '#cfd6e4' : '#ffb48c'}" stroke-width="1.6" fill="none" stroke-dasharray="2 2"/>`,
-      `width="${size}" height="${size}" role="img" aria-label="${moon ? 'Moon Coin' : 'Marth Coin'}"`);
+      `width="${size}" height="${size}" role="img" aria-label="${moon ? 'Moon Coin' : 'Mars Coin'}"`);
   }
 
   // ------------------------------------------------------------ edificio de la base
@@ -601,7 +408,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
       <text x="${cx}" y="${cy + r * .72}" text-anchor="middle" font-size="${r * .1}" fill="${WHITE}" font-family="Arial, sans-serif" letter-spacing="1">ROVER HUMANO</text>`;
   }
   const P = {
-    pegatinas: () => `<rect width="140" height="140" fill="#eef1f6"/><g transform="rotate(-8 50 50)"><circle cx="45" cy="45" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('moon'), 21, 21, 48)}</g><g transform="rotate(10 95 50)"><circle cx="98" cy="48" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('marth'), 74, 24, 48)}</g><rect x="22" y="80" width="96" height="46" rx="10" fill="${WHITE}" stroke="#ccd"/><text x="70" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="${NAVY}" font-family="Arial">ROVER</text><text x="70" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="${RED}" font-family="Arial">HUMANO</text>`,
+    pegatinas: () => `<rect width="140" height="140" fill="#eef1f6"/><g transform="rotate(-8 50 50)"><circle cx="45" cy="45" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('moon'), 21, 21, 48)}</g><g transform="rotate(10 95 50)"><circle cx="98" cy="48" r="28" fill="${WHITE}" stroke="#ccd"/>${inner(moneda('mars'), 74, 24, 48)}</g><rect x="22" y="80" width="96" height="46" rx="10" fill="${WHITE}" stroke="#ccd"/><text x="70" y="102" text-anchor="middle" font-size="11" font-weight="700" fill="${NAVY}" font-family="Arial">ROVER</text><text x="70" y="116" text-anchor="middle" font-size="11" font-weight="700" fill="${RED}" font-family="Arial">HUMANO</text>`,
     pin_luna: () => `<rect width="140" height="140" fill="#eef1f6"/><circle cx="70" cy="70" r="48" fill="#c9a43a"/><circle cx="70" cy="70" r="42" fill="${NAVY}"/><circle cx="70" cy="70" r="30" fill="#e9ecf2"/><path d="M70 40 a30 30 0 0 0 0 60 a14 30 0 0 1 0 -60z" fill="#2b3245" opacity=".85"/><circle cx="62" cy="62" r="5" fill="#c9cfdb"/><circle cx="80" cy="66" r="7" fill="#c9cfdb"/><text x="70" y="128" text-anchor="middle" font-size="10" fill="${NAVY}" font-family="monospace">POLO SUR</text>`,
     pin_marte: () => `<rect width="140" height="140" fill="#eef1f6"/><circle cx="70" cy="70" r="48" fill="#c9a43a"/><circle cx="70" cy="70" r="42" fill="#2a1410"/><circle cx="70" cy="70" r="30" fill="#d4643a"/><path d="M56 62 l10 8 -4 10 m4 -10 l12 4" stroke="#8e3a20" stroke-width="3" fill="none"/><circle cx="70" cy="70" r="12" fill="none" stroke="#a8432a" stroke-width="2"/><text x="70" y="128" text-anchor="middle" font-size="10" fill="${NAVY}" font-family="monospace">JEZERO</text>`,
     parche_mision: () => `<rect width="140" height="140" fill="#eef1f6"/>${parche()}`,
@@ -767,6 +574,7 @@ function renderRank(rows) {
 }
 
 function render() {
+  if (!$('#ficha')) return;
   const rows = results();
   if (state.onlyNew && rows.find((x) => x.s.id === state.sel)?.s.conocido) state.sel = rows.find((x) => !x.s.conocido).s.id;
   if (!state.sel) state.sel = (state.onlyNew ? rows.find((x) => !x.s.conocido) : rows[0]).s.id;
@@ -778,6 +586,7 @@ function render() {
 function select(id) { state.sel = id; render(); }
 
 function renderControls() {
+  if (!$('#targetSeg')) return;
   $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(' (regiones Artemis III)', '').replace(' (hielo para misiones humanas)', '').replace(' (delta antiguo)', ''))}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
     state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
@@ -786,20 +595,24 @@ function renderControls() {
   $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
   AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
 }
-$('#resetW').addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
-$('#onlyNew').addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
+$('#resetW')?.addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
+$('#onlyNew')?.addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
 
 // ---------------------------------------------------------------- método
 function renderMethod() {
+  if (!$('#axesTable')) return;
   $('#axesTable tbody').innerHTML = AXES.map((a) => `<tr><td><b>${LBL[a]}</b></td><td>${SRC[a][0]}</td><td class="muted">${SRC[a][1]}</td></tr>`).join('');
 }
 function renderLimits() {
+  if (!$('#limits')) return;
   $('#limits').innerHTML = D.targets.map((t) => `<div class="card"><h3>${esc(t.nombre)}</h3><p class="muted" style="font-size:.9rem">${esc(t.contexto)}</p><p class="mono" style="font-size:.78rem;color:var(--moon)">${t.fuentes.map(esc).join(' · ')}</p></div>`).join('');
 }
 
 // ---------------------------------------------------------------- juego
 const game = {pair: null, done: false, ok: 0, n: 0};
 function newGame() {
+  if (!$('#game')) return;
+  renderGameSeg();
   const pool = [...sites]; const a = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
   let b, tries = 0;
   do { b = pool[Math.floor(Math.random() * pool.length)]; tries++; }
@@ -825,14 +638,20 @@ function answer(i) {
     <p class="muted">Lo decide sobre todo: ${keys.map((a) => `${LBL[a].toLowerCase()} (${Math.round(rs[win].sim[a] * 100)} % frente a ${Math.round(rs[1 - win].sim[a] * 100)} %)`).join(' y ')}.</p>`;
   $('#gameScore').textContent = `Aciertos: ${game.ok} de ${game.n}`;
 }
-$('#gameNext').addEventListener('click', newGame);
+$('#gameNext')?.addEventListener('click', newGame);
+function renderGameSeg() {
+  const g = $('#gameSeg'); if (!g) return;
+  g.innerHTML = D.targets.map((x) => `<button data-id="${x.id}" aria-pressed="${x.id === state.t.id}">${esc(x.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
+  g.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { state.t = D.targets.find((x) => x.id === b.dataset.id); state.w = {...state.t.pesos}; newGame(); }));
+}
 
-$('#demoBanner').hidden = !D.demo;
+if ($('#demoBanner')) $('#demoBanner').hidden = !D.demo;
 renderControls(); renderMethod(); renderLimits(); render(); newGame();
 
 // ---------------------------------------------------------------- diseños de la app
+if ($('#levels')) {
 $('#coinMoon').innerHTML = Disenos.moneda('moon', 64);
-$('#coinMarth').innerHTML = Disenos.moneda('marth', 64);
+$('#coinMars').innerHTML = Disenos.moneda('mars', 64);
 $('#levels').innerHTML = [1, 2, 3, 4, 5].map((l) => `<figure>${Disenos.base(l, '#e7794b', '#2a6fdb', l * 5 - 2)}<figcaption>Nivel ${l}${l === 5 ? '+' : ''} · ${l === 5 ? '21 o más' : (l * 5 - 4) + '-' + l * 5} exploradores</figcaption></figure>`).join('');
 const ROOMS = [
   {nombre: 'Consola', numero: 3, planta: 1, cama: 'cama_capsula', escritorio: 'escritorio_consola', color1: '#e7794b', color2: '#2a6fdb', decoraciones: {pared_izq: 'ventana_tierra', pared_der: 'bandera_base', suelo: 'planta_hidroponica', techo: 'lampara_orbital', alfombra: 'alfombra_hex'}},
@@ -848,7 +667,8 @@ $('#roomSeg').innerHTML = ROOMS.map((r) => `<button>${r.nombre}</button>`).join(
 $('#roomSeg').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => showRoom(i)));
 showRoom(0);
 const MERCH = {pegatinas: 'Pegatinas · 4', pin_luna: 'Pin Polo Sur · 8', pin_marte: 'Pin Jezero · 8', parche_mision: 'Parche de misión · 12', taza: 'Taza · 18', gorra: 'Gorra · 25', camiseta: 'Camiseta · 35', sudadera: 'Sudadera · 60'};
-$('#merch').innerHTML = Object.entries(MERCH).map(([k, v]) => `<figure>${Disenos.premio(k)}<figcaption>${v} Marth</figcaption></figure>`).join('');
+$('#merch').innerHTML = Object.entries(MERCH).map(([k, v]) => `<figure>${Disenos.premio(k)}<figcaption>${v} Mars</figcaption></figure>`).join('');
+}
 </script>
 </body>
 </html>

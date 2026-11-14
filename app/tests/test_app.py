@@ -39,7 +39,7 @@ def test_registro_da_monedas_y_sesion():
     assert r.status_code == 200
     yo = c.get("/api/yo").json()
     assert yo["saldo"]["moon"] == L.MOON_REGISTRO + L.MOON_LOGIN_DIARIO
-    assert yo["saldo"]["marth"] == 0
+    assert yo["saldo"]["mars"] == 0
 
 
 @pytest.mark.parametrize("campo,valor", [
@@ -143,7 +143,7 @@ def test_objetivo_de_base_paga_a_todos_los_miembros():
     fundador = main.con.execute("SELECT id FROM usuarios WHERE username = 'ana10'").fetchone()[0]
     movs = main.con.execute("SELECT motivo FROM movimientos WHERE usuario_id = ?", (fundador,)).fetchall()
     assert any("planta 2" in m[0] for m in movs)          # se completó al llegar a 6 miembros
-    assert L.saldo(main.con, fundador)["marth"] >= 2 + 2   # pionero + planta 2
+    assert L.saldo(main.con, fundador)["mars"] >= 2 + 2   # pionero + planta 2
 
 
 # ------------------------------------------------------------------ habitación y tienda
@@ -180,7 +180,7 @@ def test_sin_saldo_no_se_compra():
 
 
 # ------------------------------------------------------------------ premios
-def test_canje_premio_con_marth_y_talla():
+def test_canje_premio_con_mars_y_talla():
     c = TestClient(main.app)
     c.post("/api/login", json={"usuario": "ana10", "password": "Luna2026ok"})
     assert c.post("/api/premios/camiseta/canjear", json={"direccion": "Calle Mayor 1, Alicante"}).status_code in (400, 402)
