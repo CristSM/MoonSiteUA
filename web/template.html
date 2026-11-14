@@ -499,6 +499,47 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-cuevas .azar small { grid-column: 2; font: 500 .68rem var(--f-mono); color: var(--accent); }
 .mt-cifra .ok b { color: var(--ok); }
 
+/* juego: tres modos con datos reales */
+.jg-barra { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; border-top: var(--rule); padding-top: 18px; }
+.jg-marcador { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font-size: .78rem; color: var(--muted); }
+.jg-marcador b { color: var(--accent); font-size: 1rem; }
+.jg-marcador .jg-racha b { color: var(--ok); }
+.jg-modo { display: grid; gap: 18px; }
+.jg-modo > * { min-width: 0; }
+.jg-modo .seg, .jg-barra .seg { width: auto; justify-self: start; }
+.jg-barra > * { min-width: 0; }
+.jg-q { font-size: 1.05rem; color: #cbc7bb; max-width: 70ch; }
+.jg-modo .gcard { min-height: 150px; align-content: start; }
+.jg-modo .gcard .revela { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.jg-modo .gcard .revela .mono { font-size: .8rem; color: var(--muted); }
+.jg-modo .gres p { color: #cbc7bb; }
+.jg-modo .gres .kicker { margin-right: 8px; }
+.jg-modo .res { font: 900 1.8rem/1 var(--f-display); text-transform: uppercase; }
+.jg-tierra { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: center; border-top: var(--rule); padding-top: 18px; }
+.jg-tierra img { width: 100%; height: auto; display: block; border: 3px solid var(--text); filter: contrast(1.1); }
+.jg-tierra > div { display: grid; gap: 6px; }
+.jg-tierra h3 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900; line-height: .98; }
+.jg-tierra p { font: 800 1.15rem var(--f-display); text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+.jg-opciones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 780px; }
+.opcion { display: grid; gap: 8px; padding: 0; background: none; border: 3px solid var(--line); color: var(--text); cursor: pointer; text-align: left; font: inherit; }
+.opcion img { width: 100%; height: auto; display: block; filter: contrast(1.1); }
+.opcion:hover, .opcion:focus-visible { border-color: var(--text); }
+.opcion.ok { border-color: var(--ok); box-shadow: 0 0 0 3px var(--ok); }
+.opcion.mal { border-color: var(--bad); box-shadow: 0 0 0 3px var(--bad); }
+.opcion .nombre { display: grid; gap: 2px; padding: 0 10px 10px; }
+.opcion .nombre b { font: 800 1.1rem/1.1 var(--f-display); text-transform: uppercase; }
+.opcion .nombre span { font: 500 .7rem var(--f-mono); color: var(--muted); }
+.opcion .nombre em { font: 500 .72rem var(--f-mono); color: var(--ok); font-style: normal; text-transform: uppercase; letter-spacing: .08em; }
+.jg-nota { font-size: .74rem; margin: 0; }
+.jg-lugar { border-top: var(--rule); padding: 28px 0 8px; display: grid; gap: 6px; }
+.jg-lugar h3 { font-size: clamp(2.2rem, 6vw, 4.4rem); font-weight: 900; line-height: .92; }
+.jg-novbotones { display: flex; flex-wrap: wrap; gap: 12px; }
+.jg-novbotones .btn.elegido { background: var(--text); color: var(--bg); }
+.jg-novbotones .btn:disabled { cursor: default; opacity: .7; }
+.jg-novbotones .btn.elegido:disabled { opacity: 1; }
+.jg-modo .cifra b { font: 900 2.4rem/1 var(--f-display); color: var(--accent); margin-right: 6px; }
+@media (max-width: 700px) { .jg-tierra { grid-template-columns: 1fr; } .jg-tierra img { max-width: 260px; } .jg-opciones { gap: 10px; } .opcion .nombre b { font-size: .95rem; } }
+
 /* zona de exploradores (la parte con cuentas) */
 /*__EXPLORADOR_CSS__*/
 
@@ -619,19 +660,179 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 <!--/PAGE-->
 
 <!--PAGE juego-->
+<script>window.JUEGO = /*__JUEGO__*/null;</script>
 <section id="juego">
-  <div class="wrap">
-    <div class="head read">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
       <p class="kicker">Modo juego</p>
-      <h2>¿Cuál es mejor análogo?</h2>
-      <p class="muted" id="gameQ"></p>
+      <h2>¿Sabes reconocer un análogo?</h2>
+      <p class="muted">Tres juegos con los datos reales del motor: elige el mejor análogo, encuentra el gemelo lunar o marciano y adivina qué lugares ya estudia la ciencia.</p>
     </div>
-    <div class="seg" id="gameSeg" role="group" aria-label="Destino" style="margin-bottom:16px"></div>
-    <div class="game" id="game"></div>
-    <div class="card gres" id="gameRes" hidden></div>
-    <div class="cta"><button class="btn" id="gameNext">Otra pareja</button><span class="muted mono" id="gameScore" style="align-self:center"></span></div>
+    <div class="jg-barra">
+      <div class="seg" id="jgModos" role="group" aria-label="Modo de juego"><button data-m="duelo" aria-pressed="true">Duelo</button><button data-m="gemelo" aria-pressed="false">Encuentra el gemelo</button><button data-m="novedad" aria-pressed="false">¿Estudiado o por descubrir?</button></div>
+      <p class="mono jg-marcador" id="jgMarcador" aria-live="polite"></p>
+    </div>
+    <div id="jg-duelo" class="jg-modo">
+      <div class="seg" id="jgPerfiles" role="group" aria-label="Destino"></div>
+      <p class="jg-q" id="jgDueloQ"></p>
+      <div class="game" id="jgDuelo"></div>
+      <div class="gres" id="jgDueloRes" aria-live="polite" hidden></div>
+      <div class="cta"><button class="btn primary" id="jgOtra">Otra pareja</button></div>
+    </div>
+    <div id="jg-gemelo" class="jg-modo" hidden>
+      <div class="jg-tierra" id="jgTierra"></div>
+      <div class="jg-opciones" id="jgOpciones"></div>
+      <p class="mono muted jg-nota">Relieves sombreados de 40 km de lado a la misma escala, con el contraste realzado.</p>
+      <div class="gres" id="jgGemeloRes" aria-live="polite" hidden></div>
+      <div class="cta"><button class="btn primary" id="jgSiguiente">Siguiente</button></div>
+    </div>
+    <div id="jg-novedad" class="jg-modo" hidden>
+      <div class="jg-lugar" id="jgLugar"></div>
+      <div class="jg-novbotones" id="jgNovBotones"><button class="btn" data-v="1">Ya se estudia como análogo</button><button class="btn" data-v="0">Está por descubrir</button></div>
+      <div class="gres" id="jgNovRes" aria-live="polite" hidden></div>
+      <div class="cta"><button class="btn primary" id="jgOtroLugar">Otro lugar</button></div>
+      <p class="mono muted jg-nota">Recuento en OpenAlex del topónimo junto a frases como «Mars analog» o «terrestrial analogue»; puede haber trabajos con otra terminología.</p>
+    </div>
   </div>
 </section>
+<script>
+// Juego con datos reales del motor Analog Finder (window.JUEGO). Autónomo: no usa D, sites ni score().
+// Se arranca en DOMContentLoaded porque los ayudantes comunes ($, esc) se definen al final de la página.
+document.addEventListener('DOMContentLoaded', () => {
+  const J = window.JUEGO; if (!J || !document.getElementById('jgModos')) return;
+  const $j = (s) => document.querySelector(s), esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+  const EN = document.documentElement.lang === 'en', BASE = location.pathname.includes('/en/') ? '../' : '';
+  const img = (ruta) => BASE + 'img/juego/' + String(ruta).replace('img/', '');
+  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d});
+  const azar = (a) => a[Math.floor(Math.random() * a.length)];
+  const baraja = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const k = Math.floor(Math.random() * (i + 1)); [b[i], b[k]] = [b[k], b[i]]; } return b; };
+  // textos fijos (el build los traduce en la versión inglesa)
+  const T = {
+    pregunta: '¿Qué lugar de la Tierra se parece más?', destino: 'Destino', correcto: '¡Correcto!', fallo: 'Esta vez no.', indice: 'índice', percentil: 'percentil',
+    decide: 'Lo que decide', frente: 'frente a', gemeloEn: 'Su gemelo', enLuna: 'en la Luna', enMarte: 'en Marte', senuelo: 'Parece de otro planeta, pero le falla',
+    articulosCand: 'Artículos que ya lo citan como análogo', otra: 'Otra pareja', siguiente: 'Siguiente', aciertos: 'aciertos', racha: 'racha',
+    gemeloPreg: '¿Cuál de estos relieves es su gemelo real?', opcion: 'Relieve de la opción', relieveDe: 'Relieve de', gemeloOk: 'Este es su gemelo',
+    yaEstudia: 'Ya se estudia como análogo', porDescubrir: 'Está por descubrir', articulosNov: 'artículos lo citan como análogo de la Luna o Marte',
+    articuloUno: 'artículo lo cita como análogo de la Luna o Marte', ejemplo: 'Un artículo que aparece en la búsqueda',
+    estudiado: 'Ya se estudia', descubrir: 'Por descubrir', antartida: 'Antártida', sinTop: 'Sin topónimo', modoDuelo: 'Duelo', modoGemelo: 'Encuentra el gemelo', modoNov: '¿Estudiado o por descubrir?',
+  };
+  const TIPO = {conocido: ['análogo conocido', 'nuevo'], candidato: ['candidato nuevo', 'verde'], 'señuelo': ['señuelo', 'naranja']};
+  const CLASE = {'sin estudios como análogo': 'verde', 'poco estudiado': 'gris', 'estudiado': 'naranja', 'muy estudiado': 'rojo'};
+  const DIMN = {terrain: 'terreno', cold: 'frío', frozen: 'suelo congelado', barren: 'ausencia de vegetación', low_sun: 'sol rasante', ice_free: 'terreno sin hielo',
+    volcanic: 'cercanía a volcanes', lithology: 'tipo de roca', nonsilicic: 'roca basáltica', arid: 'aridez', thermal: 'amplitud térmica', albedo: 'albedo', dust: 'polvo'};
+  const PAIS = {Egypt: 'Egipto', Ethiopia: 'Etiopía', Ecuador: 'Ecuador', Iran: 'Irán', Libya: 'Libia', Afghanistan: 'Afganistán', Sudan: 'Sudán', 'United States': 'Estados Unidos',
+    Canada: 'Canadá', Eritrea: 'Eritrea', Pakistan: 'Pakistán', Mali: 'Malí', Jordan: 'Jordania', Chad: 'Chad', Argentina: 'Argentina', Namibia: 'Namibia', Peru: 'Perú', Yemen: 'Yemen',
+    Mexico: 'México', Algeria: 'Argelia', Australia: 'Australia', Bolivia: 'Bolivia', 'Saudi Arabia': 'Arabia Saudí', Chile: 'Chile', Nigeria: 'Nigeria', China: 'China', Kenya: 'Kenia', Niger: 'Níger',
+    Morocco: 'Marruecos', Mongolia: 'Mongolia', Oman: 'Omán', India: 'India', Kazakhstan: 'Kazajistán', Turkmenistan: 'Turkmenistán', Mauritania: 'Mauritania', Somalia: 'Somalia'};
+  const pais = (p) => (p ? (EN ? p : PAIS[p] || p) : '');
+  const coord = (la, lo) => `${num(Math.abs(la), 2)}° ${la >= 0 ? 'N' : 'S'} · ${num(Math.abs(lo), 2)}° ${lo >= 0 ? 'E' : (EN ? 'W' : 'O')}`;
+  const pill = (txt, cls) => `<span class="pill ${cls}">${esc(txt)}</span>`;
+  // El paquete llama «Antártida (lat, lon)» a candidatas sin topónimo aunque estén lejos de la Antártida: solo se mantiene si la latitud es antártica
+  const lugarN = (n) => String(n).replace(/^Antártida \((-?[\d.]+)°, (-?[\d.]+)°\)$/, (m, a, b) => `${+a < -60 ? T.antartida : T.sinTop} (${a}°, ${b}°)`);
+
+  // ---- marcador por modo y racha (en localStorage si se puede; la página funciona sin él)
+  const CLAVE = 'moonsite-juego';
+  let M = {duelo: {ok: 0, n: 0}, gemelo: {ok: 0, n: 0}, novedad: {ok: 0, n: 0}, racha: 0};
+  try { const g = JSON.parse(localStorage.getItem(CLAVE)); if (g && g.duelo) M = g; } catch (e) {}
+  const guarda = () => { try { localStorage.setItem(CLAVE, JSON.stringify(M)); } catch (e) {} };
+  const marcador = () => { $j('#jgMarcador').innerHTML = [['duelo', T.modoDuelo], ['gemelo', T.modoGemelo], ['novedad', T.modoNov]]
+    .map(([k, n]) => `<span><b>${M[k].ok}/${M[k].n}</b> ${esc(n)}</span>`).join('') + `<span class="jg-racha"><b>${M.racha}</b> ${esc(T.racha)}</span>`; };
+  const anota = (modo, ok) => { M[modo].n++; if (ok) { M[modo].ok++; M.racha++; } else M.racha = 0; guarda(); marcador(); };
+
+  // ---- selector de modo
+  let modo = 'duelo';
+  const pinta = () => { document.querySelectorAll('#jgModos button').forEach((b) => b.setAttribute('aria-pressed', b.dataset.m === modo));
+    ['duelo', 'gemelo', 'novedad'].forEach((m) => { $j('#jg-' + m).hidden = m !== modo; }); };
+  document.querySelectorAll('#jgModos button').forEach((b) => b.addEventListener('click', () => { modo = b.dataset.m; pinta(); }));
+
+  // ================= Modo 1 · Duelo
+  let perfil = J.perfiles[0], par = null, hecho = false; const vistos = new Set();
+  $j('#jgPerfiles').innerHTML = J.perfiles.map((p) => `<button data-id="${esc(p.id)}" aria-pressed="${p.id === perfil.id}">${esc(p.corto)}</button>`).join('');
+  document.querySelectorAll('#jgPerfiles button').forEach((b) => b.addEventListener('click', () => { perfil = J.perfiles.find((p) => p.id === b.dataset.id);
+    document.querySelectorAll('#jgPerfiles button').forEach((x) => x.setAttribute('aria-pressed', x === b)); nuevoDuelo(); }));
+  const nuevoDuelo = () => {
+    const lista = J.duelo[perfil.id]; let mejor = null;
+    // pareja con |Δíndice| ≥ 0,05, a ser posible de tipos distintos y sin repetir en la sesión
+    for (let t = 0; t < 200; t++) {
+      const a = azar(lista), b = azar(lista), key = [a.id, b.id].sort().join('|');
+      if (a === b || Math.abs(a.indice - b.indice) < 0.05 || vistos.has(key)) continue;
+      mejor = [a, b]; if (a.tipo !== b.tipo || t > 120) break;
+    }
+    if (!mejor) { vistos.clear(); return nuevoDuelo(); }
+    vistos.add(mejor.map((x) => x.id).sort().join('|')); par = mejor; hecho = false;
+    $j('#jgDueloQ').innerHTML = `<b>${esc(T.destino)}:</b> ${esc(perfil.titulo)}. ${esc(T.pregunta)}`;
+    $j('#jgDuelo').innerHTML = par.map((s, i) => `${i === 1 ? '<span class="vs">VS</span>' : ''}<button class="card gcard" data-i="${i}"><h3>${esc(lugarN(s.nombre))}</h3><span class="muted">${esc(pais(s.pais)) || '&nbsp;'}</span></button>`).join('');
+    document.querySelectorAll('#jgDuelo .gcard').forEach((c) => c.addEventListener('click', () => responderDuelo(+c.dataset.i)));
+    $j('#jgDueloRes').hidden = true;
+  };
+  const responderDuelo = (i) => {
+    if (hecho) return; hecho = true;
+    const win = par[0].indice >= par[1].indice ? 0 : 1, W = par[win], L = par[1 - win];
+    anota('duelo', i === win);
+    document.querySelectorAll('#jgDuelo .gcard').forEach((c, k) => { c.classList.add(k === win ? 'win' : 'lose');
+      const s = par[k]; c.insertAdjacentHTML('beforeend', `<div class="revela">${pill(TIPO[s.tipo][0], TIPO[s.tipo][1])}<span class="mono">${esc(T.indice)} ${num(s.indice * 100, 1)} · ${esc(T.percentil)} ${num(s.percentil, 1)}</span></div>`); });
+    const decide = Object.entries(perfil.pesos).map(([d, w]) => [d, w * ((W.dims[d] ?? 0) - (L.dims[d] ?? 0))]).sort((a, b) => b[1] - a[1]).slice(0, 2).filter((x) => x[1] > 0)
+      .map(([d]) => `${esc(DIMN[d] || d)} (${num((W.dims[d] ?? 0) * 100)} ${esc(T.frente)} ${num((L.dims[d] ?? 0) * 100)})`);
+    const peor = Object.keys(perfil.pesos).sort((a, b) => (L.dims[a] ?? 1) - (L.dims[b] ?? 1))[0];
+    const en = W.gemelo_cuerpo === 'Luna' ? T.enLuna : T.enMarte;
+    $j('#jgDueloRes').hidden = false;
+    $j('#jgDueloRes').innerHTML = `<b class="res ${i === win ? 'ok-t' : 'bad-t'}">${esc(i === win ? T.correcto : T.fallo)}</b>
+      <p><b>${esc(lugarN(W.nombre))}</b> <span class="mono">${num(W.indice * 100, 1)}</span> ${esc(T.frente)} <b>${esc(lugarN(L.nombre))}</b> <span class="mono">${num(L.indice * 100, 1)}</span>.</p>
+      ${decide.length ? `<p><span class="kicker">${esc(T.decide)}</span> ${decide.join(' · ')}</p>` : ''}
+      ${W.gemelo ? `<p class="muted">${esc(T.gemeloEn)} ${esc(en)}: <b>${esc(W.gemelo)}</b></p>` : ''}
+      ${L.tipo === 'señuelo' ? `<p class="muted">${esc(lugarN(L.nombre))}: ${esc(T.senuelo)} <b>${esc(DIMN[peor] || peor)}</b> (${num((L.dims[peor] ?? 0) * 100)}).</p>` : ''}
+      ${W.tipo === 'candidato' && W.articulos != null ? `<p class="muted">${esc(T.articulosCand)}: <b>${num(W.articulos)}</b></p>` : ''}`;
+  };
+  $j('#jgOtra').addEventListener('click', nuevoDuelo);
+
+  // ================= Modo 2 · Encuentra el gemelo
+  let rondas = baraja(J.gemelo), r = 0, hechoG = false;
+  const nuevaRonda = () => {
+    if (r >= rondas.length) { rondas = baraja(J.gemelo); r = 0; }
+    const R = rondas[r]; hechoG = false;
+    $j('#jgTierra').innerHTML = `<img src="${img(R.tierra.img)}" alt="${esc(T.relieveDe)} ${esc(lugarN(R.tierra.nombre))}" width="220" height="220"><div><p class="kicker">${esc(J.perfiles.find((p) => p.id === R.perfil)?.corto || '')}</p><h3>${esc(lugarN(R.tierra.nombre))}</h3><span class="muted">${esc(pais(R.tierra.pais))}</span><span class="mono muted">${coord(R.tierra.lat, R.tierra.lon)}</span><p>${esc(T.gemeloPreg)}</p></div>`;
+    $j('#jgOpciones').innerHTML = R.opciones.map((o, k) => `<button class="opcion" data-k="${k}"><img src="${img(o.img)}" alt="${esc(T.opcion)} ${k + 1}" width="220" height="220"><span class="nombre" hidden></span></button>`).join('');
+    document.querySelectorAll('#jgOpciones .opcion').forEach((b) => b.addEventListener('click', () => responderGemelo(+b.dataset.k)));
+    $j('#jgGemeloRes').hidden = true;
+  };
+  const responderGemelo = (k) => {
+    if (hechoG) return; hechoG = true;
+    const R = rondas[r], ok = R.opciones[k].correcta; anota('gemelo', ok);
+    document.querySelectorAll('#jgOpciones .opcion').forEach((b, i) => { const o = R.opciones[i];
+      if (o.correcta) b.classList.add('ok'); else if (i === k) b.classList.add('mal');
+      const n = b.querySelector('.nombre'); n.hidden = false; n.innerHTML = `<b>${esc(o.nombre)}</b><span>${esc(o.cuerpo)} · ${coord(o.lat, o.lon)}</span>${o.correcta ? `<em>${esc(T.gemeloOk)}</em>` : ''}`; });
+    $j('#jgGemeloRes').hidden = false;
+    $j('#jgGemeloRes').innerHTML = `<b class="res ${ok ? 'ok-t' : 'bad-t'}">${esc(ok ? T.correcto : T.fallo)}</b><p class="muted">${esc(R.explicacion)}</p>`;
+  };
+  $j('#jgSiguiente').addEventListener('click', () => { r++; nuevaRonda(); });
+
+  // ================= Modo 3 · ¿Estudiado o por descubrir?  (mitad y mitad, más o menos)
+  let mazoSi = baraja(J.novedad.filter((x) => x.ya_estudiado)), mazoNo = baraja(J.novedad.filter((x) => !x.ya_estudiado)), turno = Math.random() < 0.5, lugar = null, hechoN = false;
+  const nuevoLugar = () => {
+    if (!mazoSi.length) mazoSi = baraja(J.novedad.filter((x) => x.ya_estudiado));
+    if (!mazoNo.length) mazoNo = baraja(J.novedad.filter((x) => !x.ya_estudiado));
+    turno = Math.random() < 0.75 ? !turno : turno; lugar = (turno ? mazoSi : mazoNo).pop(); hechoN = false;
+    $j('#jgLugar').innerHTML = `<h3>${esc(lugar.nombre)}</h3><span class="muted">${esc(pais(lugar.pais))}</span>`;
+    $j('#jgNovRes').hidden = true;
+    document.querySelectorAll('#jgNovBotones button').forEach((b) => { b.disabled = false; b.classList.remove('elegido'); });
+  };
+  const responderNov = (dice) => {
+    if (hechoN) return; hechoN = true;
+    const ok = dice === lugar.ya_estudiado; anota('novedad', ok);
+    document.querySelectorAll('#jgNovBotones button').forEach((b) => { b.disabled = true; if ((b.dataset.v === '1') === dice) b.classList.add('elegido'); });
+    const e = lugar.ejemplo;
+    $j('#jgNovRes').hidden = false;
+    $j('#jgNovRes').innerHTML = `<b class="res ${ok ? 'ok-t' : 'bad-t'}">${esc(ok ? T.correcto : T.fallo)}</b>
+      <p class="cifra"><b>${num(lugar.articulos)}</b> ${esc(lugar.articulos === 1 ? T.articuloUno : T.articulosNov)} ${pill(lugar.clase, CLASE[lugar.clase] || 'gris')}</p>
+      <p class="muted">${esc(lugar.ya_estudiado ? T.estudiado : T.descubrir)}</p>
+      ${e && e.title ? `<p class="muted"><span class="kicker">${esc(T.ejemplo)}</span><br>${e.doi ? `<a href="${esc(e.doi)}" target="_blank" rel="noopener">${esc(e.title)}</a>` : esc(e.title)}${e.year ? ` (${e.year})` : ''}</p>` : ''}`;
+  };
+  document.querySelectorAll('#jgNovBotones button').forEach((b) => b.addEventListener('click', () => responderNov(b.dataset.v === '1')));
+  $j('#jgOtroLugar').addEventListener('click', nuevoLugar);
+
+  marcador(); pinta(); nuevoDuelo(); nuevaRonda(); nuevoLugar();
+});
+</script>
 <!--/PAGE-->
 
 <!--PAGE metodo-->
@@ -1137,7 +1338,7 @@ function renderControls() {
   $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
     state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
-    renderControls(); render(); renderLimits(); newGame();
+    renderControls(); render(); renderLimits();
   }));
   $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
   AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
@@ -1155,45 +1356,8 @@ function renderLimits() {
   $('#limits').innerHTML = D.targets.map((t) => `<div class="card"><h3>${esc(t.nombre)}</h3><p class="muted" style="font-size:.9rem">${esc(t.contexto)}</p><p class="mono" style="font-size:.78rem;color:var(--moon)">${t.fuentes.map(esc).join(' · ')}</p></div>`).join('');
 }
 
-// ---------------------------------------------------------------- juego
-const game = {pair: null, done: false, ok: 0, n: 0};
-function newGame() {
-  if (!$('#game')) return;
-  renderGameSeg();
-  const pool = [...sites]; const a = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
-  let b, tries = 0;
-  do { b = pool[Math.floor(Math.random() * pool.length)]; tries++; }
-  while (Math.abs(score(a.ax, state.t, state.t.pesos).iap - score(b.ax, state.t, state.t.pesos).iap) < 3 && tries < 30);
-  game.pair = [a, b]; game.done = false;
-  $('#gameQ').textContent = `Destino: ${state.t.nombre}. Elige el lugar de la Tierra que crees que se parece más. Ojo: lo que parece desierto no siempre gana.`;
-  $('#game').innerHTML = game.pair.map((s, i) => `${i === 1 ? '<span class="vs">VS</span>' : ''}<button class="card gcard" data-i="${i}"><span class="pill ${s.conocido ? '' : 'nuevo'}" style="justify-self:start">${esc(s.pais)}</span><h3>${esc(s.nombre)}</h3><span class="muted" style="font-size:.9rem">${esc(s.nota.split('.')[0])}.</span></button>`).join('');
-  $('#gameRes').hidden = true;
-  $('#game').querySelectorAll('.gcard').forEach((c) => c.addEventListener('click', () => answer(+c.dataset.i)));
-  $('#gameScore').textContent = game.n ? `Aciertos: ${game.ok} de ${game.n}` : '';
-}
-function answer(i) {
-  if (game.done) return; game.done = true;
-  const rs = game.pair.map((s) => score(s.ax, state.t, state.t.pesos));
-  const win = rs[0].iap >= rs[1].iap ? 0 : 1;
-  game.n++; if (i === win) game.ok++;
-  $('#game').querySelectorAll('.gcard').forEach((c, k) => c.classList.add(k === win ? 'win' : 'lose'));
-  const W = game.pair[win], L = game.pair[1 - win];
-  const keys = AXES.filter((a) => state.t.pesos[a] >= 1).sort((a, b) => Math.abs(rs[win].sim[b] - rs[1 - win].sim[b]) - Math.abs(rs[win].sim[a] - rs[1 - win].sim[a])).slice(0, 2);
-  $('#gameRes').hidden = false;
-  $('#gameRes').innerHTML = `<b style="font-family:var(--f-display);font-size:1.2rem" class="${i === win ? 'ok-t' : 'bad-t'}">${i === win ? '¡Correcto!' : 'Esta vez no.'}</b>
-    <p><b>${esc(W.nombre)}</b> <span class="mono">${rs[win].iap.toFixed(1)}</span> frente a <b>${esc(L.nombre)}</b> <span class="mono">${rs[1 - win].iap.toFixed(1)}</span>.</p>
-    <p class="muted">Lo decide sobre todo: ${keys.map((a) => `${LBL[a].toLowerCase()} (${Math.round(rs[win].sim[a] * 100)} % frente a ${Math.round(rs[1 - win].sim[a] * 100)} %)`).join(' y ')}.</p>`;
-  $('#gameScore').textContent = `Aciertos: ${game.ok} de ${game.n}`;
-}
-$('#gameNext')?.addEventListener('click', newGame);
-function renderGameSeg() {
-  const g = $('#gameSeg'); if (!g) return;
-  g.innerHTML = D.targets.map((x) => `<button data-id="${x.id}" aria-pressed="${x.id === state.t.id}">${esc(x.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
-  g.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { state.t = D.targets.find((x) => x.id === b.dataset.id); state.w = {...state.t.pesos}; newGame(); }));
-}
-
 if ($('#demoBanner')) $('#demoBanner').hidden = !D.demo;
-renderControls(); renderMethod(); renderLimits(); render(); newGame(); initServidor();
+renderControls(); renderMethod(); renderLimits(); render(); initServidor();
 
 // ---------------------------------------------------------------- aportaciones (necesitan el servidor)
 var fecha = (iso) => new Date(iso).toLocaleString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});

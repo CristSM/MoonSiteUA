@@ -53,7 +53,9 @@ const html = read('template.html')
   .replace('/*__EXPLORADOR_CSS__*/', () => read('explorador.css'))
   .replace('/*__EXPLORADOR_JS__*/', () => read('explorador.js'))
   // datos reales del método: solo se inyectan en la página Método (no en el objeto común D)
-  .replace('/*__METODO__*/null', () => read('../engine/metodo_data.json'));
+  .replace('/*__METODO__*/null', () => read('../engine/metodo_data.json'))
+  // datos reales del juego: solo en la página Juego
+  .replace('/*__JUEGO__*/null', () => read('../engine/juego_data.json'));
 
 // ---------------------------------------------------------------- páginas
 // La plantilla marca bloques con <!--PAGE id--> ... <!--/PAGE-->. Cada página
@@ -61,7 +63,7 @@ const html = read('template.html')
 const PAGES = [
   ['inicio', 'index.html', 'Inicio', 'La idea, cómo funciona y la hoja de ruta.'],
   ['demo', 'demo.html', 'Demo', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
-  ['juego', 'juego.html', 'Juego', '¿Cuál es mejor análogo? Pon a prueba tu intuición.'],
+  ['juego', 'juego.html', 'Juego', 'Tres juegos con datos reales: duelo de análogos, encuentra el gemelo y ¿estudiado o por descubrir?'],
   ['app', 'recompensas.html', 'Recompensas', 'Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
   ['metodo', 'metodo.html', 'Método', 'Huellas de terreno, gemelos planetarios, validación y novedad bibliográfica.'],
   ['validacion', 'validacion.html', 'Validación', 'Balizas por consenso y escalado robótico.'],
@@ -74,7 +76,7 @@ const PAGES = [
 // Texto ampliado de cada apartado en el índice de la portada
 const MAS = {
   demo: 'Mapa mundial y de España con el Índice de Analogía Planetaria de cada sitio frente a cuatro destinos. Cada ficha muestra en qué se parece y en qué no, y lo que la Tierra no puede imitar. Puedes cambiar el peso de cada eje y aportar tus propios datos.',
-  juego: 'Dos sitios frente a frente: eliges cuál se parece más al destino y se revela el índice de cada uno. Sirve para entrenar la intuición, porque lo que parece un desierto no siempre gana.',
+  juego: 'Tres juegos con los datos reales del motor: elige el mejor análogo para cada destino, encuentra el gemelo lunar o marciano de un relieve terrestre y adivina qué lugares ya estudia la ciencia.',
   app: 'Moon Coins para decorar y Mars Coins para premios físicos. Cada zona tiene una base que crece una planta cada cinco exploradores, con habitaciones que cada uno decora a su gusto.',
   metodo: 'Comparamos 8,6 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte usando las mismas métricas de relieve, puntuamos tres perfiles de misión con pesos explícitos, comprobamos que el método recupera los análogos conocidos y medimos cuánto se ha estudiado ya cada candidata.',
   validacion: 'Nadie confirma un análogo en solitario: hacen falta varios exploradores independientes que coincidan. Las zonas peligrosas se cierran al público y pasan a misiones con robots.',
@@ -101,11 +103,17 @@ function traducirValores(o) {
   return o;
 }
 function traducir(page) {
-  const MK = 'window.METODO = ', iM = page.indexOf(MK); let metodoEN = null;
-  if (iM >= 0) { const jM = page.indexOf(';</script>', iM), json = page.slice(iM + MK.length, jM);
-    if (json !== 'null') { metodoEN = JSON.stringify(traducirValores(JSON.parse(json))); page = page.slice(0, iM + MK.length) + '__METODO_EN__' + page.slice(jM); } }
+  // los JSON de datos (método y juego) se apartan, se traducen solo en sus valores y se vuelven a poner
+  const apartados = [];
+  for (const MK of ['window.METODO = ', 'window.JUEGO = ']) {
+    const iM = page.indexOf(MK); if (iM < 0) continue;
+    const jM = page.indexOf(';</script>', iM), json = page.slice(iM + MK.length, jM); if (json === 'null') continue;
+    const marca = `__JSON_EN_${apartados.length}__`; apartados.push([marca, JSON.stringify(traducirValores(JSON.parse(json)))]);
+    page = page.slice(0, iM + MK.length) + marca + page.slice(jM);
+  }
   page = traducirTexto(page);
-  return metodoEN ? page.replace('__METODO_EN__', () => metodoEN) : page;
+  for (const [marca, json] of apartados) page = page.replace(marca, () => json);
+  return page;
 }
 function traducirTexto(page) {
   for (const [a, b] of EN.crudo) page = page.split(a).join(b);

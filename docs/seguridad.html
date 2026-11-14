@@ -499,6 +499,47 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-cuevas .azar small { grid-column: 2; font: 500 .68rem var(--f-mono); color: var(--accent); }
 .mt-cifra .ok b { color: var(--ok); }
 
+/* juego: tres modos con datos reales */
+.jg-barra { display: flex; flex-wrap: wrap; gap: 14px 24px; align-items: center; justify-content: space-between; border-top: var(--rule); padding-top: 18px; }
+.jg-marcador { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0; font-size: .78rem; color: var(--muted); }
+.jg-marcador b { color: var(--accent); font-size: 1rem; }
+.jg-marcador .jg-racha b { color: var(--ok); }
+.jg-modo { display: grid; gap: 18px; }
+.jg-modo > * { min-width: 0; }
+.jg-modo .seg, .jg-barra .seg { width: auto; justify-self: start; }
+.jg-barra > * { min-width: 0; }
+.jg-q { font-size: 1.05rem; color: #cbc7bb; max-width: 70ch; }
+.jg-modo .gcard { min-height: 150px; align-content: start; }
+.jg-modo .gcard .revela { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 8px; }
+.jg-modo .gcard .revela .mono { font-size: .8rem; color: var(--muted); }
+.jg-modo .gres p { color: #cbc7bb; }
+.jg-modo .gres .kicker { margin-right: 8px; }
+.jg-modo .res { font: 900 1.8rem/1 var(--f-display); text-transform: uppercase; }
+.jg-tierra { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 24px; align-items: center; border-top: var(--rule); padding-top: 18px; }
+.jg-tierra img { width: 100%; height: auto; display: block; border: 3px solid var(--text); filter: contrast(1.1); }
+.jg-tierra > div { display: grid; gap: 6px; }
+.jg-tierra h3 { font-size: clamp(1.6rem, 3vw, 2.4rem); font-weight: 900; line-height: .98; }
+.jg-tierra p { font: 800 1.15rem var(--f-display); text-transform: uppercase; color: var(--accent); margin-top: 8px; }
+.jg-opciones { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 780px; }
+.opcion { display: grid; gap: 8px; padding: 0; background: none; border: 3px solid var(--line); color: var(--text); cursor: pointer; text-align: left; font: inherit; }
+.opcion img { width: 100%; height: auto; display: block; filter: contrast(1.1); }
+.opcion:hover, .opcion:focus-visible { border-color: var(--text); }
+.opcion.ok { border-color: var(--ok); box-shadow: 0 0 0 3px var(--ok); }
+.opcion.mal { border-color: var(--bad); box-shadow: 0 0 0 3px var(--bad); }
+.opcion .nombre { display: grid; gap: 2px; padding: 0 10px 10px; }
+.opcion .nombre b { font: 800 1.1rem/1.1 var(--f-display); text-transform: uppercase; }
+.opcion .nombre span { font: 500 .7rem var(--f-mono); color: var(--muted); }
+.opcion .nombre em { font: 500 .72rem var(--f-mono); color: var(--ok); font-style: normal; text-transform: uppercase; letter-spacing: .08em; }
+.jg-nota { font-size: .74rem; margin: 0; }
+.jg-lugar { border-top: var(--rule); padding: 28px 0 8px; display: grid; gap: 6px; }
+.jg-lugar h3 { font-size: clamp(2.2rem, 6vw, 4.4rem); font-weight: 900; line-height: .92; }
+.jg-novbotones { display: flex; flex-wrap: wrap; gap: 12px; }
+.jg-novbotones .btn.elegido { background: var(--text); color: var(--bg); }
+.jg-novbotones .btn:disabled { cursor: default; opacity: .7; }
+.jg-novbotones .btn.elegido:disabled { opacity: 1; }
+.jg-modo .cifra b { font: 900 2.4rem/1 var(--f-display); color: var(--accent); margin-right: 6px; }
+@media (max-width: 700px) { .jg-tierra { grid-template-columns: 1fr; } .jg-tierra img { max-width: 260px; } .jg-opciones { gap: 10px; } .opcion .nombre b { font-size: .95rem; } }
+
 /* zona de exploradores (la parte con cuentas) */
 .xp a { color: var(--accent); }
 .xp h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); }
@@ -1580,7 +1621,7 @@ function renderControls() {
   $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
     state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
-    renderControls(); render(); renderLimits(); newGame();
+    renderControls(); render(); renderLimits();
   }));
   $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
   AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
@@ -1598,45 +1639,8 @@ function renderLimits() {
   $('#limits').innerHTML = D.targets.map((t) => `<div class="card"><h3>${esc(t.nombre)}</h3><p class="muted" style="font-size:.9rem">${esc(t.contexto)}</p><p class="mono" style="font-size:.78rem;color:var(--moon)">${t.fuentes.map(esc).join(' · ')}</p></div>`).join('');
 }
 
-// ---------------------------------------------------------------- juego
-const game = {pair: null, done: false, ok: 0, n: 0};
-function newGame() {
-  if (!$('#game')) return;
-  renderGameSeg();
-  const pool = [...sites]; const a = pool.splice(Math.floor(Math.random() * pool.length), 1)[0];
-  let b, tries = 0;
-  do { b = pool[Math.floor(Math.random() * pool.length)]; tries++; }
-  while (Math.abs(score(a.ax, state.t, state.t.pesos).iap - score(b.ax, state.t, state.t.pesos).iap) < 3 && tries < 30);
-  game.pair = [a, b]; game.done = false;
-  $('#gameQ').textContent = `Destino: ${state.t.nombre}. Elige el lugar de la Tierra que crees que se parece más. Ojo: lo que parece desierto no siempre gana.`;
-  $('#game').innerHTML = game.pair.map((s, i) => `${i === 1 ? '<span class="vs">VS</span>' : ''}<button class="card gcard" data-i="${i}"><span class="pill ${s.conocido ? '' : 'nuevo'}" style="justify-self:start">${esc(s.pais)}</span><h3>${esc(s.nombre)}</h3><span class="muted" style="font-size:.9rem">${esc(s.nota.split('.')[0])}.</span></button>`).join('');
-  $('#gameRes').hidden = true;
-  $('#game').querySelectorAll('.gcard').forEach((c) => c.addEventListener('click', () => answer(+c.dataset.i)));
-  $('#gameScore').textContent = game.n ? `Aciertos: ${game.ok} de ${game.n}` : '';
-}
-function answer(i) {
-  if (game.done) return; game.done = true;
-  const rs = game.pair.map((s) => score(s.ax, state.t, state.t.pesos));
-  const win = rs[0].iap >= rs[1].iap ? 0 : 1;
-  game.n++; if (i === win) game.ok++;
-  $('#game').querySelectorAll('.gcard').forEach((c, k) => c.classList.add(k === win ? 'win' : 'lose'));
-  const W = game.pair[win], L = game.pair[1 - win];
-  const keys = AXES.filter((a) => state.t.pesos[a] >= 1).sort((a, b) => Math.abs(rs[win].sim[b] - rs[1 - win].sim[b]) - Math.abs(rs[win].sim[a] - rs[1 - win].sim[a])).slice(0, 2);
-  $('#gameRes').hidden = false;
-  $('#gameRes').innerHTML = `<b style="font-family:var(--f-display);font-size:1.2rem" class="${i === win ? 'ok-t' : 'bad-t'}">${i === win ? '¡Correcto!' : 'Esta vez no.'}</b>
-    <p><b>${esc(W.nombre)}</b> <span class="mono">${rs[win].iap.toFixed(1)}</span> frente a <b>${esc(L.nombre)}</b> <span class="mono">${rs[1 - win].iap.toFixed(1)}</span>.</p>
-    <p class="muted">Lo decide sobre todo: ${keys.map((a) => `${LBL[a].toLowerCase()} (${Math.round(rs[win].sim[a] * 100)} % frente a ${Math.round(rs[1 - win].sim[a] * 100)} %)`).join(' y ')}.</p>`;
-  $('#gameScore').textContent = `Aciertos: ${game.ok} de ${game.n}`;
-}
-$('#gameNext')?.addEventListener('click', newGame);
-function renderGameSeg() {
-  const g = $('#gameSeg'); if (!g) return;
-  g.innerHTML = D.targets.map((x) => `<button data-id="${x.id}" aria-pressed="${x.id === state.t.id}">${esc(x.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
-  g.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => { state.t = D.targets.find((x) => x.id === b.dataset.id); state.w = {...state.t.pesos}; newGame(); }));
-}
-
 if ($('#demoBanner')) $('#demoBanner').hidden = !D.demo;
-renderControls(); renderMethod(); renderLimits(); render(); newGame(); initServidor();
+renderControls(); renderMethod(); renderLimits(); render(); initServidor();
 
 // ---------------------------------------------------------------- aportaciones (necesitan el servidor)
 var fecha = (iso) => new Date(iso).toLocaleString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
