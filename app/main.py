@@ -32,7 +32,9 @@ con = db.init()
 
 @app.exception_handler(ErrorJuego)
 def _error(_: Request, e: ErrorJuego):
-    return JSONResponse({"error": e.mensaje, "campo": e.campo, "errores": getattr(e, "errores", {})}, status_code=e.status)
+    con.rollback()   # nada a medias: si una regla falla, no se guarda ningún cambio de esa petición
+    return JSONResponse({"error": e.mensaje, "campo": e.campo, "errores": getattr(e, "errores", {}), **getattr(e, "extra", {})},
+                        status_code=e.status)
 
 
 def usuario(token: str | None = Cookie(default=None, alias="moonsite_sesion")):
@@ -147,6 +149,57 @@ def mis_reportes(u=Depends(usuario)):
         d["foto"] = f"/uploads/{d['foto']}"
         out.append(d)
     return out
+
+
+# ------------------------------------------------------------------ aportaciones desde la demo
+def usuario_opcional(token: str | None = Cookie(default=None, alias="moonsite_sesion")):
+    return L.usuario_por_token(con, token)
+
+
+async def _guardar_foto(foto: UploadFile | None) -> tuple[str | None, bytes | None]:
+    if foto is None or not foto.filename:
+        return None, None
+    contenido = await foto.read(MAX_FOTO + 1)
+    if not contenido:
+        return None, None
+    if len(contenido) > MAX_FOTO:
+        raise ErrorJuego("La foto no puede pasar de 8 MB.", "foto", 413)
+    ext = next((e for firma, e in FIRMAS.items() if contenido.startswith(firma)), None)
+    if not ext:
+        raise ErrorJuego("La foto tiene que ser JPG, PNG o WEBP.", "foto")
+    return secrets.token_hex(12) + ext, contenido
+
+
+@app.post("/api/aportaciones")
+async def aportar(modo: str = Form("existente"), zona: str | None = Form(None), nombre: str | None = Form(None),
+                  lat: str | None = Form(None), lon: str | None = Form(None), temperatura_c: str | None = Form(None),
+                  calidad_aire: str | None = Form(None), humedad_rel: str | None = Form(None),
+                  destino: str | None = Form(None), pesos: str | None = Form(None),
+                  foto: UploadFile | None = File(None), u=Depends(usuario)):
+    nombre_foto, contenido = await _guardar_foto(foto)
+    datos = {"modo": modo, "zona": zona, "nombre": nombre, "lat": lat, "lon": lon, "temperatura_c": temperatura_c,
+             "calidad_aire": calidad_aire, "humedad_rel": humedad_rel, "destino": destino, "pesos": pesos}
+    res = L.crear_aportacion(con, u["id"], datos, nombre_foto)   # valida antes de guardar el archivo
+    if contenido:
+        (UPLOADS / nombre_foto).write_bytes(contenido)
+    res["saldo"] = L.saldo(con, u["id"])
+    return res
+
+
+@app.get("/api/aportaciones/resumen")
+def resumen(zona: str, u=Depends(usuario_opcional)):
+    return L.resumen_punto(con, zona, u["id"] if u else None)
+
+
+@app.get("/api/puntos-comunidad")
+def puntos_comunidad():
+    return L.puntos_comunidad(con)
+
+
+@app.get("/api/sesion")
+def sesion(u=Depends(usuario_opcional)):
+    """Para las páginas públicas: ¿hay sesión? (no da error si no la hay)."""
+    return {"usuario": u["username"], "saldo": L.saldo(con, u["id"])} if u else {"usuario": None}
 
 
 # ------------------------------------------------------------------ bases y habitaciones

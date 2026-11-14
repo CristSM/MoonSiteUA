@@ -528,3 +528,153 @@ def canjear(con, uid: int, clave: str, direccion: str, talla: str | None) -> dic
                       (uid, p["id"], talla if clave in CON_TALLA else None, direccion.strip()[:300]))
     con.commit()
     return {"canje_id": cur.lastrowid, "saldo": saldo(con, uid)}
+
+
+# ================================================================== aportaciones desde la demo
+MOON_APORTE_DATOS = 10        # por enviar temperatura, calidad del aire o humedad
+MOON_APORTE_FOTO = 15         # extra si incluye foto
+MOON_PUNTO_NUEVO = 40         # extra si crea un punto nuevo válido
+BLOQUEO_HORAS = 12            # espera para volver a aportar al mismo punto
+MAX_PUNTOS_NUEVOS_DIA = 5     # contra la creación masiva de puntos para ganar monedas
+RANGOS = {"temperatura_c": (-90, 60, "La temperatura debe estar entre -90 y 60 °C."),
+          "calidad_aire": (0, 500, "El índice de calidad del aire va de 0 a 500."),
+          "humedad_rel": (0, 100, "La humedad va de 0 a 100 %.")}
+
+
+def _num(v):
+    if v is None or (isinstance(v, str) and not v.strip()):
+        return None
+    try:
+        return float(str(v).replace(",", "."))
+    except ValueError:
+        return "error"
+
+
+def bloqueo_hasta(con, uid: int, zona_id: int) -> str | None:
+    """Fecha (UTC, ISO) hasta la que el usuario no puede volver a aportar a ese punto."""
+    r = con.execute("""SELECT datetime(MAX(fecha), '+%d hours') AS hasta FROM aportaciones
+                       WHERE usuario_id = ? AND zona_id = ? AND fecha > datetime('now', '-%d hours')"""
+                    % (BLOQUEO_HORAS, BLOQUEO_HORAS), (uid, zona_id)).fetchone()
+    return r["hasta"].replace(" ", "T") + "Z" if r and r["hasta"] else None
+
+
+def _zona_por_ref(con, ref):
+    ref = str(ref or "").strip()
+    z = con.execute("SELECT * FROM zonas WHERE clave = ?", (ref,)).fetchone()
+    if not z and ref.isdigit():
+        z = con.execute("SELECT * FROM zonas WHERE id = ?", (int(ref),)).fetchone()
+    return z
+
+
+def crear_aportacion(con, uid: int, datos: dict, foto: str | None) -> dict:
+    """Valida y guarda una aportación. Modo 'existente' (punto ya creado) o
+    'nuevo' (crea un punto de la comunidad si pasa la validación)."""
+    errores = {}
+    lat, lon = _num(datos.get("lat")), _num(datos.get("lon"))
+    if lat in (None, "error") or not -90 <= lat <= 90:
+        errores["lat"] = "Las coordenadas son obligatorias: latitud entre -90 y 90."
+    if lon in (None, "error") or not -180 <= lon <= 180:
+        errores["lon"] = "Las coordenadas son obligatorias: longitud entre -180 y 180."
+    valores = {}
+    for campo, (lo, hi, msg) in RANGOS.items():
+        v = _num(datos.get(campo))
+        if v == "error" or (v is not None and not lo <= v <= hi):
+            errores[campo] = msg
+        valores[campo] = None if v == "error" else v
+    if valores["calidad_aire"] is not None:
+        valores["calidad_aire"] = int(round(valores["calidad_aire"]))
+    if foto is None and all(v is None for v in valores.values()):
+        errores["_"] = "Rellena al menos un dato: foto, temperatura, calidad del aire o humedad."
+    targets = {t["id"]: t for t in motor.load("targets.json")["targets"]}
+    destino = datos.get("destino") or None
+    if destino is not None and destino not in targets:
+        errores["destino"] = "Destino no válido."
+    pesos = datos.get("pesos")
+    if isinstance(pesos, str):
+        try:
+            pesos = json.loads(pesos) if pesos.strip() else None
+        except ValueError:
+            pesos = "error"
+    if pesos is not None and (not isinstance(pesos, dict) or any(
+            k not in motor.AXES or not isinstance(v, (int, float)) or not 0 <= v <= 2 for k, v in pesos.items())):
+        errores["pesos"] = "Los pesos no son válidos."
+    if errores:
+        e = ErrorJuego(errores.get("_") or "Revisa los campos marcados.")
+        e.errores = errores
+        raise e
+
+    modo = datos.get("modo") or "existente"
+    nuevo = modo == "nuevo"
+    if nuevo:
+        z, d = zona_mas_cercana(con, lat, lon)
+        if z is not None and d < RADIO_NUEVA_ZONA_M:
+            e = ErrorJuego(f"Ya existe el punto «{z['nombre']}» a {d / 1000:.1f} km. Aporta tus datos a ese punto.", status=409)
+            e.extra = {"zona_existente": {"id": z["id"], "clave": z["clave"], "nombre": z["nombre"]}}
+            raise e
+        hoy = con.execute("""SELECT COUNT(*) FROM aportaciones WHERE usuario_id = ? AND crea_punto = 1
+                             AND fecha > datetime('now', '-1 day')""", (uid,)).fetchone()[0]
+        if hoy >= MAX_PUNTOS_NUEVOS_DIA:
+            raise ErrorJuego(f"Solo se pueden crear {MAX_PUNTOS_NUEVOS_DIA} puntos nuevos al día.", status=429)
+        nombre = (datos.get("nombre") or "").strip()[:60] or f"Punto comunitario {lat:.3f}, {lon:.3f}"
+        cur = con.execute("INSERT INTO zonas (nombre, lat, lon, radio_m, recomendada, creada_por) VALUES (?, ?, ?, 3000, 0, ?)",
+                          (nombre, lat, lon, uid))
+        zona = con.execute("SELECT * FROM zonas WHERE id = ?", (cur.lastrowid,)).fetchone()
+    else:
+        zona = _zona_por_ref(con, datos.get("zona"))
+        if not zona:
+            raise ErrorJuego("Elige un punto del mapa o crea uno nuevo.", "zona", 404)
+        if zona["restringida"]:
+            raise ErrorJuego("Este punto está restringido por seguridad.", status=403)
+        d = distancia_m(lat, lon, zona["lat"], zona["lon"])
+        if d > zona["radio_m"]:
+            e = ErrorJuego(f"Tus coordenadas están a {d / 1000:.1f} km de «{zona['nombre']}». Para aportar datos a un punto "
+                           f"tienes que estar a menos de {zona['radio_m'] / 1000:.0f} km. Si es otro lugar, crea un punto nuevo.")
+            e.errores = {"lat": e.mensaje}
+            raise e
+        hasta = bloqueo_hasta(con, uid, zona["id"])
+        if hasta:
+            e = ErrorJuego("Ya guardaste datos de este punto hace menos de 12 horas.", status=429)
+            e.extra = {"bloqueado_hasta": hasta}
+            raise e
+
+    ganadas = (MOON_APORTE_DATOS if any(v is not None for v in valores.values()) else 0) \
+        + (MOON_APORTE_FOTO if foto else 0) + (MOON_PUNTO_NUEVO if nuevo else 0)
+    cur = con.execute("""INSERT INTO aportaciones (usuario_id, zona_id, lat, lon, foto, temperatura_c, calidad_aire, humedad_rel,
+                                                   destino, pesos_json, crea_punto, moon_ganadas)
+                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                      (uid, zona["id"], lat, lon, foto, valores["temperatura_c"], valores["calidad_aire"], valores["humedad_rel"],
+                       destino, json.dumps(pesos) if pesos is not None else None, int(nuevo), ganadas))
+    motivo = "Punto nuevo validado" if nuevo else "Aportación de datos"
+    mover(con, uid, "moon", ganadas, f"{motivo}: {zona['nombre']}")
+    con.commit()
+    fecha = con.execute("SELECT fecha FROM aportaciones WHERE id = ?", (cur.lastrowid,)).fetchone()["fecha"]
+    return {"aportacion_id": cur.lastrowid, "fecha": fecha.replace(" ", "T") + "Z", "punto_nuevo": nuevo,
+            "zona": {"id": zona["id"], "clave": zona["clave"], "nombre": zona["nombre"], "lat": zona["lat"], "lon": zona["lon"]},
+            "moon_ganadas": ganadas, "bloqueado_hasta": bloqueo_hasta(con, uid, zona["id"])}
+
+
+def resumen_punto(con, ref, uid: int | None = None) -> dict:
+    zona = _zona_por_ref(con, ref)
+    if not zona:
+        raise ErrorJuego("Ese punto no existe.", status=404)
+    a = con.execute("""SELECT COUNT(*) AS n, COUNT(foto) AS fotos, AVG(temperatura_c) AS temp, AVG(calidad_aire) AS aire,
+                              AVG(humedad_rel) AS hum, COUNT(DISTINCT usuario_id) AS personas, MAX(fecha) AS ultima
+                       FROM aportaciones WHERE zona_id = ?""", (zona["id"],)).fetchone()
+    fotos = [{"foto": f"/uploads/{r['foto']}", "fecha": r["fecha"].replace(" ", "T") + "Z"} for r in con.execute(
+        "SELECT foto, fecha FROM aportaciones WHERE zona_id = ? AND foto IS NOT NULL ORDER BY id DESC LIMIT 4", (zona["id"],))]
+    rnd = lambda v, k=1: None if v is None else round(v, k)
+    return {"zona": {"id": zona["id"], "clave": zona["clave"], "nombre": zona["nombre"], "lat": zona["lat"], "lon": zona["lon"],
+                     "recomendada": bool(zona["recomendada"])},
+            "aportaciones": a["n"], "personas": a["personas"], "fotos": a["fotos"],
+            "media": {"temperatura_c": rnd(a["temp"]), "calidad_aire": rnd(a["aire"], 0), "humedad_rel": rnd(a["hum"], 0)},
+            "ultima": a["ultima"].replace(" ", "T") + "Z" if a["ultima"] else None, "ultimas_fotos": fotos,
+            "mi_bloqueo_hasta": bloqueo_hasta(con, uid, zona["id"]) if uid else None}
+
+
+def puntos_comunidad(con) -> list[dict]:
+    out = []
+    for z in con.execute("SELECT * FROM zonas WHERE recomendada = 0 ORDER BY id"):
+        a = con.execute("SELECT COUNT(*) AS n, MIN(fecha) AS desde FROM aportaciones WHERE zona_id = ?", (z["id"],)).fetchone()
+        out.append({"id": z["id"], "nombre": z["nombre"], "lat": z["lat"], "lon": z["lon"], "aportaciones": a["n"],
+                    "creado": a["desde"].replace(" ", "T") + "Z" if a["desde"] else None})
+    return out

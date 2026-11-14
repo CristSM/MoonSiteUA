@@ -145,6 +145,7 @@ Abriendo los `.html` con doble clic o desde GitHub Pages se ven todos los aparta
 | `muebles`, `inventario`, `habitacion_decoraciones` | Catálogo, lo que tiene cada usuario y una decoración por hueco |
 | `objetivos`, `progreso_objetivos` | Objetivos individuales y de base (diarios, semanales, mensuales o únicos) |
 | `premios`, `canjes` | Merchandising físico con stock, talla y dirección de envío |
+| `aportaciones` | Datos de la demo (foto, temperatura, calidad del aire, humedad, destino, pesos) con fecha; solo se añaden filas, nunca se cambian |
 
 ### Monedas
 
@@ -160,6 +161,20 @@ Al subir una foto se busca el punto recomendado más cercano y se compara en los
 - el Índice de Analogía de la foto con los 4 destinos, junto al del punto NASA.
 
 Si la foto está a más de 6 km de cualquier zona, se crea una zona comunitaria nueva.
+
+### Aportar datos desde la demo
+
+En la página Demo, debajo de los pesos, hay un panel «Aportar datos». Necesita el servidor y una sesión iniciada.
+
+- **Al punto seleccionado.** Coordenadas obligatorias, a menos de 3 km del punto, y al menos un dato: foto, temperatura (−90 a 60 °C), calidad del aire (índice 0 a 500) o humedad (0 a 100 %). Se guardan también el destino y los pesos que el usuario tenía configurados.
+- **Crear punto nuevo.** Las mismas reglas. Además, el punto se valida antes de crearse:
+  - no puede haber otro a menos de 6 km (si lo hay, se propone aportar a ese);
+  - como máximo 5 puntos nuevos por usuario al día.
+  Si es válido, se crea como punto de la comunidad (rombo en el mapa).
+- **Moon Coins:** +10 por datos, +15 por foto y +40 por un punto nuevo válido.
+- **Fecha:** cada envío se guarda como una fila nueva en `aportaciones`, con su fecha de subida. Las filas no se pueden modificar (trigger), así que queda el historial completo.
+- **Bloqueo de 12 horas:** después de guardar datos de un punto, el mismo usuario no puede volver a cambiarlos hasta que pasen 12 horas. La web muestra hasta cuándo.
+- **Datos de la NASA intocables:** los triggers `nasa_no_se_modifica` y `nasa_no_se_borra` impiden cambiar o borrar los puntos recomendados desde la app. Los datos de la comunidad se muestran aparte, en la ficha. Para actualizar los datos NASA hay que volver a ejecutar el motor y regenerar la base de datos (borrar `app/moonsite.db`).
 
 ### Bases y habitaciones
 

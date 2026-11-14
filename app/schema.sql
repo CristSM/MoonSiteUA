@@ -192,3 +192,40 @@ CREATE TABLE IF NOT EXISTS canjes (
     estado      TEXT NOT NULL DEFAULT 'pendiente' CHECK (estado IN ('pendiente', 'enviado', 'entregado', 'cancelado')),
     fecha       TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- ============================================================ APORTACIONES DESDE LA DEMO
+-- Datos que suben los usuarios sobre un punto (recomendado o nuevo): foto,
+-- temperatura, calidad del aire y humedad, junto con el destino y los pesos que
+-- tenían configurados. Cada envío es una fila nueva con su fecha: nunca se
+-- sobrescribe nada, así queda el historial completo.
+CREATE TABLE IF NOT EXISTS aportaciones (
+    id            INTEGER PRIMARY KEY,
+    usuario_id    INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    zona_id       INTEGER NOT NULL REFERENCES zonas(id),
+    lat           REAL NOT NULL CHECK (lat BETWEEN -90 AND 90),
+    lon           REAL NOT NULL CHECK (lon BETWEEN -180 AND 180),
+    foto          TEXT,
+    temperatura_c REAL CHECK (temperatura_c BETWEEN -90 AND 60),
+    calidad_aire  INTEGER CHECK (calidad_aire BETWEEN 0 AND 500),   -- índice de calidad del aire (ICA/AQI)
+    humedad_rel   REAL CHECK (humedad_rel BETWEEN 0 AND 100),
+    destino       TEXT,
+    pesos_json    TEXT,
+    crea_punto    INTEGER NOT NULL DEFAULT 0,                       -- 1 = esta aportación creó el punto
+    moon_ganadas  INTEGER NOT NULL DEFAULT 0,
+    fecha         TEXT NOT NULL DEFAULT (datetime('now')),          -- fecha de subida (UTC)
+    CHECK (foto IS NOT NULL OR temperatura_c IS NOT NULL OR calidad_aire IS NOT NULL OR humedad_rel IS NOT NULL)
+);
+CREATE INDEX IF NOT EXISTS ix_aport_usuario_zona ON aportaciones(usuario_id, zona_id, fecha);
+
+CREATE TRIGGER IF NOT EXISTS aportaciones_inmutables BEFORE UPDATE ON aportaciones
+BEGIN SELECT RAISE(ABORT, 'Las aportaciones no se modifican: cada envío se guarda como uno nuevo'); END;
+
+-- ============================================================ PROTECCIÓN DE LOS DATOS DE LA NASA
+-- Los puntos recomendados (calculados con datos NASA) no se pueden modificar ni
+-- borrar desde la app bajo ningún concepto. Para actualizarlos hay que volver a
+-- ejecutar el motor y regenerar la base de datos.
+CREATE TRIGGER IF NOT EXISTS nasa_no_se_modifica BEFORE UPDATE ON zonas WHEN OLD.recomendada = 1
+BEGIN SELECT RAISE(ABORT, 'Los datos de la NASA no se pueden modificar'); END;
+
+CREATE TRIGGER IF NOT EXISTS nasa_no_se_borra BEFORE DELETE ON zonas WHEN OLD.recomendada = 1
+BEGIN SELECT RAISE(ABORT, 'Los datos de la NASA no se pueden borrar'); END;

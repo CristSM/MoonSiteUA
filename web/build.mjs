@@ -27,16 +27,23 @@ function build(land, projection, w, h) {
 }
 
 const W = 960, H = 480;
-const world = build(land110, geoNaturalEarth1().fitExtent([[4, 4], [W - 4, H - 4]], { type: 'Sphere' }), W, H);
+// Parámetros de cada proyección, para situar en el navegador puntos que no existen
+// al generar la web (los puntos nuevos de la comunidad).
+const info = (p, t, clip) => ({ t, k: p.scale(), tx: p.translate()[0], ty: p.translate()[1], clip });
+const worldProj = geoNaturalEarth1().fitExtent([[4, 4], [W - 4, H - 4]], { type: 'Sphere' });
+const world = { ...build(land110, worldProj, W, H), proj: [info(worldProj, 'ne', [0, 0, W, H])] };
 
 // Recuadro de España: península a escala grande + Canarias en una caja abajo a la derecha.
 // Anillos en sentido horario: d3 trabaja con polígonos esféricos.
 const box = (w, s, e, n) => ({ type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[w, s], [w, n], [e, n], [e, s], [w, s]]] } });
 const IW = 480, IH = 340;
-const pen = build(land50, geoMercator().fitExtent([[0, 0], [IW, IH]], box(-9.6, 35.9, 3.4, 43.9)).clipExtent([[0, 0], [IW, IH]]), IW, IH);
+const penProj = geoMercator().fitExtent([[0, 0], [IW, IH]], box(-9.6, 35.9, 3.4, 43.9)).clipExtent([[0, 0], [IW, IH]]);
+const pen = build(land50, penProj, IW, IH);
 const CX = [[IW - 176, IH - 86], [IW - 6, IH - 6]];
-const can = build(land50, geoMercator().fitExtent([[CX[0][0] + 6, CX[0][1] + 6], [CX[1][0] - 6, CX[1][1] - 6]], box(-18.3, 27.5, -13.3, 29.5)).clipExtent(CX), IW, IH);
-const iberia = { w: IW, h: IH, d: pen.d, d2: can.d, pts: {}, frames: [[CX[0][0], CX[0][1], CX[1][0] - CX[0][0], CX[1][1] - CX[0][1], 'Canarias']] };
+const canProj = geoMercator().fitExtent([[CX[0][0] + 6, CX[0][1] + 6], [CX[1][0] - 6, CX[1][1] - 6]], box(-18.3, 27.5, -13.3, 29.5)).clipExtent(CX);
+const can = build(land50, canProj, IW, IH);
+const iberia = { w: IW, h: IH, d: pen.d, d2: can.d, pts: {},
+  proj: [info(canProj, 'merc', [CX[0][0], CX[0][1], CX[1][0], CX[1][1]]), info(penProj, 'merc', [0, 0, IW, IH])], frames: [[CX[0][0], CX[0][1], CX[1][0] - CX[0][0], CX[1][1] - CX[0][1], 'Canarias']] };
 for (const s of sites.sites) iberia.pts[s.id] = s.lon < -12 ? can.pts[s.id] : pen.pts[s.id];
 
 const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO') };

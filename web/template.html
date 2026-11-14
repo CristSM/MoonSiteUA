@@ -94,6 +94,7 @@ section > .wrap > .head { display: grid; gap: 10px; margin-bottom: 28px; }
 .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
 .maps { display: grid; gap: 10px; padding: 12px; }
 .maps svg { width: 100%; height: auto; display: block; }
+.maps .legend svg { width: 12px; height: 12px; display: inline-block; }
 .maps .cap { font: 500 .75rem var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .land { fill: #222c43; stroke: #33405e; stroke-width: .5; }
 .grat { fill: none; stroke: #1a2236; }
@@ -181,6 +182,25 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 /* zona de exploradores (la parte con cuentas) */
 /*__EXPLORADOR_CSS__*/
 
+/* aportaciones en la demo */
+.aporte { padding: 16px; display: grid; gap: 12px; }
+.aporte h3 { font-size: 1.1rem; }
+.aporte .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aporte label { display: grid; gap: 4px; font-size: .84rem; color: var(--muted); }
+.aporte input:not([type="range"]), .aporte select { font: inherit; font-size: .92rem; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; }
+.aporte input[aria-invalid="true"] { border-color: var(--bad); }
+.aporte .err { color: var(--bad); font-size: .8rem; min-height: 0; }
+.aporte .ok-box { border: 1px solid var(--ok); color: var(--text); border-radius: 8px; padding: 10px 12px; font-size: .9rem; display: grid; gap: 4px; }
+.aporte .lock { border: 1px dashed var(--warn); color: var(--warn); border-radius: 8px; padding: 10px 12px; font-size: .88rem; }
+.aporte .seg button { padding: 7px 12px; font-size: .84rem; }
+.aporte .full { grid-column: 1 / -1; }
+.aporte .coins { display: inline-flex; gap: 6px; align-items: center; font: 500 .85rem var(--f-mono); }
+.aporte .coins svg { width: 18px; height: 18px; }
+.comu { display: grid; gap: 8px; border-top: 1px solid var(--line); padding-top: 12px; }
+.comu .fotos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.comu .fotos img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 6px; }
+@media (max-width: 480px) { .aporte .fgrid { grid-template-columns: 1fr; } }
+
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
 
@@ -263,7 +283,8 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
         <div class="legend"><span>IAP</span><span class="mono">30</span><span class="ramp"></span><span class="mono">80</span>
           <span><span class="beacon" style="background:var(--ok)"></span>confirmado</span>
           <span><span class="beacon" style="background:var(--warn)"></span>en verificación</span>
-          <span><span class="beacon" style="background:var(--idle)"></span>descubrimiento</span></div>
+          <span><span class="beacon" style="background:var(--idle)"></span>descubrimiento</span>
+          <span><svg width="12" height="12" viewBox="0 0 12 12" style="vertical-align:-1px;margin-right:6px"><path d="M6 0 L12 6 L6 12 L0 6Z" fill="#c7d1e4"/></svg>punto de la comunidad</span></div>
       </div>
       <div class="card ficha" id="ficha" aria-live="polite" style="grid-area:ficha"></div>
       <div style="grid-area:rank; display:grid; gap:12px; align-content:start">
@@ -273,6 +294,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
           <div class="wgrid" id="weights"></div>
           <button class="btn" id="resetW" style="margin-top:12px">Restablecer pesos del destino</button>
         </details>
+        <div class="card aporte" id="aporte" aria-live="polite"></div>
       </div>
     </div>
   </div>
@@ -555,6 +577,8 @@ function score(ax, t, w) {
 
 const sites = D.sites.map((s) => ({...s, ax: normalize(s)}));
 const state = {t: D.targets[0], w: {...D.targets[0].pesos}, onlyNew: false, sel: null};
+// Estado de la conexión con el servidor (aportaciones y puntos de la comunidad)
+const SRV = {ok: false, usuario: null, saldo: null, comunidad: [], resumen: {}, modo: 'existente', aviso: null};
 
 function ramp(v) {
   const x = clamp((v - 30) / 50);
@@ -600,6 +624,36 @@ function drawMap(svg, m, r) {
     c.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(s.id); } });
     g.append(ring, c); svg.append(g);
   }
+  for (const pc of SRV.comunidad) {
+    const p = proyectar(m, pc.lon, pc.lat); if (!p) continue;
+    const r = m.w > 600 ? 7 : 8, sel = state.sel === 'c:' + pc.id;
+    const d = document.createElementNS(NS, 'path');
+    d.setAttribute('d', `M${p[0]} ${p[1] - r} L${p[0] + r} ${p[1]} L${p[0]} ${p[1] + r} L${p[0] - r} ${p[1]}Z`);
+    d.setAttribute('fill', '#c7d1e4'); d.setAttribute('class', 'site' + (sel ? ' sel' : ''));
+    d.setAttribute('tabindex', 0); d.setAttribute('role', 'button'); d.setAttribute('aria-label', `${pc.nombre}, punto de la comunidad`);
+    const tt = document.createElementNS(NS, 'title'); tt.textContent = `${pc.nombre} · punto de la comunidad`; d.append(tt);
+    d.addEventListener('click', () => select('c:' + pc.id));
+    d.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select('c:' + pc.id); } });
+    svg.append(d);
+  }
+}
+
+// Proyección en el navegador (mismos parámetros que build.mjs) para los puntos nuevos
+function proyectar(m, lon, lat) {
+  const R = Math.PI / 180;
+  for (const p of m.proj || []) {
+    const l = lon * R, f = lat * R;
+    let x, y;
+    if (p.t === 'ne') {
+      const f2 = f * f, f4 = f2 * f2;
+      x = l * (0.8707 - 0.131979 * f2 + f4 * (-0.013791 + f4 * (0.003971 * f2 - 0.001529 * f4)));
+      y = f * (1.007226 + f2 * (0.015085 + f4 * (-0.044475 + 0.028874 * f2 - 0.005916 * f4)));
+    } else { x = l; y = Math.log(Math.tan(Math.PI / 4 + f / 2)); }
+    x = p.tx + p.k * x; y = p.ty - p.k * y;
+    const c = p.clip;
+    if (x >= c[0] && x <= c[2] && y >= c[1] && y <= c[3]) return [x, y];
+  }
+  return null;
 }
 
 // ---------------------------------------------------------------- radar
@@ -632,6 +686,7 @@ function renderFicha(rows) {
   const {s, r} = row, t = state.t;
   const b = BEACON[s.baliza];
   const ms = missions(s);
+  setTimeout(() => cargarResumen(s.id));
   $('#ficha').innerHTML = `
     <div class="top"><div class="stack" style="gap:6px"><h3 style="font-size:1.35rem">${esc(s.nombre)}</h3>
       <div class="pills"><span class="pill">${esc(s.pais)}</span><span class="pill ${s.conocido ? '' : 'nuevo'}">${s.conocido ? 'Análogo conocido' : 'Poco estudiado'}</span><span class="pill ${s.baliza}">${b[1]}</span></div></div>
@@ -647,7 +702,18 @@ function renderFicha(rows) {
       ${AXES.map((a) => `<div class="axrow"><span class="muted">${LBL[a]}</span><span class="bar"><i style="width:${(s.ax[a] * 100).toFixed(0)}%"></i><u style="left:calc(${(t.valores[a] * 100).toFixed(0)}% - 1px)"></u></span><span class="mono" style="text-align:right">${Math.round(r.sim[a] * 100)}%</span></div>`).join('')}
     </div>
     <div><h4>Lo que la Tierra no puede imitar</h4><ul>${t.limites.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
+    <div class="comu" id="comuBox"></div>
     <div><h4>Misiones abiertas</h4>${ms.length ? `<ul>${ms.map((m) => `<li>${m[0]} <span class="mono" style="color:var(--accent)">${m[1]}</span></li>`).join('')}</ul>` : '<p class="muted" style="font-size:.9rem;margin-top:6px">Análogo confirmado. Base virtual abierta a nuevos módulos.</p>'}</div>`;
+}
+
+function renderFichaComunidad(id) {
+  const pc = SRV.comunidad.find((x) => x.id === id);
+  if (!pc) { state.sel = null; return render(); }
+  $('#ficha').innerHTML = `<div class="top"><div class="stack" style="gap:6px"><h3 style="font-size:1.35rem">${esc(pc.nombre)}</h3>
+      <div class="pills"><span class="pill nuevo">Punto de la comunidad</span><span class="pill mono">${pc.lat.toFixed(4)}, ${pc.lon.toFixed(4)}</span></div></div></div>
+    <p class="muted" style="font-size:.92rem">Creado por un explorador${pc.creado ? ' el ' + fecha(pc.creado) : ''}. Todavía no tiene perfil satelital: sus datos vienen de las aportaciones de la comunidad. Cuando se ejecute el motor con datos NASA para este punto, se calculará su Índice de Analogía.</p>
+    <div class="comu" id="comuBox"></div>`;
+  cargarResumen(String(id));
 }
 
 function renderRank(rows) {
@@ -661,7 +727,8 @@ function render() {
   const rows = results();
   if (state.onlyNew && rows.find((x) => x.s.id === state.sel)?.s.conocido) state.sel = rows.find((x) => !x.s.conocido).s.id;
   if (!state.sel) state.sel = (state.onlyNew ? rows.find((x) => !x.s.conocido) : rows[0]).s.id;
-  renderFicha(rows);
+  if (String(state.sel).startsWith('c:')) renderFichaComunidad(+state.sel.slice(2)); else renderFicha(rows);
+  renderAporte();
   drawMap($('#worldMap'), D.map.world, rows);
   drawMap($('#iberiaMap'), D.map.iberia, rows);
   renderRank(rows);
@@ -729,7 +796,154 @@ function renderGameSeg() {
 }
 
 if ($('#demoBanner')) $('#demoBanner').hidden = !D.demo;
-renderControls(); renderMethod(); renderLimits(); render(); newGame();
+renderControls(); renderMethod(); renderLimits(); render(); newGame(); initServidor();
+
+// ---------------------------------------------------------------- aportaciones (necesitan el servidor)
+var fecha = (iso) => new Date(iso).toLocaleString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
+async function getJSON(path) {
+  const r = await fetch(path, {credentials: 'same-origin'});
+  if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) throw new Error('sin servidor');
+  return r.json();
+}
+async function initServidor() {
+  if (!$('#aporte')) return;
+  try {
+    const s = await getJSON('/api/sesion');
+    SRV.ok = true; SRV.usuario = s.usuario; SRV.saldo = s.saldo || null;
+    SRV.comunidad = await getJSON('/api/puntos-comunidad');
+  } catch { SRV.ok = false; }
+  render();
+}
+function refSeleccion() { return String(state.sel).startsWith('c:') ? state.sel.slice(2) : state.sel; }
+function nombreSeleccion() {
+  if (String(state.sel).startsWith('c:')) return SRV.comunidad.find((x) => 'c:' + x.id === state.sel)?.nombre || '';
+  return sites.find((s) => s.id === state.sel)?.nombre || '';
+}
+async function cargarResumen(ref) {
+  const box = $('#comuBox');
+  if (!SRV.ok || !box) { if (box) box.remove(); return; }
+  try {
+    let r = SRV.resumen[ref];
+    if (!r || r.aportaciones === undefined) { r = await getJSON('/api/aportaciones/resumen?zona=' + encodeURIComponent(ref)); SRV.resumen[ref] = r; }
+    if (refSeleccion() !== ref || !$('#comuBox')) return;
+    const m = r.media, dato = (v, u) => v == null ? '—' : `${v}${u}`;
+    $('#comuBox').innerHTML = `<h4>Datos de la comunidad</h4>
+      ${r.aportaciones ? `<p class="muted" style="font-size:.88rem">${r.aportaciones} aportación${r.aportaciones === 1 ? '' : 'es'} de ${r.personas} persona${r.personas === 1 ? '' : 's'} · última el ${fecha(r.ultima)}</p>
+      <div class="pills"><span class="pill">Temperatura media ${dato(m.temperatura_c, ' °C')}</span><span class="pill">Calidad del aire ${dato(m.calidad_aire, '')}</span><span class="pill">Humedad ${dato(m.humedad_rel, ' %')}</span></div>
+      ${r.ultimas_fotos.length ? `<div class="fotos">${r.ultimas_fotos.map((f) => `<img src="${esc(f.foto)}" alt="Foto subida el ${fecha(f.fecha)}" title="${fecha(f.fecha)}">`).join('')}</div>` : ''}`
+      : '<p class="muted" style="font-size:.88rem">Aún no hay aportaciones. Sé la primera persona en subir datos de este punto.</p>'}
+      ${r.zona.recomendada ? '<p class="muted mono" style="font-size:.72rem">Los datos de la comunidad se muestran aparte: nunca modifican los datos NASA del punto.</p>' : ''}`;
+    renderAporte();
+  } catch { box.remove(); }
+}
+function renderAporte() {
+  const el = $('#aporte'); if (!el) return;
+  const limpiar = SRV.limpiar;
+  const titulo = '<h3>Aportar datos</h3>';
+  if (!SRV.ok) {
+    el.innerHTML = `${titulo}<p class="muted" style="font-size:.9rem">Sube una foto del sitio, temperatura, calidad del aire o humedad, o crea un punto nuevo, y gana Moon Coins. Necesita la web en marcha con su servidor (<span class="mono">python -m uvicorn main:app</span> en la carpeta app) y una cuenta.</p>`;
+    return;
+  }
+  if (!SRV.usuario) {
+    el.innerHTML = `${titulo}<p class="muted" style="font-size:.9rem">Sube una foto del sitio, temperatura, calidad del aire o humedad, o crea un punto nuevo, y gana Moon Coins.</p><a class="btn primary" href="explorador.html#entrar">Inicia sesión para aportar</a>`;
+    return;
+  }
+  const nuevo = SRV.modo === 'nuevo', ref = refSeleccion(), res = SRV.resumen[ref];
+  const bloqueo = !nuevo && res && res.mi_bloqueo_hasta && new Date(res.mi_bloqueo_hasta) > new Date() ? res.mi_bloqueo_hasta : null;
+  const destino = state.t.nombre.replace(/ \(.*\)$/, '');
+  // Si solo han cambiado el destino o los pesos, no se rehace el formulario (se perdería la foto elegida)
+  const clave = [state.sel, SRV.modo, SRV.usuario, bloqueo, SRV.aviso].join('|');
+  if (el.dataset.clave === clave && el.querySelector('form')) { const s = $('#aDest'); if (s) s.textContent = destino; return; }
+  el.dataset.clave = clave;
+  SRV.limpiar = false;
+  const prev = el.querySelector('form') && !limpiar ? Object.fromEntries(['nombre', 'lat', 'lon', 'temperatura_c', 'calidad_aire', 'humedad_rel'].map((k) => [k, el.querySelector(`[name="${k}"]`)?.value || ''])) : {};
+  el.innerHTML = `<div class="row" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">${titulo}
+      <span class="coins">@${esc(SRV.usuario)} ${Disenos.moneda('moon', 18)}${SRV.saldo ? SRV.saldo.moon : ''}</span></div>
+    <div class="seg" role="group" aria-label="Dónde aportar"><button type="button" data-modo="existente" aria-pressed="${!nuevo}">Al punto seleccionado</button><button type="button" data-modo="nuevo" aria-pressed="${nuevo}">Crear punto nuevo</button></div>
+    ${SRV.aviso ? SRV.aviso : ''}
+    <form id="fAporte" novalidate style="display:grid;gap:10px">
+      ${nuevo ? `<label class="full">Nombre del punto (opcional)<input name="nombre" id="aNombre" maxlength="60" placeholder="Salinas de Torrevieja" value="${esc(prev.nombre || '')}"></label>`
+              : `<p style="font-size:.9rem">Punto: <b>${esc(nombreSeleccion())}</b> <span class="muted">(elígelo en el mapa o en el ranking)</span></p>`}
+      ${bloqueo ? `<div class="lock">Ya guardaste datos de este punto. Podrás volver a cambiarlos a partir del ${fecha(bloqueo)} (bloqueo de 12 horas).</div>` : ''}
+      <fieldset ${bloqueo ? 'disabled' : ''} style="border:0;margin:0;padding:0;display:grid;gap:10px">
+        <div class="fgrid">
+          <label>Latitud (obligatoria)<input name="lat" id="aLat" inputmode="decimal" placeholder="37.0500" value="${esc(prev.lat || '')}"><span class="err" data-for="lat"></span></label>
+          <label>Longitud (obligatoria)<input name="lon" id="aLon" inputmode="decimal" placeholder="-2.3900" value="${esc(prev.lon || '')}"><span class="err" data-for="lon"></span></label>
+          <div class="full" style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><button type="button" class="btn" id="aGeo">Usar mi ubicación</button><span class="muted" id="aGeoMsg" style="font-size:.82rem"></span></div>
+          <label>Temperatura (°C)<input name="temperatura_c" id="aTemp" inputmode="decimal" value="${esc(prev.temperatura_c || '')}"><span class="err" data-for="temperatura_c"></span></label>
+          <label>Humedad (%)<input name="humedad_rel" id="aHum" inputmode="decimal" value="${esc(prev.humedad_rel || '')}"><span class="err" data-for="humedad_rel"></span></label>
+          <label class="full">Calidad del aire (índice 0-500)<input name="calidad_aire" id="aAire" inputmode="numeric" value="${esc(prev.calidad_aire || '')}"><span class="err" data-for="calidad_aire"></span></label>
+          <label class="full">Foto del sitio (JPG, PNG o WEBP)<input type="file" name="foto" id="aFoto" accept="image/jpeg,image/png,image/webp" capture="environment"><span class="err" data-for="foto"></span></label>
+        </div>
+        <p class="muted" style="font-size:.8rem">Rellena las coordenadas y al menos un dato. Se guardan también el destino (<span id="aDest">${esc(destino)}</span>) y los pesos que tienes configurados, con la fecha de subida. Moon Coins: +10 por datos, +15 por foto${nuevo ? ', +40 si el punto nuevo es válido' : ''}.</p>
+        <p class="err" data-for="_"></p>
+        <button class="btn primary" id="aEnviar">${nuevo ? 'Validar y crear punto' : 'Guardar datos'}</button>
+      </fieldset>
+    </form>`;
+  el.querySelectorAll('[data-modo]').forEach((b) => b.addEventListener('click', () => { SRV.modo = b.dataset.modo; SRV.aviso = null; renderAporte(); }));
+  $('#aGeo')?.addEventListener('click', () => {
+    if (!navigator.geolocation) { $('#aGeoMsg').textContent = 'Tu navegador no da la ubicación.'; return; }
+    $('#aGeoMsg').textContent = 'Buscando…';
+    navigator.geolocation.getCurrentPosition((pos) => {
+      $('#aLat').value = pos.coords.latitude.toFixed(5); $('#aLon').value = pos.coords.longitude.toFixed(5);
+      $('#aGeoMsg').textContent = `Precisión ±${Math.round(pos.coords.accuracy)} m`;
+    }, () => { $('#aGeoMsg').textContent = 'No se pudo obtener: escríbelas a mano.'; }, {enableHighAccuracy: true, timeout: 15000});
+  });
+  $('#fAporte').addEventListener('submit', enviarAporte);
+}
+function marcarErrores(form, data, msg) {
+  form.querySelectorAll('[aria-invalid]').forEach((i) => i.removeAttribute('aria-invalid'));
+  form.querySelectorAll('.err').forEach((x) => (x.textContent = ''));
+  const errs = data.errores || {};
+  for (const [k, v] of Object.entries(errs)) {
+    const i = form.querySelector(`[name="${k}"]`); if (i) i.setAttribute('aria-invalid', 'true');
+    const b = form.querySelector(`.err[data-for="${k}"]`); if (b) b.textContent = v;
+  }
+  if (!Object.keys(errs).length || errs._) form.querySelector('.err[data-for="_"]').textContent = msg;
+}
+async function enviarAporte(ev) {
+  ev.preventDefault();
+  const f = ev.target, nuevo = SRV.modo === 'nuevo';
+  const val = (n) => f.querySelector(`[name="${n}"]`)?.value.trim() || '';
+  const foto = $('#aFoto').files[0];
+  const local = {};
+  if (!val('lat')) local.lat = 'Las coordenadas son obligatorias.';
+  if (!val('lon')) local.lon = 'Las coordenadas son obligatorias.';
+  if (!foto && !val('temperatura_c') && !val('calidad_aire') && !val('humedad_rel')) local._ = 'Rellena al menos un dato: foto, temperatura, calidad del aire o humedad.';
+  if (Object.keys(local).length) return marcarErrores(f, {errores: local}, local._ || 'Revisa los campos marcados.');
+  const fd = new FormData();
+  fd.append('modo', nuevo ? 'nuevo' : 'existente');
+  if (!nuevo) fd.append('zona', refSeleccion());
+  for (const k of ['nombre', 'lat', 'lon', 'temperatura_c', 'calidad_aire', 'humedad_rel']) if (val(k)) fd.append(k, val(k));
+  fd.append('destino', state.t.id);
+  fd.append('pesos', JSON.stringify(state.w));
+  if (foto) fd.append('foto', foto);
+  $('#aEnviar').disabled = true;
+  try {
+    const r = await fetch('/api/aportaciones', {method: 'POST', body: fd, credentials: 'same-origin'});
+    const d = await r.json().catch(() => ({}));
+    if (!r.ok) {
+      if (d.zona_existente) {
+        SRV.modo = 'existente';
+        SRV.aviso = `<div class="lock">${esc(d.error)}</div>`;
+        state.sel = d.zona_existente.clave && sites.some((s) => s.id === d.zona_existente.clave) ? d.zona_existente.clave : 'c:' + d.zona_existente.id;
+        return render();
+      }
+      if (d.bloqueado_hasta) { SRV.resumen[refSeleccion()] = {...(SRV.resumen[refSeleccion()] || {}), mi_bloqueo_hasta: d.bloqueado_hasta}; return renderAporte(); }
+      if (r.status === 401) { SRV.usuario = null; return renderAporte(); }
+      return marcarErrores(f, d, d.error || 'No se ha podido guardar.');
+    }
+    SRV.saldo = d.saldo;
+    SRV.aviso = `<div class="ok-box"><b>${d.punto_nuevo ? 'Punto validado y creado' : 'Datos guardados'}: +${d.moon_ganadas} Moon Coins</b>
+      <span class="muted">Guardado el ${fecha(d.fecha)} en «${esc(d.zona.nombre)}». Podrás cambiar los datos de este punto a partir del ${fecha(d.bloqueado_hasta)}.</span></div>`;
+    SRV.modo = 'existente';
+    SRV.limpiar = true;   // tras guardar, el formulario empieza vacío
+    delete SRV.resumen[String(d.zona.clave || d.zona.id)];
+    if (d.punto_nuevo) { SRV.comunidad = await getJSON('/api/puntos-comunidad'); state.sel = 'c:' + d.zona.id; }
+    render();
+  } catch { marcarErrores(f, {}, 'No hay conexión con el servidor.'); }
+  finally { const b = $('#aEnviar'); if (b) b.disabled = false; }
+}
 
 // ---------------------------------------------------------------- diseños de la app
 if ($('#levels')) {

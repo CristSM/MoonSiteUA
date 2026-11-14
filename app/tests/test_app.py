@@ -201,3 +201,104 @@ def test_el_servidor_sirve_la_web_completa():
     for pagina in ("/", "/demo.html", "/recompensas.html", "/explorador.html"):
         r = c.get(pagina)
         assert r.status_code == 200 and "MoonSite" in r.text
+
+
+# ------------------------------------------------------------------ aportaciones desde la demo
+import json  # noqa: E402
+import sqlite3  # noqa: E402
+
+
+def aportar(c, foto_bytes=None, **campos):
+    datos = {"modo": "existente", "zona": "tabernas", "lat": "37.05", "lon": "-2.39", **campos}
+    files = {"foto": ("t.jpg", io.BytesIO(foto_bytes), "image/jpeg")} if foto_bytes else None
+    return c.post("/api/aportaciones", data=datos, files=files)
+
+
+def test_aportacion_exige_coordenadas_y_al_menos_un_dato():
+    c, _ = nuevo(50)
+    r = aportar(c, lat="", lon="", temperatura_c="20")
+    assert r.status_code == 400 and {"lat", "lon"} <= set(r.json()["errores"])
+    r = aportar(c)
+    assert r.status_code == 400 and "al menos un dato" in r.json()["error"]
+
+
+def test_aportacion_valida_rangos_y_distancia():
+    c, _ = nuevo(51)
+    assert "humedad_rel" in aportar(c, humedad_rel="140").json()["errores"]
+    assert "calidad_aire" in aportar(c, calidad_aire="-3").json()["errores"]
+    r = aportar(c, lat="38.35", lon="-0.48", temperatura_c="20")       # Alicante, lejos de Tabernas
+    assert r.status_code == 400 and "km" in r.json()["error"]
+
+
+def test_aportacion_guarda_fecha_pesos_y_paga_foto():
+    c, _ = nuevo(52)
+    antes = c.get("/api/yo").json()["saldo"]["moon"]
+    r = aportar(c, JPG, temperatura_c="24.5", calidad_aire="38", humedad_rel="31", destino="marte_jezero",
+                pesos=json.dumps({"aridez": 2, "polvo": 1.5}))
+    assert r.status_code == 200, r.text
+    d = r.json()
+    assert d["moon_ganadas"] == L.MOON_APORTE_DATOS + L.MOON_APORTE_FOTO
+    assert d["saldo"]["moon"] == antes + d["moon_ganadas"]
+    fila = main.con.execute("SELECT * FROM aportaciones WHERE id = ?", (d["aportacion_id"],)).fetchone()
+    assert fila["fecha"] and fila["destino"] == "marte_jezero" and json.loads(fila["pesos_json"])["aridez"] == 2
+    assert d["bloqueado_hasta"]
+
+
+def test_bloqueo_de_12_horas_en_el_mismo_punto():
+    c, _ = nuevo(53)
+    assert aportar(c, temperatura_c="20").status_code == 200
+    r = aportar(c, temperatura_c="21")
+    assert r.status_code == 429 and r.json()["bloqueado_hasta"]
+    # otro punto sí se puede
+    assert aportar(c, zona="cabo_gata", lat="36.78", lon="-2.15", humedad_rel="60").status_code == 200
+    # pasadas 12 horas, vuelve a poder (se simula envejeciendo la fecha sin tocar la fila: se borra y reinserta)
+    uid = main.con.execute("SELECT id FROM usuarios WHERE username = 'ana53'").fetchone()[0]
+    filas = main.con.execute("SELECT * FROM aportaciones WHERE usuario_id = ?", (uid,)).fetchall()
+    main.con.execute("DELETE FROM aportaciones WHERE usuario_id = ?", (uid,))
+    for f in filas:
+        main.con.execute("INSERT INTO aportaciones (usuario_id, zona_id, lat, lon, temperatura_c, humedad_rel, fecha) VALUES (?, ?, ?, ?, ?, ?, datetime('now', '-13 hours'))",
+                         (uid, f["zona_id"], f["lat"], f["lon"], f["temperatura_c"], f["humedad_rel"]))
+    main.con.commit()
+    assert aportar(c, temperatura_c="22").status_code == 200
+
+
+def test_punto_nuevo_valido_se_crea_y_paga_mas():
+    c, _ = nuevo(54)
+    r = aportar(c, modo="nuevo", zona="", nombre="Salinas de Torrevieja", lat="37.98", lon="-0.70", humedad_rel="55")
+    assert r.status_code == 200, r.text
+    d = r.json()
+    assert d["punto_nuevo"] and d["zona"]["nombre"] == "Salinas de Torrevieja"
+    assert d["moon_ganadas"] == L.MOON_APORTE_DATOS + L.MOON_PUNTO_NUEVO
+    puntos = TestClient(main.app).get("/api/puntos-comunidad").json()
+    assert any(p["nombre"] == "Salinas de Torrevieja" and p["creado"] for p in puntos)
+    # bloqueo de 12 h también en el punto recién creado
+    assert aportar(c, zona=str(d["zona"]["id"]), lat="37.98", lon="-0.70", temperatura_c="19").status_code == 429
+
+
+def test_punto_nuevo_demasiado_cerca_de_otro_se_rechaza():
+    c, _ = nuevo(55)
+    r = aportar(c, modo="nuevo", lat="37.06", lon="-2.40", temperatura_c="25")   # junto a Tabernas
+    assert r.status_code == 409 and r.json()["zona_existente"]["clave"] == "tabernas"
+    assert main.con.execute("SELECT COUNT(*) FROM zonas WHERE lat = 37.06").fetchone()[0] == 0   # no quedó a medias
+
+
+def test_datos_nasa_no_se_pueden_modificar_ni_borrar():
+    antes = main.con.execute("SELECT perfil_json FROM zonas WHERE clave = 'tabernas'").fetchone()[0]
+    for sql in ("UPDATE zonas SET perfil_json = '{}' WHERE clave = 'tabernas'",
+                "UPDATE zonas SET lat = 0 WHERE clave = 'tabernas'",
+                "DELETE FROM zonas WHERE clave = 'tabernas'"):
+        with pytest.raises(sqlite3.DatabaseError):
+            main.con.execute(sql)
+    main.con.rollback()
+    assert main.con.execute("SELECT perfil_json FROM zonas WHERE clave = 'tabernas'").fetchone()[0] == antes
+
+
+def test_las_aportaciones_no_se_sobrescriben():
+    with pytest.raises(sqlite3.DatabaseError):
+        main.con.execute("UPDATE aportaciones SET temperatura_c = 99")
+    main.con.rollback()
+
+
+def test_resumen_publico_del_punto():
+    r = TestClient(main.app).get("/api/aportaciones/resumen", params={"zona": "tabernas"}).json()
+    assert r["aportaciones"] >= 2 and r["zona"]["recomendada"] and r["mi_bloqueo_hasta"] is None
