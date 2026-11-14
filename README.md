@@ -165,7 +165,6 @@ Los detalles técnicos están en `documentacion/README_TECNICO.md`. Los datos y 
 - 60 tests.
 
 **Pendiente para producción:**
-- Sustituir los valores de demo por los de Earth Engine.
-- OTP por SMS y verificación del dispositivo en el registro. La lógica está diseñada en `backend/` y la web aún no la aplica.
-- Base de datos persistente en un hosting (por ejemplo PostgreSQL), límite de intentos de inicio de sesión, borrar metadatos EXIF de las fotos y HTTPS.
+- Sustituir los valores de demo por los datos reales de la NASA.
+- Hacer presentación.
 - Grabar el vídeo de 30 segundos (guion en `documentacion/GUION_VIDEO.md`).
