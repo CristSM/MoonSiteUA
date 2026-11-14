@@ -485,6 +485,20 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 @media (max-width: 560px) { .mt-barras .fila { grid-template-columns: 110px 1fr 40px; } .mt-barras .eje { margin-left: 120px; margin-right: 50px; } .mt-perfiles .peso { grid-template-columns: 96px 1fr 36px; } }
 .mt-limites .card h3 { font-size: 1.2rem; }
 
+.mt-cuevas { display: grid; gap: 8px; position: relative; }
+.mt-cuevas .fila { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 64px; gap: 10px; align-items: center; }
+.mt-cuevas .fila > span:first-child { font-size: .92rem; display: grid; }
+.mt-cuevas .fila small { font: 500 .68rem var(--f-mono); color: var(--muted); }
+.mt-cuevas .pista5 { position: relative; height: 14px; background: var(--panel-2); }
+.mt-cuevas .pista5 i { position: absolute; inset: 0 auto 0 0; background: var(--text); }
+.mt-cuevas .fila b { font: 900 1.5rem/1 var(--f-display); text-align: right; }
+.mt-cuevas .fila.ok .pista5 i { background: var(--ok); }
+.mt-cuevas .pista5::after { content: ""; position: absolute; left: 5%; top: -4px; bottom: -4px; width: 2px; background: var(--accent); }
+.mt-cuevas .fila.ok b, .mt-cuevas .fila.ok > span:first-child { color: var(--ok); }
+.mt-cuevas .azar { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) 64px; gap: 10px; }
+.mt-cuevas .azar small { grid-column: 2; font: 500 .68rem var(--f-mono); color: var(--accent); }
+.mt-cifra .ok b { color: var(--ok); }
+
 /* zona de exploradores (la parte con cuentas) */
 .xp a { color: var(--accent); }
 .xp h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); }
@@ -2393,10 +2407,13 @@ if (window.METODO && $('#mtPasosLista')) {
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
   const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior',
-    tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'cuevas volcánicas en el 5 % superior',
-    novolc: 'cuevas no volcánicas en el 5 % superior', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
+    tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
+    novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
-    lineaBase: 'Artículos que ya citan cada análogo conocido (escala logarítmica)', escala: 'Barras: percentil de 90 a 100', bloques: 'bloques', sinEstudios: 'sin estudios como análogo'};
+    lineaBase: 'Artículos que ya citan cada análogo conocido (escala logarítmica)', escala: 'Barras: percentil de 90 a 100', bloques: 'bloques', entradas: 'entradas de OpenStreetMap', top5: 'fracción en el 5 % superior del mapa',
+    tubos: 'Tubos de lava confirmados', cuevasN: 'cuevas', porZona: 'contando una vez cada una de las', zonas: 'zonas',
+    aucTubos: 'AUC de los tubos de lava dentro de zonas volcánicas', aucVolc: 'AUC de todas las cuevas volcánicas dentro de zonas volcánicas',
+    dimension: 'AUC por dimensión', aucTubosCorto: 'Tubos de lava', aucVolcCorto: 'Cuevas volcánicas', sinEstudios: 'sin estudios como análogo'};
   const PAIS = {Canada: 'Canadá', Algeria: 'Argelia', Sudan: 'Sudán', 'Saudi Arabia': 'Arabia Saudí', Eritrea: 'Eritrea', 'United States': 'Estados Unidos', Egypt: 'Egipto', Libya: 'Libia',
     Chad: 'Chad', Niger: 'Níger', Mali: 'Malí', Mauritania: 'Mauritania', Morocco: 'Marruecos', Iran: 'Irán', China: 'China', Mongolia: 'Mongolia', Chile: 'Chile', Peru: 'Perú',
     Argentina: 'Argentina', Bolivia: 'Bolivia', Mexico: 'México', Australia: 'Australia', Ethiopia: 'Etiopía', Yemen: 'Yemen', Oman: 'Omán', Namibia: 'Namibia', 'South Africa': 'Sudáfrica',
@@ -2431,11 +2448,22 @@ if (window.METODO && $('#mtPasosLista')) {
   // H. Validación: análogos conocidos (6 por perfil) y cuevas de OSM (sin coordenadas)
   $('#mtConocidos').innerHTML = `<h4 class="mt-h4">${esc(L.conocidos)}</h4><p class="mono muted" style="font-size:.72rem">${esc(L.escala)}</p>` + Object.entries(M.validacion_analogos_conocidos).map(([id, lista]) => `<div class="mt-perc"><p class="kicker" style="color:var(--text)">${esc(perfil[id]?.corto || id)}</p>
       ${lista.slice(0, 6).map((a) => `<div class="fila"><span title="${esc(a.analogo)}">${esc(a.analogo)}</span><span class="bar"><i style="width:${Math.max(0, Math.min(100, (a.percentil - 90) * 10))}%"></i></span><b>${num(a.percentil, 2)}</b></div>`).join('')}</div>`).join('');
-  const C = M.validacion_cuevas_osm;
+  const C = M.validacion_cuevas_osm, TL = C.tubos_de_lava;
+  // tres filas frente al 5 % que daría el azar; los tubos de lava confirmados son el dato que más cuenta
+  const filaCueva = (nombre, frac, extra, ok) => `<div class="fila${ok ? ' ok' : ''}"><span>${esc(nombre)}${extra ? `<small>${extra}</small>` : ''}</span><span class="pista5"><i style="width:${(frac * 100).toFixed(1)}%"></i></span><b>${pct(frac)}</b></div>`;
+  const nombreDim = Object.fromEntries(M.dimensiones.map((d) => [d.dim, d.nombre]));
   $('#mtCuevas').innerHTML = `<h4 class="mt-h4">${esc(L.cuevas)}</h4>
       ${String(C.modo).startsWith('PARCIAL') ? `<span class="pill naranja" style="justify-self:start">${esc(L.parcial)} · ${(String(C.modo).match(/\d+/) || [''])[0]} ${esc(L.bloques)}</span>` : ''}
-      <div class="mt-cifra"><div><b>${pct(C.volcanicas.frac_top5)}</b><span>${esc(L.volc)}</span></div><div><b>${pct(C.no_volcanicas.frac_top5)}</b><span>${esc(L.novolc)}</span></div><div><b>5 %</b><span>${esc(L.azar)}</span></div><div><b>${num(C.auc_volcanicas_vs_celdas_volcanicas, 2)}</b><span>${esc(L.auc)}</span></div></div>
-      <p class="muted">${esc(C.lectura)}</p>`;
+      <p class="mono muted" style="font-size:.72rem">${num(C.n_total || 0)} ${esc(L.entradas)} · ${esc(L.top5)}</p>
+      <div class="mt-cuevas">
+        ${filaCueva(L.tubos, TL.frac_top5, `${num(TL.n)} ${esc(L.cuevasN)} · ${pct(TL.por_zona_1grado.frac_top5)} ${esc(L.porZona)} ${num(TL.por_zona_1grado.n_zonas_1deg)} ${esc(L.zonas)}`, true)}
+        ${filaCueva(L.volc, C.volcanicas.frac_top5, `${num(C.volcanicas.n)} ${esc(L.cuevasN)}`)}
+        ${filaCueva(L.novolc, C.no_volcanicas.frac_top5, `${num(C.no_volcanicas.n)} ${esc(L.cuevasN)}`)}
+        <div class="azar"><small>▏${esc(L.azar)}: 5 %</small></div>
+      </div>
+      <div class="mt-cifra"><div class="ok"><b>${num(TL.auc_vs_celdas_volcanicas, 2)}</b><span>${esc(L.aucTubos)}</span></div><div><b>${num(C.auc_volcanicas_vs_celdas_volcanicas, 2)}</b><span>${esc(L.aucVolc)}</span></div></div>
+      <p class="muted">${esc(C.lectura)}</p>
+      ${C.auc_por_dimension ? `<div class="tbl"><table><thead><tr><th>${esc(L.dimension)}</th><th>${esc(L.aucTubosCorto)}</th><th>${esc(L.aucVolcCorto)}</th></tr></thead><tbody>${Object.entries(C.auc_por_dimension).map(([k, v]) => `<tr><td>${esc(nombreDim[k] || k)}</td><td class="mono">${num(v.tubos_de_lava, 2)}</td><td class="mono">${num(v.cuevas_volcanicas, 2)}</td></tr>`).join('')}</tbody></table></div>` : ''}`;
   // I. Novedad bibliográfica
   const colorClase = ['verde', 'gris', 'naranja', 'rojo'];
   $('#mtClases').innerHTML = M.novedad_bibliografica.clases.map((c, i) => `<span class="pill ${colorClase[i]}">${esc(c.clase)}<b>${esc(c.rango)}</b></span>`).join('');

@@ -1,6 +1,6 @@
 {
  "_doc": "Datos reales del método Analog Finder para la página MÉTODO de MoonSiteUA. Generado por scripts/export_metodo_data.py.",
- "generado_utc": "2026-11-14T19:38:38+00:00",
+ "generado_utc": "2026-11-14T20:47:14+00:00",
  "cifras": {
   "celdas_tierra": 8604242,
   "rejilla_tierra": "0,05° (~5,5 km)",
@@ -667,21 +667,21 @@
   ]
  },
  "validacion_cuevas_osm": {
-  "modo": "PARCIAL (51 bloques)",
+  "modo": "completo",
   "definicion_volcanica": "GLiM ['va', 'vb', 'vi'] o volcán GVP <= 30 km",
   "volcanicas": {
-   "n": 5068,
-   "auc_mean_percentile": 0.7138,
-   "median_percentile": 0.7098,
-   "frac_top10": 0.2778,
-   "frac_top5": 0.2238,
-   "frac_top1": 0.1052
+   "n": 5583,
+   "auc_mean_percentile": 0.7171,
+   "median_percentile": 0.7138,
+   "frac_top10": 0.2841,
+   "frac_top5": 0.2302,
+   "frac_top1": 0.1093
   },
   "no_volcanicas": {
-   "n": 59317,
-   "auc_mean_percentile": 0.1885,
-   "median_percentile": 0.154,
-   "frac_top10": 0.0018,
+   "n": 64239,
+   "auc_mean_percentile": 0.1897,
+   "median_percentile": 0.1547,
+   "frac_top10": 0.0017,
    "frac_top5": 0.0009,
    "frac_top1": 0.0003
   },
@@ -692,8 +692,57 @@
    "frac_top5": 0.2699,
    "frac_top1": 0.1307
   },
-  "auc_volcanicas_vs_celdas_volcanicas": 0.4621,
-  "lectura": "El perfil distingue tubos de lava de karst y la cercanía a volcanes predice las cuevas (AUC 0,76), pero dentro de zonas volcánicas no predice dónde hay cuevas cartografiadas: OSM refleja dónde vive y explora la gente, y el perfil busca a propósito lugares áridos y remotos."
+  "auc_volcanicas_vs_celdas_volcanicas": 0.4663,
+  "n_total": 73341,
+  "tubos_de_lava": {
+   "definicion": "geological=volcanic_lava_tube o nombre/descripción con «lava», «lava tube», «tunnel de lave», «jameo», «Lavahöhle»…",
+   "n": 49,
+   "auc_mean_percentile": 0.9486,
+   "median_percentile": 0.9958,
+   "frac_top10": 0.7959,
+   "frac_top5": 0.7959,
+   "frac_top1": 0.6939,
+   "por_zona_1grado": {
+    "n_zonas_1deg": 16,
+    "auc_mean_percentile": 0.9456,
+    "frac_top5": 0.75,
+    "frac_top1": 0.625
+   },
+   "auc_vs_tierra": 0.9489,
+   "auc_vs_celdas_volcanicas": 0.8474
+  },
+  "auc_por_dimension": {
+   "terrain": {
+    "cuevas_volcanicas": 0.359,
+    "tubos_de_lava": 0.4669
+   },
+   "volcanic": {
+    "cuevas_volcanicas": 0.7578,
+    "tubos_de_lava": 0.9042
+   },
+   "lithology": {
+    "cuevas_volcanicas": 0.3886,
+    "tubos_de_lava": 0.689
+   },
+   "nonsilicic": {
+    "cuevas_volcanicas": 0.5166,
+    "tubos_de_lava": 0.6735
+   },
+   "arid": {
+    "cuevas_volcanicas": 0.312,
+    "tubos_de_lava": 0.3403
+   },
+   "barren": {
+    "cuevas_volcanicas": 0.0694,
+    "tubos_de_lava": 0.2164
+   },
+   "ice_free": {
+    "cuevas_volcanicas": 0.7972,
+    "tubos_de_lava": 0.7903
+   }
+  },
+  "densidad": "Recuentos agregados en celdas de 1° (data/derived/osm/cave_density_1deg.json); nunca coordenadas exactas.",
+  "lectura": "Con los tubos de lava confirmados (etiqueta geological=volcanic_lava_tube o nombre) el perfil acierta: 80 % en el 5 % superior del mapa y AUC 0.8474 incluso dentro de zonas volcánicas, aunque la muestra es pequeña (16 zonas). Con todas las cuevas «volcánicas por cercanía» distingue el entorno volcánico del karst, pero no predice dónde están cartografiadas: OSM refleja dónde vive y explora la gente (zonas húmedas y con vegetación) y el perfil busca a propósito lugares áridos y remotos."
  },
  "novedad_bibliografica": {
   "fuente": "OpenAlex + topónimos de OpenStreetMap, GVP y Wikidata",
