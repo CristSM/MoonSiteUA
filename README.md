@@ -1,5 +1,5 @@
 # MoonSiteUA
-Hackathon NASA Space
+
 El concepto: Una plataforma gamificada de ciencia ciudadana que transforma la búsqueda de análogos lunares y marcianos en una exploración colaborativa global. Los usuarios actúan como "rovers humanos", recopilando datos sobre el terreno para validar zonas de interés predefinidas por datos satelitales o descubrir nuevos micro-análogos.
 
 1. El Motor de Datos y el Mapa Interactivo
@@ -25,7 +25,7 @@ Puntos de Exploración (Virtuales): Se obtienen por acciones comunes (validar un
 
 Puntos de Misión (Físicos): Moneda premium muy escasa. Se otorgan al liderar expediciones validadas o completar objetivos de alto valor. Se canjean por merchandising oficial (pins, parches de misión, camisetas).
 
-Insignias de Pionero: El primer usuario en documentar un nuevo análogo validado recibe un título inmutable en el historial de ese nodo.
+Insignias: Por ejemplo, el primer usuario en documentar un nuevo análogo validado recibe un título inmutable en el historial de ese nodo.
 
 4. Construcción de Hábitats Virtuales (El Bucle Social)
 Esta es la mecánica clave para generar comunidad. Cada análogo confirmado en el mundo real se convierte en una "Base Espacial" en el mundo virtual.
