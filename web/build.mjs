@@ -3,7 +3,7 @@
 // Por defecto usa ../engine/sites_demo.json. Tras exportar desde Earth Engine:
 //   python ../engine/import_gee.py moonsiteua_sitios.geojson  ->  ../engine/sites.json
 //   node build.mjs ../engine/sites.json
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, cpSync } from 'node:fs';
 import { geoNaturalEarth1, geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 
@@ -51,7 +51,9 @@ const html = read('template.html')
   .replace('/*__DATA__*/null', JSON.stringify(data))
   .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'))
   .replace('/*__EXPLORADOR_CSS__*/', () => read('explorador.css'))
-  .replace('/*__EXPLORADOR_JS__*/', () => read('explorador.js'));
+  .replace('/*__EXPLORADOR_JS__*/', () => read('explorador.js'))
+  // datos reales del método: solo se inyectan en la página Método (no en el objeto común D)
+  .replace('/*__METODO__*/null', () => read('../engine/metodo_data.json'));
 
 // ---------------------------------------------------------------- páginas
 // La plantilla marca bloques con <!--PAGE id--> ... <!--/PAGE-->. Cada página
@@ -61,7 +63,7 @@ const PAGES = [
   ['demo', 'demo.html', 'Demo', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
   ['juego', 'juego.html', 'Juego', '¿Cuál es mejor análogo? Pon a prueba tu intuición.'],
   ['app', 'recompensas.html', 'Recompensas', 'Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
-  ['metodo', 'metodo.html', 'Método', 'El Índice de Analogía Planetaria y sus 9 ejes.'],
+  ['metodo', 'metodo.html', 'Método', 'Huellas de terreno, gemelos planetarios, validación y novedad bibliográfica.'],
   ['validacion', 'validacion.html', 'Validación', 'Balizas por consenso y escalado robótico.'],
   ['comunidad', 'comunidad.html', 'Comunidad', 'Puntos, misiones, insignias y bases virtuales.'],
   ['seguridad', 'seguridad.html', 'Seguridad', 'Una persona, una cuenta; modo expedición offline; privacidad.'],
@@ -74,7 +76,7 @@ const MAS = {
   demo: 'Mapa mundial y de España con el Índice de Analogía Planetaria de cada sitio frente a cuatro destinos. Cada ficha muestra en qué se parece y en qué no, y lo que la Tierra no puede imitar. Puedes cambiar el peso de cada eje y aportar tus propios datos.',
   juego: 'Dos sitios frente a frente: eliges cuál se parece más al destino y se revela el índice de cada uno. Sirve para entrenar la intuición, porque lo que parece un desierto no siempre gana.',
   app: 'Moon Coins para decorar y Mars Coins para premios físicos. Cada zona tiene una base que crece una planta cada cinco exploradores, con habitaciones que cada uno decora a su gusto.',
-  metodo: 'Una media ponderada de la similitud en nueve ejes calculados con datos de la NASA en Google Earth Engine. La nota ordena los candidatos y la similitud por eje explica el porqué.',
+  metodo: 'Comparamos 8,6 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte usando las mismas métricas de relieve, puntuamos tres perfiles de misión con pesos explícitos, comprobamos que el método recupera los análogos conocidos y medimos cuánto se ha estudiado ya cada candidata.',
   validacion: 'Nadie confirma un análogo en solitario: hacen falta varios exploradores independientes que coincidan. Las zonas peligrosas se cierran al público y pasan a misiones con robots.',
   comunidad: 'Misiones que llevan a la gente a los datos que faltan, insignias para quien descubre primero y bases virtuales que crecen con cada explorador que llega.',
   seguridad: 'Una persona, una cuenta; captura de datos sin cobertura móvil; una geovalla que impide enviar datos desde casa; y ninguna misión en zonas peligrosas o protegidas.',
@@ -91,7 +93,21 @@ for (const m of html.slice(first, footer).matchAll(/<!--PAGE (\w+)-->([\s\S]*?)<
 // Versión en inglés: web/en/*.html (diccionario en i18n/en.py -> i18n/en.json)
 const EN = JSON.parse(read('i18n/en.json'));
 const RUN = /(?<=[>"'`}])([^<>"'`${}]*[A-Za-zÁÉÍÓÚÜáéíóúüñÑ¿¡][^<>"'`${}]*)(?=[<"'`$])/g;
+// El JSON del método se traduce recorriendo solo sus valores: así ninguna clave cambia aunque coincida con un texto del diccionario
+function traducirValores(o) {
+  if (typeof o === 'string') { const k = o.trim(); return EN.textos[k] ? o.replace(k, EN.textos[k]) : o; }
+  if (Array.isArray(o)) return o.map(traducirValores);
+  if (o && typeof o === 'object') return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, traducirValores(v)]));
+  return o;
+}
 function traducir(page) {
+  const MK = 'window.METODO = ', iM = page.indexOf(MK); let metodoEN = null;
+  if (iM >= 0) { const jM = page.indexOf(';</script>', iM), json = page.slice(iM + MK.length, jM);
+    if (json !== 'null') { metodoEN = JSON.stringify(traducirValores(JSON.parse(json))); page = page.slice(0, iM + MK.length) + '__METODO_EN__' + page.slice(jM); } }
+  page = traducirTexto(page);
+  return metodoEN ? page.replace('__METODO_EN__', () => metodoEN) : page;
+}
+function traducirTexto(page) {
   for (const [a, b] of EN.crudo) page = page.split(a).join(b);
   page = page.replace(RUN, (run) => { const k = run.trim(); return EN.textos[k] ? run.replace(k, EN.textos[k]) : run; });
   return page.replace('window.I18N = /*__I18N__*/null;', () => `window.I18N = ${JSON.stringify({ textos: EN.textos, patrones: EN.patrones })};`);
@@ -113,3 +129,5 @@ for (const [id, file, label] of PAGES) {
   for (const dir of out) { writeFileSync(new URL(file, dir), es); writeFileSync(new URL('en/' + file, dir), en); }
 }
 console.log(`${PAGES.length} páginas × 2 idiomas · ${sites.sites.length} sitios · demo=${data.demo}`);
+// las imágenes del método no las escribe el build: se copian a la versión de GitHub Pages
+cpSync(new URL('img/', here), new URL('../docs/img/', here), {recursive: true});

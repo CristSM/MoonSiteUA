@@ -424,6 +424,67 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .seg { max-width: 100%; }
 .txt .seg, .head .seg { width: auto; justify-self: start; }
 
+/* método: secciones con título a la izquierda y contenido a la derecha */
+.mt-sec { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 9fr); gap: 16px 24px; border-top: var(--rule); padding-top: 22px; }
+@media (max-width: 860px) { .mt-sec { grid-template-columns: 1fr; } }
+.mt-tit { display: grid; gap: 8px; align-content: start; }
+.mt-tit h3 { font-size: clamp(1.6rem, 2.6vw, 2.2rem); font-weight: 900; line-height: .98; }
+.mt-cuerpo { display: grid; gap: 18px; align-content: start; min-width: 0; }
+.mt-pipe { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.mt-pipe > div:nth-child(3n+1) { padding-left: 0; border-left: 0; }
+.mt-pipe > div:nth-child(n+4) { border-top: 1px solid var(--line); }
+@media (max-width: 760px) { .mt-pipe { grid-template-columns: 1fr; } .mt-pipe > div { padding-left: 0 !important; border-left: 0 !important; } }
+.mt-formulas { display: grid; gap: 0; }
+.mt-formulas .formula { border-bottom: 0; padding: 14px 0; font-size: clamp(1.1rem, 2.4vw, 1.9rem); }
+.mt-formulas .formula:last-child { border-bottom: var(--rule); }
+.mt-escalas { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 24px; }
+@media (max-width: 560px) { .mt-escalas { grid-template-columns: 1fr; } }
+.mt-escalas div { border-top: 1px solid var(--line); padding: 12px 0; display: grid; gap: 4px; }
+.mt-escalas b { font: 900 2.6rem/.9 var(--f-display); color: var(--accent); }
+.mt-escalas span { font: 800 1.2rem var(--f-display); text-transform: uppercase; }
+.mt-escalas small { font: 500 .72rem var(--f-mono); color: var(--muted); }
+.mt-gemelos { display: grid; gap: 22px; max-width: 760px; }
+.mt-gemelos figure { margin: 0; display: grid; gap: 8px; }
+.mt-gemelos img { width: 100%; height: auto; display: block; border: 3px solid var(--text); filter: contrast(1.1); }
+.mt-gemelos .pares { display: flex; justify-content: space-between; font: 500 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.mt-gemelos figcaption b { font: 800 1.25rem/1.15 var(--f-display); text-transform: uppercase; letter-spacing: .02em; display: block; }
+.mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
+.mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+.mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-perfiles .refs { font-size: .9rem; color: #cbc7bb; }
+.mt-perfiles .pesos { display: grid; gap: 6px; margin: 6px 0; }
+.mt-perfiles .peso { display: grid; grid-template-columns: 112px 1fr 38px; gap: 8px; align-items: center; font-size: .85rem; }
+.mt-perfiles .peso .bar i { background: var(--accent); }
+.mt-perfiles .peso b { font: 500 .78rem var(--f-mono); text-align: right; }
+.mt-perfiles .num { display: flex; align-items: baseline; gap: 8px; border-top: 1px solid var(--line); padding-top: 10px; }
+.mt-perfiles .num b { font: 900 2.2rem/1 var(--f-display); color: var(--accent); }
+.mt-perfiles .num span { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.mt-h4 { margin: 8px 0 0; font: 500 .74rem var(--f-mono); text-transform: uppercase; letter-spacing: .1em; color: var(--accent); }
+.mt-lista { margin: 0; padding-left: 18px; color: #cbc7bb; font-size: .95rem; display: grid; gap: 4px; }
+.mt-valid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px 40px; }
+@media (max-width: 760px) { .mt-valid { grid-template-columns: 1fr; } }
+.mt-valid > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+.mt-perc { display: grid; gap: 5px; }
+.mt-perc .fila { display: grid; grid-template-columns: minmax(0, 1fr) 90px 56px; gap: 10px; align-items: center; font-size: .88rem; }
+.mt-perc .fila .bar i { background: var(--accent); }
+.mt-perc .fila b { font: 500 .8rem var(--f-mono); text-align: right; }
+.mt-perc .fila span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mt-cifra { display: flex; gap: 22px; flex-wrap: wrap; }
+.mt-cifra div { display: grid; gap: 2px; }
+.mt-cifra b { font: 900 2.4rem/.9 var(--f-display); color: var(--accent); }
+.mt-cifra span { font: 500 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); max-width: 18ch; }
+.pill.rojo { color: var(--bad); border-color: var(--bad); }
+.mt-clases .pill b { font-weight: 500; color: var(--text); margin-left: 6px; }
+.mt-barras { display: grid; gap: 4px; }
+.mt-barras .fila { display: grid; grid-template-columns: 170px 1fr 48px; gap: 10px; align-items: center; font-size: .86rem; }
+.mt-barras .fila i { display: block; height: 12px; background: var(--accent); }
+.mt-barras .fila b { font: 500 .8rem var(--f-mono); text-align: right; }
+.mt-barras .eje { position: relative; height: 16px; font: 500 .68rem var(--f-mono); color: var(--muted); margin-left: 180px; margin-right: 58px; border-top: 1px solid var(--line); }
+.mt-barras .eje span { position: absolute; top: 2px; transform: translateX(-50%); }
+.mt-barras .eje span::before { content: ""; position: absolute; left: 50%; top: -6px; width: 1px; height: 5px; background: var(--muted); }
+@media (max-width: 560px) { .mt-barras .fila { grid-template-columns: 110px 1fr 40px; } .mt-barras .eje { margin-left: 120px; margin-right: 50px; } .mt-perfiles .peso { grid-template-columns: 96px 1fr 36px; } }
+.mt-limites .card h3 { font-size: 1.2rem; }
+
 /* zona de exploradores (la parte con cuentas) */
 .xp a { color: var(--accent); }
 .xp h2 { font-size: clamp(1.9rem, 3.6vw, 2.8rem); }
@@ -1886,7 +1947,8 @@ const FIG = {
   },
   juego: (el) => { const r = results(); el.innerHTML = `<div class="vs"><b>${esc(r[2].s.nombre)}</b><i>VS</i><b>${esc(r[6].s.nombre)}</b></div>`; },
   app: (el) => { el.innerHTML = `<div style="display:flex;gap:18px;align-items:center;justify-content:center">${Disenos.moneda('moon', 120)}${Disenos.moneda('mars', 120)}</div>`; },
-  metodo: (el) => { const {s, r} = results()[0]; el.innerHTML = radar(r.sim, s.ax, state.t); },
+  // un gemelo planetario real: relieve de la candidata terrestre y de su gemelo, a la misma escala
+  metodo: (el) => { const b = location.pathname.includes('/en/') ? '../' : ''; el.innerHTML = `<img src="${b}img/metodo/gemelo_moon_mars_caves.png" alt="" style="width:100%;height:100%;object-fit:cover;filter:contrast(1.1)">`; },
   validacion: (el) => {
     const col = ['var(--idle)', 'var(--warn)', 'var(--ok)'], n = [1, 3, 6];
     let h = '<svg viewBox="0 0 400 300" aria-hidden="true">';
@@ -2298,6 +2360,72 @@ if ($('#simSvg')) {
   // versión 3D (si three.js carga); el SVG queda como reserva
   simulador3d($('#simLienzo')).then((a) => { $('#simSvg').remove(); sim3d = a; pinta(); }).catch(() => {});
   robot3d($('#robotLienzo')).then(() => { $('#robotSvg').remove(); $('#robotPista').hidden = false; }).catch(() => {});
+}
+// ---------------------------------------------------------------- página Método: se rellena con los datos reales (window.METODO)
+if (window.METODO && $('#mtPasosLista')) {
+  const M = window.METODO, EN = document.documentElement.lang === 'en';
+  const BASE = location.pathname.includes('/en/') ? '../' : '';
+  // textos fijos (el build los traduce en la versión inglesa)
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior',
+    tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'cuevas volcánicas en el 5 % superior',
+    novolc: 'cuevas no volcánicas en el 5 % superior', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
+    parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
+    lineaBase: 'Artículos que ya citan cada análogo conocido (escala logarítmica)', escala: 'Barras: percentil de 90 a 100', bloques: 'bloques', sinEstudios: 'sin estudios como análogo'};
+  const PAIS = {Canada: 'Canadá', Algeria: 'Argelia', Sudan: 'Sudán', 'Saudi Arabia': 'Arabia Saudí', Eritrea: 'Eritrea', 'United States': 'Estados Unidos', Egypt: 'Egipto', Libya: 'Libia',
+    Chad: 'Chad', Niger: 'Níger', Mali: 'Malí', Mauritania: 'Mauritania', Morocco: 'Marruecos', Iran: 'Irán', China: 'China', Mongolia: 'Mongolia', Chile: 'Chile', Peru: 'Perú',
+    Argentina: 'Argentina', Bolivia: 'Bolivia', Mexico: 'México', Australia: 'Australia', Ethiopia: 'Etiopía', Yemen: 'Yemen', Oman: 'Omán', Namibia: 'Namibia', 'South Africa': 'Sudáfrica',
+    Greenland: 'Groenlandia', Iceland: 'Islandia', Russia: 'Rusia', Kazakhstan: 'Kazajistán', Turkmenistan: 'Turkmenistán', Afghanistan: 'Afganistán', Pakistan: 'Pakistán', India: 'India', Jordan: 'Jordania', Antarctica: 'Antártida'};
+  const pais = (p) => (EN ? p : PAIS[p] || p);
+  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d});
+  const pct = (v) => `${num(v * 100, v * 100 < 1 ? 2 : 1)} %`;
+  const coord = ([la, lo]) => `${num(Math.abs(la), 2)}° ${la >= 0 ? 'N' : 'S'} ${num(Math.abs(lo), 2)}° ${lo >= 0 ? 'E' : (EN ? 'W' : 'O')}`;
+  const perfil = Object.fromEntries(M.perfiles.map((p) => [p.id, p]));
+
+  // B. Seis pasos
+  $('#mtPasosLista').innerHTML = M.pasos.map((p) => `<div><span class="n">${esc(p.titulo)}</span><p class="muted">${esc(p.texto)}</p></div>`).join('');
+  // C. Fórmulas
+  $('#mtFormulasLista').innerHTML = ['indice', 'terreno', 'novedad', 'descubrimiento'].map((k) => `<div class="formula">${esc(M.formulas[k])}</div>`).join('');
+  // D. Huella de terreno
+  $('#mtEscalas').innerHTML = M.escalas_dem.map((e) => `<div><b>${num(e.m)} m</b><span>${esc(e.cuerpo)}</span><small>${esc(e.dem)}</small></div>`).join('');
+  $('#mtMetricas').innerHTML = M.metricas_terreno.map((m) => `<tr><td><b>${esc(m.metrica)}</b></td><td class="muted">${esc(m.detalle)}</td></tr>`).join('');
+  // E. Gemelos planetarios
+  $('#mtGemelosLista').innerHTML = M.gemelos.map((g) => `<figure>
+      <div class="pares"><span>${esc(L.tierra)}</span><span>${esc(g.gemelo_cuerpo)}</span></div>
+      <img src="${BASE}img/metodo/${esc(g.archivo.split('/').pop())}" alt="${esc(L.relieve)} ${esc(g.tierra)} ${esc(L.junto)}: ${esc(g.gemelo)}" loading="lazy" width="608" height="300">
+      <figcaption><p class="kicker">${esc(perfil[g.perfil]?.corto || '')}</p><b>${esc(L.tierra)}: ${esc(g.tierra)} ↔ ${esc(g.gemelo_cuerpo)}: ${esc(g.gemelo)}</b><span class="mono">${coord(g.tierra_coord)} ↔ ${coord(g.gemelo_coord)}</span></figcaption></figure>`).join('');
+  // F. Tres perfiles de misión
+  $('#mtPerfilesLista').innerHTML = M.perfiles.map((p) => `<div class="card">
+      <p class="kicker">${esc(p.corto)}</p><h3>${esc(p.titulo)}</h3>
+      <p class="refs"><b>${num(p.referencias.n_sitios)}</b> ${esc(L.sitios)}. ${esc(L.ejemplos)}: ${p.referencias.ejemplos.slice(0, 4).map(esc).join(', ')}.</p>
+      <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
+      <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
+      <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');
+  // G. Dimensiones y reglas
+  $('#mtDimsLista').innerHTML = M.dimensiones.map((d) => `<tr><td><b>${esc(d.nombre)}</b></td><td>${esc(d.dato)}</td><td class="muted">${esc(d.regla)}</td></tr>`).join('');
+  // H. Validación: análogos conocidos (6 por perfil) y cuevas de OSM (sin coordenadas)
+  $('#mtConocidos').innerHTML = `<h4 class="mt-h4">${esc(L.conocidos)}</h4><p class="mono muted" style="font-size:.72rem">${esc(L.escala)}</p>` + Object.entries(M.validacion_analogos_conocidos).map(([id, lista]) => `<div class="mt-perc"><p class="kicker" style="color:var(--text)">${esc(perfil[id]?.corto || id)}</p>
+      ${lista.slice(0, 6).map((a) => `<div class="fila"><span title="${esc(a.analogo)}">${esc(a.analogo)}</span><span class="bar"><i style="width:${Math.max(0, Math.min(100, (a.percentil - 90) * 10))}%"></i></span><b>${num(a.percentil, 2)}</b></div>`).join('')}</div>`).join('');
+  const C = M.validacion_cuevas_osm;
+  $('#mtCuevas').innerHTML = `<h4 class="mt-h4">${esc(L.cuevas)}</h4>
+      ${String(C.modo).startsWith('PARCIAL') ? `<span class="pill naranja" style="justify-self:start">${esc(L.parcial)} · ${(String(C.modo).match(/\d+/) || [''])[0]} ${esc(L.bloques)}</span>` : ''}
+      <div class="mt-cifra"><div><b>${pct(C.volcanicas.frac_top5)}</b><span>${esc(L.volc)}</span></div><div><b>${pct(C.no_volcanicas.frac_top5)}</b><span>${esc(L.novolc)}</span></div><div><b>5 %</b><span>${esc(L.azar)}</span></div><div><b>${num(C.auc_volcanicas_vs_celdas_volcanicas, 2)}</b><span>${esc(L.auc)}</span></div></div>
+      <p class="muted">${esc(C.lectura)}</p>`;
+  // I. Novedad bibliográfica
+  const colorClase = ['verde', 'gris', 'naranja', 'rojo'];
+  $('#mtClases').innerHTML = M.novedad_bibliografica.clases.map((c, i) => `<span class="pill ${colorClase[i]}">${esc(c.clase)}<b>${esc(c.rango)}</b></span>`).join('');
+  const lb = M.novedad_bibliografica.linea_base, maxL = Math.log10(1 + Math.max(...lb.map((x) => x.articulos)));
+  $('#mtLineaBase').innerHTML = `<h4 class="mt-h4">${esc(L.lineaBase)}</h4>` + lb.map((x) => `<div class="fila"><span>${esc(x.analogo)}</span><i style="width:${(Math.log10(1 + x.articulos) / maxL * 100).toFixed(1)}%"></i><b>${num(x.articulos)}</b></div>`).join('')
+    + `<div class="eje">${[1, 10, 100].concat(Math.max(...lb.map((x) => x.articulos)) >= 1000 ? [1000] : []).map((v) => `<span style="left:${(Math.log10(1 + v) / maxL * 100).toFixed(1)}%">${num(v)}</span>`).join('')}</div>`;
+  const cand = [];
+  Object.entries(M.candidatas_descubrimiento).forEach(([id, lista]) => { const vistos = new Set();
+    lista.filter((c) => !vistos.has(c.lugar) && vistos.add(c.lugar)).slice(0, 2).forEach((c) => cand.push([id, c])); });
+  $('#mtCandidatas').innerHTML = cand.map(([id, c]) => `<tr><td class="mono" style="white-space:nowrap">${esc(perfil[id]?.corto || id)}</td><td><b>${esc(c.lugar)}</b></td><td>${esc(pais(c.pais))}</td><td class="mono">${num(c.articulos)}</td><td class="muted">${esc(c.gemelo)}</td></tr>`).join('');
+  $('#mtLimitaciones').innerHTML = M.novedad_bibliografica.limitaciones.map((l) => `<li>${esc(l)}</li>`).join('');
+  // J. Datos y trazabilidad
+  $('#mtFuentesLista').innerHTML = M.fuentes.map((f) => `<tr><td>${esc(f.cuerpo)}</td><td>${esc(f.dato)}</td><td><b>${esc(f.fuente)}</b></td><td class="mono">${esc(f.resolucion)}</td></tr>`).join('');
+  $('#mtTraza').textContent = M.trazabilidad;
+  // K. Límites de cualquier análogo terrestre
+  $('#mtLimitesLista').innerHTML = M.limites_generales.map((l) => `<div class="card"><h3>${esc(l)}</h3></div>`).join('');
 }
 </script>
 </body>
