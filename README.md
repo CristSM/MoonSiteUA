@@ -50,3 +50,122 @@ Validación de Proximidad Transparente (Modo Expedición offline): Dado que los 
 
 7. Escalación Robótica y Análisis Multiespectral (Validación Tier 3):
 Para aquellas zonas que alcanzan un alto índice de interés geológico pero son catalogadas como demasiado peligrosas, extremas o inaccesibles para la exploración humana civil (cuevas profundas, chimeneas volcánicas, acantilados), el sistema bloquea el acceso público por seguridad. En su lugar, estas coordenadas excepcionales o altamente verificadas se derivan a un programa de "Misiones Automatizadas" en colaboración con universidades y agencias espaciales. Estas instituciones toman el relevo desplegando drones o rovers terrestres equipados con cámaras multiespectrales y sensores de alta precisión para analizar la composición exacta de rocas y tierra, completando el perfil del análogo sin poner en riesgo vidas humanas y cerrando la brecha entre la ciencia ciudadana y la investigación profesional.
+
+---
+
+8. Resumen del proyecto implementado
+
+MoonSiteUA responde al reto «Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars» del NASA Space Apps Challenge 2026: busca en la Tierra lugares parecidos a las futuras bases lunares y a los lugares de aterrizaje en Marte, explica en qué se parecen y en qué no, y deja que la comunidad los valide y los convierta en bases virtuales. El proyecto tiene tres capas:
+
+- **Satélite (descubre):** un motor calcula el Índice de Analogía Planetaria (IAP) de cada zona de la Tierra frente a cuatro destinos: polo sur lunar (regiones Artemis III), mares basálticos y tubos de lava lunares, cráter Jezero y Arcadia Planitia en Marte.
+- **Campo (verifica):** los usuarios suben fotos y datos, o crean puntos nuevos que se validan antes de aceptarse.
+- **Comunidad (construye):** cada zona puede tener una base virtual que crece por plantas con los exploradores que se unen.
+
+9. Índice de Analogía Planetaria
+
+`IAP = 100 · Σ wᵢ · (1 − |xᵢ − tᵢ|) / Σ wᵢ`
+
+Compara 9 ejes calculados con datos abiertos de la NASA en Google Earth Engine:
+
+| Eje | Dato NASA |
+|---|---|
+| Aridez | GPM IMERG V07 (precipitación) |
+| Sin vegetación | MODIS MOD13A2 (NDVI) |
+| Frío y amplitud térmica | MODIS MOD11A2 (temperatura de superficie día y noche) |
+| Roca basáltica | ASTER GED (emisividad térmica) |
+| Pendiente y altitud | NASADEM |
+| Polvo | MODIS MOD08_M3 (aerosoles) |
+| Hielo / nieve | MODIS MOD10A1 |
+
+Los perfiles de la Luna y Marte se basan en LRO (Diviner, LOLA, LEND, Mini-RF, LROC), Perseverance MEDA, MRO y el proyecto SWIM. Cada ficha muestra la similitud por eje, en qué se parece el sitio, en qué se aleja y lo que la Tierra no puede imitar: gravedad, vacío, radiación y temperaturas extremas.
+
+Hay 13 sitios de ejemplo: análogos conocidos (Atacama, Haughton, Valles Secos, Timanfaya, Río Tinto, Teide) y candidatos poco estudiados (Tabernas, Bardenas Reales, Campo de Calatrava, Sierra Nevada, Cabo de Gata, Dasht-e Lut, Qaidam).
+
+**Importante:** sus valores son estimaciones para la demo. Los reales se obtienen ejecutando `engine/gee_analog_score.js` en Earth Engine.
+
+10. La web
+
+La web tiene 11 apartados, cada uno en su página, en español y en inglés (botón ES/EN) y en modo claro u oscuro (botón sol/luna):
+
+| Página | Contenido |
+|---|---|
+| Inicio | La idea, las tres capas, índice de apartados y hoja de ruta |
+| Demo | Mapa mundial y de España con el IAP de cada sitio, ficha con radar, ranking, pesos ajustables y panel «Aportar datos» |
+| Juego | «¿Cuál es mejor análogo?»: dos sitios, eliges y se revela el resultado |
+| Recompensas | Moon y Mars Coins, bases por niveles, habitaciones y premios |
+| Método | La fórmula, los 9 ejes y los límites de la analogía |
+| Validación | Balizas por consenso y escalado robótico (nivel 3) |
+| Comunidad | Puntos, misiones, insignias y bases virtuales |
+| Seguridad | Una persona una cuenta, modo expedición offline, seguridad física y RGPD |
+| Datos | Fuentes de la NASA y de las agencias socias (ESA, CSA, JAXA) |
+| Vídeo | Espacio para la demo de 30 segundos |
+| Explorador | Zona con cuenta de usuario |
+
+11. Zona de exploradores (con cuenta)
+
+- **Registro:** nombre, apellido, usuario, correo, teléfono y contraseña, todos obligatorios.
+  - La contraseña va oculta y debe tener 9 caracteres o más, con minúscula, mayúscula y número. Se guarda cifrada (scrypt).
+  - No se repiten usuario, correo ni teléfono.
+- **Aportar datos (desde la Demo):**
+  - Coordenadas obligatorias y al menos un dato: foto, temperatura, calidad del aire o humedad.
+  - Se guardan con la fecha de subida, el destino y los pesos configurados.
+  - Se puede crear un punto nuevo. Se valida antes de crearse: no puede haber otro a menos de 6 km y hay un máximo de 5 al día.
+  - Después de guardar datos de un punto hay un bloqueo de 12 horas para volver a cambiarlos.
+- **Datos de la NASA intocables:** los puntos recomendados no se pueden modificar ni borrar. Está protegido en la propia base de datos.
+- **Zonas:** cualquier usuario puede fundar la base de una zona sin base o unirse a la existente. Cada usuario puede editar solo los puntos que ha creado, con historial y bloqueo de 12 horas.
+- **Monedas:**
+  - Moon Coins (virtuales, fáciles): registro, primer acceso del día, aportaciones y objetivos sencillos. Se gastan en muebles.
+  - Mars Coins (escasas): objetivos difíciles. Se canjean por premios físicos.
+  - Corresponden a los Puntos de Exploración y de Misión del concepto.
+- **Bases:**
+  - Una por zona; el fundador elige dos colores.
+  - Cada planta tiene 5 habitaciones y la base sube un nivel por planta. El dibujo cambia hasta el nivel 5.
+- **Habitaciones:** se ven en perspectiva, con color de paredes y suelo, una cama (4 diseños), un escritorio (4 diseños) y una decoración por hueco (13 diseños). Solo su dueño puede editarla.
+- **Objetivos:** individuales y de base (compartidos; al completarse cobra cada miembro), diarios, semanales, mensuales o únicos.
+- **Premios:** pegatinas, pins, parche, taza, gorra, camiseta y sudadera. Son diseños originales: no llevan logotipos de la NASA, porque su uso en productos requiere autorización.
+
+12. Cómo ejecutarlo
+
+```powershell
+cd app
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --reload
+```
+
+Abrir http://localhost:8000 (en inglés: http://localhost:8000/en/). El servidor sirve toda la web y guarda los datos en SQLite (`app/moonsite.db`, que se crea solo).
+
+Abriendo los `.html` directamente o desde GitHub Pages (carpeta `docs/`) se ven todos los apartados, pero la zona de exploradores y el panel «Aportar datos» necesitan el servidor.
+
+Otros comandos:
+- Tests: `python -m pytest app/tests backend` (60 tests).
+- Regenerar la web tras cambiar `web/template.html`: `cd web`, `npm install` y `node build.mjs`.
+- Datos reales: pegar `engine/gee_analog_score.js` en code.earthengine.google.com, exportar los sitios y ejecutar `python engine/import_gee.py moonsiteua_sitios.geojson`.
+
+13. Estructura del repositorio
+
+```
+engine/          Motor de similitud: Earth Engine (gee_analog_score.js), misma fórmula en Python, perfiles de destinos y sitios
+backend/         Lógica de balizas por consenso, OTP, modo expedición offline, misiones y escalado robótico (con tests)
+app/             Servidor FastAPI + SQLite: cuentas, aportaciones, monedas, bases, habitaciones, objetivos y premios (con tests)
+app/static/      disenos.js: monedas, edificio por niveles, habitaciones, muebles y merchandising (SVG)
+web/             Plantilla y build de la web; páginas en español (*.html) e inglés (en/*.html); diccionario en i18n/
+docs/            Copia de la web para GitHub Pages
+documentacion/   README técnico, datos y recursos del reto, guion del vídeo de 30 s
+```
+
+Los detalles técnicos están en `documentacion/README_TECNICO.md`. Los datos y recursos del reto, en `documentacion/DATOS.md`.
+
+14. Estado y pendientes
+
+**Hecho:**
+- Motor de similitud.
+- Web completa en dos idiomas y dos temas.
+- Zona de exploradores con base de datos.
+- Validación, monedas, bases, habitaciones, objetivos y premios.
+- 60 tests.
+
+**Pendiente para producción:**
+- Sustituir los valores de demo por los de Earth Engine.
+- OTP por SMS y verificación del dispositivo en el registro. La lógica está diseñada en `backend/` y la web aún no la aplica.
+- Base de datos persistente en un hosting (por ejemplo PostgreSQL), límite de intentos de inicio de sesión, borrar metadatos EXIF de las fotos y HTTPS.
+- Grabar el vídeo de 30 segundos (guion en `documentacion/GUION_VIDEO.md`).
