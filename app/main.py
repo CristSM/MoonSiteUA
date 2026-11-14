@@ -44,6 +44,10 @@ def usuario(token: str | None = Cookie(default=None, alias="moonsite_sesion")):
     return u
 
 
+def usuario_opcional(token: str | None = Cookie(default=None, alias="moonsite_sesion")):
+    return L.usuario_por_token(con, token)
+
+
 def _sesion(resp: Response, token: str):
     resp.set_cookie("moonsite_sesion", token, httponly=True, samesite="lax", max_age=L.SESION_DIAS * 86400)
 
@@ -104,7 +108,7 @@ def regiones():
 
 # ------------------------------------------------------------------ zonas
 @app.get("/api/zonas")
-def zonas():
+def zonas(u=Depends(usuario_opcional)):
     targets = L.motor.load("targets.json")["targets"]
     out = []
     for z in con.execute("SELECT * FROM zonas ORDER BY recomendada DESC, nombre"):
@@ -114,6 +118,8 @@ def zonas():
             item["iap"] = {t["id"]: L.motor.score(ejes, t)["iap"] for t in targets}
         b = con.execute("SELECT id FROM bases WHERE zona_id = ?", (z["id"],)).fetchone()
         item["base"] = L.info_base(con, b["id"]) if b else None
+        item["mio"] = bool(u and z["creada_por"] == u["id"])
+        item["bloqueado_hasta"] = L.bloqueo_hasta(con, u["id"], z["id"]) if item["mio"] else None
         out.append(item)
     return out
 
@@ -152,10 +158,6 @@ def mis_reportes(u=Depends(usuario)):
 
 
 # ------------------------------------------------------------------ aportaciones desde la demo
-def usuario_opcional(token: str | None = Cookie(default=None, alias="moonsite_sesion")):
-    return L.usuario_por_token(con, token)
-
-
 async def _guardar_foto(foto: UploadFile | None) -> tuple[str | None, bytes | None]:
     if foto is None or not foto.filename:
         return None, None
@@ -184,6 +186,16 @@ async def aportar(modo: str = Form("existente"), zona: str | None = Form(None), 
         (UPLOADS / nombre_foto).write_bytes(contenido)
     res["saldo"] = L.saldo(con, u["id"])
     return res
+
+
+@app.put("/api/zonas/{zona_id}")
+async def editar_zona(zona_id: int, request: Request, u=Depends(usuario)):
+    return L.editar_zona(con, u["id"], zona_id, await request.json())
+
+
+@app.get("/api/aportaciones/mias")
+def mis_aportaciones(u=Depends(usuario)):
+    return L.mis_aportaciones(con, u["id"])
 
 
 @app.get("/api/aportaciones/resumen")

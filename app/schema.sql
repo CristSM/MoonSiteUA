@@ -229,3 +229,19 @@ BEGIN SELECT RAISE(ABORT, 'Los datos de la NASA no se pueden modificar'); END;
 
 CREATE TRIGGER IF NOT EXISTS nasa_no_se_borra BEFORE DELETE ON zonas WHEN OLD.recomendada = 1
 BEGIN SELECT RAISE(ABORT, 'Los datos de la NASA no se pueden borrar'); END;
+
+-- ============================================================ EDICIONES DE PUNTOS DE LA COMUNIDAD
+-- Historial de cambios que hace el creador de un punto (nombre y coordenadas),
+-- con la fecha. Solo se añaden filas.
+CREATE TABLE IF NOT EXISTS ediciones_zona (
+    id          INTEGER PRIMARY KEY,
+    zona_id     INTEGER NOT NULL REFERENCES zonas(id),
+    usuario_id  INTEGER NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+    nombre_antes TEXT NOT NULL, lat_antes REAL NOT NULL, lon_antes REAL NOT NULL,
+    nombre      TEXT NOT NULL,  lat REAL NOT NULL,       lon REAL NOT NULL,
+    fecha       TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS ix_edic_usuario_zona ON ediciones_zona(usuario_id, zona_id, fecha);
+
+CREATE TRIGGER IF NOT EXISTS ediciones_inmutables BEFORE UPDATE ON ediciones_zona
+BEGIN SELECT RAISE(ABORT, 'El historial de ediciones no se modifica'); END;

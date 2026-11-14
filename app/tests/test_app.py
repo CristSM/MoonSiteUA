@@ -113,18 +113,15 @@ def _zona_tabernas():
     return main.con.execute("SELECT id FROM zonas WHERE clave = 'tabernas'").fetchone()[0]
 
 
-def test_fundar_requiere_haber_estado_y_solo_una_base_por_zona():
+def test_fundar_sin_foto_y_solo_una_base_por_zona():
     z = _zona_tabernas()
     c, _ = nuevo(10)
     col = {"zona_id": z, "color1": "#E7794B", "color2": "#1B2A4A"}
-    assert c.post("/api/bases", json=col).status_code == 403
-    foto(c)
-    r = c.post("/api/bases", json=col)
+    r = c.post("/api/bases", json=col)          # ya no hace falta subir una foto antes
     assert r.status_code == 200
     b = r.json()["base"]
     assert b["color1"] == "#e7794b" and b["nivel"] == 1 and b["habitaciones"][0]["numero"] == 1
     c2, _ = nuevo(11)
-    foto(c2)
     assert c2.post("/api/bases", json=col).status_code == 409
 
 
@@ -302,3 +299,59 @@ def test_las_aportaciones_no_se_sobrescriben():
 def test_resumen_publico_del_punto():
     r = TestClient(main.app).get("/api/aportaciones/resumen", params={"zona": "tabernas"}).json()
     assert r["aportaciones"] >= 2 and r["zona"]["recomendada"] and r["mi_bloqueo_hasta"] is None
+
+
+
+# ------------------------------------------------------------------ editar puntos propios
+def _crear_punto(c, nombre, lat, lon):
+    r = aportar(c, modo="nuevo", zona="", nombre=nombre, lat=lat, lon=lon, temperatura_c="18")
+    assert r.status_code == 200, r.text
+    return r.json()["zona"]["id"]
+
+
+def _desbloquear(uid):
+    """Simula que han pasado 12 horas (envejece las filas sin modificarlas)."""
+    for tabla in ("aportaciones", "ediciones_zona"):
+        filas = [dict(f) for f in main.con.execute(f"SELECT * FROM {tabla} WHERE usuario_id = ?", (uid,))]
+        main.con.execute(f"DELETE FROM {tabla} WHERE usuario_id = ?", (uid,))
+        for f in filas:
+            f.pop("id"); f["fecha"] = "2000-01-01 00:00:00"
+            main.con.execute(f"INSERT INTO {tabla} ({', '.join(f)}) VALUES ({', '.join('?' * len(f))})", tuple(f.values()))
+    main.con.commit()
+
+
+def test_editar_solo_mis_puntos():
+    c, _ = nuevo(60)
+    zid = _crear_punto(c, "Mina de Rodalquilar", "36.84", "-2.04")
+    uid = main.con.execute("SELECT id FROM usuarios WHERE username = 'ana60'").fetchone()[0]
+    mio = next(z for z in c.get("/api/zonas").json() if z["id"] == zid)
+    assert mio["mio"] and mio["bloqueado_hasta"]                     # recién creado: bloqueo de 12 h
+    assert c.put(f"/api/zonas/{zid}", json={"nombre": "Rodalquilar", "lat": 36.84, "lon": -2.04}).status_code == 429
+    _desbloquear(uid)
+    r = c.put(f"/api/zonas/{zid}", json={"nombre": "Rodalquilar", "lat": 36.85, "lon": -2.05})
+    assert r.status_code == 200 and r.json()["zona"]["nombre"] == "Rodalquilar"
+    edic = main.con.execute("SELECT * FROM ediciones_zona WHERE zona_id = ?", (zid,)).fetchone()
+    assert edic["nombre_antes"] == "Mina de Rodalquilar" and edic["fecha"]
+    otro, _ = nuevo(61)
+    assert otro.put(f"/api/zonas/{zid}", json={"nombre": "Mío", "lat": 36.85, "lon": -2.05}).status_code == 403
+    assert not next(z for z in otro.get("/api/zonas").json() if z["id"] == zid)["mio"]
+
+
+def test_no_se_pueden_editar_puntos_nasa():
+    c, _ = nuevo(62)
+    assert c.put(f"/api/zonas/{_zona_tabernas()}", json={"nombre": "X", "lat": 1, "lon": 1}).status_code == 403
+
+
+def test_editar_no_puede_pisar_otro_punto():
+    c, _ = nuevo(63)
+    zid = _crear_punto(c, "Punto de prueba", "40.40", "-3.70")
+    _desbloquear(main.con.execute("SELECT id FROM usuarios WHERE username = 'ana63'").fetchone()[0])
+    r = c.put(f"/api/zonas/{zid}", json={"nombre": "Encima de Tabernas", "lat": 37.05, "lon": -2.39})
+    assert r.status_code == 409
+
+
+def test_mis_aportaciones():
+    c = TestClient(main.app)
+    c.post("/api/login", json={"usuario": "ana60", "password": "Luna2026ok"})
+    lista = c.get("/api/aportaciones/mias").json()
+    assert lista and lista[0]["fecha"] and lista[0]["zona"]

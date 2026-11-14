@@ -145,6 +145,7 @@ Abriendo los `.html` con doble clic o desde GitHub Pages se ven todos los aparta
 | `muebles`, `inventario`, `habitacion_decoraciones` | Catálogo, lo que tiene cada usuario y una decoración por hueco |
 | `objetivos`, `progreso_objetivos` | Objetivos individuales y de base (diarios, semanales, mensuales o únicos) |
 | `premios`, `canjes` | Merchandising físico con stock, talla y dirección de envío |
+| `ediciones_zona` | Historial de cambios de nombre y coordenadas que hace el creador de un punto, con fecha |
 | `aportaciones` | Datos de la demo (foto, temperatura, calidad del aire, humedad, destino, pesos) con fecha; solo se añaden filas, nunca se cambian |
 
 ### Monedas
@@ -154,13 +155,15 @@ Abriendo los `.html` con doble clic o desde GitHub Pages se ven todos los aparta
 | Cómo se ganan | Registro (+100), primer acceso del día (+10), objetivos fáciles (+20 a +60) | Objetivos difíciles: fundar una base (+2), 3 zonas recomendadas (+3), 3 países (+6), 20 fotos al mes en zonas recomendadas (+3), la base llega a planta 2 (+2) o planta 5 (+5) |
 | Para qué | Muebles de la habitación (30 a 200) | Premios físicos (4 a 60) |
 
-### Fotos y comparación
+### Zonas y puntos propios
 
-Al subir una foto se busca el punto recomendado más cercano y se compara en los ejes que el explorador puede medir: vegetación, tipo de suelo, pendiente, altitud y hielo. El resultado incluye:
-- el parecido con ese punto, en %;
-- el Índice de Analogía de la foto con los 4 destinos, junto al del punto NASA.
-
-Si la foto está a más de 6 km de cualquier zona, se crea una zona comunitaria nueva.
+- **Zonas:** en la zona de exploradores, la pestaña Zonas lista los puntos recomendados (datos NASA) y los de la comunidad. Las fotos y los datos se suben desde la Demo; ya no hay pestaña «Subir foto».
+- **Mis puntos:** quien crea un punto puede editar su nombre y sus coordenadas desde Zonas. Nadie puede modificar puntos de otros usuarios (403) ni los puntos NASA (403 y trigger en la base de datos).
+- **Reglas de edición:**
+  - las coordenadas nuevas no pueden quedar a menos de 6 km de otro punto;
+  - cada cambio se guarda en `ediciones_zona`, con los valores anteriores y la fecha;
+  - después de crear o cambiar un punto hay un bloqueo de 12 horas para volver a cambiarlo.
+- **Mis aportaciones:** lista lo que el usuario ha subido desde la Demo, con su fecha.
 
 ### Aportar datos desde la demo
 
@@ -178,7 +181,7 @@ En la página Demo, debajo de los pesos, hay un panel «Aportar datos». Necesit
 
 ### Bases y habitaciones
 
-- **Una base por zona.** Para fundarla o unirte tienes que haber subido una foto desde esa zona. El fundador elige los dos colores, y pueden repetirse entre bases.
+- **Una base por zona.** Cualquier usuario puede fundar la base de una zona que no tenga, o unirse a la que ya exista; no hace falta subir una foto antes. El fundador elige los dos colores, y pueden repetirse entre bases.
 - **Crecimiento:** 5 habitaciones por planta. La base sube de nivel con cada planta. El dibujo cambia en los niveles 1 a 5 y a partir del 5 es siempre el mismo.
 - **Habitación de tamaño estándar:** color de paredes y suelo, una cama (4 diseños), un escritorio (4 diseños) y una decoración por hueco (pared izquierda, pared derecha, techo, rincón y alfombra; 13 diseños). Solo su dueño puede editarla.
 

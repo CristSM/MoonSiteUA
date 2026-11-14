@@ -392,8 +392,6 @@ def fundar_base(con, uid: int, zona_id: int, nombre: str, color1: str, color2: s
         raise ErrorJuego("Esa zona no existe.", status=404)
     if zona["restringida"]:
         raise ErrorJuego("No se pueden fundar bases en zonas restringidas.", status=403)
-    if not _ha_estado_en_zona(con, uid, zona_id):
-        raise ErrorJuego("Para fundar una base tienes que haber subido una foto desde esta zona.", status=403)
     if con.execute("SELECT 1 FROM bases WHERE zona_id = ?", (zona_id,)).fetchone():
         raise ErrorJuego("Esta zona ya tiene base. Únete a ella.", status=409)
     if not (RE_HEX.match(color1 or "") and RE_HEX.match(color2 or "")):
@@ -425,8 +423,6 @@ def unirse_base(con, uid: int, base_id: int) -> dict:
         raise ErrorJuego("Esa base no existe.", status=404)
     if con.execute("SELECT 1 FROM habitaciones WHERE base_id = ? AND usuario_id = ?", (base_id, uid)).fetchone():
         raise ErrorJuego("Ya tienes una habitación en esta base.", status=409)
-    if not _ha_estado_en_zona(con, uid, b["zona_id"]):
-        raise ErrorJuego("Para unirte tienes que haber subido una foto desde la zona de la base.", status=403)
     logros = _entrar(con, uid, base_id)
     con.commit()
     return {"base": info_base(con, base_id), "logros": logros}
@@ -552,9 +548,11 @@ def _num(v):
 
 def bloqueo_hasta(con, uid: int, zona_id: int) -> str | None:
     """Fecha (UTC, ISO) hasta la que el usuario no puede volver a aportar a ese punto."""
-    r = con.execute("""SELECT datetime(MAX(fecha), '+%d hours') AS hasta FROM aportaciones
-                       WHERE usuario_id = ? AND zona_id = ? AND fecha > datetime('now', '-%d hours')"""
-                    % (BLOQUEO_HORAS, BLOQUEO_HORAS), (uid, zona_id)).fetchone()
+    r = con.execute("""SELECT datetime(MAX(fecha), '+%d hours') AS hasta FROM (
+                           SELECT fecha FROM aportaciones WHERE usuario_id = ? AND zona_id = ?
+                           UNION ALL SELECT fecha FROM ediciones_zona WHERE usuario_id = ? AND zona_id = ?)
+                       WHERE fecha > datetime('now', '-%d hours')"""
+                    % (BLOQUEO_HORAS, BLOQUEO_HORAS), (uid, zona_id, uid, zona_id)).fetchone()
     return r["hasta"].replace(" ", "T") + "Z" if r and r["hasta"] else None
 
 
@@ -677,4 +675,60 @@ def puntos_comunidad(con) -> list[dict]:
         a = con.execute("SELECT COUNT(*) AS n, MIN(fecha) AS desde FROM aportaciones WHERE zona_id = ?", (z["id"],)).fetchone()
         out.append({"id": z["id"], "nombre": z["nombre"], "lat": z["lat"], "lon": z["lon"], "aportaciones": a["n"],
                     "creado": a["desde"].replace(" ", "T") + "Z" if a["desde"] else None})
+    return out
+
+
+
+# ================================================================== editar un punto propio
+def editar_zona(con, uid: int, zona_id: int, datos: dict) -> dict:
+    """El creador de un punto de la comunidad puede cambiar su nombre y sus
+    coordenadas. Nadie puede tocar puntos de otros ni los puntos NASA."""
+    z = con.execute("SELECT * FROM zonas WHERE id = ?", (zona_id,)).fetchone()
+    if not z:
+        raise ErrorJuego("Ese punto no existe.", status=404)
+    if z["recomendada"]:
+        raise ErrorJuego("Los puntos con datos de la NASA no se pueden modificar.", status=403)
+    if z["creada_por"] != uid:
+        raise ErrorJuego("Solo puedes editar los puntos que has creado tú.", status=403)
+    errores = {}
+    nombre = (datos.get("nombre") or "").strip()
+    if not nombre or len(nombre) > 60:
+        errores["nombre"] = "El nombre es obligatorio (máximo 60 caracteres)."
+    lat, lon = _num(datos.get("lat")), _num(datos.get("lon"))
+    if lat in (None, "error") or not -90 <= lat <= 90:
+        errores["lat"] = "Latitud entre -90 y 90."
+    if lon in (None, "error") or not -180 <= lon <= 180:
+        errores["lon"] = "Longitud entre -180 y 180."
+    if errores:
+        e = ErrorJuego("Revisa los campos marcados.")
+        e.errores = errores
+        raise e
+    if nombre == z["nombre"] and lat == z["lat"] and lon == z["lon"]:
+        raise ErrorJuego("No has cambiado nada.")
+    hasta = bloqueo_hasta(con, uid, zona_id)
+    if hasta:
+        e = ErrorJuego("Ya cambiaste datos de este punto hace menos de 12 horas.", status=429)
+        e.extra = {"bloqueado_hasta": hasta}
+        raise e
+    for otra in con.execute("SELECT * FROM zonas WHERE id <> ?", (zona_id,)):
+        d = distancia_m(lat, lon, otra["lat"], otra["lon"])
+        if d < RADIO_NUEVA_ZONA_M:
+            raise ErrorJuego(f"En esas coordenadas ya está «{otra['nombre']}» (a {d / 1000:.1f} km).", "lat", 409)
+    con.execute("""INSERT INTO ediciones_zona (zona_id, usuario_id, nombre_antes, lat_antes, lon_antes, nombre, lat, lon)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?)""", (zona_id, uid, z["nombre"], z["lat"], z["lon"], nombre, lat, lon))
+    con.execute("UPDATE zonas SET nombre = ?, lat = ?, lon = ? WHERE id = ?", (nombre, lat, lon, zona_id))
+    con.commit()
+    return {"zona": {"id": zona_id, "nombre": nombre, "lat": lat, "lon": lon},
+            "bloqueado_hasta": bloqueo_hasta(con, uid, zona_id)}
+
+
+def mis_aportaciones(con, uid: int) -> list[dict]:
+    out = []
+    for r in con.execute("""SELECT a.*, z.nombre AS zona FROM aportaciones a JOIN zonas z ON z.id = a.zona_id
+                            WHERE a.usuario_id = ? ORDER BY a.id DESC""", (uid,)):
+        out.append({"id": r["id"], "zona": r["zona"], "zona_id": r["zona_id"], "lat": r["lat"], "lon": r["lon"],
+                    "foto": f"/uploads/{r['foto']}" if r["foto"] else None, "temperatura_c": r["temperatura_c"],
+                    "calidad_aire": r["calidad_aire"], "humedad_rel": r["humedad_rel"], "destino": r["destino"],
+                    "crea_punto": bool(r["crea_punto"]), "moon_ganadas": r["moon_ganadas"],
+                    "fecha": r["fecha"].replace(" ", "T") + "Z"})
     return out

@@ -298,7 +298,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <div class="head read" style="margin:0">
       <p class="kicker">Recompensas</p>
       <h2>Tu cuenta, tus fotos, tu base</h2>
-      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Sube fotos, las compara con el punto recomendado más cercano y gana monedas.</p>
+      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Desde la Demo aporta fotos y datos o crea puntos nuevos, y gana monedas.</p>
       <div class="cta" style="margin-top:6px"><a class="btn primary" href="explorador.html">Ir a la zona de exploradores</a></div>
     </div>
     <div class="grid3">
@@ -742,7 +742,7 @@ function fieldErrors(form, e) {
 function vistaEntrar() {
   view.innerHTML = `<div class="hero">
     <div class="stack"><h1 style="font-size:2.2rem">Sé un <span style="color:var(--accent)">rover humano</span></h1>
-      <p class="muted">Sube fotos de terrenos parecidos a la Luna y Marte, compáralos con los puntos recomendados con datos de la NASA y construye tu base con otros exploradores.</p>
+      <p class="muted">Aporta fotos y datos de terrenos parecidos a la Luna y Marte desde la Demo, crea puntos nuevos y construye tu base con otros exploradores.</p>
       <div class="row">${Disenos.moneda('moon', 40)}<span class="muted">Moon Coins: por entrar cada día, registrarte y objetivos sencillos.</span></div>
       <div class="row">${Disenos.moneda('mars', 40)}<span class="muted">Mars Coins: objetivos difíciles. Se canjean por pins, parches y camisetas.</span></div></div>
     <div class="card"><form class="stack" id="fLogin" novalidate>
@@ -813,96 +813,80 @@ async function vistaRegistro() {
 }
 
 // ================================================================ zonas
+const fechaLocal = (iso) => new Date(iso).toLocaleString('es-ES', {day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'});
 async function vistaZonas() {
   const zonas = await api('/api/zonas');
-  const misZonas = new Set((await api('/api/reportes')).map((r) => r.zona_id));
+  const mias = zonas.filter((z) => z.mio), resto = zonas.filter((z) => !z.mio);
   view.innerHTML = `<div class="stack"><h2>Zonas</h2>
-    <p class="muted">Los puntos recomendados salen del motor de similitud con datos de la NASA. Las zonas comunitarias las crean exploradores al subir fotos lejos de cualquier zona. Para fundar o unirte a una base tienes que haber subido una foto desde esa zona.</p>
-    <div class="grid">${zonas.map((z) => tarjetaZona(z, misZonas.has(z.id))).join('')}</div></div>`;
+    <p class="muted">Los puntos recomendados salen del motor de similitud con datos de la NASA. Los puntos de la comunidad los crean exploradores desde la <a href="demo.html">Demo</a>. Puedes fundar la base de cualquier zona que no tenga una, o unirte a la que ya exista.</p>
+    ${mias.length ? `<h3>Mis puntos</h3><p class="muted" style="font-size:.88rem">Solo tú puedes editar los puntos que has creado. Después de guardar cambios hay que esperar 12 horas para volver a cambiarlos.</p>
+      <div class="grid">${mias.map(tarjetaZona).join('')}</div><h3>Todas las zonas</h3>` : ''}
+    <div class="grid">${resto.map(tarjetaZona).join('')}</div></div>`;
   view.querySelectorAll('[data-unirse]').forEach((b) => b.addEventListener('click', async () => {
     try { const r = await api(`/api/bases/${b.dataset.unirse}/unirse`, {method: 'POST'}); logros(r.logros); await refreshMe(); location.hash = `#base/${r.base.id}`; }
     catch (e) { toast(esc(e.message)); }
   }));
+  view.querySelectorAll('[data-editar]').forEach((b) => b.addEventListener('click', () => {
+    const f = view.querySelector(`#edit-${b.dataset.editar}`); f.hidden = !f.hidden; b.textContent = f.hidden ? 'Editar punto' : 'Cerrar';
+  }));
+  view.querySelectorAll('form[data-zona]').forEach((f) => f.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    try {
+      await api(`/api/zonas/${f.dataset.zona}`, {method: 'PUT', json: {nombre: f.nombre.value, lat: f.lat.value, lon: f.lon.value}});
+      toast('Punto actualizado. Podrás volver a cambiarlo dentro de 12 horas.');
+      vistaZonas();
+    } catch (e) {
+      if (e.data?.bloqueado_hasta) e.data.errores = {_: `Podrás cambiar este punto a partir del ${fechaLocal(e.data.bloqueado_hasta)}.`};
+      fieldErrors(f, e);
+      if (e.data?.errores?._) f.querySelector('.err[data-for="_"]').textContent = e.data.errores._;
+    }
+  }));
 }
-function tarjetaZona(z, estuve) {
-  const iap = z.iap ? Object.entries(z.iap).map(([k, v]) => `<div class="barrow"><span class="muted">${DEST[k]}</span><span class="bar ${k.startsWith('luna') ? 'moon' : ''}"><i style="width:${v}%"></i></span><span class="mono">${v.toFixed(0)}</span></div>`).join('') : '<p class="muted">Zona comunitaria: aún sin perfil satelital.</p>';
+function tarjetaZona(z) {
+  const iap = z.iap ? Object.entries(z.iap).map(([k, v]) => `<div class="barrow"><span class="muted">${DEST[k]}</span><span class="bar ${k.startsWith('luna') ? 'moon' : ''}"><i style="width:${v}%"></i></span><span class="mono">${v.toFixed(0)}</span></div>`).join('') : '<p class="muted">Punto de la comunidad: aún sin perfil satelital.</p>';
   let base;
   if (z.base) {
     const soyMiembro = ME && ME.habitaciones.some((h) => h.base_id === z.base.id);
     base = `<a class="svgbox" href="#base/${z.base.id}" aria-label="Ver base">${Disenos.base(z.base.nivel_dibujo, z.base.color1, z.base.color2, z.base.miembros)}</a>
       <div class="row"><span class="pill">${esc(z.base.nombre)} · nivel ${z.base.nivel} · ${z.base.miembros} miembro${z.base.miembros === 1 ? '' : 's'}</span>
-      ${soyMiembro ? '<span class="pill ok">Eres miembro</span>' : estuve ? `<button class="btn" data-unirse="${z.base.id}">Unirme</button>` : ''}</div>`;
+      ${soyMiembro ? '<span class="pill ok">Eres miembro</span>' : `<button class="btn" data-unirse="${z.base.id}">Unirme</button>`}</div>`;
   } else {
-    base = estuve ? `<a class="btn primary" href="#fundar/${z.id}">Fundar la base de esta zona</a>` : '<p class="muted">Sin base todavía. Sube una foto desde aquí para poder fundarla.</p>';
+    base = `<a class="btn primary" href="#fundar/${z.id}">Fundar la base de esta zona</a>`;
   }
-  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(z.nombre)}</h3>${z.recomendada ? '<span class="pill acc">Recomendada NASA</span>' : '<span class="pill">Comunitaria</span>'}</div>
-    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(z.nota)}</p>` : ''}<div class="bars">${iap}</div>${base}</article>`;
+  let editar = '';
+  if (z.mio) {
+    const bloq = z.bloqueado_hasta && new Date(z.bloqueado_hasta) > new Date() ? z.bloqueado_hasta : null;
+    editar = `<button class="btn" type="button" data-editar="${z.id}">Editar punto</button>
+      <form class="stack" id="edit-${z.id}" data-zona="${z.id}" hidden novalidate style="gap:8px">
+        ${bloq ? `<p class="pill" style="white-space:normal;color:var(--warn);border-color:var(--warn)">Podrás cambiarlo a partir del ${fechaLocal(bloq)}</p>` : ''}
+        <fieldset ${bloq ? 'disabled' : ''} style="border:0;margin:0;padding:0;display:grid;gap:8px">
+          <label>Nombre<input name="nombre" id="eNom-${z.id}" maxlength="60" value="${esc(z.nombre)}"><span class="err" data-for="nombre"></span></label>
+          <div class="two"><label>Latitud<input name="lat" id="eLat-${z.id}" inputmode="decimal" value="${z.lat}"><span class="err" data-for="lat"></span></label>
+            <label>Longitud<input name="lon" id="eLon-${z.id}" inputmode="decimal" value="${z.lon}"><span class="err" data-for="lon"></span></label></div>
+          <p class="err" data-for="_"></p>
+          <button class="btn primary">Guardar cambios</button>
+        </fieldset>
+      </form>`;
+  }
+  const etiqueta = z.recomendada ? '<span class="pill acc">Recomendada NASA</span>' : z.mio ? '<span class="pill ok">Creado por ti</span>' : '<span class="pill">Comunidad</span>';
+  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(z.nombre)}</h3>${etiqueta}</div>
+    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(z.nota)}</p>` : ''}${z.mio ? `<p class="muted mono" style="font-size:.78rem">${(+z.lat).toFixed(4)}, ${(+z.lon).toFixed(4)}</p>` : ''}
+    <div class="bars">${iap}</div>${base}${editar}</article>`;
 }
 
-// ================================================================ subir foto
-async function vistaSubir() {
-  const zonas = (await api('/api/zonas')).filter((z) => z.recomendada);
-  view.innerHTML = `<div class="split"><form class="card stack" id="fFoto" novalidate>
-    <h2>Subir foto de un terreno</h2>
-    <label>Foto (JPG, PNG o WEBP, máx. 8 MB)<input type="file" name="foto" id="fFile" accept="image/jpeg,image/png,image/webp" capture="environment" required><span class="err" data-for="foto"></span></label>
-    <img class="photo" id="prev" alt="Vista previa de la foto" hidden>
-    <div class="field">Ubicación
-      <div class="row"><button type="button" class="btn" id="geo">Usar mi ubicación</button><span class="muted" id="geoMsg"></span></div>
-      <div class="two"><input name="lat" id="fLat" inputmode="decimal" placeholder="Latitud"><input name="lon" id="fLon" inputmode="decimal" placeholder="Longitud"></div>
-      <select id="fDemo" aria-label="Rellenar con una zona recomendada (para probar)"><option value="">Para probar: rellenar con una zona recomendada…</option>${zonas.map((z) => `<option value="${z.lat},${z.lon}">${esc(z.nombre)}</option>`).join('')}</select>
-      <span class="err" data-for="lat"></span></div>
-    <label>Tipo de suelo<select name="tipo_suelo" id="fSuelo" required><option value="">Elige…</option>${Object.entries(SUELOS).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select><span class="err" data-for="tipo_suelo"></span></label>
-    <label>Vegetación<select name="vegetacion" id="fVeg" required><option value="">Elige…</option><option value="nada">Ninguna</option><option value="escasa">Escasa</option><option value="abundante">Abundante</option></select><span class="err" data-for="vegetacion"></span></label>
-    <div class="two"><label>Pendiente en grados (opcional)<input name="pendiente_deg" id="fPend" inputmode="decimal" placeholder="Inclinómetro del móvil"><span class="err" data-for="pendiente_deg"></span></label>
-      <label>Altitud en metros (opcional)<input name="altitud_m" id="fAlt" inputmode="decimal"></label></div>
-    <label>Nota (opcional)<textarea name="nota" id="fNota" rows="2" maxlength="500"></textarea></label>
-    <p class="err" data-for="_"></p>
-    <button class="btn primary" id="fEnviar">Subir y comparar</button>
-  </form><div id="resultado" class="stack"><div class="card muted">Al subir la foto verás su parecido con el punto recomendado más cercano y con los cuatro destinos.</div></div></div>`;
-  const f = $('#fFoto');
-  $('#fFile').addEventListener('change', (e) => { const file = e.target.files[0]; if (file) { $('#prev').src = URL.createObjectURL(file); $('#prev').hidden = false; } });
-  $('#fDemo').addEventListener('change', (e) => { if (!e.target.value) return; const [la, lo] = e.target.value.split(','); f.lat.value = la; f.lon.value = lo; });
-  $('#geo').addEventListener('click', () => {
-    if (!navigator.geolocation) { $('#geoMsg').textContent = 'Tu navegador no da la ubicación.'; return; }
-    $('#geoMsg').textContent = 'Buscando…';
-    navigator.geolocation.getCurrentPosition((p) => {
-      f.lat.value = p.coords.latitude.toFixed(5); f.lon.value = p.coords.longitude.toFixed(5);
-      $('#geoMsg').textContent = `Precisión ±${Math.round(p.coords.accuracy)} m`;
-      if (p.coords.altitude != null) f.altitud_m.value = Math.round(p.coords.altitude);
-    }, () => { $('#geoMsg').textContent = 'No se pudo obtener. Escríbela a mano.'; }, {enableHighAccuracy: true, timeout: 15000});
-  });
-  f.addEventListener('submit', async (ev) => {
-    ev.preventDefault();
-    const fd = new FormData(f);
-    for (const k of ['pendiente_deg', 'altitud_m', 'nota']) if (!fd.get(k)) fd.delete(k);
-    if (!$('#fFile').files[0]) return fieldErrors(f, {data: {errores: {foto: 'Elige una foto.'}}});
-    if (!fd.get('lat') || !fd.get('lon')) return fieldErrors(f, {data: {errores: {lat: 'Hace falta la ubicación de la foto.'}}});
-    $('#fEnviar').disabled = true;
-    try {
-      const r = await api('/api/reportes', {method: 'POST', body: fd});
-      fieldErrors(f, {data: {errores: {}}});
-      $('#resultado').innerHTML = resultado(r.comparacion, r.foto, r.zona_id, r.zona);
-      logros(r.logros); await refreshMe();
-    } catch (e) { fieldErrors(f, e); } finally { $('#fEnviar').disabled = false; }
-  });
-}
-function resultado(c, foto, zonaId, zonaNombre) {
-  const p = c.punto_nasa;
-  return `<div class="card stack"><img class="photo" src="${esc(foto)}" alt="Foto subida">
-    <h3>Parecido con «${esc(p.nombre)}»: <span style="color:var(--accent)">${c.similitud_con_punto.toFixed(0)} %</span></h3>
-    <p class="muted">Punto recomendado más cercano, a ${p.distancia_km} km${p.dentro ? ' (estás dentro de la zona)' : ''}. Se comparan los ejes que has medido: ${Object.keys(c.ejes_medidos).join(', ')}.</p>
-    <table><thead><tr><th>Destino</th><th>Tu foto</th><th>Punto NASA</th></tr></thead><tbody>
-      ${c.destinos.map((d) => `<tr><td>${esc(d.nombre)}</td><td class="mono">${d.iap_foto.toFixed(0)}</td><td class="mono">${d.iap_punto_nasa.toFixed(0)}</td></tr>`).join('')}
-    </tbody></table>
-    ${zonaId ? `<a class="btn" href="#zonas">Ver la zona «${esc(zonaNombre)}» y su base</a>` : '<p class="muted">Estás cerca de una zona pero fuera de su radio: la foto cuenta, pero no da acceso a la base.</p>'}</div>`;
-}
-async function vistaFotos() {
-  const rs = await api('/api/reportes');
-  view.innerHTML = `<div class="stack"><h2>Mis fotos</h2>${rs.length ? `<div class="grid">${rs.map((r) => `<article class="card stack"><img class="photo" src="${esc(r.foto)}" alt="Foto en ${esc(r.zona || 'sin zona')}">
-    <div class="row" style="justify-content:space-between"><b>${esc(r.zona || 'Sin zona')}</b><span class="pill">${r.fecha.slice(0, 10)}</span></div>
-    <p class="muted">${SUELOS[r.tipo_suelo]} · vegetación ${r.vegetacion}${r.pendiente_deg != null ? ` · ${r.pendiente_deg}°` : ''}</p>
-    <p>Parecido con ${esc(r.comparacion.punto_nasa.nombre)}: <b class="mono">${r.comparacion.similitud_con_punto.toFixed(0)} %</b></p>
-    <p class="muted">Mejor destino: ${esc(r.comparacion.destinos[0].nombre)} (${r.comparacion.destinos[0].iap_foto.toFixed(0)})</p></article>`).join('')}</div>` : '<div class="card"><p class="muted">Aún no has subido fotos. <a href="#subir">Sube la primera</a>.</p></div>'}</div>`;
+// ================================================================ mis aportaciones
+async function vistaAportaciones() {
+  const lista = await api('/api/aportaciones/mias');
+  const dato = (v, u) => (v == null ? '' : `<span class="pill">${v}${u}</span>`);
+  view.innerHTML = `<div class="stack"><h2>Mis aportaciones</h2>
+    <p class="muted">Fotos y datos que has subido desde la <a href="demo.html">Demo</a>, con su fecha de subida.</p>
+    ${lista.length ? `<div class="grid">${lista.map((a) => `<article class="card stack" style="gap:8px">
+      ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(a.zona)}">` : ''}
+      <div class="row" style="justify-content:space-between"><b>${esc(a.zona)}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
+      <p class="muted mono" style="font-size:.8rem">${fechaLocal(a.fecha)} · ${(+a.lat).toFixed(4)}, ${(+a.lon).toFixed(4)}</p>
+      <div class="row">${dato(a.temperatura_c, ' °C')}${dato(a.humedad_rel, ' % humedad')}${a.calidad_aire == null ? '' : `<span class="pill">Aire ${a.calidad_aire}</span>`}</div>
+      <span class="coin">${Disenos.moneda('moon', 20)}+${a.moon_ganadas}</span></article>`).join('')}</div>`
+      : '<div class="card"><p class="muted">Aún no has aportado datos. Elige un punto en la <a href="demo.html">Demo</a> y sube una foto o tus medidas.</p></div>'}</div>`;
 }
 
 // ================================================================ bases
@@ -937,7 +921,7 @@ async function vistaBase(id) {
 }
 async function vistaMisBases() {
   await refreshMe();
-  if (!ME.habitaciones.length) { view.innerHTML = '<div class="card"><p class="muted">Aún no estás en ninguna base. Sube una foto desde una zona y fúndala o únete desde <a href="#zonas">Zonas</a>.</p></div>'; return; }
+  if (!ME.habitaciones.length) { view.innerHTML = '<div class="card"><p class="muted">Aún no estás en ninguna base. Funda una o únete desde <a href="#zonas">Zonas</a>.</p></div>'; return; }
   const bases = await Promise.all(ME.habitaciones.map((h) => api(`/api/bases/${h.base_id}`)));
   view.innerHTML = `<div class="stack"><h2>Mis bases</h2><div class="grid">${bases.map((b, i) => `<article class="card stack"><a class="svgbox" href="#base/${b.id}">${Disenos.base(b.nivel_dibujo, b.color1, b.color2, b.miembros)}</a>
     <h3>${esc(b.nombre)}</h3><div class="row"><span class="pill">Nivel ${b.nivel}</span><a class="btn" href="#habitacion/${ME.habitaciones[i].habitacion_id}">Mi habitación ${ME.habitaciones[i].numero}</a></div></article>`).join('')}</div></div>`;
@@ -1039,7 +1023,7 @@ async function vistaPerfil() {
 }
 
 // ================================================================ router
-const RUTAS = {entrar: vistaEntrar, registro: vistaRegistro, zonas: vistaZonas, subir: vistaSubir, fotos: vistaFotos, bases: vistaMisBases,
+const RUTAS = {entrar: vistaEntrar, registro: vistaRegistro, zonas: vistaZonas, aportaciones: vistaAportaciones, subir: vistaZonas, fotos: vistaAportaciones, bases: vistaMisBases,
   fundar: vistaFundar, base: vistaBase, habitacion: vistaHabitacion, tienda: vistaTienda, premios: vistaPremios, objetivos: vistaObjetivos, perfil: vistaPerfil};
 const PUBLICAS = new Set(['entrar', 'registro']);
 async function router() {
