@@ -40,7 +40,9 @@ const iberia = { w: IW, h: IH, d: pen.d, d2: can.d, pts: {}, frames: [[CX[0][0],
 for (const s of sites.sites) iberia.pts[s.id] = s.lon < -12 ? can.pts[s.id] : pen.pts[s.id];
 
 const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO') };
-const html = read('template.html').replace('/*__DATA__*/null', JSON.stringify(data));
+const html = read('template.html')
+  .replace('/*__DATA__*/null', JSON.stringify(data))
+  .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'));
 writeFileSync(new URL('index.html', here), html);
 writeFileSync(new URL('../docs/index.html', here), html);  // GitHub Pages sirve /docs
 console.log(`index.html: ${(html.length / 1024).toFixed(0)} KB, ${sites.sites.length} sitios, demo=${data.demo}`);

@@ -108,7 +108,82 @@ Objetivo: evitar ataques Sybil (granjas de bots) y envíos falsos sin pedir dato
 
 **Rendimiento del mapa.** Teselas vectoriales según el zoom (más eficiente que segmentar por países).
 
-## 6. Estructura del repositorio
+## 6. App: cuentas, fotos, monedas y bases (`app/`)
+
+App web con FastAPI y SQLite. Cada explorador tiene su cuenta, sube sus fotos, las compara con los puntos recomendados y construye su base.
+
+### Arrancar
+
+```bash
+cd app
+pip install -r requirements.txt
+uvicorn main:app --reload
+```
+
+Abrir http://localhost:8000. La base de datos (`app/moonsite.db`) se crea sola con los datos iniciales. Tests: `python -m pytest app/tests` desde la raíz.
+
+### Registro
+
+- Campos obligatorios: nombre, apellido, nombre de usuario, correo, teléfono y contraseña.
+- La contraseña va oculta (con botón «Mostrar»), con un mínimo de 9 caracteres y al menos una minúscula, una mayúscula y un número. Se guarda con scrypt y sal, nunca en claro.
+- **Únicos:** usuario (sin distinguir mayúsculas), correo (sin distinguir mayúsculas) y teléfono (normalizado: `600 123 456`, `+34600123456` y `0034600123456` son el mismo).
+- País y provincia son opcionales.
+
+### Base de datos (`app/schema.sql`)
+
+| Tabla | Para qué |
+|---|---|
+| `regiones` + `region_padres` | Jerarquía provincia → país → unión / estado / continente. Relación N:M: España pertenece a la UE y a Europa. Incluye las 50 provincias españolas, Ceuta y Melilla |
+| `usuarios`, `sesiones` | Cuentas con usuario, correo y teléfono `UNIQUE` |
+| `movimientos` + vista `saldos` | Libro de Moon y Marth Coins: cada moneda ganada o gastada queda registrada con su motivo |
+| `zonas` | Puntos recomendados (motor + datos NASA) y zonas comunitarias |
+| `reportes` | Fotos con ubicación, tipo de suelo, vegetación, pendiente, altitud y la comparación |
+| `bases` | Una por zona (`zona_id UNIQUE`); dos colores elegidos por el fundador |
+| `habitaciones` | Una por usuario y base; número único dentro de la base; planta = (número − 1) / 5 + 1 |
+| `muebles`, `inventario`, `habitacion_decoraciones` | Catálogo, lo que tiene cada usuario y una decoración por hueco |
+| `objetivos`, `progreso_objetivos` | Objetivos individuales y de base (diarios, semanales, mensuales o únicos) |
+| `premios`, `canjes` | Merchandising físico con stock, talla y dirección de envío |
+
+### Monedas
+
+| | Moon Coins (virtuales) | Marth Coins (premium) |
+|---|---|---|
+| Cómo se ganan | Registro (+100), primer acceso del día (+10), objetivos fáciles (+20 a +60) | Objetivos difíciles: fundar una base (+2), 3 zonas recomendadas (+3), 3 países (+6), 20 fotos al mes en zonas recomendadas (+3), la base llega a planta 2 (+2) o planta 5 (+5) |
+| Para qué | Muebles de la habitación (30 a 200) | Premios físicos (4 a 60) |
+
+### Fotos y comparación
+
+Al subir una foto se busca el punto recomendado más cercano y se compara en los ejes que el explorador puede medir: vegetación, tipo de suelo, pendiente, altitud y hielo. El resultado incluye:
+- el parecido con ese punto, en %;
+- el Índice de Analogía de la foto con los 4 destinos, junto al del punto NASA.
+
+Si la foto está a más de 6 km de cualquier zona, se crea una zona comunitaria nueva.
+
+### Bases y habitaciones
+
+- **Una base por zona.** Para fundarla o unirte tienes que haber subido una foto desde esa zona. El fundador elige los dos colores, y pueden repetirse entre bases.
+- **Crecimiento:** 5 habitaciones por planta. La base sube de nivel con cada planta. El dibujo cambia en los niveles 1 a 5 y a partir del 5 es siempre el mismo.
+- **Habitación de tamaño estándar:** color de paredes y suelo, una cama (4 diseños), un escritorio (4 diseños) y una decoración por hueco (pared izquierda, pared derecha, techo, rincón y alfombra; 13 diseños). Solo su dueño puede editarla.
+
+### Objetivos
+
+- **Individuales:** cada usuario los suyos.
+- **De base:** compartidos por todos los miembros; al completarse cobra cada miembro.
+
+Se pagan automáticamente al completarse. Están definidos en `app/seed.py`.
+
+### Premios
+
+Pegatinas, pins (Polo Sur y Jezero), parche de misión, taza, gorra, camiseta y sudadera. Todos son diseños originales en `app/static/disenos.js`. No llevan el logotipo de la NASA, porque su uso en productos requiere autorización de la agencia.
+
+### Pendiente para producción
+
+- OTP por SMS y verificación del dispositivo (descritos en la sección 5; la app de la demo aún no los aplica).
+- Límite de intentos de inicio de sesión.
+- Borrar los metadatos EXIF de las fotos.
+- HTTPS.
+
+## 7. Estructura del repositorio
 
 ```
 engine/
@@ -117,6 +192,14 @@ engine/
   targets.json          Perfiles de los 4 destinos (valores, pesos, límites, fuentes)
   sites_demo.json       13 sitios de demo con variables ESTIMADAS
   import_gee.py         Convierte la exportación de GEE en engine/sites.json
+app/
+  main.py               API (FastAPI) y servidor de la app
+  logic.py              Reglas: cuentas, monedas, objetivos, comparación, bases, tienda, premios
+  schema.sql            Esquema de la base de datos
+  seed.py               Regiones, zonas, muebles, objetivos y premios iniciales
+  static/index.html     Interfaz de la app
+  static/disenos.js     Diseños SVG: monedas, edificio por niveles, habitación, muebles, merchandising
+  tests/test_app.py     Tests de la app
 backend/
   verification.py       Balizas por consenso, OTP, Modo Expedición offline, misiones locales y globales, escalado robótico (nivel 3)
   test_verification.py  Tests (pytest)
@@ -132,7 +215,7 @@ documentacion/
   GUION_VIDEO.md        Guion del vídeo de 30 s
 ```
 
-## 7. Cómo ejecutarlo
+## 8. Cómo ejecutarlo
 
 ```bash
 # Ranking por consola y tests

@@ -158,6 +158,17 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 /* bases virtuales */
 .base-svg { width: 100%; max-width: 520px; display: block; }
 
+.levels { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.levels figure { margin: 0; display: grid; gap: 6px; }
+.levels svg, #roomDemo svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+.levels figcaption { font: 500 .78rem var(--f-mono); color: var(--muted); text-align: center; }
+.merch { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+.merch figure { margin: 0; display: grid; gap: 6px; }
+.merch svg { width: 100%; height: auto; border-radius: 8px; display: block; }
+.merch figcaption { font-size: .82rem; color: var(--muted); }
+#coinMoon svg, #coinMarth svg { width: 64px; height: 64px; }
+@media (max-width: 700px) { .levels { grid-template-columns: repeat(3, 1fr); } }
+
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
 
@@ -174,7 +185,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
 <nav class="top" aria-label="Secciones">
   <div class="wrap">
     <b>MoonSite<span>UA</span></b>
-    <a href="#idea">Idea</a><a href="#demo">Demo</a><a href="#juego">Juego</a><a href="#metodo">Método</a>
+    <a href="#idea">Idea</a><a href="#demo">Demo</a><a href="#juego">Juego</a><a href="#app">App</a><a href="#metodo">Método</a>
     <a href="#validacion">Validación</a><a href="#comunidad">Comunidad</a><a href="#datos">Datos</a><a href="#video">Vídeo</a>
   </div>
 </nav>
@@ -267,6 +278,35 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <p class="read muted">xᵢ es el valor del lugar en el eje i, tᵢ el del destino y wᵢ la importancia del eje para ese destino. La nota global ordena candidatos; la similitud por eje explica por qué. Así un sitio puede ser un gran análogo geológico y uno malo térmico, que es justo lo que pide el reto.</p>
     <div class="tbl"><table id="axesTable"><thead><tr><th>Eje</th><th>Dato NASA</th><th>Conversión a 0-1</th></tr></thead><tbody></tbody></table></div>
     <div class="grid3" id="limits"></div>
+  </div>
+</section>
+
+<section id="app">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head read" style="margin:0">
+      <p class="kicker">La app</p>
+      <h2>Tu cuenta, tus fotos, tu base</h2>
+      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Sube fotos, las compara con el punto recomendado más cercano y gana monedas.</p>
+    </div>
+    <div class="grid3">
+      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMoon"></span><div class="stack" style="gap:4px"><h3>Moon Coins</h3><p class="muted">Virtuales y fáciles de ganar: 100 al registrarte, 10 por el primer acceso de cada día y objetivos sencillos. Sirven para comprar muebles.</p></div></div>
+      <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMarth"></span><div class="stack" style="gap:4px"><h3>Marth Coins</h3><p class="muted">Escasas: objetivos difíciles como fundar una base, visitar tres zonas o subir fotos en tres países. Se canjean por premios físicos.</p></div></div>
+    </div>
+    <div class="stack" style="gap:10px">
+      <h3>La base crece una planta cada 5 exploradores</h3>
+      <p class="muted read">Una base por zona. Quien la funda elige sus dos colores. Cada planta tiene 5 habitaciones (las ventanas encendidas están ocupadas). Del nivel 5 en adelante el edificio se mantiene.</p>
+      <div class="levels" id="levels"></div>
+    </div>
+    <div class="demo" style="grid-template-areas:none;grid-template-columns:minmax(0,1.3fr) minmax(260px,1fr)">
+      <div class="card" style="padding:12px" id="roomDemo"></div>
+      <div class="stack"><h3>Tu habitación</h3><p class="muted">Tamaño estándar. Cambias el color de paredes y suelo y eliges una cama, un escritorio y una decoración por hueco: pared izquierda, pared derecha, techo, rincón y alfombra. Los muebles se compran con Moon Coins.</p>
+        <div class="seg" id="roomSeg" role="group" aria-label="Ejemplos de habitación"></div></div>
+    </div>
+    <div class="stack" style="gap:10px">
+      <h3>Premios físicos con Marth Coins</h3>
+      <div class="merch" id="merch"></div>
+      <p class="muted read">Diseños originales de MoonSiteUA. No llevan logotipos de la NASA: su uso en productos necesita autorización de la agencia.</p>
+    </div>
   </div>
 </section>
 
@@ -393,6 +433,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <div class="head read" style="margin:0"><p class="kicker">Hoja de ruta</p><h2>De la demo a la app</h2></div>
     <div class="road read">
       <div class="now"><b>Hackathon · noviembre 2026</b><span class="muted">Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.</span></div>
+      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Marth Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
       <div><b>MVP</b><span class="muted">App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.</span></div>
       <div><b>Piloto</b><span class="muted">Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.</span></div>
       <div><b>Escala</b><span class="muted">Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.</span></div>
@@ -408,6 +449,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
   </div>
 </footer>
 
+<script>/*__DISENOS__*/</script>
 <script>
 const D = /*__DATA__*/null;
 const AXES = ['aridez','desnudez','frio','amplitud','mafico','relieve','altitud','polvo','hielo'];
@@ -617,6 +659,26 @@ $('#gameNext').addEventListener('click', newGame);
 
 $('#demoBanner').hidden = !D.demo;
 renderControls(); renderMethod(); renderLimits(); render(); newGame();
+
+// ---------------------------------------------------------------- diseños de la app
+$('#coinMoon').innerHTML = Disenos.moneda('moon', 64);
+$('#coinMarth').innerHTML = Disenos.moneda('marth', 64);
+$('#levels').innerHTML = [1, 2, 3, 4, 5].map((l) => `<figure>${Disenos.base(l, '#e7794b', '#2a6fdb', l * 5 - 2)}<figcaption>Nivel ${l}${l === 5 ? '+' : ''} · ${l === 5 ? '21 o más' : (l * 5 - 4) + '-' + l * 5} exploradores</figcaption></figure>`).join('');
+const ROOMS = [
+  {nombre: 'Consola', numero: 3, planta: 1, cama: 'cama_capsula', escritorio: 'escritorio_consola', color1: '#e7794b', color2: '#2a6fdb', decoraciones: {pared_izq: 'ventana_tierra', pared_der: 'bandera_base', suelo: 'planta_hidroponica', techo: 'lampara_orbital', alfombra: 'alfombra_hex'}},
+  {nombre: 'Laboratorio', numero: 7, planta: 2, color_pared: '#2b3550', color_suelo: '#8a6d4b', cama: 'cama_saco_iss', escritorio: 'escritorio_laboratorio', decoraciones: {pared_izq: 'poster_marte', pared_der: 'estanteria_rocas', suelo: 'telescopio', techo: 'satelite_colgante', alfombra: 'alfombra_crater'}},
+  {nombre: 'Cráter', numero: 12, planta: 3, color_pared: '#f2e6d8', color_suelo: '#4a5368', cama: 'cama_crater', escritorio: 'escritorio_holo', decoraciones: {pared_izq: 'poster_luna', pared_der: 'reloj_mision', suelo: 'maqueta_rover'}},
+  {nombre: 'De serie', numero: 1, planta: 1, cama: 'cama_estandar', escritorio: 'escritorio_estandar', decoraciones: {}}
+];
+function showRoom(i) {
+  $('#roomDemo').innerHTML = Disenos.habitacion(ROOMS[i]);
+  $('#roomSeg').querySelectorAll('button').forEach((b, k) => b.setAttribute('aria-pressed', k === i));
+}
+$('#roomSeg').innerHTML = ROOMS.map((r) => `<button>${r.nombre}</button>`).join('');
+$('#roomSeg').querySelectorAll('button').forEach((b, i) => b.addEventListener('click', () => showRoom(i)));
+showRoom(0);
+const MERCH = {pegatinas: 'Pegatinas · 4', pin_luna: 'Pin Polo Sur · 8', pin_marte: 'Pin Jezero · 8', parche_mision: 'Parche de misión · 12', taza: 'Taza · 18', gorra: 'Gorra · 25', camiseta: 'Camiseta · 35', sudadera: 'Sudadera · 60'};
+$('#merch').innerHTML = Object.entries(MERCH).map(([k, v]) => `<figure>${Disenos.premio(k)}<figcaption>${v} Marth</figcaption></figure>`).join('');
 </script>
 </body>
 </html>
