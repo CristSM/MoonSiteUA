@@ -46,4 +46,4 @@ Para evitar ataques Sybil (granjas de bots) y asegurar la trazabilidad sin compr
 
 Autenticación estricta (OAuth): Registro obligatorio a través de Google, Apple o cuentas institucionales.
 
-Geolocalización en vivo: La subida de datos requiere validación del GPS del dispositivo en tiempo real para evitar que alguien suba fotos de una cueva desde el sofá de su casa.
+Validación de Proximidad Transparente (Modo Expedición offline): Dado que los análogos más puros (cuevas, cañones, desiertos remotos) suelen carecer de cobertura o señal de satélite, la recolección de datos in situ se realiza de forma asíncrona. Una vez que el usuario regresa a una zona con conexión, la plataforma lanza una notificación explícita solicitando acceso puntual al GPS para sincronizar. El sistema verifica entonces que el dispositivo se encuentra dentro de un radio geográfico lógico (geofencing ampliado) respecto a las coordenadas del análogo antes de autorizar la subida del paquete de datos. Esto evita envíos fraudulentos desde el sofá de casa o desde otros países, garantizando la veracidad científica mientras se respeta de forma absoluta la privacidad del explorador.
