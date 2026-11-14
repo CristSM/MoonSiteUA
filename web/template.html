@@ -52,6 +52,8 @@ nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 54px; ove
 nav.top .brand { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; white-space: nowrap; color: var(--text); margin-right: 6px; }
 nav.top .brand span { color: var(--accent); }
 nav.top a[aria-current="page"] { color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
+nav.top a[href="explorador.html"] { margin-left: auto; color: #1a0e08; background: var(--accent); padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+nav.top a[href="explorador.html"][aria-current="page"] { box-shadow: none; }
 nav.top a { color: var(--muted); text-decoration: none; font-size: .9rem; white-space: nowrap; }
 nav.top a:hover { color: var(--text); }
 
@@ -175,6 +177,9 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .apart a:hover { border-color: var(--accent); }
 .apart b { font-family: var(--f-display); font-size: 1.1rem; }
 .apart .n { font: 500 .78rem var(--f-mono); color: var(--accent); }
+
+/* zona de exploradores (la parte con cuentas) */
+/*__EXPLORADOR_CSS__*/
 
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); }
@@ -310,9 +315,10 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
 <section id="app">
   <div class="wrap stack" style="gap:28px">
     <div class="head read" style="margin:0">
-      <p class="kicker">La app</p>
+      <p class="kicker">Recompensas</p>
       <h2>Tu cuenta, tus fotos, tu base</h2>
       <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Sube fotos, las compara con el punto recomendado más cercano y gana monedas.</p>
+      <div class="cta" style="margin-top:6px"><a class="btn primary" href="explorador.html">Ir a la zona de exploradores</a></div>
     </div>
     <div class="grid3">
       <div class="card" style="grid-template-columns:72px 1fr;align-items:center"><span id="coinMoon"></span><div class="stack" style="gap:4px"><h3>Moon Coins</h3><p class="muted">Virtuales y fáciles de ganar: 100 al registrarte, 10 por el primer acceso de cada día y objetivos sencillos. Sirven para comprar muebles.</p></div></div>
@@ -471,12 +477,26 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
     <div class="head read" style="margin:0"><p class="kicker">Hoja de ruta</p><h2>De la demo a la app</h2></div>
     <div class="road read">
       <div class="now"><b>Hackathon · noviembre 2026</b><span class="muted">Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.</span></div>
-      <div class="now"><b>Hackathon · app web</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Mars Coins, bases por niveles, habitaciones decorables, objetivos y premios (carpeta app/ del repositorio).</span></div>
+      <div class="now"><b>Hackathon · zona de exploradores</b><span class="muted">Cuentas, fotos comparadas con los puntos recomendados, Moon y Mars Coins, bases por niveles, habitaciones decorables, objetivos y premios, dentro de la propia web.</span></div>
       <div><b>MVP</b><span class="muted">App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.</span></div>
       <div><b>Piloto</b><span class="muted">Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.</span></div>
       <div><b>Escala</b><span class="muted">Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.</span></div>
     </div>
   </div>
+</section>
+<!--/PAGE-->
+
+<!--PAGE explorador-->
+<section id="explorador" class="xp" style="padding-top:20px">
+<header class="top"><div class="wrap">
+  <nav class="tabs" id="tabs" hidden aria-label="Zona de exploradores">
+    <a href="#zonas">Zonas</a><a href="#subir">Subir foto</a><a href="#fotos">Mis fotos</a><a href="#bases">Mis bases</a>
+    <a href="#objetivos">Objetivos</a><a href="#tienda">Tienda</a><a href="#premios">Premios</a><a href="#perfil">Perfil</a>
+  </nav>
+  <div class="coins" id="coins" hidden></div>
+</div></header>
+<main><div class="wrap" id="view"></div></main>
+<div class="toast" id="toast" aria-live="polite"></div>
 </section>
 <!--/PAGE-->
 
@@ -489,6 +509,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
 </footer>
 
 <script>/*__DISENOS__*/</script>
+<script>/*__EXPLORADOR_JS__*/</script>
 <script>
 const D = /*__DATA__*/null;
 const AXES = ['aridez','desnudez','frio','amplitud','mafico','relieve','altitud','polvo','hielo'];

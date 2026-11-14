@@ -42,7 +42,9 @@ for (const s of sites.sites) iberia.pts[s.id] = s.lon < -12 ? can.pts[s.id] : pe
 const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO') };
 const html = read('template.html')
   .replace('/*__DATA__*/null', JSON.stringify(data))
-  .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'));
+  .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'))
+  .replace('/*__EXPLORADOR_CSS__*/', () => read('explorador.css'))
+  .replace('/*__EXPLORADOR_JS__*/', () => read('explorador.js'));
 
 // ---------------------------------------------------------------- páginas
 // La plantilla marca bloques con <!--PAGE id--> ... <!--/PAGE-->. Cada página
@@ -51,13 +53,14 @@ const PAGES = [
   ['inicio', 'index.html', 'Inicio', 'La idea, cómo funciona y la hoja de ruta.'],
   ['demo', 'demo.html', 'Demo', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
   ['juego', 'juego.html', 'Juego', '¿Cuál es mejor análogo? Pon a prueba tu intuición.'],
-  ['app', 'app.html', 'La app', 'Cuentas, Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
+  ['app', 'recompensas.html', 'Recompensas', 'Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
   ['metodo', 'metodo.html', 'Método', 'El Índice de Analogía Planetaria y sus 9 ejes.'],
   ['validacion', 'validacion.html', 'Validación', 'Balizas por consenso y escalado robótico.'],
   ['comunidad', 'comunidad.html', 'Comunidad', 'Puntos, misiones, insignias y bases virtuales.'],
   ['seguridad', 'seguridad.html', 'Seguridad', 'Una persona, una cuenta; modo expedición offline; privacidad.'],
   ['datos', 'datos.html', 'Datos', 'Las fuentes de la NASA y las agencias socias.'],
   ['video', 'video.html', 'Vídeo', 'MoonSiteUA en 30 segundos.'],
+  ['explorador', 'explorador.html', 'Explorador', 'Regístrate, sube fotos, funda tu base y gana monedas.'],
 ];
 const first = html.indexOf('<!--PAGE ');
 const footer = html.indexOf('<footer>');

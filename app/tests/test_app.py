@@ -194,3 +194,10 @@ def test_rutas_privadas_piden_sesion():
     c = TestClient(main.app)
     for ruta in ("/api/yo", "/api/objetivos", "/api/muebles", "/api/reportes"):
         assert c.get(ruta).status_code == 401
+
+
+def test_el_servidor_sirve_la_web_completa():
+    c = TestClient(main.app)
+    for pagina in ("/", "/demo.html", "/recompensas.html", "/explorador.html"):
+        r = c.get(pagina)
+        assert r.status_code == 200 and "MoonSite" in r.text

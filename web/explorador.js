@@ -1,133 +1,20 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MoonSiteUA · App</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-/* Misma identidad que la web del proyecto: sala de control nocturna, acento óxido marciano.
-   Layout: barra superior con saldo, navegación por pestañas y una columna de contenido. */
-:root {
-  --bg: #0c111d; --panel: #141b2b; --panel-2: #1a2336; --line: #29344d;
-  --text: #ebe7df; --muted: #9da6ba; --accent: #e7794b; --moon: #c7d1e4;
-  --ok: #4cc38a; --warn: #f0a33c; --bad: #e2596b;
-  --f-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
-  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
-  color-scheme: dark;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; }
-body { background: var(--bg); color: var(--text); font: 15px/1.55 var(--f-body); }
-a { color: var(--accent); }
-h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; }
-h2 { font-size: 1.6rem; } h3 { font-size: 1.1rem; }
-p { margin: 0; }
-.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
-.muted { color: var(--muted); }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.wrap { width: min(1100px, 100% - 32px); margin-inline: auto; }
-.stack { display: grid; gap: 14px; align-content: start; }
-.row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
-.btn { display: inline-flex; gap: 8px; align-items: center; justify-content: center; padding: 9px 15px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: 500 .92rem var(--f-body); cursor: pointer; text-decoration: none; }
-.btn:hover { border-color: var(--moon); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0e08; }
-.btn:disabled { opacity: .5; cursor: not-allowed; }
-.pill { font: 500 .74rem var(--f-mono); padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
-.pill.ok { color: var(--ok); border-color: var(--ok); }
-.pill.acc { color: var(--accent); border-color: var(--accent); }
-
-header.top { position: sticky; top: 0; z-index: 5; background: rgba(12,17,29,.95); border-bottom: 1px solid var(--line); }
-header.top .wrap { display: flex; gap: 16px; align-items: center; min-height: 56px; flex-wrap: wrap; padding: 6px 0; }
-.logo { font: 700 1.15rem var(--f-display); text-decoration: none; color: var(--text); }
-.logo span { color: var(--accent); }
-nav.tabs { display: flex; gap: 2px; flex-wrap: wrap; flex: 1; }
-nav.tabs a { color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 6px; font-size: .9rem; }
-nav.tabs a[aria-current="page"] { color: var(--text); background: var(--panel-2); box-shadow: inset 0 -2px 0 var(--accent); }
-.coins { display: flex; gap: 12px; align-items: center; }
-.coin { display: inline-flex; align-items: center; gap: 6px; font: 600 .95rem var(--f-mono); }
-.coin svg { width: 24px; height: 24px; }
-main { padding: 28px 0 60px; }
-
-form.stack label, .field { display: grid; gap: 5px; font-size: .9rem; color: var(--muted); }
-input, select, textarea { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 9px 11px; width: 100%; }
-input[type="color"] { padding: 2px; height: 40px; width: 64px; }
-input[aria-invalid="true"], select[aria-invalid="true"] { border-color: var(--bad); }
-.err { color: var(--bad); font-size: .82rem; min-height: 1em; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-@media (max-width: 560px) { .two { grid-template-columns: 1fr; } }
-.rules { display: grid; gap: 2px; font-size: .82rem; margin: 0; padding: 0; list-style: none; }
-.rules li::before { content: "○ "; }
-.rules li.ok { color: var(--ok); } .rules li.ok::before { content: "● "; }
-.pass { position: relative; }
-.pass button { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); background: none; border: 0; color: var(--muted); cursor: pointer; font-size: .8rem; }
-
-.zone { display: grid; gap: 10px; }
-.zone .bars { display: grid; gap: 4px; font-size: .8rem; }
-.bar { height: 7px; background: var(--panel-2); border-radius: 4px; position: relative; overflow: hidden; }
-.bar i { position: absolute; inset: 0 auto 0 0; background: var(--accent); border-radius: 4px; }
-.bar.moon i { background: var(--moon); }
-.barrow { display: grid; grid-template-columns: 1fr 120px 40px; gap: 8px; align-items: center; }
-.svgbox svg { width: 100%; height: auto; display: block; border-radius: 8px; }
-.split { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 1fr); gap: 18px; align-items: start; }
-@media (max-width: 820px) { .split { grid-template-columns: 1fr; } }
-.photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: 8px; background: var(--panel-2); display: block; }
-.item { display: grid; gap: 8px; }
-.item .svgbox { background: #eef1f6; border-radius: 8px; overflow: hidden; aspect-ratio: 4 / 3; display: grid; place-items: center; }
-.item .svgbox svg { max-height: 100%; }
-.locked { opacity: .55; }
-.choices { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
-.choice { background: #eef1f6; border: 2px solid transparent; border-radius: 8px; padding: 0; cursor: pointer; aspect-ratio: 1; overflow: hidden; position: relative; }
-.choice[aria-pressed="true"] { border-color: var(--accent); }
-.choice svg { width: 100%; height: 100%; }
-.choice .tag { position: absolute; left: 4px; bottom: 4px; font: 500 .66rem var(--f-mono); background: rgba(12,17,29,.85); color: #fff; padding: 1px 5px; border-radius: 4px; }
-.choice.none { display: grid; place-items: center; color: #556; font-size: .8rem; }
-.floors { display: grid; gap: 6px; }
-.floor { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.room { padding: 6px 10px; border-radius: 6px; background: var(--panel-2); border: 1px solid var(--line); color: var(--text); text-decoration: none; font-size: .85rem; }
-.room.me { border-color: var(--accent); }
-.toast { position: fixed; right: 16px; bottom: 16px; z-index: 20; display: grid; gap: 8px; }
-.toast div { background: var(--panel-2); border: 1px solid var(--accent); border-radius: 8px; padding: 10px 14px; display: flex; gap: 8px; align-items: center; max-width: 340px; }
-.toast svg { width: 22px; height: 22px; flex: none; }
-.hero { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
-@media (max-width: 820px) { .hero { grid-template-columns: 1fr; } }
-table { width: 100%; border-collapse: collapse; font-size: .88rem; }
-td, th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
-th { color: var(--muted); font: 500 .74rem var(--f-mono); text-transform: uppercase; }
-@media (prefers-reduced-motion: no-preference) { .btn, .choice { transition: border-color .15s, background .15s; } }
-</style>
-</head>
-<body>
-<header class="top"><div class="wrap">
-  <a class="logo" href="#zonas">MoonSite<span>UA</span></a>
-  <nav class="tabs" id="tabs" hidden>
-    <a href="#zonas">Zonas</a><a href="#subir">Subir foto</a><a href="#fotos">Mis fotos</a><a href="#bases">Mis bases</a>
-    <a href="#objetivos">Objetivos</a><a href="#tienda">Tienda</a><a href="#premios">Premios</a><a href="#perfil">Perfil</a>
-  </nav>
-  <div class="coins" id="coins" hidden></div>
-</div></header>
-<main><div class="wrap" id="view"></div></main>
-<div class="toast" id="toast" aria-live="polite"></div>
-
-<script src="/static/disenos.js"></script>
-<script>
+(function () {
 const $ = (s, el = document) => el.querySelector(s);
 const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
 const view = $('#view');
+  if (!view) return;
 const DEST = {luna_polo_sur: 'Luna · polo sur', luna_mares_tubos: 'Luna · tubos de lava', marte_jezero: 'Marte · Jezero', marte_arcadia: 'Marte · Arcadia'};
 const SUELOS = {basalto: 'Basalto', lava_escoria: 'Lava o escoria', ceniza_volcanica: 'Ceniza volcánica', grava_regolito: 'Grava suelta', arcilla: 'Arcilla o marga', arena: 'Arena', yeso: 'Yeso', caliza: 'Caliza (karst)', sal: 'Sal o costra salina', granito: 'Granito', hielo_nieve: 'Hielo o nieve'};
 const HUECOS = {pared_izq: 'Pared izquierda', pared_der: 'Pared derecha', techo: 'Techo', suelo: 'Rincón del suelo', alfombra: 'Alfombra'};
 let ME = null;
+const SIN_SERVIDOR = 'No hay conexión con el servidor de MoonSiteUA. Para registrarte e iniciar sesión, arranca el servidor (python -m uvicorn main:app desde la carpeta app) y abre http://localhost:8000/explorador.html';
 
 async function api(path, opts = {}) {
   const init = {credentials: 'same-origin', ...opts};
   if (opts.json) { init.body = JSON.stringify(opts.json); init.headers = {'Content-Type': 'application/json'}; }
-  const r = await fetch(path, init);
+  let r;
+  try { r = await fetch(path, init); }
+  catch { const e = new Error(SIN_SERVIDOR); e.data = {}; throw e; }
   const data = await r.json().catch(() => ({}));
   if (!r.ok) { const e = new Error(data.error || 'Algo ha fallado.'); e.data = data; e.status = r.status; throw e; }
   return data;
@@ -467,7 +354,9 @@ async function router() {
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', router);
-refreshMe().then(router);
-</script>
-</body>
-</html>
+if (location.protocol === 'file:') {
+  view.innerHTML = `<div class="card stack"><h2>Zona de exploradores</h2><p class="muted">${SIN_SERVIDOR}</p></div>`;
+} else {
+  refreshMe().then(router);
+}
+})();

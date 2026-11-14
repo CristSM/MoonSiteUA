@@ -108,19 +108,21 @@ Objetivo: evitar ataques Sybil (granjas de bots) y envíos falsos sin pedir dato
 
 **Rendimiento del mapa.** Teselas vectoriales según el zoom (más eficiente que segmentar por países).
 
-## 6. App: cuentas, fotos, monedas y bases (`app/`)
+## 6. Zona de exploradores: cuentas, fotos, monedas y bases
 
-App web con FastAPI y SQLite. Cada explorador tiene su cuenta, sube sus fotos, las compara con los puntos recomendados y construye su base.
+Es un apartado más de la web (`explorador.html`). Cada explorador tiene su cuenta, sube sus fotos, las compara con los puntos recomendados y construye su base. Los datos se guardan en SQLite a través de una API en FastAPI (carpeta `app/`).
 
-### Arrancar
+### Arrancar la web completa
 
 ```bash
 cd app
 pip install -r requirements.txt
-uvicorn main:app --reload
+python -m uvicorn main:app --reload
 ```
 
-Abrir http://localhost:8000. La base de datos (`app/moonsite.db`) se crea sola con los datos iniciales. Tests: `python -m pytest app/tests` desde la raíz.
+Abrir http://localhost:8000. El mismo servidor sirve todas las páginas de la web y la API. La base de datos (`app/moonsite.db`) se crea sola con los datos iniciales. Tests: `python -m pytest app/tests` desde la raíz.
+
+Abriendo los `.html` con doble clic o desde GitHub Pages se ven todos los apartados informativos. La zona de exploradores necesita el servidor y, sin él, lo indica en la propia página.
 
 ### Registro
 
@@ -193,11 +195,10 @@ engine/
   sites_demo.json       13 sitios de demo con variables ESTIMADAS
   import_gee.py         Convierte la exportación de GEE en engine/sites.json
 app/
-  main.py               API (FastAPI) y servidor de la app
+  main.py               Servidor: sirve la web y la API (FastAPI)
   logic.py              Reglas: cuentas, monedas, objetivos, comparación, bases, tienda, premios
   schema.sql            Esquema de la base de datos
   seed.py               Regiones, zonas, muebles, objetivos y premios iniciales
-  static/index.html     Interfaz de la app
   static/disenos.js     Diseños SVG: monedas, edificio por niveles, habitación, muebles, merchandising
   tests/test_app.py     Tests de la app
 backend/
@@ -205,8 +206,9 @@ backend/
   test_verification.py  Tests (pytest)
 web/
   template.html         Plantilla de la web, con bloques <!--PAGE id--> por apartado
-  build.mjs             Genera una página por apartado (index, demo, juego, app, metodo,
-                        validacion, comunidad, seguridad, datos, video) en web/ y docs/
+  build.mjs             Genera una página por apartado (index, demo, juego, recompensas, metodo,
+                        validacion, comunidad, seguridad, datos, video, explorador) en web/ y docs/
+  explorador.css/.js    Estilos y lógica de la zona de exploradores (se incluyen en el build)
   *.html                Páginas generadas
 docs/
   *.html                Copia de las páginas para GitHub Pages

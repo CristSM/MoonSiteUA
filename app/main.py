@@ -1,8 +1,9 @@
-"""MoonSiteUA · API y servidor de la app.
+"""MoonSiteUA · servidor de la web y API de la zona de exploradores.
 
+Sirve la web completa (carpeta web/) y la API con cuentas y base de datos.
 Arrancar (desde la carpeta app):
     pip install -r requirements.txt
-    uvicorn main:app --reload
+    python -m uvicorn main:app --reload
 y abrir http://localhost:8000
 """
 from __future__ import annotations
@@ -12,7 +13,7 @@ import secrets
 from pathlib import Path
 
 from fastapi import Cookie, Depends, FastAPI, File, Form, Request, Response, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 import db
@@ -204,9 +205,5 @@ def objetivos(u=Depends(usuario)):
 
 # ------------------------------------------------------------------ estáticos
 app.mount("/uploads", StaticFiles(directory=UPLOADS), name="uploads")
-app.mount("/static", StaticFiles(directory=HERE / "static"), name="static")
-
-
-@app.get("/")
-def inicio():
-    return FileResponse(HERE / "static" / "index.html")
+# La web del proyecto (todas sus páginas). Va la última para no tapar la API.
+app.mount("/", StaticFiles(directory=HERE.parent / "web", html=True), name="web")
