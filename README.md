@@ -11,7 +11,7 @@ Esta rama contiene el vídeo pitch final de **MoonSiteUA** ya renderizado en **`
 | Frame rate | `60 fps` |
 | Duración | `30.0 s` (`1800` frames exactos) |
 | Códec / Formato | `H.264` (`yuv420p`, CRF 16) |
-| Tamaño | `~37.2 MB` |
+| Tamaño | `~37.3 MB` |
 
 ---
 

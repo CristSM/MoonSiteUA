@@ -1210,8 +1210,8 @@
                       <g id="s2-pin-b" transform="translate(682, 434)">
                         <circle cx="0" cy="0" r="26" stroke="#00F0FF" stroke-width="2" stroke-opacity="0.75" />
                         <circle cx="0" cy="0" r="10" fill="#00F0FF" stroke="#05070B" stroke-width="2" />
-                        <rect x="20" y="-14" width="128" height="28" rx="5" fill="#05070B" stroke="#00F0FF" stroke-width="1.5" />
-                        <text x="30" y="5" fill="#00F0FF" font-family="JetBrains Mono" font-size="12" font-weight="700">NODE B // #ES-042</text>
+                        <rect x="20" y="-14" width="150" height="28" rx="5" fill="#05070B" stroke="#00F0FF" stroke-width="1.5" />
+                        <text x="29" y="5" fill="#00F0FF" font-family="JetBrains Mono" font-size="12" font-weight="700">NODE B // #ES-042</text>
                       </g>
 
                       <!-- Node C: Extreme Thermal Arid (Tabernas) -->
@@ -2087,10 +2087,10 @@
                     <circle cx="960" cy="260" r="22" stroke="#00FF88" stroke-opacity="0.6" />
                     <circle cx="1090" cy="410" r="9" fill="#FFD700" />
                     <circle cx="1090" cy="410" r="24" stroke="#FFD700" stroke-opacity="0.6" />
-                    <circle cx="720" cy="540" r="9" fill="#00F0FF" />
-                    <circle cx="720" cy="540" r="22" stroke="#00F0FF" stroke-opacity="0.6" />
-                    <circle cx="940" cy="560" r="9" fill="#00FF88" />
-                    <path d="M660 300 L960 260 L1090 410 L940 560 L720 540 Z" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.45" />
+                    <circle cx="710" cy="618" r="9" fill="#00F0FF" />
+                    <circle cx="710" cy="618" r="22" stroke="#00F0FF" stroke-opacity="0.6" />
+                    <circle cx="990" cy="618" r="9" fill="#00FF88" />
+                    <path d="M660 300 L960 260 L1090 410 L990 618 L710 618 Z" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.45" />
                   </g>
                 </svg>
 
@@ -2404,11 +2404,11 @@
          ------------------------------------------------------------------ */
       function scene1() {
         const s = gsap.timeline();
-        s.fromTo("#s1-stage", { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 0);
-        s.fromTo("#s1-card-3d", { rotationY: 0, scale: 1.06 }, { rotationY: 0, scale: 1, duration: 0.45, ease: "expo.out" }, 0);
-        s.fromTo("#s1-line1", { y: -36, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.06);
-        s.fromTo("#s1-launch-box", { scale: 0.85, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.14);
-        s.fromTo("#s1-rocket-icon", { y: 12 }, { y: -12, duration: 1.3, ease: "power1.inOut" }, 0.1);
+        s.fromTo("#s1-stage", { opacity: 0.65 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
+        s.fromTo("#s1-card-3d", { rotationY: 0, scale: 1.06 }, { rotationY: 0, scale: 1, duration: 0.4, ease: "expo.out" }, 0);
+        s.fromTo("#s1-line1", { y: -24, opacity: 0.25 }, { y: 0, opacity: 1, duration: 0.28, ease: "expo.out" }, 0.02);
+        s.fromTo("#s1-launch-box", { scale: 0.9, opacity: 0.2 }, { scale: 1, opacity: 1, duration: 0.28, ease: "expo.out" }, 0.08);
+        s.fromTo("#s1-rocket-icon", { y: 12 }, { y: -12, duration: 1.3, ease: "power1.inOut" }, 0.06);
 
         // Rolling odometer $0 -> $1,000,000,000
         animateCounter(s, "#s1-line2", {
@@ -2419,25 +2419,25 @@
           suffix: " LAUNCH?",
           commas: true,
           ease: "power3.out"
-        }, 0.16);
+        }, 0.14);
 
-        // 01.4s: Crimson laser slash + screen-shake + 180deg 3D flip
+        // 01.4s: Crimson laser slash + screen-shake + snappy 180deg 3D flip
         s.fromTo("#s1-laser-slash", { scaleX: 0, opacity: 1 }, { scaleX: 1.05, opacity: 1, duration: 0.18, ease: "expo.out" }, 1.38);
-        s.fromTo("#s1-card-3d-wrap", { x: -12, y: 8 }, { x: 12, y: -8, duration: 0.05, repeat: 4, yoyo: true, ease: "none" }, 1.42);
-        s.fromTo("#s1-card-3d-wrap", { x: 12, y: -8 }, { x: 0, y: 0, duration: 0.08, ease: "power2.out", immediateRender: false }, 1.67);
-        s.fromTo("#s1-card-3d", { rotationY: 0 }, { rotationY: 180, duration: 0.58, ease: "power3.inOut", immediateRender: false }, 1.66);
-        s.fromTo(".s1-face-front", { opacity: 1 }, { opacity: 0, duration: 0.04, ease: "none", immediateRender: false }, 1.92);
-        s.fromTo(".s1-face-back", { opacity: 0 }, { opacity: 1, duration: 0.04, ease: "none", immediateRender: false }, 1.92);
+        s.fromTo("#s1-card-3d-wrap", { x: -12, y: 8 }, { x: 12, y: -8, duration: 0.04, repeat: 4, yoyo: true, ease: "none" }, 1.42);
+        s.fromTo("#s1-card-3d-wrap", { x: 12, y: -8 }, { x: 0, y: 0, duration: 0.06, ease: "power2.out", immediateRender: false }, 1.62);
+        s.fromTo("#s1-card-3d", { rotationY: 0 }, { rotationY: 180, duration: 0.38, ease: "power3.inOut", immediateRender: false }, 1.62);
+        s.fromTo(".s1-face-front", { opacity: 1 }, { opacity: 0, duration: 0.03, ease: "none", immediateRender: false }, 1.81);
+        s.fromTo(".s1-face-back", { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none", immediateRender: false }, 1.81);
 
-        // 02.2s - 03.5s: Earth radar network + Millions of Human Rovers + Morph SVG
-        s.fromTo("#s1-headline-green", { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: "back.out(1.6)" }, 2.12);
-        s.fromTo("#s1-sub-badge", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.55, ease: "power2.out" }, 2.24);
-        s.fromTo("#s1-earth-svg", { scale: 0.78, rotation: -14, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.65, ease: "expo.out" }, 2.08);
-        s.fromTo(".s1-node-ring", { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.9, duration: 0.45, stagger: 0.06, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.22);
-        s.fromTo("#s1-rover-group", { opacity: 1, x: 0 }, { opacity: 0.62, x: 24, duration: 0.55, ease: "power2.inOut" }, 2.35);
-        s.fromTo("#s1-morph-arrows", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 2.42);
-        s.fromTo("#s1-hiker-group", { opacity: 0, scale: 0.82 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.52);
-        s.fromTo("#s1-uplink-beam", { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.75, ease: "none" }, 2.65);
+        // 01.85s - 03.5s: Earth radar network + Millions of Human Rovers + Morph SVG
+        s.fromTo("#s1-headline-green", { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "back.out(1.6)" }, 1.9);
+        s.fromTo("#s1-sub-badge", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, 2.02);
+        s.fromTo("#s1-earth-svg", { scale: 0.82, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 1.86);
+        s.fromTo(".s1-node-ring", { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.9, duration: 0.45, stagger: 0.06, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.04);
+        s.fromTo("#s1-rover-group", { opacity: 1, x: 0 }, { opacity: 0.62, x: 24, duration: 0.55, ease: "power2.inOut" }, 2.25);
+        s.fromTo("#s1-morph-arrows", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 2.32);
+        s.fromTo("#s1-hiker-group", { opacity: 0, scale: 0.82 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.42);
+        s.fromTo("#s1-uplink-beam", { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.75, ease: "none" }, 2.55);
 
         return s;
       }
@@ -2447,14 +2447,14 @@
          ------------------------------------------------------------------ */
       function scene2() {
         const s = gsap.timeline();
-        s.fromTo("#s2-stage", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0);
+        s.fromTo("#s2-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
         // 0.0 - 1.3s (global 3.5 - 4.8s): MoonSiteUA Orbital Hero Emblem
-        s.fromTo("#s2-brand-overlay", { scale: 0.72, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: "expo.out" }, 0.05);
-        s.fromTo("#s2-brand-overlay", { scale: 1, opacity: 1 }, { scale: 1.85, opacity: 0, duration: 0.28, ease: "power3.in", immediateRender: false }, 1.28);
+        s.fromTo("#s2-brand-overlay", { scale: 0.84, opacity: 0.45 }, { scale: 1, opacity: 1, duration: 0.36, ease: "expo.out" }, 0);
+        s.fromTo("#s2-brand-overlay", { scale: 1, opacity: 1 }, { scale: 1.48, opacity: 0, duration: 0.2, ease: "power3.in", immediateRender: false }, 1.24);
 
-        // 1.36s - 4.5s (global 4.86 - 8.0s): Map Workspace Unfolds + Spain Zoom
-        s.fromTo("#s2-map-workspace", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.42, ease: "expo.out" }, 1.36);
-        s.fromTo("#s2-iberia-svg", { scale: 0.88, x: -24, y: 12 }, { scale: 1.05, x: 0, y: 0, duration: 2.4, ease: "power2.out", svgOrigin: "540 370" }, 1.36);
+        // 1.38s - 4.5s (global 4.88 - 8.0s): Map Workspace Unfolds + Spain Zoom
+        s.fromTo("#s2-map-workspace", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "expo.out" }, 1.38);
+        s.fromTo("#s2-iberia-svg", { scale: 0.88, x: -24, y: 12 }, { scale: 1.05, x: 0, y: 0, duration: 2.35, ease: "power2.out", svgOrigin: "540 370" }, 1.38);
 
         // Layer 1: NASA + ESA Satellite Sweep + Unexplored Hotspots
         s.fromTo("#s2-sat-sweep", { x: -180, opacity: 1 }, { x: 1120, opacity: 0.85, duration: 1.1, ease: "power2.inOut" }, 1.65);
@@ -2482,11 +2482,11 @@
          ------------------------------------------------------------------ */
       function scene3() {
         const s = gsap.timeline();
-        s.fromTo("#s3-stage", { opacity: 0, rotationX: 16 }, { opacity: 1, rotationX: 0, duration: 0.35, ease: "expo.out" }, 0);
-        s.fromTo("#s3-header", { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.04);
+        s.fromTo("#s3-stage", { opacity: 0.5, rotationX: 12 }, { opacity: 1, rotationX: 0, duration: 0.24, ease: "expo.out" }, 0);
+        s.fromTo("#s3-header", { y: -18, opacity: 0.3 }, { y: 0, opacity: 1, duration: 0.28, ease: "expo.out" }, 0);
 
         // Stage 1: Grey Beacon (0.0s - 1.5s)
-        s.fromTo("#s3-card-1", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.12);
+        s.fromTo("#s3-card-1", { y: 28, opacity: 0.25 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0.04);
         s.fromTo("#s3-pin-1", { y: -26, scale: 0.75, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.8)", svgOrigin: "70 98" }, 0.22);
         s.fromTo("#s3-telem-1", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.55);
 
@@ -2515,9 +2515,9 @@
          ------------------------------------------------------------------ */
       function scene4() {
         const s = gsap.timeline();
-        s.fromTo("#s4-stage", { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 0);
-        s.fromTo("#s4-left-panel", { x: -70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, ease: "expo.out" }, 0.04);
-        s.fromTo("#s4-right-panel", { x: 70, opacity: 0 }, { x: 0, opacity: 1, duration: 0.38, ease: "expo.out" }, 0.14);
+        s.fromTo("#s4-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
+        s.fromTo("#s4-left-panel", { x: -42, opacity: 0.3 }, { x: 0, opacity: 1, duration: 0.32, ease: "expo.out" }, 0);
+        s.fromTo("#s4-right-panel", { x: 42, opacity: 0.2 }, { x: 0, opacity: 1, duration: 0.34, ease: "expo.out" }, 0.06);
 
         // Left Panel (0.0s - 2.2s): Bot Swarm Charge & Firewall Vaporization
         s.fromTo(".s4-bot", { x: 0, opacity: 1, scale: 1 }, { x: 225, opacity: 1, scale: 1, duration: 0.65, stagger: 0.05, ease: "power2.in" }, 0.28);
@@ -2547,9 +2547,9 @@
          ------------------------------------------------------------------ */
       function scene5() {
         const s = gsap.timeline();
-        s.fromTo("#s5-stage", { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power2.out" }, 0);
+        s.fromTo("#s5-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
         // Top Half (0.0s - 1.8s): Data-Gap Scan + Bounty Trigger
-        s.fromTo("#s5-scan-card", { y: -24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.05);
+        s.fromTo("#s5-scan-card", { y: -18, opacity: 0.3 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0);
         s.fromTo("#s5-scanner-line", { y: 0 }, { y: 320, duration: 0.85, ease: "power1.inOut" }, 0.15);
         s.fromTo("#s5-gap-row", { scale: 1 }, { scale: 1.02, duration: 0.25, repeat: 2, yoyo: true, ease: "power1.inOut" }, 0.65);
         s.fromTo("#s5-bounty-card", { scale: 0.82, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.85);
@@ -2579,10 +2579,10 @@
          ------------------------------------------------------------------ */
       function scene6() {
         const s = gsap.timeline();
-        s.fromTo("#s6-stage", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power2.out" }, 0);
+        s.fromTo("#s6-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
 
         // 0.0 - 1.7s: Genesis Module Drops + Founder Repaints Hull + Interior Items
-        s.fromTo("#s6-genesis-module", { y: -180, opacity: 0 }, { y: 0, opacity: 1, duration: 0.52, ease: "expo.out" }, 0.08);
+        s.fromTo("#s6-genesis-module", { y: -140, opacity: 0.35 }, { y: 0, opacity: 1, duration: 0.48, ease: "expo.out" }, 0.02);
         s.fromTo("#s6-dust-cloud", { scale: 0.3, opacity: 0.8 }, { scale: 1.5, opacity: 0, duration: 0.55, ease: "power2.out", transformOrigin: "center center" }, 0.45);
         s.fromTo("#s6-palette-ui", { x: -48, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.52);
 
@@ -2617,10 +2617,10 @@
          ------------------------------------------------------------------ */
       function scene7() {
         const s = gsap.timeline();
-        s.fromTo("#s7-stage", { opacity: 0 }, { opacity: 1, duration: 0.16, ease: "power2.out" }, 0);
+        s.fromTo("#s7-stage", { opacity: 0.6 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
 
         // Part A (0.0s - 2.5s): Hazard Lock -> Tier 3 Flip + Robotics + Multispectral Sweep
-        s.fromTo("#s7-robotics-wrap", { opacity: 0 }, { opacity: 1, duration: 0.15 }, 0);
+        s.fromTo("#s7-robotics-wrap", { opacity: 0.55 }, { opacity: 1, duration: 0.1 }, 0);
         s.fromTo("#s7-alert-inner", { rotationX: 0 }, { rotationX: 180, duration: 0.45, ease: "power3.inOut" }, 0.56);
         s.fromTo(".s7-banner-front", { opacity: 1 }, { opacity: 0, duration: 0.04, ease: "none", immediateRender: false }, 0.78);
         s.fromTo(".s7-banner-back", { opacity: 0 }, { opacity: 1, duration: 0.04, ease: "none", immediateRender: false }, 0.78);
