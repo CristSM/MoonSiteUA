@@ -141,7 +141,7 @@ def seed(con: sqlite3.Connection) -> None:
                                     "pendiente_deg", "altitud_m", "aod", "nieve_frac")}
         cur.execute("""INSERT OR IGNORE INTO zonas (clave, nombre, lat, lon, region_id, recomendada, perfil_json, nota)
                        VALUES (?, ?, ?, ?, ?, 1, ?, ?)""",
-                    (s["id"], s["nombre"], s["lat"], s["lon"], rid.get(REGION_ZONA.get(s["id"])),
+                    (s["id"], s["nombre"], s["lat"], s["lon"], rid.get(s.get("region") or REGION_ZONA.get(s["id"])),
                      json.dumps(perfil), s["nota"]))
 
     cur.executemany("INSERT OR IGNORE INTO muebles (clave, tipo, hueco, nombre, precio_moon) VALUES (?, ?, ?, ?, ?)", MUEBLES)

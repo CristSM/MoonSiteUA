@@ -1,15 +1,17 @@
 // Genera web/index.html a partir de web/template.html + datos del motor.
 // Uso:  cd web && npm install && node build.mjs [ruta/sites.json]
-// Por defecto usa ../engine/sites_demo.json. Tras exportar desde Earth Engine:
+// Por defecto usa ../engine/sites.json si existe y, si no, ../engine/sites_demo.json. Tras exportar desde Earth Engine:
 //   python ../engine/import_gee.py moonsiteua_sitios.geojson  ->  ../engine/sites.json
 //   node build.mjs ../engine/sites.json
-import { readFileSync, writeFileSync, mkdirSync, cpSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync } from 'node:fs';
 import { geoNaturalEarth1, geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 
 const here = new URL('.', import.meta.url);
 const read = (p) => readFileSync(new URL(p, here), 'utf8');
-const sitesFile = process.argv[2] ? new URL(process.argv[2], `file://${process.cwd()}/`) : new URL('../engine/sites_demo.json', here);
+// Sitios por defecto: los reales (engine/sites.json) si existen; si no, los de demostración
+const sitesFile = process.argv[2] ? new URL(process.argv[2], `file://${process.cwd()}/`)
+  : existsSync(new URL('../engine/sites.json', here)) ? new URL('../engine/sites.json', here) : new URL('../engine/sites_demo.json', here);
 
 const targets = JSON.parse(read('../engine/targets.json'));
 const sites = JSON.parse(readFileSync(sitesFile, 'utf8'));
