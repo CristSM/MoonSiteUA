@@ -69,6 +69,19 @@ const PAGES = [
   ['video', 'video.html', 'Vídeo', 'MoonSiteUA en 30 segundos.'],
   ['explorador', 'explorador.html', 'Explorador', 'Regístrate, sube fotos, funda tu base y gana monedas.'],
 ];
+// Texto ampliado de cada apartado en el índice de la portada
+const MAS = {
+  demo: 'Mapa mundial y de España con el Índice de Analogía Planetaria de cada sitio frente a cuatro destinos. Cada ficha muestra en qué se parece y en qué no, y lo que la Tierra no puede imitar. Puedes cambiar el peso de cada eje y aportar tus propios datos.',
+  juego: 'Dos sitios frente a frente: eliges cuál se parece más al destino y se revela el índice de cada uno. Sirve para entrenar la intuición, porque lo que parece un desierto no siempre gana.',
+  app: 'Moon Coins para decorar y Mars Coins para premios físicos. Cada zona tiene una base que crece una planta cada cinco exploradores, con habitaciones que cada uno decora a su gusto.',
+  metodo: 'Una media ponderada de la similitud en nueve ejes calculados con datos de la NASA en Google Earth Engine. La nota ordena los candidatos y la similitud por eje explica el porqué.',
+  validacion: 'Nadie confirma un análogo en solitario: hacen falta varios exploradores independientes que coincidan. Las zonas peligrosas se cierran al público y pasan a misiones con robots.',
+  comunidad: 'Misiones que llevan a la gente a los datos que faltan, insignias para quien descubre primero y bases virtuales que crecen con cada explorador que llega.',
+  seguridad: 'Una persona, una cuenta; captura de datos sin cobertura móvil; una geovalla que impide enviar datos desde casa; y ninguna misión en zonas peligrosas o protegidas.',
+  datos: 'Todo sale de datos abiertos: satélites de la NASA para la Tierra, LRO para la Luna y Perseverance y MRO para Marte, con ampliaciones de la ESA, la CSA y la JAXA.',
+  video: 'La idea completa en medio minuto: del satélite al terreno y del terreno a la comunidad.',
+  explorador: 'Crea tu cuenta, aporta fotos y medidas, funda una base o únete a una existente, decora tu habitación y gana monedas.',
+};
 const first = html.indexOf('<!--PAGE ');
 const footer = html.indexOf('<footer>');
 const head = html.slice(0, first), tail = html.slice(footer);
@@ -88,8 +101,11 @@ for (const dir of out) mkdirSync(new URL('en/', dir), { recursive: true });
 for (const [id, file, label] of PAGES) {
   const nav = PAGES.filter(([pid]) => pid !== 'inicio')
     .map(([pid, f, l]) => `<a href="${f}"${pid === id ? ' aria-current="page"' : ''}>${l}</a>`).join('');
-  const apartados = PAGES.filter(([pid]) => pid !== 'inicio')
-    .map(([, f, l, d], i) => `<a class="card" href="${f}"><span class="n">${String(i + 1).padStart(2, '0')}</span><b>${l}</b><span class="muted">${d}</span></a>`).join('');
+  // Índice de la portada: dos columnas de cinco apartados que se despliegan (uno abierto a la vez)
+  const items = PAGES.filter(([pid]) => pid !== 'inicio')
+    .map(([pid, f, l, d], i) => `<details class="ap" name="apartados"><summary><span class="n">${String(i + 1).padStart(2, '0')}</span><b>${l}</b><span class="muted">${d}</span><span class="mas" aria-hidden="true"></span></summary>`
+      + `<div class="ap-body"><div class="ap-fig" data-fig="${pid}"></div><div class="ap-txt"><p>${MAS[pid]}</p><a class="btn primary" href="${f}">Ir al apartado</a></div></div></details>`);
+  const apartados = `<div class="ap-col">${items.slice(0, 5).join('')}</div><div class="ap-col">${items.slice(5).join('')}</div>`;
   const page = (head.replace('<!--NAV-->', nav).replace('<title>MoonSiteUA</title>', `<title>${id === 'inicio' ? 'MoonSiteUA' : `MoonSiteUA · ${label}`}</title>`)
     + blocks[id].join('\n') + tail).replace('<!--APARTADOS-->', apartados);
   const es = page.replace('<!--LANG-->', `<a class="lang" href="en/${file}" hreflang="en" lang="en" title="English">EN</a>`);

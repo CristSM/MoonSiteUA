@@ -45,7 +45,7 @@ function fieldErrors(form, e) {
 // ================================================================ acceso
 function vistaEntrar() {
   view.innerHTML = `<div class="hero">
-    <div class="stack"><h1 style="font-size:2.2rem">Sé un <span style="color:var(--accent)">rover humano</span></h1>
+    <div class="stack"><h1 style="font-size:clamp(2.6rem,5vw,4rem);line-height:.95">Sé un <span style="color:var(--accent)">rover humano</span></h1>
       <p class="muted">Aporta fotos y datos de terrenos parecidos a la Luna y Marte desde la Demo, crea puntos nuevos y construye tu base con otros exploradores.</p>
       <div class="row">${Disenos.moneda('moon', 40)}<span class="muted">Moon Coins: por entrar cada día, registrarte y objetivos sencillos.</span></div>
       <div class="row">${Disenos.moneda('mars', 40)}<span class="muted">Mars Coins: objetivos difíciles. Se canjean por pins, parches y camisetas.</span></div></div>
@@ -198,7 +198,7 @@ function vistaFundar(zonaId) {
   view.innerHTML = `<div class="split"><form class="card stack" id="fBase">
     <h2>Fundar base</h2><p class="muted">Eres la primera persona en esta zona: eliges el nombre y los dos colores de la base.</p>
     <label>Nombre de la base<input name="nombre" id="bNombre" maxlength="60" placeholder="Base Tabernas"></label>
-    <div class="row"><label>Color principal<input type="color" name="color1" id="bC1" value="#e7794b"></label><label>Color secundario<input type="color" name="color2" id="bC2" value="#1b2a4a"></label></div>
+    <div class="row"><label>Color principal<input type="color" name="color1" id="bC1" value="#ffd23f"></label><label>Color secundario<input type="color" name="color2" id="bC2" value="#1b2a4a"></label></div>
     <p class="err" data-for="_"></p><button class="btn primary">Fundar base</button></form>
     <div class="card svgbox" id="bPrev"></div></div>`;
   const f = $('#fBase');
@@ -288,7 +288,7 @@ async function vistaPremios() {
     <div class="grid">${ps.map((p) => `<article class="card item"><div class="svgbox">${Disenos.premio(p.clave)}</div><b>${esc(tr(p.nombre))}</b><p class="muted" style="font-size:.85rem">${esc(tr(p.descripcion))}</p>
       <div class="row" style="justify-content:space-between"><span class="coin">${Disenos.moneda('mars', 20)}${p.precio_mars}</span><span class="pill">${p.stock ? p.stock + ' disponibles' : 'Agotado'}</span></div>
       <button class="btn" data-canjear="${p.clave}" ${p.stock ? '' : 'disabled'}>Canjear</button></article>`).join('')}</div>
-    <dialog id="dlg" style="background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;max-width:420px;width:calc(100% - 32px)"></dialog></div>`;
+    <dialog id="dlg" style="background:var(--panel);color:var(--text);border:3px solid var(--text);max-width:420px;width:calc(100% - 32px)"></dialog></div>`;
   view.querySelectorAll('[data-canjear]').forEach((b) => b.addEventListener('click', () => {
     const p = ps.find((x) => x.clave === b.dataset.canjear);
     const d = $('#dlg');

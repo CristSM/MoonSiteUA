@@ -85,19 +85,19 @@ Hay 13 sitios de ejemplo: análogos conocidos (Atacama, Haughton, Valles Secos, 
 
 10. La web
 
-La web tiene 11 apartados, cada uno en su página, en español y en inglés (botón ES/EN) y en modo claro u oscuro (botón sol/luna):
+La web tiene 11 apartados, cada uno en su página, en español y en inglés (botón ES/EN). Usa un único tema oscuro de estilo «cartel de misión» (negro, hueso y un amarillo de acento; tipografías Big Shoulders Display, Instrument Sans y DM Mono):
 
 | Página | Contenido |
 |---|---|
-| Inicio | La idea, las tres capas, índice de apartados y hoja de ruta |
+| Inicio | La idea, las tres capas y un índice desplegable de apartados con una figura de cada uno |
 | Demo | Mapa mundial y de España con el IAP de cada sitio, ficha con radar, ranking, pesos ajustables y panel «Aportar datos» |
 | Juego | «¿Cuál es mejor análogo?»: dos sitios, eliges y se revela el resultado |
-| Recompensas | Moon y Mars Coins, bases por niveles, habitaciones y premios |
+| Recompensas | Monedas en 3D y cómo se ganan, diorama de la base por niveles, habitación en 3D y catálogo de premios |
 | Método | La fórmula, los 9 ejes y los límites de la analogía |
-| Validación | Balizas por consenso y escalado robótico (nivel 3) |
-| Comunidad | Puntos, misiones, insignias y bases virtuales |
-| Seguridad | Una persona una cuenta, modo expedición offline, seguridad física y RGPD |
-| Datos | Fuentes de la NASA y de las agencias socias (ESA, CSA, JAXA) |
+| Validación | Simulador 3D de balizas por consenso, escalado robótico (nivel 3) en 3D y tolerancias de medida |
+| Comunidad | Bucle de la comunidad, monedas, tablón de misiones, insignias y diorama 3D de la colonia que crece con los exploradores |
+| Seguridad | Geovalla interactiva sobre el mapa, una persona una cuenta, modo expedición offline, seguridad física y RGPD |
+| Datos | Fuentes de la NASA (Tierra, Luna y Marte) y de las agencias socias (ESA, CSA, JAXA) |
 | Vídeo | Espacio para la demo de 30 segundos |
 | Explorador | Zona con cuenta de usuario |
 
@@ -138,7 +138,8 @@ Abriendo los `.html` directamente o desde GitHub Pages (carpeta `docs/`) se ven 
 
 Otros comandos:
 - Tests: `python -m pytest app/tests backend` (60 tests).
-- Regenerar la web tras cambiar `web/template.html`: `cd web`, `npm install` y `node build.mjs`.
+- Regenerar la web tras cambiar `web/template.html`: `cd web`, `npm install` y `node build.mjs`. Los textos nuevos se traducen en `web/i18n/en.py` (luego `python i18n/en.py`).
+- Las escenas 3D (dioramas, monedas, simulador) usan three.js r128, que se descarga de cdnjs solo en las páginas que lo necesitan; sin conexión se muestran dibujos SVG de reserva.
 - Datos reales: pegar `engine/gee_analog_score.js` en code.earthengine.google.com, exportar los sitios y ejecutar `python engine/import_gee.py moonsiteua_sitios.geojson`.
 
 13. Estructura del repositorio
@@ -159,7 +160,7 @@ Los detalles técnicos están en `documentacion/README_TECNICO.md`. Los datos y 
 
 **Hecho:**
 - Motor de similitud.
-- Web completa en dos idiomas y dos temas.
+- Web completa en dos idiomas, con escenas 3D interactivas.
 - Zona de exploradores con base de datos.
 - Validación, monedas, bases, habitaciones, objetivos y premios.
 - 60 tests.
