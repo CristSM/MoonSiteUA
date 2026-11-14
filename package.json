@@ -1,0 +1,16 @@
+{
+  "name": "video-moonsite",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MoonSiteUA 30-second (1920x1080 @ 60fps) HyperFrames pitch video",
+  "scripts": {
+    "preview": "hyperframes preview",
+    "lint": "hyperframes lint",
+    "check": "hyperframes check",
+    "doctor": "hyperframes doctor",
+    "render": "hyperframes render --fps 60 -o moonsiteua-pitch.mp4"
+  },
+  "devDependencies": {
+    "hyperframes": "0.9.46"
+  }
+}

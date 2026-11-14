@@ -1,52 +1,131 @@
-# MoonSiteUA
+# MoonSiteUA — Video Pitch Renderizado (`1920×1080 @ 60fps`)
 
-El concepto: Una plataforma gamificada de ciencia ciudadana que transforma la búsqueda de análogos lunares y marcianos en una exploración colaborativa global. Los usuarios actúan como "rovers humanos", recopilando datos sobre el terreno para validar zonas de interés predefinidas por datos satelitales o descubrir nuevos micro-análogos.
+Esta rama contiene el vídeo pitch final de **MoonSiteUA** ya renderizado en **`moonsiteua-pitch.mp4`**, junto con la composición fuente (`index.html`) y las instrucciones completas paso a paso para volver a renderizarlo o personalizarlo en local con **HyperFrames + FFmpeg**.
 
-1. El Motor de Datos y el Mapa Interactivo
-El núcleo de la plataforma es un mapa interactivo (segmentado por países para optimizar el rendimiento) que se alimenta de dos fuentes:
+## Especificaciones del vídeo generado (`moonsiteua-pitch.mp4`)
 
-Capa Base (Datos Oficiales): Zonas "calientes" predefinidas a través de cruces de datos satelitales (NASA, ESA). Estas áreas aparecen en el mapa como "Zonas de Interés no exploradas".
+| Propiedad | Valor |
+| :--- | :--- |
+| Archivo | `moonsiteua-pitch.mp4` |
+| Resolución | `1920 × 1080` (Full HD) |
+| Frame rate | `60 fps` |
+| Duración | `30.0 s` (`1800` frames exactos) |
+| Códec / Formato | `H.264` (`yuv420p`, CRF 16) |
+| Tamaño | `~37.2 MB` |
 
-Capa Comunitaria: Puntos de interés generados por los propios usuarios al descubrir entornos con similitudes geológicas o climáticas (formaciones basálticas, zonas kársticas, extremos térmicos).
+---
 
-2. Sistema de Validación Científica por Consenso (Crowd-Verification)
-Para garantizar el rigor científico que exige el reto sin depender de verificaciones manuales centralizadas, el mapa utiliza un sistema de balizas semafóricas:
+## Cómo conseguir el vídeo renderizado paso a paso
 
-Baliza Gris (Descubrimiento): Un usuario sube los primeros datos in situ (temperatura, humedad, tipo de suelo). El punto existe, pero no tiene validez científica aún.
+### 1. Prerrequisitos del sistema
 
-Baliza Naranja (En Verificación): Entre 2 y 3 usuarios independientes han acudido a las mismas coordenadas (con un margen de error GPS mínimo) y han reportado métricas consistentes.
+1. **Node.js** (`v18+`, probado en `v26.12.0`) y `npm`.
+2. **FFmpeg y FFprobe** (imprescindibles para codificar el MP4; probado con `ffmpeg 9.0.2`):
+   - **macOS (Homebrew):**
+     ```bash
+     brew install ffmpeg
+     ```
+   - **Ubuntu / Debian:**
+     ```bash
+     sudo apt update && sudo apt install -y ffmpeg
+     ```
+   - **Windows (winget):**
+     ```bash
+     winget install Gyan.FFmpeg
+     ```
+3. **Acceso a internet en la primera ejecución** para descargar `chrome-headless-shell` (gestionado por HyperFrames) y cachear las fuentes de Google Fonts (`Space Grotesk` y `JetBrains Mono`) y `gsap.min.js`.
 
-Baliza Verde (Análogo Confirmado): Cuando de 5 a 10 exploradores validan los datos, la zona se consolida en la base de datos como un análogo terrestre legítimo.
+---
 
-3. Gamificación y Economía de Recompensas
-El sistema de incentivos está diseñado para fomentar tanto la calidad de los datos como la retención del usuario a través de una economía dual:
+### 2. Clonar esta rama e instalar dependencias
 
-Puntos de Exploración (Virtuales): Se obtienen por acciones comunes (validar un punto, subir fotos, medir temperatura). Sirven como moneda de cambio para cosméticos digitales dentro de la app.
+```bash
+git clone -b enrique git@github.com:CristSM/MoonSiteUA.git
+cd MoonSiteUA
+npm install
+```
 
-Puntos de Misión (Físicos): Moneda premium muy escasa. Se otorgan al liderar expediciones validadas o completar objetivos de alto valor. Se canjean por merchandising oficial (pins, parches de misión, camisetas).
+Esto instala localmente `hyperframes` (`0.9.46`) sin depender de instalaciones globales.
 
-Insignias: Por ejemplo, el primer usuario en documentar un nuevo análogo validado recibe un título inmutable en el historial de ese nodo.
+---
 
-4. Construcción de Hábitats Virtuales (El Bucle Social)
-Esta es la mecánica clave para generar comunidad. Cada análogo confirmado en el mundo real se convierte en una "Base Espacial" en el mundo virtual.
+### 3. Descargar el navegador headless y comprobar el entorno
 
-El Módulo Génesis: El descubridor original funda la base, eligiendo los dos colores corporativos de la misma y decorando el primer "módulo de habitabilidad" usando sus puntos virtuales (muebles, estaciones de trabajo, banderas).
+Descarga `chrome-headless-shell` en la caché de HyperFrames y verifica que `Node.js`, `FFmpeg`, `FFprobe` y el navegador están operativos:
 
-Expansión Modular: Cada nuevo explorador que viaja físicamente a esa zona y valida datos, gana el derecho a acoplar su propio módulo a la base matriz, decorándolo a su gusto. Las bases más visitadas se convierten en gigantescas colonias virtuales colaborativas.
+```bash
+npx hyperframes browser ensure
+npm run doctor
+```
 
-5. Sistema de Misiones Dirigidas (Bounties)
-Para evitar que los usuarios recopilen datos irrelevantes, el sistema genera misiones dinámicas basadas en los huecos de información (Data Gaps).
+Deberías ver en verde (`✓`): `CLI binary`, `Node.js`, `FFmpeg`, `FFprobe` y `Chrome`. *(Los apartados opcionales como `whisper-cpp`, `TTS (Kokoro)` o `BGM (MusicGen)` no son necesarios para renderizar el vídeo.)*
 
-Si un análogo en España tiene datos validados de temperatura y suelo, pero falta humedad, el sistema lanza un "Objetivo Local": Se buscan lecturas de higrómetro en las coordenadas X. Recompensa: Triple puntuación virtual.
+---
 
-Misiones globales como "Documenta 3 zonas kársticas este mes" mantienen la retención a largo plazo.
+### 4. *(Opcional)* Añadir pista de audio / locución (`voiceover.mp3`)
 
-6. Arquitectura de Seguridad
-Para evitar ataques Sybil (granjas de bots) y asegurar la trazabilidad sin comprometer datos personales sensibles (como el DNI):
+La composición incluye un visualizador de onda de audio en la esquina inferior izquierda sincronizado por código con los 7 bloques del guion (`00.0s – 30.0s`). Para incrustar voz real en el MP4 final:
 
-Autenticación y Verificación Única (OAuth + OTP): Registro inicial a través de cuentas sociales (Google, Apple) blindado con una verificación obligatoria por SMS (One-Time Password). Vincular un número de teléfono único e irrepetible a cada perfil impide que un mismo usuario genere múltiples cuentas de correo para falsear validaciones, erradicando los ataques de bots y garantizando que cada explorador que sube datos al mapa es una persona real.
+1. Coloca tu archivo de audio con nombre **`voiceover.mp3`** en la raíz del proyecto, junto a `index.html`.
+2. Abre `index.html`, busca el comentario alrededor de la línea `910` y descomenta la etiqueta `<audio>`:
+   ```html
+   <audio id="voiceover-audio" data-start="0" data-duration="30" data-volume="1" src="voiceover.mp3"></audio>
+   ```
 
-Validación de Proximidad Transparente (Modo Expedición offline): Dado que los análogos más puros (cuevas, cañones, desiertos remotos) suelen carecer de cobertura o señal de satélite, la recolección de datos in situ se realiza de forma asíncrona. Una vez que el usuario regresa a una zona con conexión, la plataforma lanza una notificación explícita solicitando acceso puntual al GPS para sincronizar. El sistema verifica entonces que el dispositivo se encuentra dentro de un radio geográfico lógico (geofencing ampliado) respecto a las coordenadas del análogo antes de autorizar la subida del paquete de datos. Esto evita envíos fraudulentos desde el sofá de casa o desde otros países, garantizando la veracidad científica mientras se respeta de forma absoluta la privacidad del explorador.
+---
 
-7. Escalación Robótica y Análisis Multiespectral (Validación Tier 3):
-Para aquellas zonas que alcanzan un alto índice de interés geológico pero son catalogadas como demasiado peligrosas, extremas o inaccesibles para la exploración humana civil (cuevas profundas, chimeneas volcánicas, acantilados), el sistema bloquea el acceso público por seguridad. En su lugar, estas coordenadas excepcionales o altamente verificadas se derivan a un programa de "Misiones Automatizadas" en colaboración con universidades y agencias espaciales. Estas instituciones toman el relevo desplegando drones o rovers terrestres equipados con cámaras multiespectrales y sensores de alta precisión para analizar la composición exacta de rocas y tierra, completando el perfil del análogo sin poner en riesgo vidas humanas y cerrando la brecha entre la ciencia ciudadana y la investigación profesional.
+### 5. Previsualizar y validar antes del render *(Opcional)*
+
+- **Estudio interactivo en el navegador:**
+  ```bash
+  npm run preview
+  ```
+- **Validación técnica completa (lint + layout + craft + audio):**
+  ```bash
+  npm run check
+  ```
+
+---
+
+### 6. Renderizar el vídeo final (`1920×1080 @ 60fps`)
+
+Ejecuta el comando de renderizado:
+
+```bash
+npm run render
+```
+
+*(Equivalente a ejecutar `npx hyperframes render --fps 60 -o moonsiteua-pitch.mp4`.)*
+
+HyperFrames compilará `index.html`, capturará los `1800` frames en paralelo usando Chrome con aceleración GPU y los codificará con `ffmpeg` en **`moonsiteua-pitch.mp4`** en ~1–2 minutos.
+
+#### Otras opciones útiles de exportación
+- **Máxima calidad de archivo (`delivery`):**
+  ```bash
+  npx hyperframes render --fps 60 --quality delivery -o moonsiteua-pitch-master.mp4
+  ```
+- **Render rápido de borrador (`draft`):**
+  ```bash
+  npx hyperframes render --fps 30 --quality draft -o preview.mp4
+  ```
+- **Secuencia de PNGs o WebM:**
+  ```bash
+  npx hyperframes render --format png-sequence -o renders/frames
+  npx hyperframes render --format webm --fps 60 -o moonsiteua-pitch.webm
+  ```
+
+---
+
+## Estructura de escenas (`30.0s` / `1800 frames`)
+
+La línea temporal maestra GSAP está registrada en `window.__timelines["moonsiteua"]`:
+
+| Tramo | Tiempo | Escena |
+| :---: | :---: | :--- |
+| `01` | `00.0s – 03.5s` | The Hook — Lanzamiento de $1.000M vs. Millones de Rovers Humanos |
+| `02` | `03.5s – 08.0s` | Motor Dual de Datos NASA/ESA y Mapa Interactivo de Micro-Análogos |
+| `03` | `08.0s – 13.0s` | Consenso Científico por Balizas Semafóricas (`01/10` → `03/10` → `10/10`) |
+| `04` | `13.0s – 17.5s` | Escudo Anti-Sybil (OAuth + SMS OTP) y Geofencing Offline |
+| `05` | `17.5s – 21.5s` | Misiones Data-Gap (`3X`) y Economía Dual (XP + Puntos de Misión Físicos) |
+| `06` | `21.5s – 25.5s` | Colonia Espacial Virtual Isométrica Colaborativa (`15 / 15` módulos) |
+| `07` | `25.5s – 30.0s` | Escalación Robótica Tier 3 Multiespectral y Cierre Orbital |

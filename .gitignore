@@ -1,0 +1,7 @@
+node_modules/
+renders/
+.hyperframes/
+*.webm
+*.mov
+*.mp4
+!moonsiteua-pitch.mp4
