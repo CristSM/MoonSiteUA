@@ -3,7 +3,7 @@
 // Por defecto usa ../engine/sites_demo.json. Tras exportar desde Earth Engine:
 //   python ../engine/import_gee.py moonsiteua_sitios.geojson  ->  ../engine/sites.json
 //   node build.mjs ../engine/sites.json
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { geoNaturalEarth1, geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
 
@@ -75,7 +75,16 @@ const head = html.slice(0, first), tail = html.slice(footer);
 const blocks = {};
 for (const m of html.slice(first, footer).matchAll(/<!--PAGE (\w+)-->([\s\S]*?)<!--\/PAGE-->/g)) (blocks[m[1]] ||= []).push(m[2]);
 
+// Versión en inglés: web/en/*.html (diccionario en i18n/en.py -> i18n/en.json)
+const EN = JSON.parse(read('i18n/en.json'));
+const RUN = /(?<=[>"'`}])([^<>"'`${}]*[A-Za-zÁÉÍÓÚÜáéíóúüñÑ¿¡][^<>"'`${}]*)(?=[<"'`$])/g;
+function traducir(page) {
+  for (const [a, b] of EN.crudo) page = page.split(a).join(b);
+  page = page.replace(RUN, (run) => { const k = run.trim(); return EN.textos[k] ? run.replace(k, EN.textos[k]) : run; });
+  return page.replace('window.I18N = /*__I18N__*/null;', () => `window.I18N = ${JSON.stringify({ textos: EN.textos, patrones: EN.patrones })};`);
+}
 const out = [new URL('./', here), new URL('../docs/', here)];
+for (const dir of out) mkdirSync(new URL('en/', dir), { recursive: true });
 for (const [id, file, label] of PAGES) {
   const nav = PAGES.filter(([pid]) => pid !== 'inicio')
     .map(([pid, f, l]) => `<a href="${f}"${pid === id ? ' aria-current="page"' : ''}>${l}</a>`).join('');
@@ -83,6 +92,8 @@ for (const [id, file, label] of PAGES) {
     .map(([, f, l, d], i) => `<a class="card" href="${f}"><span class="n">${String(i + 1).padStart(2, '0')}</span><b>${l}</b><span class="muted">${d}</span></a>`).join('');
   const page = (head.replace('<!--NAV-->', nav).replace('<title>MoonSiteUA</title>', `<title>${id === 'inicio' ? 'MoonSiteUA' : `MoonSiteUA · ${label}`}</title>`)
     + blocks[id].join('\n') + tail).replace('<!--APARTADOS-->', apartados);
-  for (const dir of out) writeFileSync(new URL(file, dir), page);
+  const es = page.replace('<!--LANG-->', `<a class="lang" href="en/${file}" hreflang="en" lang="en" title="English">EN</a>`);
+  const en = traducir(page.replace('<!--LANG-->', `<a class="lang" href="../${file}" hreflang="es" lang="es" title="Español">ES</a>`));
+  for (const dir of out) { writeFileSync(new URL(file, dir), es); writeFileSync(new URL('en/' + file, dir), en); }
 }
-console.log(`${PAGES.length} páginas · ${sites.sites.length} sitios · demo=${data.demo}`);
+console.log(`${PAGES.length} páginas × 2 idiomas · ${sites.sites.length} sitios · demo=${data.demo}`);

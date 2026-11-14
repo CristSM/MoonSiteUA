@@ -8,12 +8,12 @@
 .xp .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
 .xp .btn { display: inline-flex; gap: 8px; align-items: center; justify-content: center; padding: 9px 15px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: 500 .92rem var(--f-body); cursor: pointer; text-decoration: none; }
 .xp .btn:hover { border-color: var(--moon); }
-.xp .btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0e08; }
+.xp .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .xp .btn:disabled { opacity: .5; cursor: not-allowed; }
 .xp .pill { font: 500 .74rem var(--f-mono); padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
 .xp .pill.ok { color: var(--ok); border-color: var(--ok); }
 .xp .pill.acc { color: var(--accent); border-color: var(--accent); }
-.xp header.top { position: static !important; position: sticky; top: 0; z-index: 5; background: rgba(12,17,29,.95); border-bottom: 1px solid var(--line); }
+.xp header.top { position: static !important; position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
 .xp header.top .wrap { display: flex; gap: 16px; align-items: center; min-height: 56px; flex-wrap: wrap; padding: 6px 0; }
 .xp .logo { font: 700 1.15rem var(--f-display); text-decoration: none; color: var(--text); }
 .xp .logo span { color: var(--accent); }

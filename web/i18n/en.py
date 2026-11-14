@@ -1,0 +1,477 @@
+"""Traducción español -> inglés de la web de MoonSiteUA.
+
+build.mjs genera las páginas en inglés (web/en/*.html) sustituyendo cada texto
+visible por su traducción. Para traducir un texto nuevo, añádelo a TEXTOS con la
+cadena exacta en español (sin espacios al principio ni al final).
+
+- TEXTOS:   texto exacto -> traducción (HTML, JS y datos de la demo)
+- CRUDO:    fragmentos de código con frases construidas por partes
+- PATRONES: mensajes del servidor con datos variables (expresiones regulares)
+
+python i18n/en.py  ->  escribe i18n/en.json, que es lo que lee build.mjs
+"""
+import json
+from pathlib import Path
+
+TEXTOS = {
+    # ---------------------------------------------------------------- menú, comunes
+    "Demo": "Demo", "Juego": "Game", "Recompensas": "Rewards", "Método": "Method", "Validación": "Validation",
+    "Comunidad": "Community", "Seguridad": "Safety", "Datos": "Data", "Vídeo": "Video", "Explorador": "Explorer",
+    "Secciones": "Sections", "Modo claro / oscuro": "Light / dark mode", "Cambiar a modo claro": "Switch to light mode",
+    "Cambiar a modo oscuro": "Switch to dark mode",
+    "MoonSiteUA · Comunidad": "MoonSiteUA · Community", "MoonSiteUA · Datos": "MoonSiteUA · Data", "MoonSiteUA · Demo": "MoonSiteUA · Demo",
+    "MoonSiteUA · Explorador": "MoonSiteUA · Explorer", "MoonSiteUA · Juego": "MoonSiteUA · Game", "MoonSiteUA · Método": "MoonSiteUA · Method",
+    "MoonSiteUA · Recompensas": "MoonSiteUA · Rewards", "MoonSiteUA · Seguridad": "MoonSiteUA · Safety",
+    "MoonSiteUA · Validación": "MoonSiteUA · Validation", "MoonSiteUA · Vídeo": "MoonSiteUA · Video",
+    "Buscamos en la Tierra los mejores lugares para ensayar bases en la Luna y misiones a Marte, con datos de la NASA y exploradores sobre el terreno.":
+        "We search Earth for the best places to rehearse Moon bases and Mars missions, using NASA data and explorers on the ground.",
+    "Equipo de la Universidad de Alicante · NASA Space Apps Challenge 2026 · Reto «Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars».":
+        "University of Alicante team · NASA Space Apps Challenge 2026 · Challenge “Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars”.",
+    "Datos de NASA y de las agencias socias. Este proyecto no está respaldado por la NASA.":
+        "Data from NASA and partner agencies. This project is not endorsed by NASA.",
+
+    # ---------------------------------------------------------------- inicio
+    "NASA Space Apps Challenge 2026 · Análogos terrestres de la Luna y Marte": "NASA Space Apps Challenge 2026 · Earth analogs of the Moon and Mars",
+    "La Tierra como": "Earth as a", "campo de pruebas": "testing ground", "para vivir en la Luna y Marte": "for living on the Moon and Mars",
+    "MoonSiteUA compara cada rincón del planeta con las futuras bases lunares y los lugares de aterrizaje en Marte usando datos abiertos de la NASA. Después, exploradores sobre el terreno confirman los mejores candidatos y los convierten en bases virtuales compartidas.":
+        "MoonSiteUA compares every corner of the planet with future lunar bases and Mars landing sites using NASA open data. Explorers on the ground then confirm the best candidates and turn them into shared virtual bases.",
+    "9 ejes": "9 axes", "de comparación calculados con satélites NASA": "of comparison computed from NASA satellites",
+    "4 destinos": "4 destinations", "polo sur lunar, tubos de lava, Jezero y Arcadia Planitia": "lunar south pole, lava tubes, Jezero and Arcadia Planitia",
+    "3 balizas": "3 beacons", "gris, naranja y verde según la validación en campo": "grey, orange and green depending on field validation",
+    "Probar la demo": "Try the demo", "Ver el vídeo": "Watch the video",
+    "El reto y nuestra respuesta": "The challenge and our answer",
+    "Buscar análogos con datos, no solo por cómo se ven": "Finding analogs with data, not just by how they look",
+    "Los análogos clásicos (Atacama, Haughton, Death Valley) están bien estudiados, pero ninguno reproduce otro planeta entero. El reto pide encontrar lugares nuevos, explicar en qué se parecen y en qué no, y mostrar cómo ayudan a explorar. Lo resolvemos en tres capas.":
+        "Classic analogs (Atacama, Haughton, Death Valley) are well studied, but none reproduces a whole other planet. The challenge asks for new places, an explanation of how they are similar and how they are not, and how they help exploration. We solve it in three layers.",
+    "01 · SATÉLITE": "01 · SATELLITE", "02 · CAMPO": "02 · FIELD", "03 · COMUNIDAD": "03 · COMMUNITY",
+    "El motor descubre": "The engine discovers", "Los exploradores verifican": "Explorers verify", "Se construyen bases": "Bases get built",
+    "Cruzamos temperatura, vegetación, lluvia, relieve, mineralogía, polvo y nieve de misiones NASA y calculamos el Índice de Analogía Planetaria de cada zona. Las mejores aparecen en el mapa como Zonas de Interés sin explorar.":
+        "We combine temperature, vegetation, rainfall, terrain, mineralogy, dust and snow from NASA missions and compute the Planetary Analogy Index of every area. The best ones appear on the map as unexplored Areas of Interest.",
+    "Personas en el lugar suben medidas con el móvil (pendiente, altitud, tipo de suelo, fotos) y, con un sensor externo, temperatura y humedad. El consenso entre exploradores independientes cambia la baliza de gris a naranja y a verde.":
+        "People on site upload measurements with their phone (slope, altitude, soil type, photos) and, with an external sensor, temperature and humidity. Consensus among independent explorers turns the beacon from grey to orange to green.",
+    "Cada análogo confirmado se convierte en una base espacial virtual. Quien lo descubre funda el primer módulo y cada nuevo explorador acopla el suyo. Las misiones dirigidas llevan a la gente a los datos que faltan.":
+        "Every confirmed analog becomes a virtual space base. Its discoverer founds the first module and each new explorer docks their own. Targeted missions send people to the data that is missing.",
+    "Apartados": "Sections", "Explora el proyecto": "Explore the project",
+    "Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.": "Interactive map: which place on Earth is most like each destination.",
+    "¿Cuál es mejor análogo? Pon a prueba tu intuición.": "Which is the better analog? Test your intuition.",
+    "Moon y Mars Coins, bases por niveles, habitaciones y premios.": "Moon and Mars Coins, levelled bases, rooms and prizes.",
+    "El Índice de Analogía Planetaria y sus 9 ejes.": "The Planetary Analogy Index and its 9 axes.",
+    "Balizas por consenso y escalado robótico.": "Consensus beacons and robotic escalation.",
+    "Puntos, misiones, insignias y bases virtuales.": "Points, missions, badges and virtual bases.",
+    "Una persona, una cuenta; modo expedición offline; privacidad.": "One person, one account; offline expedition mode; privacy.",
+    "Las fuentes de la NASA y las agencias socias.": "NASA and partner agency sources.",
+    "MoonSiteUA en 30 segundos.": "MoonSiteUA in 30 seconds.",
+    "Regístrate, sube fotos, funda tu base y gana monedas.": "Sign up, upload photos, found your base and earn coins.",
+    "Hoja de ruta": "Roadmap", "De la demo a la app": "From demo to app",
+    "Hackathon · noviembre 2026": "Hackathon · November 2026",
+    "Motor de similitud en Earth Engine, lógica de balizas con tests, web con demo y juego.": "Similarity engine in Earth Engine, tested beacon logic, website with demo and game.",
+    "Hackathon · zona de exploradores": "Hackathon · explorer area",
+    "Cuentas, fotos comparadas con los puntos recomendados, Moon y Mars Coins, bases por niveles, habitaciones decorables, objetivos y premios, dentro de la propia web.":
+        "Accounts, photos compared with recommended points, Moon and Mars Coins, levelled bases, decorable rooms, goals and prizes, all inside the website.",
+    "MVP": "MVP", "App móvil con reportes de campo, mapa por teselas y primeras misiones en la provincia de Alicante y Almería.":
+        "Mobile app with field reports, tiled map and first missions in the provinces of Alicante and Almería.",
+    "Piloto": "Pilot", "Expediciones con la Universidad de Alicante a Tabernas y Bardenas; comparación con medidas de laboratorio; primera Misión Automatizada con dron multiespectral en una zona de nivel 3.":
+        "Expeditions with the University of Alicante to Tabernas and Bardenas; comparison with lab measurements; first Automated Mission with a multispectral drone in a level-3 zone.",
+    "Escala": "Scale", "Más ejes (radar Sentinel-1 para rugosidad, cuevas y tubos de lava) y bases virtuales abiertas a cualquier país.":
+        "More axes (Sentinel-1 radar for roughness, caves and lava tubes) and virtual bases open to any country.",
+
+    # ---------------------------------------------------------------- demo
+    "Demo interactiva": "Interactive demo", "¿Qué lugar de la Tierra se parece más a…?": "Which place on Earth is most like…?",
+    "Elige un destino. El color de cada punto es su Índice de Analogía Planetaria (IAP). Pulsa un sitio para ver su ficha: el radar compara el lugar (relleno) con el destino (línea discontinua).":
+        "Pick a destination. Each point's colour is its Planetary Analogy Index (PAI). Click a site to see its card: the radar compares the place (filled) with the destination (dashed line).",
+    "Valores de demostración estimados a mano. El script de Earth Engine del repositorio calcula los reales con datos NASA y la web se regenera con ellos.":
+        "Demo values estimated by hand. The repository's Earth Engine script computes the real ones from NASA data and the website is rebuilt with them.",
+    "Destino": "Destination", "Solo análogos poco estudiados": "Only little-studied analogs",
+    "Mapa mundial de sitios candidatos": "World map of candidate sites", "Detalle · España peninsular y Canarias": "Detail · mainland Spain and Canary Islands",
+    "Mapa de España con sitios candidatos": "Map of Spain with candidate sites", "Canarias": "Canary Is.",
+    "IAP": "PAI", "IAP ·": "PAI ·", "· IAP": "· PAI", "confirmado": "confirmed", "en verificación": "being verified", "descubrimiento": "discovery",
+    "punto de la comunidad": "community point", "· punto de la comunidad": "· community point", ", punto de la comunidad": ", community point",
+    "Ranking": "Ranking", "Ajustar la importancia de cada eje": "Adjust the weight of each axis", "Restablecer pesos del destino": "Reset destination weights",
+    "Análogo conocido": "Known analog", "Poco estudiado": "Little studied", "Análogo confirmado": "Confirmed analog", "En verificación": "Being verified",
+    "Descubrimiento": "Discovery", "Radar del sitio frente al destino": "Radar of the site versus the destination",
+    "Se parece en": "Similar in", "Se aleja en": "Differs in", "ningún eje destaca": "no axis stands out", "ningún eje falla claramente": "no axis clearly fails",
+    "Barra: valor del lugar · marca naranja: valor del destino · %: similitud del eje": "Bar: value of the place · orange mark: destination value · %: axis similarity",
+    "Valor del sitio por eje; la marca naranja es el destino": "Site value per axis; the orange mark is the destination",
+    "Lo que la Tierra no puede imitar": "What Earth cannot imitate", "Misiones abiertas": "Open missions",
+    "Análogo confirmado. Base virtual abierta a nuevos módulos.": "Confirmed analog. Virtual base open to new modules.",
+    "Pendiente con el inclinómetro del móvil": "Slope with the phone's inclinometer", "Tipo de suelo con foto en vivo": "Soil type with a live photo",
+    "Humedad con higrómetro Bluetooth": "Humidity with a Bluetooth hygrometer", "Temperatura con sensor externo al mediodía": "Temperature with an external sensor at noon",
+    "Aridez": "Aridity", "Sin vegetación": "No vegetation", "Frío": "Cold", "Amplitud térmica": "Thermal range", "Roca basáltica": "Basaltic rock",
+    "Pendiente": "Slope", "Altitud": "Altitude", "Polvo": "Dust", "Hielo / nieve": "Ice / snow",
+    # ficha comunidad y aportaciones
+    "Punto de la comunidad": "Community point", "Creado por un explorador": "Created by an explorer",
+    ". Todavía no tiene perfil satelital: sus datos vienen de las aportaciones de la comunidad. Cuando se ejecute el motor con datos NASA para este punto, se calculará su Índice de Analogía.":
+        ". It has no satellite profile yet: its data comes from community contributions. When the engine runs with NASA data for this point, its Analogy Index will be computed.",
+    "Datos de la comunidad": "Community data", "· última el": "· latest on", "Temperatura media": "Mean temperature", "Calidad del aire": "Air quality",
+    "Humedad": "Humidity", "Foto subida el": "Photo uploaded on",
+    "Aún no hay aportaciones. Sé la primera persona en subir datos de este punto.": "No contributions yet. Be the first to upload data for this point.",
+    "Los datos de la comunidad se muestran aparte: nunca modifican los datos NASA del punto.": "Community data is shown separately: it never changes the point's NASA data.",
+    "Aportar datos": "Contribute data",
+    "Sube una foto del sitio, temperatura, calidad del aire o humedad, o crea un punto nuevo, y gana Moon Coins. Necesita la web en marcha con su servidor (":
+        "Upload a photo of the site, temperature, air quality or humidity, or create a new point, and earn Moon Coins. Needs the website running with its server (",
+    "en la carpeta app) y una cuenta.": "in the app folder) and an account.",
+    "Sube una foto del sitio, temperatura, calidad del aire o humedad, o crea un punto nuevo, y gana Moon Coins.":
+        "Upload a photo of the site, temperature, air quality or humidity, or create a new point, and earn Moon Coins.",
+    "Inicia sesión para aportar": "Log in to contribute", "Dónde aportar": "Where to contribute",
+    "Al punto seleccionado": "To the selected point", "Crear punto nuevo": "Create a new point",
+    "Nombre del punto (opcional)": "Point name (optional)", "Salinas de Torrevieja": "Torrevieja salt flats",
+    "Punto:": "Point:", "(elígelo en el mapa o en el ranking)": "(pick it on the map or in the ranking)",
+    "Ya guardaste datos de este punto. Podrás volver a cambiarlos a partir del": "You already saved data for this point. You can change it again from",
+    "(bloqueo de 12 horas).": "(12-hour lock).",
+    "Latitud (obligatoria)": "Latitude (required)", "Longitud (obligatoria)": "Longitude (required)", "Usar mi ubicación": "Use my location",
+    "Temperatura (°C)": "Temperature (°C)", "Humedad (%)": "Humidity (%)", "Calidad del aire (índice 0-500)": "Air quality (index 0-500)",
+    "Foto del sitio (JPG, PNG o WEBP)": "Photo of the site (JPG, PNG or WEBP)",
+    "Rellena las coordenadas y al menos un dato. Se guardan también el destino (": "Fill in the coordinates and at least one value. The destination (",
+    ") y los pesos que tienes configurados, con la fecha de subida. Moon Coins: +10 por datos, +15 por foto": ") and your current weights are saved too, with the upload date. Moon Coins: +10 for data, +15 for a photo",
+    ", +40 si el punto nuevo es válido": ", +40 if the new point is valid",
+    "Validar y crear punto": "Validate and create point", "Guardar datos": "Save data",
+    "Tu navegador no da la ubicación.": "Your browser doesn't provide location.", "Buscando…": "Searching…", "Precisión ±": "Accuracy ±",
+    "No se pudo obtener: escríbelas a mano.": "Couldn't get it: type them in.",
+    "Las coordenadas son obligatorias.": "Coordinates are required.",
+    "Rellena al menos un dato: foto, temperatura, calidad del aire o humedad.": "Fill in at least one value: photo, temperature, air quality or humidity.",
+    "Revisa los campos marcados.": "Check the highlighted fields.", "No se ha podido guardar.": "Couldn't save.",
+    "No hay conexión con el servidor.": "No connection to the server.",
+    "Punto validado y creado": "Point validated and created", "Datos guardados": "Data saved", "Guardado el": "Saved on", "en «": "at “",
+    "». Podrás cambiar los datos de este punto a partir del": "”. You can change this point's data from",
+
+    # ---------------------------------------------------------------- juego
+    "Modo juego": "Game mode", "¿Cuál es mejor análogo?": "Which is the better analog?", "Destino:": "Destination:",
+    ". Elige el lugar de la Tierra que crees que se parece más. Ojo: lo que parece desierto no siempre gana.": ". Pick the place on Earth you think is most similar. Careful: what looks like a desert doesn't always win.",
+    "Otra pareja": "Another pair", "¡Correcto!": "Correct!", "Esta vez no.": "Not this time.", "frente a": "versus", "Lo decide sobre todo:": "Mainly decided by:",
+
+    # ---------------------------------------------------------------- recompensas
+    "Tu cuenta, tus fotos, tu base": "Your account, your photos, your base",
+    "Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Desde la Demo aporta fotos y datos o crea puntos nuevos, y gana monedas.":
+        "Each explorer signs up with first name, last name, username, email, phone and password. Username, email and phone must be unique. From the Demo they contribute photos and data or create new points, and earn coins.",
+    "Ir a la zona de exploradores": "Go to the explorer area",
+    "Moon Coins": "Moon Coins", "Mars Coins": "Mars Coins",
+    "Virtuales y fáciles de ganar: 100 al registrarte, 10 por el primer acceso de cada día y objetivos sencillos. Sirven para comprar muebles.":
+        "Virtual and easy to earn: 100 for signing up, 10 for your first visit each day and simple goals. Used to buy furniture.",
+    "Escasas: objetivos difíciles como fundar una base, visitar tres zonas o subir fotos en tres países. Se canjean por premios físicos.":
+        "Scarce: hard goals such as founding a base, visiting three areas or uploading photos in three countries. Redeemed for physical prizes.",
+    "La base crece una planta cada 5 exploradores": "The base grows one floor every 5 explorers",
+    "Una base por zona. Quien la funda elige sus dos colores. Cada planta tiene 5 habitaciones (las ventanas encendidas están ocupadas). Del nivel 5 en adelante el edificio se mantiene.":
+        "One base per area. Its founder picks its two colours. Each floor has 5 rooms (lit windows are occupied). From level 5 onwards the building stays the same.",
+    "Nivel": "Level", "21 o más": "21 or more", "exploradores": "explorers",
+    "Tu habitación": "Your room", "Ejemplos de habitación": "Room examples",
+    "Tamaño estándar. Cambias el color de paredes y suelo y eliges una cama, un escritorio y una decoración por hueco: pared izquierda, pared derecha, techo, rincón y alfombra. Los muebles se compran con Moon Coins.":
+        "Standard size. You change the wall and floor colours and choose one bed, one desk and one decoration per slot: left wall, right wall, ceiling, corner and rug. Furniture is bought with Moon Coins.",
+    "Consola": "Console", "Laboratorio": "Laboratory", "Cráter": "Crater", "De serie": "Standard",
+    "Premios físicos con Mars Coins": "Physical prizes with Mars Coins",
+    "Pegatinas · 4": "Stickers · 4", "Pin Polo Sur · 8": "South Pole pin · 8", "Pin Jezero · 8": "Jezero pin · 8", "Parche de misión · 12": "Mission patch · 12",
+    "Taza · 18": "Mug · 18", "Gorra · 25": "Cap · 25", "Camiseta · 35": "T-shirt · 35", "Sudadera · 60": "Hoodie · 60",
+    "Diseños originales de MoonSiteUA. No llevan logotipos de la NASA: su uso en productos necesita autorización de la agencia.":
+        "Original MoonSiteUA designs. They carry no NASA logos: using them on products needs the agency's permission.",
+
+    # ---------------------------------------------------------------- método
+    "Índice de Analogía Planetaria": "Planetary Analogy Index",
+    "Cada variable física se convierte en un eje de 0 a 1, donde 1 es lo más extremo que ofrece la Tierra. Los valores reales de la Luna y Marte casi siempre superan ese rango; entonces el destino se fija en 1 y lo documentamos como límite de la analogía.":
+        "Each physical variable becomes an axis from 0 to 1, where 1 is the most extreme value Earth offers. Real Moon and Mars values almost always exceed that range; the destination is then set to 1 and we record it as a limit of the analogy.",
+    "IAP = 100 · Σ wᵢ · (1 − |xᵢ − tᵢ|) / Σ wᵢ": "PAI = 100 · Σ wᵢ · (1 − |xᵢ − tᵢ|) / Σ wᵢ",
+    "xᵢ es el valor del lugar en el eje i, tᵢ el del destino y wᵢ la importancia del eje para ese destino. La nota global ordena candidatos; la similitud por eje explica por qué. Así un sitio puede ser un gran análogo geológico y uno malo térmico, que es justo lo que pide el reto.":
+        "xᵢ is the place's value on axis i, tᵢ the destination's and wᵢ the axis weight for that destination. The overall score ranks candidates; per-axis similarity explains why. A site can be a great geological analog and a poor thermal one, which is exactly what the challenge asks for.",
+    "Eje": "Axis", "Dato NASA": "NASA data", "Conversión a 0-1": "Conversion to 0-1",
+    "0 mm/año → 1 · 3000 mm/año → 0 (log)": "0 mm/yr → 1 · 3000 mm/yr → 0 (log)", "NDVI 0,05 → 1 · 0,5 → 0": "NDVI 0.05 → 1 · 0.5 → 0",
+    "+30 °C → 0 · −50 °C → 1": "+30 °C → 0 · −50 °C → 1", "MODIS MOD11A2 día − noche": "MODIS MOD11A2 day − night", "0 °C → 0 · 40 °C → 1": "0 °C → 0 · 40 °C → 1",
+    "ASTER GED, bandas 10-14": "ASTER GED, bands 10-14", "cociente 0,85 (silíceo) → 0 · 0,98 (basáltico) → 1": "ratio 0.85 (silica-rich) → 0 · 0.98 (basaltic) → 1",
+    "0° → 0 · 25° → 1": "0° → 0 · 25° → 1", "0 m → 0 · 5000 m → 1 (baja presión, UV)": "0 m → 0 · 5000 m → 1 (low pressure, UV)",
+    "0 → 0 · 0,6 → 1": "0 → 0 · 0.6 → 1", "fracción de días con nieve o hielo": "fraction of days with snow or ice",
+
+    # ---------------------------------------------------------------- destinos (datos de la demo)
+    "Luna · polo sur (regiones Artemis III)": "Moon · south pole (Artemis III regions)", "Luna · polo sur": "Moon · south pole",
+    "Luna · mares basálticos y tubos de lava": "Moon · basaltic maria and lava tubes", "Luna · tubos de lava": "Moon · lava tubes",
+    "Marte · cráter Jezero (delta antiguo)": "Mars · Jezero crater (ancient delta)", "Marte · Jezero": "Mars · Jezero",
+    "Marte · Arcadia Planitia (hielo para misiones humanas)": "Mars · Arcadia Planitia (ice for human missions)", "Marte · Arcadia": "Mars · Arcadia",
+    "Luna": "Moon", "Marte": "Mars",
+    "Bordes de cráter con luz casi permanente junto a regiones en sombra permanente con hielo de agua. NASA evalúa nueve regiones candidatas (Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton Plateau, Mons Mouton, Nobile Rim 1 y 2, de Gerlache Rim 2, Slater Plain).":
+        "Crater rims with near-permanent sunlight next to permanently shadowed regions holding water ice. NASA is evaluating nine candidate regions (Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton Plateau, Mons Mouton, Nobile Rim 1 and 2, de Gerlache Rim 2, Slater Plain).",
+    "LRO Diviner (temperatura)": "LRO Diviner (temperature)", "LRO LOLA (relieve e iluminación)": "LRO LOLA (terrain and illumination)",
+    "LRO LEND y Mini-RF (hidrógeno/hielo)": "LRO LEND and Mini-RF (hydrogen/ice)",
+    "Las zonas en sombra permanente bajan de ~40 K (-233 °C); ningún lugar de la Tierra se acerca.": "Permanently shadowed areas drop below ~40 K (-233 °C); nowhere on Earth comes close.",
+    "Vacío casi total: no hay atmósfera, viento ni erosión eólica.": "Near-total vacuum: no atmosphere, wind or wind erosion.",
+    "Gravedad 1/6 g y radiación sin escudo magnético ni atmosférico.": "Gravity 1/6 g and radiation with no magnetic or atmospheric shield.",
+    "Iluminación rasante casi horizontal durante todo el año.": "Grazing, almost horizontal sunlight all year round.",
+    "Llanuras basálticas y simas que dan acceso a tubos de lava (p. ej. Marius Hills, Mare Tranquillitatis), candidatas a refugio natural contra radiación y cambios térmicos.":
+        "Basaltic plains and pits giving access to lava tubes (e.g. Marius Hills, Mare Tranquillitatis), candidates for natural shelter from radiation and temperature swings.",
+    "LRO LROC (imágenes de simas)": "LRO LROC (pit images)", "LRO Diviner (temperatura día/noche)": "LRO Diviner (day/night temperature)",
+    "GRAIL (anomalías de gravedad, opcional)": "GRAIL (gravity anomalies, optional)",
+    "En el ecuador lunar la superficie pasa de ~+120 °C de día a ~-170 °C de noche; la Tierra no alcanza ese salto.": "At the lunar equator the surface goes from ~+120 °C by day to ~-170 °C at night; Earth can't reach that swing.",
+    "El día lunar dura ~29,5 días terrestres.": "A lunar day lasts ~29.5 Earth days.", "Vacío, 1/6 g y radiación cósmica directa.": "Vacuum, 1/6 g and direct cosmic radiation.",
+    "Antiguo lago con delta, roca ígnea rica en olivino y carbonatos; lugar de aterrizaje de Perseverance y referencia para buscar biofirmas.":
+        "Ancient lake with a delta, olivine-rich igneous rock and carbonates; Perseverance's landing site and a reference for biosignature searches.",
+    "Perseverance MEDA (meteorología)": "Perseverance MEDA (weather)", "MRO CRISM (mineralogía)": "MRO CRISM (mineralogy)", "MRO HiRISE / CTX (morfología)": "MRO HiRISE / CTX (morphology)",
+    "Media del aire ~-55 °C, con oscilaciones día-noche de 50-60 °C.": "Mean air temperature ~-55 °C, with day-night swings of 50-60 °C.",
+    "Presión ~7 mbar (menos del 1 % de la terrestre): el agua líquida no es estable.": "Pressure ~7 mbar (under 1% of Earth's): liquid water is not stable.",
+    "Gravedad 0,38 g y radiación UV y cósmica muy superiores.": "Gravity 0.38 g and much higher UV and cosmic radiation.",
+    "La química del suelo (percloratos) no se mide desde satélites terrestres.": "Soil chemistry (perchlorates) can't be measured from Earth-observing satellites.",
+    "Llanura lisa de latitudes medias con hielo de agua a poca profundidad; una de las zonas más prometedoras del proyecto SWIM para aterrizajes humanos.":
+        "Smooth mid-latitude plain with shallow water ice; one of the most promising SWIM project areas for human landings.",
+    "SWIM (mapas de consistencia de hielo)": "SWIM (ice consistency maps)", "MRO SHARAD (radar subsuperficial)": "MRO SHARAD (subsurface radar)", "MOLA (topografía)": "MOLA (topography)",
+    "El hielo marciano está enterrado bajo regolito y estable por la baja presión; en la Tierra el permafrost depende de otros procesos.":
+        "Martian ice is buried under regolith and kept stable by low pressure; on Earth permafrost depends on other processes.",
+    "Atmósfera de CO2 de ~6-7 mbar.": "CO2 atmosphere of ~6-7 mbar.", "Gravedad 0,38 g y radiación superficial muy alta.": "Gravity 0.38 g and very high surface radiation.",
+
+    # ---------------------------------------------------------------- sitios (datos de la demo)
+    "Atacama · Yungay": "Atacama · Yungay", "Cráter Haughton · isla Devon": "Haughton Crater · Devon Island", "Valles Secos de McMurdo": "McMurdo Dry Valleys",
+    "Timanfaya · Lanzarote": "Timanfaya · Lanzarote", "Río Tinto · Huelva": "Río Tinto · Huelva", "Dasht-e Lut · yardangs": "Dasht-e Lut · yardangs",
+    "Cuenca de Qaidam · Dalangtan": "Qaidam Basin · Dalangtan", "Desierto de Tabernas": "Tabernas Desert", "Bardenas Reales": "Bardenas Reales",
+    "Campo de Calatrava": "Calatrava Volcanic Field", "Sierra Nevada · Veleta": "Sierra Nevada · Veleta", "Cabo de Gata": "Cabo de Gata",
+    "Las Cañadas del Teide": "Las Cañadas del Teide",
+    "España": "Spain", "Canadá": "Canada", "Antártida": "Antarctica", "Irán": "Iran", "Chile": "Chile", "China": "China",
+    "Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice.": "Classic Mars analog for its hyper-aridity. A reference for calibrating the index.",
+    "Cráter de impacto polar. Base del Haughton-Mars Project.": "Polar impact crater. Home of the Haughton-Mars Project.",
+    "Desierto polar frío y seco. Análogo de referencia para hielo y suelos de Marte.": "Cold, dry polar desert. Reference analog for Martian ice and soils.",
+    "Campos de lava y tubos volcánicos usados por la ESA para formar astronautas (PANGAEA).": "Lava fields and volcanic tubes used by ESA to train astronauts (PANGAEA).",
+    "Aguas ácidas ricas en hierro y sulfatos (jarosita) como en Meridiani. El índice satelital no capta esa química: hace falta el dato de campo.":
+        "Acidic waters rich in iron and sulphates (jarosite), as at Meridiani. The satellite index can't capture that chemistry: field data is needed.",
+    "Yardangs (crestas esculpidas por el viento) muy parecidos a los de Marte. Poco usado como análogo.": "Yardangs (wind-carved ridges) very similar to those on Mars. Rarely used as an analog.",
+    "Desierto salino frío y de gran altitud, con depósitos de sulfatos y cloruros.": "Cold, high-altitude salt desert with sulphate and chloride deposits.",
+    "Badlands de margas con barrancos y abanicos aluviales. Candidato para probar rovers en pendientes erosionadas.": "Marl badlands with gullies and alluvial fans. A candidate for testing rovers on eroded slopes.",
+    "Mesas y cabezos de arcillas y yesos, morfología parecida a las mesas erosionadas de Marte.": "Clay and gypsum mesas and buttes, shaped like Mars's eroded mesas.",
+    "Campo volcánico con maares y basaltos. Buen análogo geológico, pero la agricultura lo aleja en vegetación.": "Volcanic field with maars and basalts. A good geological analog, but farming pushes it away on vegetation.",
+    "Alta montaña con suelos periglaciares y permafrost residual. Posible análogo de procesos de hielo.": "High mountains with periglacial soils and relict permafrost. A possible analog for ice processes.",
+    "Volcanismo antiguo junto a la costa más árida de Europa.": "Ancient volcanism beside Europe's most arid coast.",
+    "Caldera volcánica de altura, usada para probar instrumentos de Marte.": "High-altitude volcanic caldera, used to test Mars instruments.",
+
+    # ---------------------------------------------------------------- validación
+    "Ciencia ciudadana con control de calidad": "Citizen science with quality control", "Balizas por consenso": "Consensus beacons",
+    "El satélite dice dónde mirar; el campo confirma lo que el satélite no ve, como la química del suelo, las cuevas o la textura del terreno. Ninguna persona sola puede confirmar un análogo.":
+        "The satellite says where to look; the field confirms what it can't see, such as soil chemistry, caves or ground texture. No single person can confirm an analog.",
+    "Gris · descubrimiento": "Grey · discovery", "Un explorador sube el primer reporte válido. El punto existe en el mapa pero no tiene validez científica.":
+        "An explorer uploads the first valid report. The point exists on the map but has no scientific validity yet.",
+    "Naranja · en verificación": "Orange · being verified", "Dos o más exploradores independientes coinciden dentro de la tolerancia de cada medida.":
+        "Two or more independent explorers agree within each measurement's tolerance.",
+    "Verde · análogo confirmado": "Green · confirmed analog", "Cinco o más exploradores, en al menos dos días distintos, coinciden entre sí y con el dato satelital.":
+        "Five or more explorers, on at least two different days, agree with each other and with the satellite data.",
+    "Disputa": "Dispute", "Hay reportes suficientes pero se contradicen. El nodo genera una misión de desempate en lugar de avanzar.":
+        "There are enough reports but they contradict each other. The node creates a tie-break mission instead of advancing.",
+    "Nivel 3 · Escalado robótico": "Level 3 · Robotic escalation", "Donde no debe ir una persona, va un robot": "Where a person shouldn't go, a robot does",
+    "Si una zona tiene un IAP alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.":
+        "If an area has a high PAI or is partly validated but is dangerous (deep caves, volcanic vents, cliffs), it is closed to the public and passed to an Automated Mission with universities and space agencies. Drones and ground rovers with multispectral cameras, spectrometers and LiDAR analyse rock and soil composition and complete the analog's profile. Explorers contribute from the safe perimeter; robots reach the rest.",
+    "Qué se mide": "What is measured", "Con qué": "With what", "Tolerancia": "Tolerance", "Por qué así": "Why",
+    "Inclinómetro del móvil": "Phone inclinometer", "Todos los móviles tienen acelerómetro; se compara con NASADEM.": "Every phone has an accelerometer; compared with NASADEM.",
+    "GPS + barómetro": "GPS + barometer", "El barómetro afina la altitud del GPS en la mayoría de gama media.": "The barometer refines GPS altitude on most mid-range phones.",
+    "Tipo de suelo": "Soil type", "Lista cerrada + foto en vivo": "Fixed list + live photo", "60 % de acuerdo": "60% agreement",
+    "Basalto, arcilla, yeso, arena, sal… Elegir de una lista hace comparables los reportes.": "Basalt, clay, gypsum, sand, salt… Choosing from a list makes reports comparable.",
+    "Temperatura": "Temperature", "Sensor Bluetooth emparejado": "Paired Bluetooth sensor", "± 3 °C de anomalía": "± 3 °C anomaly",
+    "Los móviles no tienen termómetro ambiental. Se compara la diferencia con el satélite del mismo momento, no el valor bruto.":
+        "Phones have no ambient thermometer. The difference from the satellite at the same moment is compared, not the raw value.",
+    "Igual que la temperatura: sin sensor externo no cuenta.": "Same as temperature: without an external sensor it doesn't count.",
+    "La lógica completa está en": "The full logic is in",
+    "con tests. Un explorador cuenta una vez por nodo, cada cuenta necesita un teléfono verificado, un dispositivo no puede usarse con varias cuentas y solo valen fotos tomadas con la cámara de la app. Los reportes offline se validan con la posición sellada en la captura.":
+        "with tests. An explorer counts once per node, each account needs a verified phone, one device can't be used with several accounts and only photos taken with the app's camera count. Offline reports are validated with the position sealed at capture time.",
+
+    # ---------------------------------------------------------------- comunidad
+    "Gamificación": "Gamification", "Exploradores, misiones y bases virtuales": "Explorers, missions and virtual bases",
+    "Los incentivos premian el dato útil, no la cantidad. El sistema detecta qué falta en cada nodo y lanza misiones para cubrirlo.":
+        "Incentives reward useful data, not quantity. The system detects what each node is missing and launches missions to fill the gap.",
+    "Puntos de Exploración": "Exploration Points", "Por validar puntos, subir fotos y medir. Se canjean por cosméticos de la base virtual. Las medidas que luego resultan inconsistentes no puntúan.":
+        "For validating points, uploading photos and measuring. Redeemed for virtual base cosmetics. Measurements that later prove inconsistent score nothing.",
+    "Puntos de Misión": "Mission Points", "Escasos. Por liderar expediciones validadas o completar objetivos de alto valor. Se canjean por pins y parches de misión, financiados con patrocinio.":
+        "Scarce. For leading validated expeditions or completing high-value goals. Redeemed for pins and mission patches, funded by sponsors.",
+    "Misiones dirigidas": "Targeted missions",
+    "Ejemplo: «Tabernas tiene pendiente y suelo validados pero le falta humedad: lecturas con higrómetro, puntuación ×3». Nunca se generan en espacios protegidos ni zonas peligrosas.":
+        "Example: “Tabernas has validated slope and soil but lacks humidity: hygrometer readings, score ×3”. Never generated in protected or dangerous areas.",
+    "Misiones globales": "Global missions", "Retos mensuales como «Documenta 3 zonas kársticas este mes». Cuentan sitios distintos, así que no compensa repetir el mismo.":
+        "Monthly challenges such as “Document 3 karst areas this month”. Distinct sites count, so repeating the same one doesn't pay.",
+    "Insignias": "Badges", "Pionero (título inmutable para quien documenta primero un análogo que llega a verde), Expedición offline, Especialista en basalto o en karst y misiones completadas.":
+        "Pioneer (a permanent title for whoever first documents an analog that reaches green), Offline expedition, Basalt or karst specialist and completed missions.",
+    "Base virtual de un análogo confirmado": "Virtual base of a confirmed analog",
+    "Esquema de una base virtual con módulo fundador y módulos acoplados": "Diagram of a virtual base with a founding module and docked modules",
+    "Módulo Génesis": "Genesis Module", "explorador 2": "explorer 2", "explorador 3": "explorer 3", "explorador 4": "explorer 4", "próximo módulo": "next module",
+    "El fundador elige los dos colores de la base y decora el primer módulo. Cada explorador que valida datos en persona acopla su módulo. Las bases más visitadas crecen hasta convertirse en colonias.":
+        "The founder picks the base's two colours and decorates the first module. Every explorer who validates data in person docks a module. The most visited bases grow into colonies.",
+
+    # ---------------------------------------------------------------- seguridad
+    "Seguridad, privacidad y ética": "Safety, privacy and ethics", "Datos fiables sin poner a nadie en riesgo": "Reliable data without putting anyone at risk",
+    "Una persona, una cuenta": "One person, one account",
+    "Registro con Google o Apple y verificación por SMS: un teléfono único por perfil, guardado solo como hash. Se suma la verificación del dispositivo (Play Integrity / App Attest). Sin pedir DNI.":
+        "Sign-up with Google or Apple plus SMS verification: one unique phone per profile, stored only as a hash. Device verification is added (Play Integrity / App Attest). No ID card required.",
+    "Modo Expedición offline": "Offline Expedition Mode",
+    "Sin cobertura en cuevas o desiertos, el GPS sigue funcionando: la app sella posición, hora, foto y medidas en el momento de la captura y firma el paquete. Al sincronizar comprueba la firma, que no hayan pasado más de 14 días y que el viaje hasta allí sea posible.":
+        "Without coverage in caves or deserts, GPS still works: the app seals position, time, photo and measurements at capture time and signs the package. On sync it checks the signature, that no more than 14 days have passed and that the trip there is possible.",
+    "Contra envíos desde el sofá": "Against uploads from the sofa",
+    "La geovalla se aplica a la posición de la captura y se amplía con el tiempo transcurrido (30 km + 120 km/h). Quien «estuvo» en Tabernas no puede sincronizar una hora después desde otro continente.":
+        "The geofence applies to the capture position and widens with elapsed time (30 km + 120 km/h). Someone who “was” in Tabernas can't sync an hour later from another continent.",
+    "Seguridad física": "Physical safety",
+    "Sin misiones en espacios protegidos, propiedades privadas, cuevas sin acceso autorizado ni zonas peligrosas. Antes de cada expedición offline: avisos de calor y aislamiento y una lista de comprobación (agua, ruta compartida).":
+        "No missions in protected areas, private property, caves without authorised access or dangerous zones. Before each offline expedition: heat and isolation warnings and a checklist (water, shared route).",
+    "Privacidad (RGPD)": "Privacy (GDPR)",
+    "El GPS solo se pide al capturar y al sincronizar, nunca en segundo plano. Los recorridos no se publican: el mapa muestra nodos, no personas.":
+        "GPS is only requested when capturing and syncing, never in the background. Routes are not published: the map shows nodes, not people.",
+
+    # ---------------------------------------------------------------- datos
+    "Datos abiertos": "Open data", "Fuentes que usamos": "Sources we use", "Cuerpo": "Body", "Fuente": "Source", "Para qué": "What for", "Tierra": "Earth",
+    "MODIS MOD11A2 (temperatura de superficie, 1 km)": "MODIS MOD11A2 (land surface temperature, 1 km)", "Ejes de frío y amplitud térmica": "Cold and thermal-range axes",
+    "MODIS MOD13A2 (NDVI, 1 km)": "MODIS MOD13A2 (NDVI, 1 km)", "Eje de suelo sin vegetación": "Bare-ground axis",
+    "GPM IMERG V07 mensual (0,1°)": "GPM IMERG V07 monthly (0.1°)", "Eje de aridez": "Aridity axis", "NASADEM (30 m)": "NASADEM (30 m)", "Altitud y pendiente": "Altitude and slope",
+    "ASTER GED AG100 (emisividad térmica, 100 m)": "ASTER GED AG100 (thermal emissivity, 100 m)", "Indicador de roca basáltica": "Basaltic rock indicator",
+    "MODIS MOD08_M3 (aerosoles) y MOD10A1 (nieve)": "MODIS MOD08_M3 (aerosols) and MOD10A1 (snow)", "Ejes de polvo y hielo": "Dust and ice axes",
+    "Copernicus Sentinel (ESA), RADARSAT (CSA), G-Portal (JAXA)": "Copernicus Sentinel (ESA), RADARSAT (CSA), G-Portal (JAXA)",
+    "Ampliaciones: radar para rugosidad y humedad, imágenes de detalle": "Extensions: radar for roughness and moisture, detailed imagery",
+    "LRO Diviner, LOLA, LEND, Mini-RF, LROC (PDS)": "LRO Diviner, LOLA, LEND, Mini-RF, LROC (PDS)", "Perfiles del polo sur y de los mares basálticos": "South pole and basaltic maria profiles",
+    "Perseverance MEDA, MRO CRISM/HiRISE, SWIM (SHARAD)": "Perseverance MEDA, MRO CRISM/HiRISE, SWIM (SHARAD)", "Perfiles de Jezero y Arcadia Planitia": "Jezero and Arcadia Planitia profiles",
+    "Enlaces:": "Links:", "NASA Earthdata Search": "NASA Earthdata Search", "Copernicus Data Space": "Copernicus Data Space",
+
+    # ---------------------------------------------------------------- vídeo
+    "Demo en vídeo · 30 s": "Video demo · 30 s", "MoonSiteUA en medio minuto": "MoonSiteUA in half a minute", "Vídeo de la demo": "Demo video",
+    "Se publicará aquí antes del cierre del hackathon.": "It will be published here before the hackathon closes.",
+
+    # ---------------------------------------------------------------- dibujos (SVG)
+    "POLO SUR": "SOUTH POLE", "TIEMPO DE MISIÓN": "MISSION TIME", "HAB": "ROOM", "PLANTA": "FLOOR", "NIVEL 5+": "LEVEL 5+",
+    "ROVER HUMANO": "HUMAN ROVER", "ROVER": "HUMAN", "HUMANO": "ROVER", "EXPEDICIÓN": "EXPEDITION", "LUNA · MARTE · TIERRA": "MOON · MARS · EARTH",
+    "Habitación": "Room", "Base de nivel": "Base level",
+
+    # ---------------------------------------------------------------- explorador
+    "Zona de exploradores": "Explorer area", "Zonas": "Areas", "Mis aportaciones": "My contributions", "Mis bases": "My bases", "Objetivos": "Goals",
+    "Tienda": "Shop", "Premios": "Prizes", "Perfil": "Profile",
+    "No hay conexión con el servidor de MoonSiteUA. Para registrarte e iniciar sesión, arranca el servidor (python -m uvicorn main:app desde la carpeta app) y abre http://localhost:8000/explorador.html":
+        "No connection to the MoonSiteUA server. To sign up and log in, start the server (python -m uvicorn main:app from the app folder) and open http://localhost:8000/en/explorador.html",
+    "Algo ha fallado.": "Something went wrong.", "para cada miembro": "for each member",
+    "Sé un": "Be a", "rover humano": "human rover",
+    "Aporta fotos y datos de terrenos parecidos a la Luna y Marte desde la Demo, crea puntos nuevos y construye tu base con otros exploradores.":
+        "Contribute photos and data of Moon- and Mars-like terrain from the Demo, create new points and build your base with other explorers.",
+    "Moon Coins: por entrar cada día, registrarte y objetivos sencillos.": "Moon Coins: for logging in each day, signing up and simple goals.",
+    "Mars Coins: objetivos difíciles. Se canjean por pins, parches y camisetas.": "Mars Coins: hard goals. Redeemed for pins, patches and T-shirts.",
+    "Iniciar sesión": "Log in", "Usuario o correo": "Username or email", "Contraseña": "Password", "Entrar": "Log in",
+    "¿No tienes cuenta?": "No account?", "Regístrate": "Sign up", "Primer acceso del día:": "First visit today:",
+    "Crear cuenta": "Create account", "Todos los campos son obligatorios salvo la ubicación. Al registrarte ganas 100 Moon Coins.":
+        "All fields are required except location. You get 100 Moon Coins for signing up.",
+    "Nombre": "First name", "Apellido": "Last name", "Nombre de usuario": "Username", "Correo electrónico": "Email", "Teléfono": "Phone",
+    "Mostrar": "Show", "Ocultar": "Hide", "Al menos 9 caracteres": "At least 9 characters", "Una letra minúscula": "One lowercase letter",
+    "Una letra mayúscula": "One uppercase letter", "Un número": "One number", "País (opcional)": "Country (optional)",
+    "Provincia, estado o región (opcional)": "Province, state or region (optional)", "Sin indicar": "Not specified",
+    "¿Ya tienes cuenta?": "Already have an account?", "Inicia sesión": "Log in", "¡Bienvenida/o!": "Welcome!",
+    "Los puntos recomendados salen del motor de similitud con datos de la NASA. Los puntos de la comunidad los crean exploradores desde la":
+        "Recommended points come from the similarity engine with NASA data. Community points are created by explorers from the",
+    ". Puedes fundar la base de cualquier zona que no tenga una, o unirte a la que ya exista.": ". You can found the base of any area that doesn't have one, or join the existing one.",
+    "Mis puntos": "My points", "Solo tú puedes editar los puntos que has creado. Después de guardar cambios hay que esperar 12 horas para volver a cambiarlos.":
+        "Only you can edit the points you created. After saving changes you have to wait 12 hours to change them again.",
+    "Todas las zonas": "All areas", "Punto actualizado. Podrás volver a cambiarlo dentro de 12 horas.": "Point updated. You can change it again in 12 hours.",
+    "Podrás cambiar este punto a partir del": "You can change this point from", "Punto de la comunidad: aún sin perfil satelital.": "Community point: no satellite profile yet.",
+    "Ver base": "View base", "Eres miembro": "You're a member", "Unirme": "Join", "Fundar la base de esta zona": "Found this area's base",
+    "Editar punto": "Edit point", "Cerrar": "Close", "Podrás cambiarlo a partir del": "You can change it from", "Latitud": "Latitude", "Longitud": "Longitude",
+    "Guardar cambios": "Save changes", "Recomendada NASA": "NASA recommended", "Creado por ti": "Created by you",
+    "Fotos y datos que has subido desde la": "Photos and data you uploaded from the", ", con su fecha de subida.": ", with their upload date.",
+    "Foto en": "Photo at", "Punto creado": "Point created", "Aire": "Air", "% humedad": "% humidity",
+    "Aún no has aportado datos. Elige un punto en la": "You haven't contributed data yet. Pick a point in the", "y sube una foto o tus medidas.": "and upload a photo or your measurements.",
+    "Fundar base": "Found base", "Eres la primera persona en esta zona: eliges el nombre y los dos colores de la base.": "You're the first person in this area: you choose the base's name and two colours.",
+    "Nombre de la base": "Base name", "Base Tabernas": "Tabernas Base", "Color principal": "Main colour", "Color secundario": "Secondary colour",
+    "miembro": "member", "Fundada por": "Founded by", "Zona:": "Area:",
+    ". Cada planta tiene 5 habitaciones; la base sube de nivel al llenarse. Quedan": ". Each floor has 5 rooms; the base levels up when it fills. There are",
+    "plazas en la planta actual.": "places left on the current floor.", "Hab.": "Room",
+    "Aún no estás en ninguna base. Funda una o únete desde": "You're not in any base yet. Found one or join from", "Mi habitación": "My room",
+    "· planta": "· floor", "· de": "· by", "Solo la persona que vive aquí puede decorarla.": "Only the person who lives here can decorate it.",
+    "Paredes": "Walls", "Suelo": "Floor", "Guardar habitación": "Save room", "Cama (solo una)": "Bed (only one)", "Escritorio (solo uno)": "Desk (only one)",
+    "Nada": "None", "Los objetos con precio se compran en la": "Items with a price are bought in the", "tienda": "shop", "con Moon Coins.": "with Moon Coins.",
+    "Primero compra «": "First buy “", "» en la tienda (": "” in the shop (", "Habitación guardada.": "Room saved.",
+    "Pared izquierda": "Left wall", "Pared derecha": "Right wall", "Techo": "Ceiling", "Rincón del suelo": "Floor corner", "Alfombra": "Rug",
+    "Tienda de muebles": "Furniture shop", "Se pagan con Moon Coins. Los de precio 0 vienen de serie.": "Paid with Moon Coins. Items priced 0 are standard.",
+    "Camas": "Beds", "Escritorios": "Desks", "Decoraciones": "Decorations", "Lo tienes": "You have it", "Comprar": "Buy",
+    "Comprado. Ya puedes ponerlo en tu habitación.": "Bought. You can now place it in your room.",
+    "Premios físicos": "Physical prizes", "Se canjean con Mars Coins y te los enviamos a casa. Diseños originales de MoonSiteUA.": "Redeemed with Mars Coins and shipped to your home. Original MoonSiteUA designs.",
+    "Agotado": "Sold out", "Canjear": "Redeem", "Coste:": "Cost:", "Mars Coins. Tienes": "Mars Coins. You have", "Talla": "Size", "Elige…": "Choose…",
+    "Dirección de envío": "Shipping address", "Calle, número, código postal, ciudad": "Street, number, postcode, city",
+    "Confirmar canje": "Confirm redemption", "Cancelar": "Cancel", "¡Canjeado! Te enviaremos": "Redeemed! We'll send you",
+    "Hoy": "Today", "Esta semana": "This week", "Este mes": "This month", "Una vez": "Once", "· completado": "· completed",
+    "Individuales": "Individual", "De tus bases (compartidos: al completarse cobra cada miembro)": "From your bases (shared: each member is paid when completed)",
+    "Únete a una base para ver sus objetivos.": "Join a base to see its goals.", "Cerrar sesión": "Log out", "Movimientos": "Transactions",
+    "Basalto": "Basalt", "Lava o escoria": "Lava or scoria", "Ceniza volcánica": "Volcanic ash", "Grava suelta": "Loose gravel", "Arcilla o marga": "Clay or marl",
+    "Arena": "Sand", "Yeso": "Gypsum", "Caliza (karst)": "Limestone (karst)", "Sal o costra salina": "Salt or salt crust", "Granito": "Granite", "Hielo o nieve": "Ice or snow",
+
+    # ---------------------------------------------------------------- datos del servidor (objetivos, muebles, premios)
+    "Sube una foto hoy": "Upload a photo today", "Sube 5 fotos esta semana": "Upload 5 photos this week", "Funda una base o únete a una": "Found a base or join one",
+    "Personaliza tu habitación": "Customise your room", "Pionero: funda la base de una zona": "Pioneer: found an area's base",
+    "Visita 3 zonas recomendadas distintas": "Visit 3 different recommended areas", "Sube 20 fotos en zonas recomendadas este mes": "Upload 20 photos in recommended areas this month",
+    "Sube fotos en 3 países distintos": "Upload photos in 3 different countries", "La base suma 10 fotos esta semana": "The base reaches 10 photos this week",
+    "La base suma 50 fotos este mes": "The base reaches 50 photos this month", "La base llega a la planta 2 (6 miembros)": "The base reaches floor 2 (6 members)",
+    "La base llega a la planta 5 (21 miembros)": "The base reaches floor 5 (21 members)",
+    "Litera de módulo": "Module bunk", "Cápsula de descanso": "Rest pod", "Saco de dormir orbital": "Orbital sleeping bag", "Cama cráter": "Crater bed",
+    "Mesa de trabajo": "Work desk", "Consola de misión": "Mission console", "Banco de laboratorio": "Lab bench", "Mesa holográfica": "Holographic table",
+    "Póster de la Luna": "Moon poster", "Póster de Marte": "Mars poster", "Ojo de buey con vista a la Tierra": "Porthole with Earth view",
+    "Estantería de muestras": "Sample shelf", "Bandera de la base": "Base flag", "Reloj de misión": "Mission clock", "Planta hidropónica": "Hydroponic plant",
+    "Maqueta de rover": "Rover model", "Telescopio": "Telescope", "Lámpara orbital": "Orbital lamp", "Satélite colgante": "Hanging satellite",
+    "Alfombra cráter": "Crater rug", "Alfombra hexagonal": "Hexagonal rug",
+    "Pack de pegatinas": "Sticker pack", "Seis pegatinas de vinilo: monedas, bases y los cuatro destinos.": "Six vinyl stickers: coins, bases and the four destinations.",
+    "Pin «Polo Sur»": "“South Pole” pin", "Pin esmaltado de la Luna con el cráter Shackleton en sombra.": "Enamel Moon pin with Shackleton crater in shadow.",
+    "Pin «Jezero»": "“Jezero” pin", "Pin esmaltado de Marte con el delta de Jezero.": "Enamel Mars pin with the Jezero delta.",
+    "Parche de misión MoonSiteUA": "MoonSiteUA mission patch", "Parche bordado de 9 cm, termoadhesivo.": "9 cm embroidered iron-on patch.",
+    "Taza de control de misión": "Mission control mug", "Taza cerámica 330 ml con el radar del Índice de Analogía.": "330 ml ceramic mug with the Analogy Index radar.",
+    "Gorra de expedición": "Expedition cap", "Gorra azul marino con el parche de misión bordado.": "Navy cap with the embroidered mission patch.",
+    "Camiseta «Rover humano»": "“Human rover” T-shirt", "Algodón orgánico. Tallas S a XXL.": "Organic cotton. Sizes S to XXL.",
+    "Sudadera de expedición": "Expedition hoodie", "Sudadera con capucha y el mapa de destinos en la espalda. Tallas S a XXL.": "Hooded sweatshirt with the destinations map on the back. Sizes S to XXL.",
+    "Bienvenida: registro": "Welcome: sign-up",
+
+    # ---------------------------------------------------------------- mensajes del servidor (fijos)
+    "Color no válido.": "Invalid colour.", "Elige dos colores válidos.": "Choose two valid colours.", "Elige un punto del mapa o crea uno nuevo.": "Pick a point on the map or create a new one.",
+    "Elige un tipo de suelo de la lista.": "Choose a soil type from the list.", "Elige una talla.": "Choose a size.", "Esa base no existe.": "That base doesn't exist.",
+    "Esa habitación no existe.": "That room doesn't exist.", "Esa zona no existe.": "That area doesn't exist.", "Escribe la dirección de envío completa.": "Enter the full shipping address.",
+    "Ese premio está agotado.": "That prize is sold out.", "Ese premio no existe.": "That prize doesn't exist.", "Ese punto no existe.": "That point doesn't exist.",
+    "Esta zona está restringida por seguridad. Se estudia con misiones robóticas.": "This area is restricted for safety. It is studied with robotic missions.",
+    "Esta zona ya tiene base. Únete a ella.": "This area already has a base. Join it.", "Este punto está restringido por seguridad.": "This point is restricted for safety.",
+    "Hace falta la ubicación de la foto.": "The photo's location is needed.", "Indica cuánta vegetación hay.": "Say how much vegetation there is.",
+    "La pendiente va de 0 a 90 grados.": "Slope goes from 0 to 90 degrees.", "Los puntos con datos de la NASA no se pueden modificar.": "Points with NASA data can't be modified.",
+    "No has cambiado nada.": "You haven't changed anything.", "No se pueden fundar bases en zonas restringidas.": "Bases can't be founded in restricted areas.",
+    "Solo puedes decorar tu propia habitación.": "You can only decorate your own room.", "Solo puedes editar los puntos que has creado tú.": "You can only edit points you created.",
+    "Usuario o contraseña incorrectos.": "Wrong username or password.", "Ya cambiaste datos de este punto hace menos de 12 horas.": "You changed this point's data less than 12 hours ago.",
+    "Ya guardaste datos de este punto hace menos de 12 horas.": "You saved data for this point less than 12 hours ago.", "Ya hay una cuenta con esos datos.": "There's already an account with those details.",
+    "Ya tienes este mueble.": "You already have this item.", "Ya tienes una habitación en esta base.": "You already have a room in this base.",
+    "Destino no válido.": "Invalid destination.", "Introduce un correo válido, por ejemplo nombre@dominio.com.": "Enter a valid email, e.g. name@domain.com.",
+    "Las coordenadas son obligatorias: latitud entre -90 y 90.": "Coordinates are required: latitude between -90 and 90.",
+    "Las coordenadas son obligatorias: longitud entre -180 y 180.": "Coordinates are required: longitude between -180 and 180.",
+    "Latitud entre -90 y 90.": "Latitude between -90 and 90.", "Longitud entre -180 y 180.": "Longitude between -180 and 180.",
+    "El nombre es obligatorio (máximo 60 caracteres).": "Name is required (maximum 60 characters).",
+    "Mínimo 9 caracteres, con al menos una minúscula, una mayúscula y un número.": "At least 9 characters, with at least one lowercase letter, one uppercase letter and one number.",
+    "Los pesos no son válidos.": "The weights are not valid.", "Introduce un teléfono válido, con prefijo si no es español (+34…).": "Enter a valid phone number, with country code if not Spanish (+34…).",
+    "Entre 3 y 20 caracteres: letras, números, punto o guion bajo.": "3 to 20 characters: letters, numbers, dot or underscore.",
+    "La temperatura debe estar entre -90 y 60 °C.": "Temperature must be between -90 and 60 °C.", "El índice de calidad del aire va de 0 a 500.": "The air quality index goes from 0 to 500.",
+    "La humedad va de 0 a 100 %.": "Humidity goes from 0 to 100%.", "Ese nombre de usuario ya está en uso.": "That username is already taken.",
+    "Ya existe una cuenta con ese correo.": "There's already an account with that email.", "Ya existe una cuenta con ese teléfono.": "There's already an account with that phone.",
+    "El nombre es obligatorio.": "First name is required.", "El apellido es obligatorio.": "Last name is required.",
+    "El nombre no puede pasar de 60 caracteres.": "First name can't exceed 60 characters.", "El apellido no puede pasar de 60 caracteres.": "Last name can't exceed 60 characters.",
+    "Inicia sesión para continuar.": "Log in to continue.", "La foto no puede pasar de 8 MB.": "The photo can't exceed 8 MB.",
+    "La foto tiene que ser JPG, PNG o WEBP.": "The photo must be JPG, PNG or WEBP.", "No tienes suficientes Moon Coins.": "You don't have enough Moon Coins.",
+    "No tienes suficientes Mars Coins.": "You don't have enough Mars Coins.",
+}
+
+# Frases construidas con trozos de código: se sustituye el fragmento completo
+CRUDO = [
+    ["`Aciertos: ${game.ok} de ${game.n}`", "`Score: ${game.ok} of ${game.n}`"],
+    ["aportación${r.aportaciones === 1 ? '' : 'es'} de ${r.personas} persona${r.personas === 1 ? '' : 's'}",
+     "contribution${r.aportaciones === 1 ? '' : 's'} from ${r.personas} ${r.personas === 1 ? 'person' : 'people'}"],
+    [".join(' y ')", ".join(' and ')"],
+    ["' el ' + fecha(pc.creado)", "' on ' + fecha(pc.creado)"],
+    ["'es-ES'", "'en-GB'"],
+    ['<html lang="es">', '<html lang="en">'],
+    ["`Habitación ${h.numero} · planta ${h.planta} · ${esc(h.base)} · de ${esc(h.username)}`",
+     "`Room ${h.numero} · floor ${h.planta} · ${esc(h.base)} · ${esc(h.username)}'s`"],
+    ["Habitación ${h.numero} · planta ${h.planta} · ${esc(h.base)} · de ${esc(h.username)}",
+     "Room ${h.numero} · floor ${h.planta} · ${esc(h.base)} · ${esc(h.username)}'s"],
+    ["href=\"explorador.html#entrar\"", "href=\"explorador.html#entrar\""],
+]
+
+# Mensajes del servidor con datos variables (los aplica tr() en el navegador)
+PATRONES = [
+    [r"^El mueble «(.+)» no existe\.$", "The item “$1” doesn't exist."],
+    [r"^En esas coordenadas ya está «(.+)» \(a ([\d.]+) km\)\.$", "“$1” is already at those coordinates ($2 km away)."],
+    [r"^Hueco «(.+)» no válido\.$", "Invalid slot “$1”."],
+    [r"^Primero compra «(.+)» en la tienda\.$", "First buy “$1” in the shop."],
+    [r"^Solo se pueden crear (\d+) puntos nuevos al día\.$", "Only $1 new points can be created per day."],
+    [r"^Tus coordenadas están a ([\d.]+) km de «(.+)»\. Para aportar datos a un punto tienes que estar a menos de (\d+) km\. Si es otro lugar, crea un punto nuevo\.$",
+     "Your coordinates are $1 km from “$2”. To contribute data to a point you must be within $3 km. If it's a different place, create a new point."],
+    [r"^Ya existe el punto «(.+)» a ([\d.]+) km\. Aporta tus datos a ese punto\.$", "The point “$1” already exists $2 km away. Contribute your data to that point."],
+    [r"^«(.+)» no es un cama\.$", "“$1” is not a bed."], [r"^«(.+)» no es un escritorio\.$", "“$1” is not a desk."],
+    [r"^«(.+)» no va en ese hueco\.$", "“$1” doesn't go in that slot."],
+    [r"^Primer inicio de sesión del día (.+)$", "First login of the day $1"],
+    [r"^Objetivo: (.+)$", "Goal: $1"], [r"^Compra: (.+)$", "Purchase: $1"], [r"^Canje: (.+)$", "Redemption: $1"],
+    [r"^Aportación de datos: (.+)$", "Data contribution: $1"], [r"^Punto nuevo validado: (.+)$", "New point validated: $1"],
+    [r"^Punto comunitario (.+)$", "Community point $1"], [r"^Zona comunitaria (.+)$", "Community area $1"],
+]
+
+if __name__ == "__main__":
+    out = Path(__file__).with_name("en.json")
+    # Apóstrofo tipográfico: así una traducción nunca rompe una cadena de JavaScript entre comillas simples
+    textos = {k: v.replace("'", "’") for k, v in TEXTOS.items()}
+    patrones = [[r, e.replace("'", "’")] for r, e in PATRONES]
+    out.write_text(json.dumps({"textos": textos, "crudo": CRUDO, "patrones": patrones}, ensure_ascii=False, indent=0), encoding="utf-8")
+    print(f"{len(TEXTOS)} textos, {len(CRUDO)} fragmentos, {len(PATRONES)} patrones -> {out.name}")

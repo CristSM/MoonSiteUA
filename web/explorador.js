@@ -37,9 +37,9 @@ function fieldErrors(form, e) {
   const errs = e.data?.errores || (e.data?.campo ? {[e.data.campo]: e.message} : {});
   for (const [k, v] of Object.entries(errs)) {
     const inp = form.elements[k]; if (inp) inp.setAttribute('aria-invalid', 'true');
-    const box = form.querySelector(`.err[data-for="${k}"]`); if (box) box.textContent = v;
+    const box = form.querySelector(`.err[data-for="${k}"]`); if (box) box.textContent = tr(v);
   }
-  const g = form.querySelector('.err[data-for="_"]'); if (g) g.textContent = Object.keys(errs).length ? '' : e.message;
+  const g = form.querySelector('.err[data-for="_"]'); if (g) g.textContent = Object.keys(errs).length ? '' : tr(e.message);
 }
 
 // ================================================================ acceso
@@ -87,7 +87,7 @@ async function vistaRegistro() {
       <ul class="rules" id="rules"><li data-r="len">Al menos 9 caracteres</li><li data-r="low">Una letra minúscula</li><li data-r="up">Una letra mayúscula</li><li data-r="num">Un número</li></ul>
       <span class="err" data-for="password"></span></label>
     <div class="two">
-      <label>País (opcional)<select id="rPais"><option value="">Sin indicar</option>${paises.map((p) => `<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}</select></label>
+      <label>País (opcional)<select id="rPais"><option value="">Sin indicar</option>${paises.map((p) => `<option value="${p.id}">${esc(tr(p.nombre))}</option>`).join('')}</select></label>
       <label>Provincia, estado o región (opcional)<select id="rProv" disabled><option value="">Sin indicar</option></select></label>
     </div>
     <p class="err" data-for="_"></p>
@@ -128,7 +128,7 @@ async function vistaZonas() {
     <div class="grid">${resto.map(tarjetaZona).join('')}</div></div>`;
   view.querySelectorAll('[data-unirse]').forEach((b) => b.addEventListener('click', async () => {
     try { const r = await api(`/api/bases/${b.dataset.unirse}/unirse`, {method: 'POST'}); logros(r.logros); await refreshMe(); location.hash = `#base/${r.base.id}`; }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   }));
   view.querySelectorAll('[data-editar]').forEach((b) => b.addEventListener('click', () => {
     const f = view.querySelector(`#edit-${b.dataset.editar}`); f.hidden = !f.hidden; b.textContent = f.hidden ? 'Editar punto' : 'Cerrar';
@@ -173,8 +173,8 @@ function tarjetaZona(z) {
       </form>`;
   }
   const etiqueta = z.recomendada ? '<span class="pill acc">Recomendada NASA</span>' : z.mio ? '<span class="pill ok">Creado por ti</span>' : '<span class="pill">Comunidad</span>';
-  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(z.nombre)}</h3>${etiqueta}</div>
-    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(z.nota)}</p>` : ''}${z.mio ? `<p class="muted mono" style="font-size:.78rem">${(+z.lat).toFixed(4)}, ${(+z.lon).toFixed(4)}</p>` : ''}
+  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(tr(z.nombre))}</h3>${etiqueta}</div>
+    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(tr(z.nota))}</p>` : ''}${z.mio ? `<p class="muted mono" style="font-size:.78rem">${(+z.lat).toFixed(4)}, ${(+z.lon).toFixed(4)}</p>` : ''}
     <div class="bars">${iap}</div>${base}${editar}</article>`;
 }
 
@@ -185,8 +185,8 @@ async function vistaAportaciones() {
   view.innerHTML = `<div class="stack"><h2>Mis aportaciones</h2>
     <p class="muted">Fotos y datos que has subido desde la <a href="demo.html">Demo</a>, con su fecha de subida.</p>
     ${lista.length ? `<div class="grid">${lista.map((a) => `<article class="card stack" style="gap:8px">
-      ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(a.zona)}">` : ''}
-      <div class="row" style="justify-content:space-between"><b>${esc(a.zona)}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
+      ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(tr(a.zona))}">` : ''}
+      <div class="row" style="justify-content:space-between"><b>${esc(tr(a.zona))}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
       <p class="muted mono" style="font-size:.8rem">${fechaLocal(a.fecha)} · ${(+a.lat).toFixed(4)}, ${(+a.lon).toFixed(4)}</p>
       <div class="row">${dato(a.temperatura_c, ' °C')}${dato(a.humedad_rel, ' % humedad')}${a.calidad_aire == null ? '' : `<span class="pill">Aire ${a.calidad_aire}</span>`}</div>
       <span class="coin">${Disenos.moneda('moon', 20)}+${a.moon_ganadas}</span></article>`).join('')}</div>`
@@ -219,7 +219,7 @@ async function vistaBase(id) {
   view.innerHTML = `<div class="split"><div class="card svgbox">${Disenos.base(b.nivel_dibujo, b.color1, b.color2, b.miembros)}</div>
     <div class="stack"><h2>${esc(b.nombre)}</h2>
       <div class="row"><span class="pill acc">Nivel ${b.nivel}</span><span class="pill">${b.miembros} miembro${b.miembros === 1 ? '' : 's'}</span><span class="pill">Fundada por ${esc(b.fundador)}</span></div>
-      <p class="muted">Zona: ${esc(b.zona)}. Cada planta tiene 5 habitaciones; la base sube de nivel al llenarse. Quedan ${b.plazas_libres_planta} plazas en la planta actual.</p>
+      <p class="muted">Zona: ${esc(tr(b.zona))}. Cada planta tiene 5 habitaciones; la base sube de nivel al llenarse. Quedan ${b.plazas_libres_planta} plazas en la planta actual.</p>
       <div class="floors">${Object.keys(plantas).sort((a, c) => c - a).map((p) => `<div class="floor"><span class="mono muted">P${p}</span>${plantas[p].map((h) => `<a class="room ${ME && h.username === ME.username ? 'me' : ''}" href="#habitacion/${h.id}">Hab. ${h.numero} · ${esc(h.username)}</a>`).join('')}</div>`).join('')}</div>
     </div></div>`;
 }
@@ -244,7 +244,7 @@ async function vistaHabitacion(id) {
   const pintar = () => ($('#hPrev').innerHTML = Disenos.habitacion({...h, ...est}));
   const grupo = (titulo, lista, actual, key, permitirNada) => `<div class="card stack"><h3>${titulo}</h3><div class="choices">
     ${permitirNada ? `<button class="choice none" data-k="${key}" data-v="" aria-pressed="${!actual}">Nada</button>` : ''}
-    ${lista.map((m) => `<button class="choice ${m.lo_tengo ? '' : 'locked'}" data-k="${key}" data-v="${m.clave}" aria-pressed="${actual === m.clave}" title="${esc(m.nombre)}">${Disenos.mueble(m.clave, m.tipo, m.hueco, h)}<span class="tag">${m.lo_tengo ? esc(m.nombre) : m.precio_moon + ' MC'}</span></button>`).join('')}</div></div>`;
+    ${lista.map((m) => `<button class="choice ${m.lo_tengo ? '' : 'locked'}" data-k="${key}" data-v="${m.clave}" aria-pressed="${actual === m.clave}" title="${esc(tr(m.nombre))}">${Disenos.mueble(m.clave, m.tipo, m.hueco, h)}<span class="tag">${m.lo_tengo ? esc(tr(m.nombre)) : m.precio_moon + ' MC'}</span></button>`).join('')}</div></div>`;
   $('#editor').innerHTML = `<div class="card row"><label class="field">Paredes<input type="color" id="cPared" value="${h.color_pared}"></label><label class="field">Suelo<input type="color" id="cSuelo" value="${h.color_suelo}"></label>
       <button class="btn primary" id="guardar" style="margin-left:auto">Guardar habitación</button></div>
     ${grupo('Cama (solo una)', muebles.filter((m) => m.tipo === 'cama'), est.cama, 'cama', false)}
@@ -255,7 +255,7 @@ async function vistaHabitacion(id) {
   $('#cSuelo').addEventListener('input', (e) => { est.color_suelo = e.target.value; pintar(); });
   $('#editor').querySelectorAll('.choice').forEach((b) => b.addEventListener('click', () => {
     const m = muebles.find((x) => x.clave === b.dataset.v);
-    if (m && !m.lo_tengo) { toast(`Primero compra «${esc(m.nombre)}» en la tienda (${m.precio_moon} Moon Coins).`); return; }
+    if (m && !m.lo_tengo) { toast(`Primero compra «${esc(tr(m.nombre))}» en la tienda (${m.precio_moon} Moon Coins).`); return; }
     const k = b.dataset.k;
     if (k.startsWith('deco:')) est.decoraciones[k.slice(5)] = b.dataset.v || null; else est[k] = b.dataset.v;
     b.parentElement.querySelectorAll('.choice').forEach((x) => x.setAttribute('aria-pressed', x === b));
@@ -263,7 +263,7 @@ async function vistaHabitacion(id) {
   }));
   $('#guardar').addEventListener('click', async () => {
     try { const r = await api(`/api/habitaciones/${id}`, {method: 'PUT', json: est}); logros(r.logros); toast('Habitación guardada.'); await refreshMe(); }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   });
 }
 
@@ -273,26 +273,26 @@ async function vistaTienda() {
   const tipos = {cama: 'Camas', escritorio: 'Escritorios', decoracion: 'Decoraciones'};
   view.innerHTML = `<div class="stack"><h2>Tienda de muebles</h2><p class="muted">Se pagan con Moon Coins. Los de precio 0 vienen de serie.</p>
     ${Object.entries(tipos).map(([t, titulo]) => `<h3>${titulo}</h3><div class="grid">${ms.filter((m) => m.tipo === t).map((m) => `<article class="card item">
-      <div class="svgbox">${Disenos.mueble(m.clave, m.tipo, m.hueco)}</div><b>${esc(m.nombre)}</b>
+      <div class="svgbox">${Disenos.mueble(m.clave, m.tipo, m.hueco)}</div><b>${esc(tr(m.nombre))}</b>
       ${m.hueco ? `<span class="muted" style="font-size:.82rem">${HUECOS[m.hueco]}</span>` : ''}
       <div class="row" style="justify-content:space-between"><span class="coin">${Disenos.moneda('moon', 20)}${m.precio_moon}</span>
       ${m.lo_tengo ? '<span class="pill ok">Lo tienes</span>' : `<button class="btn" data-comprar="${m.clave}">Comprar</button>`}</div></article>`).join('')}</div>`).join('')}</div>`;
   view.querySelectorAll('[data-comprar]').forEach((b) => b.addEventListener('click', async () => {
     try { await api(`/api/muebles/${b.dataset.comprar}/comprar`, {method: 'POST'}); await refreshMe(); toast('Comprado. Ya puedes ponerlo en tu habitación.'); vistaTienda(); }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   }));
 }
 async function vistaPremios() {
   const ps = await api('/api/premios');
   view.innerHTML = `<div class="stack"><h2>Premios físicos</h2><p class="muted">Se canjean con Mars Coins y te los enviamos a casa. Diseños originales de MoonSiteUA.</p>
-    <div class="grid">${ps.map((p) => `<article class="card item"><div class="svgbox">${Disenos.premio(p.clave)}</div><b>${esc(p.nombre)}</b><p class="muted" style="font-size:.85rem">${esc(p.descripcion)}</p>
+    <div class="grid">${ps.map((p) => `<article class="card item"><div class="svgbox">${Disenos.premio(p.clave)}</div><b>${esc(tr(p.nombre))}</b><p class="muted" style="font-size:.85rem">${esc(tr(p.descripcion))}</p>
       <div class="row" style="justify-content:space-between"><span class="coin">${Disenos.moneda('mars', 20)}${p.precio_mars}</span><span class="pill">${p.stock ? p.stock + ' disponibles' : 'Agotado'}</span></div>
       <button class="btn" data-canjear="${p.clave}" ${p.stock ? '' : 'disabled'}>Canjear</button></article>`).join('')}</div>
     <dialog id="dlg" style="background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;max-width:420px;width:calc(100% - 32px)"></dialog></div>`;
   view.querySelectorAll('[data-canjear]').forEach((b) => b.addEventListener('click', () => {
     const p = ps.find((x) => x.clave === b.dataset.canjear);
     const d = $('#dlg');
-    d.innerHTML = `<form class="stack" id="fCanje" novalidate><h3>Canjear ${esc(p.nombre)}</h3><p class="muted">Coste: ${p.precio_mars} Mars Coins. Tienes ${ME.saldo.mars}.</p>
+    d.innerHTML = `<form class="stack" id="fCanje" novalidate><h3>Canjear ${esc(tr(p.nombre))}</h3><p class="muted">Coste: ${p.precio_mars} Mars Coins. Tienes ${ME.saldo.mars}.</p>
       ${p.con_talla ? `<label>Talla<select name="talla" id="cTalla"><option value="">Elige…</option>${['S', 'M', 'L', 'XL', 'XXL'].map((t) => `<option>${t}</option>`).join('')}</select><span class="err" data-for="talla"></span></label>` : ''}
       <label>Dirección de envío<textarea name="direccion" id="cDir" rows="3" placeholder="Calle, número, código postal, ciudad"></textarea><span class="err" data-for="direccion"></span></label>
       <p class="err" data-for="_"></p><div class="row"><button class="btn primary">Confirmar canje</button><button class="btn" type="button" id="cCancel">Cancelar</button></div></form>`;
@@ -300,7 +300,7 @@ async function vistaPremios() {
     $('#cCancel').addEventListener('click', () => d.close());
     $('#fCanje').addEventListener('submit', async (ev) => {
       ev.preventDefault(); const f = ev.target;
-      try { await api(`/api/premios/${p.clave}/canjear`, {method: 'POST', json: {talla: f.talla?.value || null, direccion: f.direccion.value}}); d.close(); await refreshMe(); toast(`¡Canjeado! Te enviaremos ${esc(p.nombre)}.`); vistaPremios(); }
+      try { await api(`/api/premios/${p.clave}/canjear`, {method: 'POST', json: {talla: f.talla?.value || null, direccion: f.direccion.value}}); d.close(); await refreshMe(); toast(`¡Canjeado! Te enviaremos ${esc(tr(p.nombre))}.`); vistaPremios(); }
       catch (e) { fieldErrors(f, e); }
     });
   }));
@@ -308,7 +308,7 @@ async function vistaPremios() {
 async function vistaObjetivos() {
   const o = await api('/api/objetivos');
   const PER = {diario: 'Hoy', semanal: 'Esta semana', mensual: 'Este mes', unico: 'Una vez'};
-  const fila = (x) => `<div class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>${esc(x.titulo)}</b><span class="coin">${Disenos.moneda(x.moneda, 20)}+${x.recompensa}</span></div>
+  const fila = (x) => `<div class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>${esc(tr(x.titulo))}</b><span class="coin">${Disenos.moneda(x.moneda, 20)}+${x.recompensa}</span></div>
     <div class="bar"><i style="width:${100 * x.progreso / x.meta}%;${x.completado ? 'background:var(--ok)' : ''}"></i></div>
     <div class="row" style="justify-content:space-between"><span class="muted">${PER[x.periodo]}</span><span class="mono">${x.progreso}/${x.meta}${x.completado ? ' · completado' : ''}</span></div></div>`;
   view.innerHTML = `<div class="stack"><h2>Objetivos</h2><h3>Individuales</h3><div class="grid">${o.individuales.map(fila).join('')}</div>
@@ -322,7 +322,7 @@ async function vistaPerfil() {
       <p class="muted">@${esc(ME.username)} · ${esc(ME.email)}${ME.region ? ' · ' + esc(ME.region) : ''}</p>
       <div class="row"><span class="coin">${Disenos.moneda('moon', 32)}${ME.saldo.moon} Moon</span><span class="coin">${Disenos.moneda('mars', 32)}${ME.saldo.mars} Mars</span></div>
       <button class="btn" id="salir">Cerrar sesión</button></div>
-    <div class="card"><h3>Movimientos</h3><table><tbody>${movs.map((m) => `<tr><td>${esc(m.motivo)}</td><td class="mono" style="color:${m.cantidad > 0 ? 'var(--ok)' : 'var(--bad)'}">${m.cantidad > 0 ? '+' : ''}${m.cantidad} ${m.moneda === 'moon' ? 'Moon' : 'Mars'}</td></tr>`).join('')}</tbody></table></div></div>`;
+    <div class="card"><h3>Movimientos</h3><table><tbody>${movs.map((m) => `<tr><td>${esc(tr(m.motivo))}</td><td class="mono" style="color:${m.cantidad > 0 ? 'var(--ok)' : 'var(--bad)'}">${m.cantidad > 0 ? '+' : ''}${m.cantidad} ${m.moneda === 'moon' ? 'Moon' : 'Mars'}</td></tr>`).join('')}</tbody></table></div></div>`;
   $('#salir').addEventListener('click', async () => { await api('/api/logout', {method: 'POST'}); ME = null; await refreshMe(); location.hash = '#entrar'; });
 }
 
@@ -334,7 +334,7 @@ async function router() {
   const [ruta, arg] = (location.hash.slice(1) || 'zonas').split('/');
   if (!ME && !PUBLICAS.has(ruta)) { if (location.hash !== '#entrar') location.hash = '#entrar'; else vistaEntrar(); return; }
   document.querySelectorAll('nav.tabs a').forEach((a) => { if (a.getAttribute('href') === '#' + ruta) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-  try { await (RUTAS[ruta] || vistaZonas)(arg); } catch (e) { view.innerHTML = `<div class="card"><p class="err">${esc(e.message)}</p></div>`; }
+  try { await (RUTAS[ruta] || vistaZonas)(arg); } catch (e) { view.innerHTML = `<div class="card"><p class="err">${esc(tr(e.message))}</p></div>`; }
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', router);

@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MoonSiteUA · Explorador</title>
 <meta name="description" content="Buscamos en la Tierra los mejores lugares para ensayar bases en la Luna y misiones a Marte, con datos de la NASA y exploradores sobre el terreno.">
+<script>
+  // Tema: el que eligió el usuario o, si no eligió, el del sistema
+  (function () { let t = null; try { t = localStorage.getItem('moonsite-tema'); } catch (e) {}
+    if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', t); })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -24,10 +30,34 @@
   --warn: #f0a33c;
   --idle: #8d95a9;
   --bad: #e2596b;
+  --on-accent: #1a0e08;
+  --nav-bg: rgba(12,17,29,.92);
+  --land: #222c43;
+  --land-line: #33405e;
   --f-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
   --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
   color-scheme: dark;
+}
+/* Modo claro: mismo carácter (azul pizarra y óxido marciano) sobre fondo de papel frío */
+:root[data-theme="light"] {
+  --bg: #f4f6f9;
+  --panel: #ffffff;
+  --panel-2: #eaeef4;
+  --line: #d3d9e4;
+  --text: #151b29;
+  --muted: #55607a;
+  --accent: #c4552a;
+  --moon: #50608a;
+  --ok: #1d8a57;
+  --warn: #a8640a;
+  --idle: #6b7488;
+  --bad: #c0384b;
+  --on-accent: #ffffff;
+  --nav-bg: rgba(244,246,249,.92);
+  --land: #d6dde8;
+  --land-line: #b6c0d1;
+  color-scheme: light;
 }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
@@ -47,12 +77,18 @@ p { margin: 0; }
 .kicker { font: 500 .78rem/1 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 
 /* nav */
-nav.top { position: sticky; top: 0; z-index: 10; background: rgba(12,17,29,.92); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
+nav.top { position: sticky; top: 0; z-index: 10; background: var(--nav-bg); backdrop-filter: blur(6px); border-bottom: 1px solid var(--line); }
 nav.top .wrap { display: flex; align-items: center; gap: 20px; height: 54px; overflow-x: auto; }
 nav.top .brand { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; white-space: nowrap; color: var(--text); margin-right: 6px; }
 nav.top .brand span { color: var(--accent); }
 nav.top a[aria-current="page"] { color: var(--text); box-shadow: inset 0 -2px 0 var(--accent); }
-nav.top a[href="explorador.html"] { margin-left: auto; color: #1a0e08; background: var(--accent); padding: 6px 12px; border-radius: 6px; font-weight: 500; }
+.prefs { display: inline-flex; gap: 6px; align-items: center; margin-left: 8px; }
+.prefs a.lang { font: 500 .78rem var(--f-mono); padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); text-decoration: none; }
+.prefs a.lang:hover { color: var(--text); border-color: var(--moon); }
+.tema { width: 32px; height: 28px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text); cursor: pointer; display: grid; place-items: center; padding: 0; }
+.tema:hover { border-color: var(--moon); }
+.tema svg { width: 16px; height: 16px; }
+nav.top a[href="explorador.html"] { margin-left: auto; color: var(--on-accent); background: var(--accent); padding: 6px 12px; border-radius: 6px; font-weight: 500; }
 nav.top a[href="explorador.html"][aria-current="page"] { box-shadow: none; }
 nav.top a { color: var(--muted); text-decoration: none; font-size: .9rem; white-space: nowrap; }
 nav.top a:hover { color: var(--text); }
@@ -71,7 +107,7 @@ section > .wrap > .head { display: grid; gap: 10px; margin-bottom: 28px; }
 .fact span { color: var(--muted); font-size: .92rem; }
 .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
 .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel); color: var(--text); font: 500 .95rem var(--f-body); text-decoration: none; cursor: pointer; }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0e08; }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .btn:hover { border-color: var(--moon); }
 
 /* pipeline */
@@ -96,8 +132,8 @@ section > .wrap > .head { display: grid; gap: 10px; margin-bottom: 28px; }
 .maps svg { width: 100%; height: auto; display: block; }
 .maps .legend svg { width: 12px; height: 12px; display: inline-block; }
 .maps .cap { font: 500 .75rem var(--f-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
-.land { fill: #222c43; stroke: #33405e; stroke-width: .5; }
-.grat { fill: none; stroke: #1a2236; }
+.land { fill: var(--land); stroke: var(--land-line); stroke-width: .5; }
+.grat { fill: none; stroke: var(--line); }
 .site { cursor: pointer; stroke: var(--bg); stroke-width: 1.5; }
 .site.sel { stroke: var(--text); stroke-width: 2.5; }
 .site.dim { opacity: .25; }
@@ -190,12 +226,12 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .xp .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
 .xp .btn { display: inline-flex; gap: 8px; align-items: center; justify-content: center; padding: 9px 15px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel-2); color: var(--text); font: 500 .92rem var(--f-body); cursor: pointer; text-decoration: none; }
 .xp .btn:hover { border-color: var(--moon); }
-.xp .btn.primary { background: var(--accent); border-color: var(--accent); color: #1a0e08; }
+.xp .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
 .xp .btn:disabled { opacity: .5; cursor: not-allowed; }
 .xp .pill { font: 500 .74rem var(--f-mono); padding: 3px 8px; border-radius: 99px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; }
 .xp .pill.ok { color: var(--ok); border-color: var(--ok); }
 .xp .pill.acc { color: var(--accent); border-color: var(--accent); }
-.xp header.top { position: static !important; position: sticky; top: 0; z-index: 5; background: rgba(12,17,29,.95); border-bottom: 1px solid var(--line); }
+.xp header.top { position: static !important; position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
 .xp header.top .wrap { display: flex; gap: 16px; align-items: center; min-height: 56px; flex-wrap: wrap; padding: 6px 0; }
 .xp .logo { font: 700 1.15rem var(--f-display); text-decoration: none; color: var(--text); }
 .xp .logo span { color: var(--accent); }
@@ -256,7 +292,7 @@ th { font: 500 .75rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 /* aportaciones en la demo */
 .aporte { padding: 16px; display: grid; gap: 12px; }
 .aporte h3 { font-size: 1.1rem; }
-.aporte .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.aporte .fgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-items: start; }
 .aporte label { display: grid; gap: 4px; font-size: .84rem; color: var(--muted); }
 .aporte input:not([type="range"]), .aporte select { font: inherit; font-size: .92rem; color: var(--text); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; width: 100%; }
 .aporte input[aria-invalid="true"] { border-color: var(--bad); }
@@ -289,6 +325,7 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
   <div class="wrap">
     <a class="brand" href="index.html">MoonSite<span>UA</span></a>
     <a href="demo.html">Demo</a><a href="juego.html">Juego</a><a href="recompensas.html">Recompensas</a><a href="metodo.html">Método</a><a href="validacion.html">Validación</a><a href="comunidad.html">Comunidad</a><a href="seguridad.html">Seguridad</a><a href="datos.html">Datos</a><a href="video.html">Vídeo</a><a href="explorador.html" aria-current="page">Explorador</a>
+    <span class="prefs"><a class="lang" href="en/explorador.html" hreflang="en" lang="en" title="English">EN</a><button type="button" class="tema" id="temaBtn" aria-label="Cambiar a modo claro" title="Modo claro / oscuro"></button></span>
   </div>
 </nav>
 
@@ -312,6 +349,37 @@ footer { padding: 36px 0 48px; color: var(--muted); font-size: .9rem; }
   </div>
 </footer>
 
+<script>
+// tr(): traduce textos que llegan del servidor. En español no cambia nada.
+window.I18N = /*__I18N__*/null;
+window.tr = function tr(s) {
+  const I = window.I18N; if (!I || s == null) return s;
+  const k = String(s).trim();
+  if (I.textos[k]) return I.textos[k];
+  for (const [re, rep] of I.patrones) {
+    const m = k.match(new RegExp(re));
+    if (m) return rep.replace(/\$(\d)/g, (_, i) => tr(m[+i]));
+  }
+  return s;
+};
+</script>
+<script>
+// Botón de modo claro / oscuro (se recuerda en este navegador)
+(function () {
+  const b = document.getElementById('temaBtn'); if (!b) return;
+  const SOL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const LUNA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  const pintar = () => { const claro = document.documentElement.getAttribute('data-theme') === 'light';
+    b.innerHTML = claro ? LUNA : SOL; b.setAttribute('aria-label', claro ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'); };
+  b.addEventListener('click', () => {
+    const t = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', t);
+    try { localStorage.setItem('moonsite-tema', t); } catch (e) {}
+    pintar();
+  });
+  pintar();
+})();
+</script>
 <script>/* MoonSiteUA · Diseños en SVG: monedas, edificio de la base (niveles 1-5),
    habitación y muebles, y merchandising. Estilo de agencia espacial: azul marino,
    blanco de módulo, rojo-naranja de señalización. Sin logotipos de terceros.
@@ -715,9 +783,9 @@ function fieldErrors(form, e) {
   const errs = e.data?.errores || (e.data?.campo ? {[e.data.campo]: e.message} : {});
   for (const [k, v] of Object.entries(errs)) {
     const inp = form.elements[k]; if (inp) inp.setAttribute('aria-invalid', 'true');
-    const box = form.querySelector(`.err[data-for="${k}"]`); if (box) box.textContent = v;
+    const box = form.querySelector(`.err[data-for="${k}"]`); if (box) box.textContent = tr(v);
   }
-  const g = form.querySelector('.err[data-for="_"]'); if (g) g.textContent = Object.keys(errs).length ? '' : e.message;
+  const g = form.querySelector('.err[data-for="_"]'); if (g) g.textContent = Object.keys(errs).length ? '' : tr(e.message);
 }
 
 // ================================================================ acceso
@@ -765,7 +833,7 @@ async function vistaRegistro() {
       <ul class="rules" id="rules"><li data-r="len">Al menos 9 caracteres</li><li data-r="low">Una letra minúscula</li><li data-r="up">Una letra mayúscula</li><li data-r="num">Un número</li></ul>
       <span class="err" data-for="password"></span></label>
     <div class="two">
-      <label>País (opcional)<select id="rPais"><option value="">Sin indicar</option>${paises.map((p) => `<option value="${p.id}">${esc(p.nombre)}</option>`).join('')}</select></label>
+      <label>País (opcional)<select id="rPais"><option value="">Sin indicar</option>${paises.map((p) => `<option value="${p.id}">${esc(tr(p.nombre))}</option>`).join('')}</select></label>
       <label>Provincia, estado o región (opcional)<select id="rProv" disabled><option value="">Sin indicar</option></select></label>
     </div>
     <p class="err" data-for="_"></p>
@@ -806,7 +874,7 @@ async function vistaZonas() {
     <div class="grid">${resto.map(tarjetaZona).join('')}</div></div>`;
   view.querySelectorAll('[data-unirse]').forEach((b) => b.addEventListener('click', async () => {
     try { const r = await api(`/api/bases/${b.dataset.unirse}/unirse`, {method: 'POST'}); logros(r.logros); await refreshMe(); location.hash = `#base/${r.base.id}`; }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   }));
   view.querySelectorAll('[data-editar]').forEach((b) => b.addEventListener('click', () => {
     const f = view.querySelector(`#edit-${b.dataset.editar}`); f.hidden = !f.hidden; b.textContent = f.hidden ? 'Editar punto' : 'Cerrar';
@@ -851,8 +919,8 @@ function tarjetaZona(z) {
       </form>`;
   }
   const etiqueta = z.recomendada ? '<span class="pill acc">Recomendada NASA</span>' : z.mio ? '<span class="pill ok">Creado por ti</span>' : '<span class="pill">Comunidad</span>';
-  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(z.nombre)}</h3>${etiqueta}</div>
-    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(z.nota)}</p>` : ''}${z.mio ? `<p class="muted mono" style="font-size:.78rem">${(+z.lat).toFixed(4)}, ${(+z.lon).toFixed(4)}</p>` : ''}
+  return `<article class="card zone"><div class="row" style="justify-content:space-between"><h3>${esc(tr(z.nombre))}</h3>${etiqueta}</div>
+    ${z.nota ? `<p class="muted" style="font-size:.85rem">${esc(tr(z.nota))}</p>` : ''}${z.mio ? `<p class="muted mono" style="font-size:.78rem">${(+z.lat).toFixed(4)}, ${(+z.lon).toFixed(4)}</p>` : ''}
     <div class="bars">${iap}</div>${base}${editar}</article>`;
 }
 
@@ -863,8 +931,8 @@ async function vistaAportaciones() {
   view.innerHTML = `<div class="stack"><h2>Mis aportaciones</h2>
     <p class="muted">Fotos y datos que has subido desde la <a href="demo.html">Demo</a>, con su fecha de subida.</p>
     ${lista.length ? `<div class="grid">${lista.map((a) => `<article class="card stack" style="gap:8px">
-      ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(a.zona)}">` : ''}
-      <div class="row" style="justify-content:space-between"><b>${esc(a.zona)}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
+      ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(tr(a.zona))}">` : ''}
+      <div class="row" style="justify-content:space-between"><b>${esc(tr(a.zona))}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
       <p class="muted mono" style="font-size:.8rem">${fechaLocal(a.fecha)} · ${(+a.lat).toFixed(4)}, ${(+a.lon).toFixed(4)}</p>
       <div class="row">${dato(a.temperatura_c, ' °C')}${dato(a.humedad_rel, ' % humedad')}${a.calidad_aire == null ? '' : `<span class="pill">Aire ${a.calidad_aire}</span>`}</div>
       <span class="coin">${Disenos.moneda('moon', 20)}+${a.moon_ganadas}</span></article>`).join('')}</div>`
@@ -897,7 +965,7 @@ async function vistaBase(id) {
   view.innerHTML = `<div class="split"><div class="card svgbox">${Disenos.base(b.nivel_dibujo, b.color1, b.color2, b.miembros)}</div>
     <div class="stack"><h2>${esc(b.nombre)}</h2>
       <div class="row"><span class="pill acc">Nivel ${b.nivel}</span><span class="pill">${b.miembros} miembro${b.miembros === 1 ? '' : 's'}</span><span class="pill">Fundada por ${esc(b.fundador)}</span></div>
-      <p class="muted">Zona: ${esc(b.zona)}. Cada planta tiene 5 habitaciones; la base sube de nivel al llenarse. Quedan ${b.plazas_libres_planta} plazas en la planta actual.</p>
+      <p class="muted">Zona: ${esc(tr(b.zona))}. Cada planta tiene 5 habitaciones; la base sube de nivel al llenarse. Quedan ${b.plazas_libres_planta} plazas en la planta actual.</p>
       <div class="floors">${Object.keys(plantas).sort((a, c) => c - a).map((p) => `<div class="floor"><span class="mono muted">P${p}</span>${plantas[p].map((h) => `<a class="room ${ME && h.username === ME.username ? 'me' : ''}" href="#habitacion/${h.id}">Hab. ${h.numero} · ${esc(h.username)}</a>`).join('')}</div>`).join('')}</div>
     </div></div>`;
 }
@@ -922,7 +990,7 @@ async function vistaHabitacion(id) {
   const pintar = () => ($('#hPrev').innerHTML = Disenos.habitacion({...h, ...est}));
   const grupo = (titulo, lista, actual, key, permitirNada) => `<div class="card stack"><h3>${titulo}</h3><div class="choices">
     ${permitirNada ? `<button class="choice none" data-k="${key}" data-v="" aria-pressed="${!actual}">Nada</button>` : ''}
-    ${lista.map((m) => `<button class="choice ${m.lo_tengo ? '' : 'locked'}" data-k="${key}" data-v="${m.clave}" aria-pressed="${actual === m.clave}" title="${esc(m.nombre)}">${Disenos.mueble(m.clave, m.tipo, m.hueco, h)}<span class="tag">${m.lo_tengo ? esc(m.nombre) : m.precio_moon + ' MC'}</span></button>`).join('')}</div></div>`;
+    ${lista.map((m) => `<button class="choice ${m.lo_tengo ? '' : 'locked'}" data-k="${key}" data-v="${m.clave}" aria-pressed="${actual === m.clave}" title="${esc(tr(m.nombre))}">${Disenos.mueble(m.clave, m.tipo, m.hueco, h)}<span class="tag">${m.lo_tengo ? esc(tr(m.nombre)) : m.precio_moon + ' MC'}</span></button>`).join('')}</div></div>`;
   $('#editor').innerHTML = `<div class="card row"><label class="field">Paredes<input type="color" id="cPared" value="${h.color_pared}"></label><label class="field">Suelo<input type="color" id="cSuelo" value="${h.color_suelo}"></label>
       <button class="btn primary" id="guardar" style="margin-left:auto">Guardar habitación</button></div>
     ${grupo('Cama (solo una)', muebles.filter((m) => m.tipo === 'cama'), est.cama, 'cama', false)}
@@ -933,7 +1001,7 @@ async function vistaHabitacion(id) {
   $('#cSuelo').addEventListener('input', (e) => { est.color_suelo = e.target.value; pintar(); });
   $('#editor').querySelectorAll('.choice').forEach((b) => b.addEventListener('click', () => {
     const m = muebles.find((x) => x.clave === b.dataset.v);
-    if (m && !m.lo_tengo) { toast(`Primero compra «${esc(m.nombre)}» en la tienda (${m.precio_moon} Moon Coins).`); return; }
+    if (m && !m.lo_tengo) { toast(`Primero compra «${esc(tr(m.nombre))}» en la tienda (${m.precio_moon} Moon Coins).`); return; }
     const k = b.dataset.k;
     if (k.startsWith('deco:')) est.decoraciones[k.slice(5)] = b.dataset.v || null; else est[k] = b.dataset.v;
     b.parentElement.querySelectorAll('.choice').forEach((x) => x.setAttribute('aria-pressed', x === b));
@@ -941,7 +1009,7 @@ async function vistaHabitacion(id) {
   }));
   $('#guardar').addEventListener('click', async () => {
     try { const r = await api(`/api/habitaciones/${id}`, {method: 'PUT', json: est}); logros(r.logros); toast('Habitación guardada.'); await refreshMe(); }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   });
 }
 
@@ -951,26 +1019,26 @@ async function vistaTienda() {
   const tipos = {cama: 'Camas', escritorio: 'Escritorios', decoracion: 'Decoraciones'};
   view.innerHTML = `<div class="stack"><h2>Tienda de muebles</h2><p class="muted">Se pagan con Moon Coins. Los de precio 0 vienen de serie.</p>
     ${Object.entries(tipos).map(([t, titulo]) => `<h3>${titulo}</h3><div class="grid">${ms.filter((m) => m.tipo === t).map((m) => `<article class="card item">
-      <div class="svgbox">${Disenos.mueble(m.clave, m.tipo, m.hueco)}</div><b>${esc(m.nombre)}</b>
+      <div class="svgbox">${Disenos.mueble(m.clave, m.tipo, m.hueco)}</div><b>${esc(tr(m.nombre))}</b>
       ${m.hueco ? `<span class="muted" style="font-size:.82rem">${HUECOS[m.hueco]}</span>` : ''}
       <div class="row" style="justify-content:space-between"><span class="coin">${Disenos.moneda('moon', 20)}${m.precio_moon}</span>
       ${m.lo_tengo ? '<span class="pill ok">Lo tienes</span>' : `<button class="btn" data-comprar="${m.clave}">Comprar</button>`}</div></article>`).join('')}</div>`).join('')}</div>`;
   view.querySelectorAll('[data-comprar]').forEach((b) => b.addEventListener('click', async () => {
     try { await api(`/api/muebles/${b.dataset.comprar}/comprar`, {method: 'POST'}); await refreshMe(); toast('Comprado. Ya puedes ponerlo en tu habitación.'); vistaTienda(); }
-    catch (e) { toast(esc(e.message)); }
+    catch (e) { toast(esc(tr(e.message))); }
   }));
 }
 async function vistaPremios() {
   const ps = await api('/api/premios');
   view.innerHTML = `<div class="stack"><h2>Premios físicos</h2><p class="muted">Se canjean con Mars Coins y te los enviamos a casa. Diseños originales de MoonSiteUA.</p>
-    <div class="grid">${ps.map((p) => `<article class="card item"><div class="svgbox">${Disenos.premio(p.clave)}</div><b>${esc(p.nombre)}</b><p class="muted" style="font-size:.85rem">${esc(p.descripcion)}</p>
+    <div class="grid">${ps.map((p) => `<article class="card item"><div class="svgbox">${Disenos.premio(p.clave)}</div><b>${esc(tr(p.nombre))}</b><p class="muted" style="font-size:.85rem">${esc(tr(p.descripcion))}</p>
       <div class="row" style="justify-content:space-between"><span class="coin">${Disenos.moneda('mars', 20)}${p.precio_mars}</span><span class="pill">${p.stock ? p.stock + ' disponibles' : 'Agotado'}</span></div>
       <button class="btn" data-canjear="${p.clave}" ${p.stock ? '' : 'disabled'}>Canjear</button></article>`).join('')}</div>
     <dialog id="dlg" style="background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;max-width:420px;width:calc(100% - 32px)"></dialog></div>`;
   view.querySelectorAll('[data-canjear]').forEach((b) => b.addEventListener('click', () => {
     const p = ps.find((x) => x.clave === b.dataset.canjear);
     const d = $('#dlg');
-    d.innerHTML = `<form class="stack" id="fCanje" novalidate><h3>Canjear ${esc(p.nombre)}</h3><p class="muted">Coste: ${p.precio_mars} Mars Coins. Tienes ${ME.saldo.mars}.</p>
+    d.innerHTML = `<form class="stack" id="fCanje" novalidate><h3>Canjear ${esc(tr(p.nombre))}</h3><p class="muted">Coste: ${p.precio_mars} Mars Coins. Tienes ${ME.saldo.mars}.</p>
       ${p.con_talla ? `<label>Talla<select name="talla" id="cTalla"><option value="">Elige…</option>${['S', 'M', 'L', 'XL', 'XXL'].map((t) => `<option>${t}</option>`).join('')}</select><span class="err" data-for="talla"></span></label>` : ''}
       <label>Dirección de envío<textarea name="direccion" id="cDir" rows="3" placeholder="Calle, número, código postal, ciudad"></textarea><span class="err" data-for="direccion"></span></label>
       <p class="err" data-for="_"></p><div class="row"><button class="btn primary">Confirmar canje</button><button class="btn" type="button" id="cCancel">Cancelar</button></div></form>`;
@@ -978,7 +1046,7 @@ async function vistaPremios() {
     $('#cCancel').addEventListener('click', () => d.close());
     $('#fCanje').addEventListener('submit', async (ev) => {
       ev.preventDefault(); const f = ev.target;
-      try { await api(`/api/premios/${p.clave}/canjear`, {method: 'POST', json: {talla: f.talla?.value || null, direccion: f.direccion.value}}); d.close(); await refreshMe(); toast(`¡Canjeado! Te enviaremos ${esc(p.nombre)}.`); vistaPremios(); }
+      try { await api(`/api/premios/${p.clave}/canjear`, {method: 'POST', json: {talla: f.talla?.value || null, direccion: f.direccion.value}}); d.close(); await refreshMe(); toast(`¡Canjeado! Te enviaremos ${esc(tr(p.nombre))}.`); vistaPremios(); }
       catch (e) { fieldErrors(f, e); }
     });
   }));
@@ -986,7 +1054,7 @@ async function vistaPremios() {
 async function vistaObjetivos() {
   const o = await api('/api/objetivos');
   const PER = {diario: 'Hoy', semanal: 'Esta semana', mensual: 'Este mes', unico: 'Una vez'};
-  const fila = (x) => `<div class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>${esc(x.titulo)}</b><span class="coin">${Disenos.moneda(x.moneda, 20)}+${x.recompensa}</span></div>
+  const fila = (x) => `<div class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>${esc(tr(x.titulo))}</b><span class="coin">${Disenos.moneda(x.moneda, 20)}+${x.recompensa}</span></div>
     <div class="bar"><i style="width:${100 * x.progreso / x.meta}%;${x.completado ? 'background:var(--ok)' : ''}"></i></div>
     <div class="row" style="justify-content:space-between"><span class="muted">${PER[x.periodo]}</span><span class="mono">${x.progreso}/${x.meta}${x.completado ? ' · completado' : ''}</span></div></div>`;
   view.innerHTML = `<div class="stack"><h2>Objetivos</h2><h3>Individuales</h3><div class="grid">${o.individuales.map(fila).join('')}</div>
@@ -1000,7 +1068,7 @@ async function vistaPerfil() {
       <p class="muted">@${esc(ME.username)} · ${esc(ME.email)}${ME.region ? ' · ' + esc(ME.region) : ''}</p>
       <div class="row"><span class="coin">${Disenos.moneda('moon', 32)}${ME.saldo.moon} Moon</span><span class="coin">${Disenos.moneda('mars', 32)}${ME.saldo.mars} Mars</span></div>
       <button class="btn" id="salir">Cerrar sesión</button></div>
-    <div class="card"><h3>Movimientos</h3><table><tbody>${movs.map((m) => `<tr><td>${esc(m.motivo)}</td><td class="mono" style="color:${m.cantidad > 0 ? 'var(--ok)' : 'var(--bad)'}">${m.cantidad > 0 ? '+' : ''}${m.cantidad} ${m.moneda === 'moon' ? 'Moon' : 'Mars'}</td></tr>`).join('')}</tbody></table></div></div>`;
+    <div class="card"><h3>Movimientos</h3><table><tbody>${movs.map((m) => `<tr><td>${esc(tr(m.motivo))}</td><td class="mono" style="color:${m.cantidad > 0 ? 'var(--ok)' : 'var(--bad)'}">${m.cantidad > 0 ? '+' : ''}${m.cantidad} ${m.moneda === 'moon' ? 'Moon' : 'Mars'}</td></tr>`).join('')}</tbody></table></div></div>`;
   $('#salir').addEventListener('click', async () => { await api('/api/logout', {method: 'POST'}); ME = null; await refreshMe(); location.hash = '#entrar'; });
 }
 
@@ -1012,7 +1080,7 @@ async function router() {
   const [ruta, arg] = (location.hash.slice(1) || 'zonas').split('/');
   if (!ME && !PUBLICAS.has(ruta)) { if (location.hash !== '#entrar') location.hash = '#entrar'; else vistaEntrar(); return; }
   document.querySelectorAll('nav.tabs a').forEach((a) => { if (a.getAttribute('href') === '#' + ruta) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
-  try { await (RUTAS[ruta] || vistaZonas)(arg); } catch (e) { view.innerHTML = `<div class="card"><p class="err">${esc(e.message)}</p></div>`; }
+  try { await (RUTAS[ruta] || vistaZonas)(arg); } catch (e) { view.innerHTML = `<div class="card"><p class="err">${esc(tr(e.message))}</p></div>`; }
   window.scrollTo(0, 0);
 }
 window.addEventListener('hashchange', router);
@@ -1089,9 +1157,9 @@ function drawMap(svg, m, r) {
   for (const f of m.frames || []) {
     const rc = document.createElementNS(NS, 'rect');
     rc.setAttribute('x', f[0]); rc.setAttribute('y', f[1]); rc.setAttribute('width', f[2]); rc.setAttribute('height', f[3]);
-    rc.setAttribute('fill', '#141b2b'); rc.setAttribute('stroke', '#33405e'); rc.setAttribute('stroke-dasharray', '3 3');
+    rc.style.fill = 'var(--panel)'; rc.style.stroke = 'var(--land-line)'; rc.setAttribute('stroke-dasharray', '3 3');
     const tx = document.createElementNS(NS, 'text'); tx.setAttribute('x', f[0] + 6); tx.setAttribute('y', f[1] + 14);
-    tx.setAttribute('font-size', 11); tx.setAttribute('fill', '#9da6ba'); tx.setAttribute('font-family', 'IBM Plex Mono, monospace'); tx.textContent = f[4];
+    tx.setAttribute('font-size', 11); tx.style.fill = 'var(--muted)'; tx.setAttribute('font-family', 'IBM Plex Mono, monospace'); tx.textContent = f[4];
     svg.append(rc, tx);
   }
   if (m.d2) { const l2 = document.createElementNS(NS, 'path'); l2.setAttribute('d', m.d2); l2.setAttribute('class', 'land'); svg.append(l2); }
@@ -1119,7 +1187,7 @@ function drawMap(svg, m, r) {
     const r = m.w > 600 ? 7 : 8, sel = state.sel === 'c:' + pc.id;
     const d = document.createElementNS(NS, 'path');
     d.setAttribute('d', `M${p[0]} ${p[1] - r} L${p[0] + r} ${p[1]} L${p[0]} ${p[1] + r} L${p[0] - r} ${p[1]}Z`);
-    d.setAttribute('fill', '#c7d1e4'); d.setAttribute('class', 'site' + (sel ? ' sel' : ''));
+    d.style.fill = 'var(--moon)'; d.setAttribute('class', 'site' + (sel ? ' sel' : ''));
     d.setAttribute('tabindex', 0); d.setAttribute('role', 'button'); d.setAttribute('aria-label', `${pc.nombre}, punto de la comunidad`);
     const tt = document.createElementNS(NS, 'title'); tt.textContent = `${pc.nombre} · punto de la comunidad`; d.append(tt);
     d.addEventListener('click', () => select('c:' + pc.id));
@@ -1151,16 +1219,16 @@ function radar(sim, ax, t) {
   const W = 400, H = 300, cx = W / 2, cy = H / 2 + 6, R = 98, n = AXES.length;
   const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * R * v, cy + Math.sin(a) * R * v]; };
   let s = `<svg class="radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="Radar del sitio frente al destino">`;
-  for (const k of [0.25, 0.5, 0.75, 1]) s += `<polygon points="${AXES.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" stroke="#29344d"/>`;
+  for (const k of [0.25, 0.5, 0.75, 1]) s += `<polygon points="${AXES.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" style="stroke:var(--line)"/>`;
   AXES.forEach((a, i) => {
-    const [x, y] = pt(i, 1); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="#29344d"/>`;
+    const [x, y] = pt(i, 1); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" style="stroke:var(--line)"/>`;
     const [lx, ly] = pt(i, 1.2);
     const anchor = Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end';
-    s += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="10.5" fill="#9da6ba" font-family="IBM Plex Sans, sans-serif">${LBL[a]}</text>`;
+    s += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="10.5" style="fill:var(--muted)" font-family="IBM Plex Sans, sans-serif">${LBL[a]}</text>`;
   });
-  s += `<polygon points="${AXES.map((a, i) => pt(i, t.valores[a]).join(',')).join(' ')}" fill="none" stroke="#c7d1e4" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-  s += `<polygon points="${AXES.map((a, i) => pt(i, ax[a]).join(',')).join(' ')}" fill="rgba(231,121,75,.28)" stroke="#e7794b" stroke-width="2"/>`;
-  AXES.forEach((a, i) => { const [x, y] = pt(i, ax[a]); s += `<circle cx="${x}" cy="${y}" r="2.6" fill="#e7794b"/>`; });
+  s += `<polygon points="${AXES.map((a, i) => pt(i, t.valores[a]).join(',')).join(' ')}" fill="none" style="stroke:var(--moon)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s += `<polygon points="${AXES.map((a, i) => pt(i, ax[a]).join(',')).join(' ')}" style="fill:var(--accent);fill-opacity:.28;stroke:var(--accent)" stroke-width="2"/>`;
+  AXES.forEach((a, i) => { const [x, y] = pt(i, ax[a]); s += `<circle cx="${x}" cy="${y}" r="2.6" style="fill:var(--accent)"/>`; });
   return s + '</svg>';
 }
 
@@ -1199,7 +1267,7 @@ function renderFicha(rows) {
 function renderFichaComunidad(id) {
   const pc = SRV.comunidad.find((x) => x.id === id);
   if (!pc) { state.sel = null; return render(); }
-  $('#ficha').innerHTML = `<div class="top"><div class="stack" style="gap:6px"><h3 style="font-size:1.35rem">${esc(pc.nombre)}</h3>
+  $('#ficha').innerHTML = `<div class="top"><div class="stack" style="gap:6px"><h3 style="font-size:1.35rem">${esc(tr(pc.nombre))}</h3>
       <div class="pills"><span class="pill nuevo">Punto de la comunidad</span><span class="pill mono">${pc.lat.toFixed(4)}, ${pc.lon.toFixed(4)}</span></div></div></div>
     <p class="muted" style="font-size:.92rem">Creado por un explorador${pc.creado ? ' el ' + fecha(pc.creado) : ''}. Todavía no tiene perfil satelital: sus datos vienen de las aportaciones de la comunidad. Cuando se ejecute el motor con datos NASA para este punto, se calculará su Índice de Analogía.</p>
     <div class="comu" id="comuBox"></div>`;
@@ -1227,7 +1295,7 @@ function select(id) { state.sel = id; render(); }
 
 function renderControls() {
   if (!$('#targetSeg')) return;
-  $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(' (regiones Artemis III)', '').replace(' (hielo para misiones humanas)', '').replace(' (delta antiguo)', ''))}</button>`).join('');
+  $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
     state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
     renderControls(); render(); renderLimits(); newGame();
@@ -1387,9 +1455,9 @@ function marcarErrores(form, data, msg) {
   const errs = data.errores || {};
   for (const [k, v] of Object.entries(errs)) {
     const i = form.querySelector(`[name="${k}"]`); if (i) i.setAttribute('aria-invalid', 'true');
-    const b = form.querySelector(`.err[data-for="${k}"]`); if (b) b.textContent = v;
+    const b = form.querySelector(`.err[data-for="${k}"]`); if (b) b.textContent = tr(v);
   }
-  if (!Object.keys(errs).length || errs._) form.querySelector('.err[data-for="_"]').textContent = msg;
+  if (!Object.keys(errs).length || errs._) form.querySelector('.err[data-for="_"]').textContent = tr(msg);
 }
 async function enviarAporte(ev) {
   ev.preventDefault();
@@ -1415,7 +1483,7 @@ async function enviarAporte(ev) {
     if (!r.ok) {
       if (d.zona_existente) {
         SRV.modo = 'existente';
-        SRV.aviso = `<div class="lock">${esc(d.error)}</div>`;
+        SRV.aviso = `<div class="lock">${esc(tr(d.error))}</div>`;
         state.sel = d.zona_existente.clave && sites.some((s) => s.id === d.zona_existente.clave) ? d.zona_existente.clave : 'c:' + d.zona_existente.id;
         return render();
       }

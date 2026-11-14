@@ -203,6 +203,16 @@ Pegatinas, pins (Polo Sur y Jezero), parche de misión, taza, gorra, camiseta y 
 - Borrar los metadatos EXIF de las fotos.
 - HTTPS.
 
+### Modo claro / oscuro e idiomas
+
+- **Tema:** botón con el sol o la luna en el menú. Por defecto se usa el tema del sistema; la elección se guarda en el navegador. Los colores de la interfaz están en variables CSS (`:root` y `:root[data-theme="light"]` en `web/template.html`).
+- **Idiomas:** cada página existe en español (`web/*.html`) y en inglés (`web/en/*.html`). El botón ES/EN del menú cambia a la misma página en el otro idioma.
+- **Cómo funciona la traducción:** el build genera las páginas en inglés sustituyendo cada texto visible por su traducción, según el diccionario de `web/i18n/en.py`. Los mensajes del servidor y los datos que llegan de la API (objetivos, muebles, premios, movimientos, errores) se traducen en el navegador con la función `tr()`, que usa el mismo diccionario.
+- **Si añadís o cambiáis un texto:**
+  1. ejecutad `python web/i18n/extraer.py`, que lista los textos en `web/i18n/_pendientes.json`;
+  2. añadid los que falten a `TEXTOS` en `web/i18n/en.py`;
+  3. ejecutad `python web/i18n/en.py` y `node web/build.mjs`.
+
 ## 7. Estructura del repositorio
 
 ```
@@ -227,6 +237,9 @@ web/
   build.mjs             Genera una página por apartado (index, demo, juego, recompensas, metodo,
                         validacion, comunidad, seguridad, datos, video, explorador) en web/ y docs/
   explorador.css/.js    Estilos y lógica de la zona de exploradores (se incluyen en el build)
+  i18n/en.py            Diccionario español -> inglés (genera i18n/en.json)
+  i18n/extraer.py       Lista los textos de la web para traducir
+  en/*.html             Páginas en inglés (generadas)
   *.html                Páginas generadas
 docs/
   *.html                Copia de las páginas para GitHub Pages
