@@ -48,7 +48,9 @@ const iberia = { w: IW, h: IH, d: pen.d, d2: can.d, pts: {},
   proj: [info(canProj, 'merc', [CX[0][0], CX[0][1], CX[1][0], CX[1][1]]), info(penProj, 'merc', [0, 0, IW, IH])], frames: [[CX[0][0], CX[0][1], CX[1][0] - CX[0][0], CX[1][1] - CX[0][1], 'Canarias']] };
 for (const s of sites.sites) iberia.pts[s.id] = s.lon < -12 ? can.pts[s.id] : pen.pts[s.id];
 
-const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO') };
+// perfiles de Analog Finder para la Demo (si existen)
+const perfiles = existsSync(new URL('../engine/analog_profiles.json', here)) ? JSON.parse(read('../engine/analog_profiles.json')) : null;
+const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO'), perfiles };
 const html = read('template.html')
   .replace('/*__DATA__*/null', JSON.stringify(data))
   .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'))
@@ -107,9 +109,13 @@ function traducirValores(o) {
 function traducir(page) {
   // los JSON de datos (método y juego) se apartan, se traducen solo en sus valores y se vuelven a poner
   const apartados = [];
-  for (const MK of ['window.METODO = ', 'window.JUEGO = ']) {
+  // METODO y JUEGO van en su propio <script> (hasta «;</script>»); D ocupa una sola línea del script común
+  for (const [MK, FIN] of [['window.METODO = ', ';</script>'], ['window.JUEGO = ', ';</script>'], ['const D = ', null]]) {
     const iM = page.indexOf(MK); if (iM < 0) continue;
-    const jM = page.indexOf(';</script>', iM), json = page.slice(iM + MK.length, jM); if (json === 'null') continue;
+    let jM;
+    if (FIN) jM = page.indexOf(FIN, iM);
+    else { const fin = page.indexOf(String.fromCharCode(10), iM); jM = page.lastIndexOf(';', fin < 0 ? page.length : fin); }
+    const json = page.slice(iM + MK.length, jM); if (json.trim() === 'null') continue;
     const marca = `__JSON_EN_${apartados.length}__`; apartados.push([marca, JSON.stringify(traducirValores(JSON.parse(json)))]);
     page = page.slice(0, iM + MK.length) + marca + page.slice(jM);
   }

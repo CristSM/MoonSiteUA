@@ -540,6 +540,11 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .jg-modo .cifra b { font: 900 2.4rem/1 var(--f-display); color: var(--accent); margin-right: 6px; }
 @media (max-width: 700px) { .jg-tierra { grid-template-columns: 1fr; } .jg-tierra img { max-width: 260px; } .jg-opciones { gap: 10px; } .opcion .nombre b { font-size: .95rem; } }
 
+/* demo: gemelo planetario en la ficha */
+.demo > * { min-width: 0; }
+.gemelo-demo { display: grid; gap: 6px; }
+.gemelo-demo img { width: 100%; max-width: 100%; height: auto; display: block; border: 3px solid var(--text); filter: contrast(1.1); }
+
 /* zona de exploradores (la parte con cuentas) */
 /*__EXPLORADOR_CSS__*/
 
@@ -626,7 +631,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     <div class="head read">
       <p class="kicker">Demo interactiva</p>
       <h2>¿Qué lugar de la Tierra se parece más a…?</h2>
-      <p class="muted">Elige un destino. El color de cada punto es su Índice de Analogía Planetaria (IAP). Pulsa un sitio para ver su ficha: el radar compara el lugar (relleno) con el destino (línea discontinua).</p>
+      <p class="muted">Elige un destino. El color de cada punto es su índice de analogía, calculado con datos abiertos de la NASA y la ESA. Pulsa un sitio para ver su ficha y su gemelo en la Luna o Marte.</p>
     </div>
     <div class="banner" id="demoBanner" hidden>Valores de demostración estimados a mano. El script de Earth Engine del repositorio calcula los reales con datos NASA y la web se regenera con ellos.</div>
     <div class="demo-bar">
@@ -638,7 +643,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
         <svg id="worldMap" role="img" aria-label="Mapa mundial de sitios candidatos"></svg>
         <span class="cap">Detalle · España peninsular y Canarias</span>
         <svg id="iberiaMap" role="img" aria-label="Mapa de España con sitios candidatos"></svg>
-        <div class="legend"><span>IAP</span><span class="mono">30</span><span class="ramp"></span><span class="mono">80</span>
+        <div class="legend"><span>Índice</span><span class="mono" id="rampLo">35</span><span class="ramp"></span><span class="mono" id="rampHi">85</span>
           <span><span class="beacon" style="background:var(--ok)"></span>confirmado</span>
           <span><span class="beacon" style="background:var(--warn)"></span>en verificación</span>
           <span><span class="beacon" style="background:var(--idle)"></span>descubrimiento</span>
@@ -648,7 +653,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
       <div style="grid-area:rank; display:grid; gap:12px; align-content:start">
         <div class="card rank" id="rank" aria-label="Ranking"></div>
         <details class="weights card" style="padding:12px 16px; margin:0">
-          <summary>Ajustar la importancia de cada eje</summary>
+          <summary>Ajustar la importancia de cada dimensión</summary>
           <div class="wgrid" id="weights"></div>
           <button class="btn" id="resetW" style="margin-top:12px">Restablecer pesos del destino</button>
         </details>
@@ -1165,28 +1170,42 @@ function normalize(s) {
     hielo: clamp(s.nieve_frac)
   };
 }
-function score(ax, t, w) {
-  const sim = {}; let acc = 0, sw = 0;
-  for (const a of AXES) { sim[a] = 1 - Math.abs(ax[a] - t.valores[a]); acc += w[a] * sim[a]; sw += w[a]; }
-  const strong = AXES.filter((a) => sim[a] >= 0.75 && w[a] > 0).sort((a, b) => sim[b] * w[b] - sim[a] * w[a]).slice(0, 3);
-  const weak = AXES.filter((a) => sim[a] < 0.6 && w[a] > 0).sort((a, b) => sim[a] - sim[b] || w[b] - w[a]).slice(0, 3);
-  return {iap: sw ? Math.round(1000 * acc / sw) / 10 : 0, sim, strong, weak};
-}
 
 const sites = D.sites.map((s) => ({...s, ax: normalize(s)}));
-const state = {t: D.targets[0], w: {...D.targets[0].pesos}, onlyNew: false, sel: null};
+// Perfil activo de Analog Finder y sus pesos; rango del índice para colorear (percentiles 10 y 95 del perfil)
+const PERFILES = D.perfiles.profiles, DIMN = D.perfiles.dims;
+const state = {p: PERFILES[0], w: {...PERFILES[0].pesos}, onlyNew: false, sel: null, rango: [35, 85]};
 // Estado de la conexión con el servidor (aportaciones y puntos de la comunidad)
 const SRV = {ok: false, usuario: null, saldo: null, comunidad: [], resumen: {}, modo: 'existente', aviso: null};
 
 function ramp(v) {
-  const x = clamp((v - 30) / 50);
+  const x = clamp((v - state.rango[0]) / Math.max(1, state.rango[1] - state.rango[0]));
   const stops = [[69, 68, 62], [163, 154, 114], [255, 210, 63]];
   const i = x < 0.5 ? 0 : 1, f = x < 0.5 ? x * 2 : (x - 0.5) * 2;
   const c = stops[i].map((v0, k) => Math.round(v0 + (stops[i + 1][k] - v0) * f));
   return `rgb(${c.join(',')})`;
 }
+// Índice de Analog Finder = Σ w·dim / Σ w sobre las dimensiones del perfil que tienen dato (×100 en pantalla).
+// Si a un sitio le falta una dimensión, se reparte su peso entre las demás, como hace el motor.
+// Con los pesos por defecto coincide con s.af[perfil].indice.
+function indicePerfil(s, p = state.p, w = state.w) {
+  const a = s.af && s.af[p.id]; if (!a) return null;
+  let acc = 0, sw = 0; for (const d of Object.keys(p.pesos)) { if (!(d in a.dims)) continue; const wd = w[d] ?? 0; acc += wd * a.dims[d]; sw += wd; }
+  const sim = a.dims;
+  const strong = Object.keys(p.pesos).filter((d) => d in sim && sim[d] >= 0.75 && (w[d] ?? 0) > 0).sort((x, y) => w[y] * sim[y] - w[x] * sim[x]).slice(0, 3);
+  const weak = Object.keys(p.pesos).filter((d) => d in sim && sim[d] < 0.5 && (w[d] ?? 0) > 0).sort((x, y) => sim[x] - sim[y]).slice(0, 3);
+  return {iap: sw ? Math.round(1000 * acc / sw) / 10 : 0, sim, strong, weak};
+}
+const cuantil = (v, q) => { const o = [...v].sort((a, b) => a - b); if (!o.length) return 0; const i = (o.length - 1) * q, lo = Math.floor(i); return o[lo] + (o[Math.ceil(i)] - o[lo]) * (i - lo); };
+// Mediana de los análogos conocidos por dimensión (referencia del radar y de las barras)
+function medianaConocidos(p = state.p) {
+  const k = sites.filter((s) => s.tipo === 'conocido' && s.af && s.af[p.id]);
+  return Object.fromEntries(Object.keys(p.pesos).map((d) => [d, cuantil(k.map((s) => s.af[p.id].dims[d] ?? 0), 0.5)]));
+}
 function results() {
-  return sites.map((s) => ({s, r: score(s.ax, state.t, state.w)})).sort((a, b) => b.r.iap - a.r.iap);
+  const rows = sites.map((s) => ({s, r: indicePerfil(s)})).filter((x) => x.r).sort((a, b) => b.r.iap - a.r.iap);
+  const v = rows.map((x) => x.r.iap); state.rango = [Math.floor(cuantil(v, 0.1)), Math.ceil(cuantil(v, 0.95))];
+  return rows;
 }
 
 // ---------------------------------------------------------------- mapas
@@ -1255,20 +1274,20 @@ function proyectar(m, lon, lat) {
 }
 
 // ---------------------------------------------------------------- radar
-function radar(sim, ax, t) {
-  const W = 400, H = 300, cx = W / 2, cy = H / 2 + 6, R = 98, n = AXES.length;
+// Radar con las dimensiones del perfil: relleno = el sitio; discontinua = mediana de los análogos conocidos
+function radar(dims, ref, p = state.p) {
+  const D2 = Object.keys(p.pesos), W = 400, H = 300, cx = W / 2, cy = H / 2 + 6, R = 98, n = D2.length;
   const pt = (i, v) => { const a = -Math.PI / 2 + i * 2 * Math.PI / n; return [cx + Math.cos(a) * R * v, cy + Math.sin(a) * R * v]; };
-  let s = `<svg class="radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="Radar del sitio frente al destino">`;
-  for (const k of [0.25, 0.5, 0.75, 1]) s += `<polygon points="${AXES.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" style="stroke:var(--line)"/>`;
-  AXES.forEach((a, i) => {
+  let s = `<svg class="radar" viewBox="0 0 ${W} ${H}" role="img" aria-label="Radar del sitio frente a la mediana de los análogos conocidos">`;
+  for (const k of [0.25, 0.5, 0.75, 1]) s += `<polygon points="${D2.map((_, i) => pt(i, k).join(',')).join(' ')}" fill="none" style="stroke:var(--line)"/>`;
+  D2.forEach((d, i) => {
     const [x, y] = pt(i, 1); s += `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" style="stroke:var(--line)"/>`;
-    const [lx, ly] = pt(i, 1.2);
-    const anchor = Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end';
-    s += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="10.5" style="fill:var(--muted)" font-family="Instrument Sans, sans-serif">${LBL[a]}</text>`;
+    const [lx, ly] = pt(i, 1.2), anchor = Math.abs(lx - cx) < 8 ? 'middle' : lx > cx ? 'start' : 'end';
+    s += `<text x="${lx}" y="${ly + 4}" text-anchor="${anchor}" font-size="10.5" style="fill:var(--muted)" font-family="Instrument Sans, sans-serif">${esc(DIMN[d] || d)}</text>`;
   });
-  s += `<polygon points="${AXES.map((a, i) => pt(i, t.valores[a]).join(',')).join(' ')}" fill="none" style="stroke:var(--moon)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
-  s += `<polygon points="${AXES.map((a, i) => pt(i, ax[a]).join(',')).join(' ')}" style="fill:var(--accent);fill-opacity:.28;stroke:var(--accent)" stroke-width="2"/>`;
-  AXES.forEach((a, i) => { const [x, y] = pt(i, ax[a]); s += `<circle cx="${x}" cy="${y}" r="2.6" style="fill:var(--accent)"/>`; });
+  s += `<polygon points="${D2.map((d, i) => pt(i, ref[d] ?? 0).join(',')).join(' ')}" fill="none" style="stroke:var(--moon)" stroke-width="1.5" stroke-dasharray="4 3"/>`;
+  s += `<polygon points="${D2.map((d, i) => pt(i, dims[d] ?? 0).join(',')).join(' ')}" style="fill:var(--accent);fill-opacity:.28;stroke:var(--accent)" stroke-width="2"/>`;
+  D2.forEach((d, i) => { const [x, y] = pt(i, dims[d] ?? 0); s += `<circle cx="${x}" cy="${y}" r="2.6" style="fill:var(--accent)"/>`; });
   return s + '</svg>';
 }
 
@@ -1278,28 +1297,40 @@ function missions(s) {
   const all = [['Pendiente con el inclinómetro del móvil', '×2'], ['Tipo de suelo con foto en vivo', '×2'], ['Humedad con higrómetro Bluetooth', '×3'], ['Temperatura con sensor externo al mediodía', '×3']];
   return s.baliza === 'gris' ? all.slice(0, 3) : all.slice(2);
 }
+const TIPO_SITIO = {conocido: ['Análogo conocido', ''], candidato: ['Candidato nuevo', 'nuevo'], ejemplo: ['Ejemplo', 'gris']};
+const CLASE_LIT = {'sin estudios como análogo': 'verde', 'poco estudiado': 'gris', 'estudiado': 'naranja', 'muy estudiado': 'rojo'};
+const BASE_IMG = location.pathname.includes('/en/') ? '../' : '';
+const coordTxt = (la, lo) => `${Math.abs(la).toFixed(2)}° ${la >= 0 ? 'N' : 'S'}, ${Math.abs(lo).toFixed(2)}° ${lo >= 0 ? 'E' : (document.documentElement.lang === 'en' ? 'W' : 'O')}`;
 function renderFicha(rows) {
   const row = rows.find((x) => x.s.id === state.sel) || rows[0];
   state.sel = row.s.id;
-  const {s, r} = row, t = state.t;
-  const b = BEACON[s.baliza];
-  const ms = missions(s);
+  const {s, r} = row, p = state.p, a = s.af[p.id], ref = medianaConocidos(p);
+  const b = BEACON[s.baliza] || BEACON.gris, tp = TIPO_SITIO[s.tipo] || TIPO_SITIO.ejemplo;
+  const ms = missions(s), dest = PERFILES.find((x) => x.id === s.perfil_destacado);
   setTimeout(() => cargarResumen(s.id));
   $('#ficha').innerHTML = `
     <div class="top"><div class="stack" style="gap:6px"><h3>${esc(s.nombre)}</h3>
-      <div class="pills"><span class="pill">${esc(s.pais)}</span><span class="pill ${s.conocido ? '' : 'nuevo'}">${s.conocido ? 'Análogo conocido' : 'Poco estudiado'}</span><span class="pill ${s.baliza}">${b[1]}</span></div></div>
-      <div class="iap"><b class="mono">${r.iap.toFixed(1)}</b><span>IAP · ${esc(t.cuerpo)}</span></div></div>
+      <div class="pills">${s.pais ? `<span class="pill">${esc(s.pais)}</span>` : ''}<span class="pill ${tp[1]}">${tp[0]}</span><span class="pill ${s.baliza}">${b[1]}</span></div></div>
+      <div class="iap"><b class="mono">${r.iap.toFixed(1)}</b><span>Índice · ${esc(p.cuerpo)}</span></div></div>
+    <p class="mono" style="font-size:.8rem;color:var(--accent)">Más parecido que el ${a.percentil.toFixed(1)} % de la tierra emergida</p>
     <p class="muted" style="font-size:.92rem">${esc(s.nota)}</p>
-    ${radar(r.sim, s.ax, t)}
+    ${radar(r.sim, ref, p)}
     <div class="two">
-      <div><h4 class="ok-t">Se parece en</h4><ul>${r.strong.map((a) => `<li>${LBL[a]}</li>`).join('') || '<li class="muted">ningún eje destaca</li>'}</ul></div>
-      <div><h4 class="bad-t">Se aleja en</h4><ul>${r.weak.map((a) => `<li>${LBL[a]}</li>`).join('') || '<li class="muted">ningún eje falla claramente</li>'}</ul></div>
+      <div><h4 class="ok-t">Se parece en</h4><ul>${r.strong.map((d) => `<li>${esc(DIMN[d] || d)}</li>`).join('') || '<li class="muted">ninguna dimensión destaca</li>'}</ul></div>
+      <div><h4 class="bad-t">Se aleja en</h4><ul>${r.weak.map((d) => `<li>${esc(DIMN[d] || d)}</li>`).join('') || '<li class="muted">ninguna dimensión falla claramente</li>'}</ul></div>
     </div>
-    <p class="muted mono" style="font-size:.74rem">Barra: valor del lugar · marca amarilla: valor del destino · %: similitud del eje</p>
-    <div class="axes" aria-label="Valor del sitio por eje; la marca amarilla es el destino">
-      ${AXES.map((a) => `<div class="axrow"><span class="muted">${LBL[a]}</span><span class="bar"><i style="width:${(s.ax[a] * 100).toFixed(0)}%"></i><u style="left:calc(${(t.valores[a] * 100).toFixed(0)}% - 1px)"></u></span><span class="mono" style="text-align:right">${Math.round(r.sim[a] * 100)}%</span></div>`).join('')}
+    <p class="muted mono" style="font-size:.74rem">Barra: valor del sitio · marca amarilla: mediana de los análogos conocidos · %: valor de la dimensión</p>
+    <div class="axes" aria-label="Valor del sitio por dimensión; la marca amarilla es la mediana de los análogos conocidos">
+      ${Object.keys(p.pesos).map((d) => `<div class="axrow"><span class="muted">${esc(DIMN[d] || d)}</span><span class="bar"><i style="width:${((r.sim[d] ?? 0) * 100).toFixed(0)}%"></i><u style="left:calc(${((ref[d] ?? 0) * 100).toFixed(0)}% - 1px)"></u></span><span class="mono" style="text-align:right">${d in r.sim ? Math.round(r.sim[d] * 100) + '%' : 'sin dato'}</span></div>`).join('')}
     </div>
-    <div><h4>Lo que la Tierra no puede imitar</h4><ul>${t.limites.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
+    <div class="gemelo-demo"><h4>Gemelo planetario</h4>
+      <p><b>${esc(a.gemelo)}</b> · ${esc(a.gemelo_cuerpo)} <span class="mono muted">(${coordTxt(a.gemelo_lat, a.gemelo_lon)})</span></p>
+      ${s.img && s.perfil_destacado === p.id ? `<img src="${BASE_IMG}img/demo/${esc(s.img.replace('img/', ''))}" alt="Relieve de ${esc(s.nombre)} junto al de su gemelo ${esc(a.gemelo)}" width="446" height="220" loading="lazy"><p class="muted mono" style="font-size:.72rem">Relieve del sitio (izq.) y de su gemelo (dcha.), misma escala</p>`
+        : (dest ? `<p class="muted" style="font-size:.85rem">Imagen disponible en el perfil «${esc(dest.corto)}».</p>` : '')}
+    </div>
+    ${s.lit_clase && /no evaluable/.test(s.lit_clase) ? `<div><h4>Novedad bibliográfica</h4><p class="muted" style="margin-top:6px">No se puede evaluar: el lugar no tiene topónimo para buscarlo en la literatura.</p></div>` : ''}
+    ${s.articulos != null && !(s.lit_clase && /no evaluable/.test(s.lit_clase)) ? `<div><h4>Novedad bibliográfica</h4><p style="margin-top:6px"><b class="mono">${s.articulos}</b> ${s.articulos === 1 ? 'artículo lo cita como análogo' : 'artículos lo citan como análogo'} ${s.lit_clase ? `<span class="pill ${CLASE_LIT[s.lit_clase] || 'gris'}">${esc(s.lit_clase)}</span>` : ''}</p></div>` : ''}
+    <div><h4>Lo que la Tierra no puede imitar</h4><ul>${p.limites.map((l) => `<li>${esc(l)}</li>`).join('')}</ul></div>
     <div class="comu" id="comuBox"></div>
     <div><h4>Misiones abiertas</h4>${ms.length ? `<ul>${ms.map((m) => `<li>${m[0]} <span class="mono" style="color:var(--accent)">${m[1]}</span></li>`).join('')}</ul>` : '<p class="muted" style="font-size:.9rem;margin-top:6px">Análogo confirmado. Base virtual abierta a nuevos módulos.</p>'}</div>`;
 }
@@ -1327,6 +1358,7 @@ function render() {
   if (!state.sel) state.sel = (state.onlyNew ? rows.find((x) => !x.s.conocido) : rows[0]).s.id;
   if (String(state.sel).startsWith('c:')) renderFichaComunidad(+state.sel.slice(2)); else renderFicha(rows);
   renderAporte();
+  if ($('#rampLo')) { $('#rampLo').textContent = state.rango[0]; $('#rampHi').textContent = state.rango[1]; }
   drawMap($('#worldMap'), D.map.world, rows);
   drawMap($('#iberiaMap'), D.map.iberia, rows);
   renderRank(rows);
@@ -1335,15 +1367,16 @@ function select(id) { state.sel = id; render(); }
 
 function renderControls() {
   if (!$('#targetSeg')) return;
-  $('#targetSeg').innerHTML = D.targets.map((t) => `<button data-id="${t.id}" aria-pressed="${t.id === state.t.id}">${esc(t.nombre.replace(/ \(.*\)$/, ''))}</button>`).join('');
+  $('#targetSeg').innerHTML = PERFILES.map((p) => `<button data-id="${p.id}" aria-pressed="${p.id === state.p.id}">${esc(p.corto)}</button>`).join('');
   $('#targetSeg').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => {
-    state.t = D.targets.find((t) => t.id === bt.dataset.id); state.w = {...state.t.pesos}; state.sel = null;
-    renderControls(); render(); renderLimits();
+    state.p = PERFILES.find((p) => p.id === bt.dataset.id); state.w = {...state.p.pesos}; state.sel = null;
+    renderControls(); render();
   }));
-  $('#weights').innerHTML = AXES.map((a) => `<label for="w_${a}">${LBL[a]} <span class="mono" id="wv_${a}">${state.w[a].toFixed(1)}</span><input type="range" id="w_${a}" min="0" max="2" step="0.1" value="${state.w[a]}"></label>`).join('');
-  AXES.forEach((a) => $('#w_' + a).addEventListener('input', (e) => { state.w[a] = +e.target.value; $('#wv_' + a).textContent = state.w[a].toFixed(1); render(); }));
+  const ds = Object.keys(state.p.pesos);
+  $('#weights').innerHTML = ds.map((d) => `<label for="w_${d}">${esc(DIMN[d] || d)} <span class="mono" id="wv_${d}">${state.w[d].toFixed(2)}</span><input type="range" id="w_${d}" min="0" max="0.5" step="0.05" value="${state.w[d]}"></label>`).join('');
+  ds.forEach((d) => $('#w_' + d).addEventListener('input', (e) => { state.w[d] = +e.target.value; $('#wv_' + d).textContent = state.w[d].toFixed(2); render(); }));
 }
-$('#resetW')?.addEventListener('click', () => { state.w = {...state.t.pesos}; renderControls(); render(); });
+$('#resetW')?.addEventListener('click', () => { state.w = {...state.p.pesos}; renderControls(); render(); });
 $('#onlyNew')?.addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
 
 // ---------------------------------------------------------------- método
@@ -1411,8 +1444,8 @@ function renderAporte() {
   }
   const nuevo = SRV.modo === 'nuevo', ref = refSeleccion(), res = SRV.resumen[ref];
   const bloqueo = !nuevo && res && res.mi_bloqueo_hasta && new Date(res.mi_bloqueo_hasta) > new Date() ? res.mi_bloqueo_hasta : null;
-  const destino = state.t.nombre.replace(/ \(.*\)$/, '');
-  // Si solo han cambiado el destino o los pesos, no se rehace el formulario (se perdería la foto elegida)
+  const destino = state.p.corto;
+  // Si solo ha cambiado el destino, no se rehace el formulario (se perdería la foto elegida)
   const clave = [state.sel, SRV.modo, SRV.usuario, bloqueo, SRV.aviso].join('|');
   if (el.dataset.clave === clave && el.querySelector('form')) { const s = $('#aDest'); if (s) s.textContent = destino; return; }
   el.dataset.clave = clave;
@@ -1436,7 +1469,7 @@ function renderAporte() {
           <label class="full">Calidad del aire (índice 0-500)<input name="calidad_aire" id="aAire" inputmode="numeric" value="${esc(prev.calidad_aire || '')}"><span class="err" data-for="calidad_aire"></span></label>
           <label class="full">Foto del sitio (JPG, PNG o WEBP)<input type="file" name="foto" id="aFoto" accept="image/jpeg,image/png,image/webp" capture="environment"><span class="err" data-for="foto"></span></label>
         </div>
-        <p class="muted" style="font-size:.8rem">Rellena las coordenadas y al menos un dato. Se guardan también el destino (<span id="aDest">${esc(destino)}</span>) y los pesos que tienes configurados, con la fecha de subida. Moon Coins: +10 por datos, +15 por foto${nuevo ? ', +40 si el punto nuevo es válido' : ''}.</p>
+        <p class="muted" style="font-size:.8rem">Rellena las coordenadas y al menos un dato. Se guarda también el destino (<span id="aDest">${esc(destino)}</span>), con la fecha de subida. Moon Coins: +10 por datos, +15 por foto${nuevo ? ', +40 si el punto nuevo es válido' : ''}.</p>
         <p class="err" data-for="_"></p>
         <button class="btn primary" id="aEnviar">${nuevo ? 'Validar y crear punto' : 'Guardar datos'}</button>
       </fieldset>
@@ -1476,8 +1509,8 @@ async function enviarAporte(ev) {
   fd.append('modo', nuevo ? 'nuevo' : 'existente');
   if (!nuevo) fd.append('zona', refSeleccion());
   for (const k of ['nombre', 'lat', 'lon', 'temperatura_c', 'calidad_aire', 'humedad_rel']) if (val(k)) fd.append(k, val(k));
-  fd.append('destino', state.t.id);
-  fd.append('pesos', JSON.stringify(state.w));
+  // destino_backend es un id válido de engine/targets.json; los pesos del perfil no se envían (el servidor solo acepta los 9 ejes del IAP)
+  fd.append('destino', state.p.destino_backend);
   if (foto) fd.append('foto', foto);
   $('#aEnviar').disabled = true;
   try {
