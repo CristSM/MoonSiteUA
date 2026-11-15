@@ -71,7 +71,7 @@ MoonSiteUA responde al reto «Identify Earth Locations that Analog the Permanent
 - **Validación:** el método recupera los análogos que ya usan las agencias (Atacama en el percentil 100 para Marte; Valles Secos de McMurdo en el 99,99 para la Luna). Con las cuevas de OpenStreetMap, el 78 % de los tubos de lava confirmados (94 bocas en 34 zonas) cae en el 5 % superior del mapa.
 - **Novedad bibliográfica:** se excluyen 32 análogos conocidos y se cuenta en OpenAlex cuántos artículos citan cada candidata como análogo. `Descubrimiento = Índice × Novedad`.
 
-Los datos del motor están en `engine/metodo_data.json` (página Método), `engine/juego_data.json` (Juego), `engine/sites.json` (58 sitios con variables físicas reales y resultados por perfil) y `engine/analog_profiles.json` (los 3 perfiles). Se generan en el proyecto de datos con `scripts/export_*_data.py`.
+Los datos del motor están en `engine/metodo_data.json` (página Método), `engine/juego_data.json` (Juego), `engine/sites.json` (56 sitios con variables físicas reales y resultados por perfil) y `engine/analog_profiles.json` (los 3 perfiles). Se generan en el proyecto de datos con `scripts/export_*_data.py`.
 
 El servidor conserva el **Índice de Analogía Planetaria (IAP)** de 9 ejes y 4 destinos (`engine/targets.json`, `engine/analog_score.py`) solo para comparar los reportes de campo con la zona más cercana. No es comparable con el índice de Analog Finder.
 
@@ -82,7 +82,7 @@ La web tiene 11 apartados, cada uno en su página, en español y en inglés (bot
 | Página | Contenido |
 |---|---|
 | Inicio | La idea, las tres capas y un índice desplegable de apartados con una figura de cada uno |
-| Demo | Los 3 perfiles de Analog Finder sobre 58 sitios reales: mapas, ranking, ficha con radar frente a la mediana de los análogos conocidos, gemelo planetario, novedad bibliográfica, pesos ajustables y panel «Aportar datos» |
+| Demo | Los 3 perfiles de Analog Finder sobre 56 sitios reales: mapas, ranking, ficha con radar frente a la mediana de los análogos conocidos, gemelo planetario, novedad bibliográfica, pesos ajustables y panel «Aportar datos» |
 | Juego | Tres modos con datos reales: duelo de análogos (con señuelos), encuentra el gemelo y ¿estudiado o por descubrir? |
 | Recompensas | Monedas en 3D y cómo se ganan, diorama de la base por niveles, habitación en 3D y catálogo de premios |
 | Método | Pasos, fórmulas, huella de terreno, gemelos, perfiles, dimensiones, validación, novedad, fuentes y límites |

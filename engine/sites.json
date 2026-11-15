@@ -1,6 +1,6 @@
 {
- "_doc": "SITIOS CON DATOS REALES (Analog Finder). Variables físicas medidas con datos abiertos: precipitación GPM IMERG 2023, NDVI MODIS MOD13C2 2023, temperatura de superficie MODIS MOD11C3 2023 (media día-noche y amplitud), cociente de emisividad ASTER GED (b10-12 / b13-14), pendiente y altitud Copernicus DEM GLO-90 (~370 m), AOD de POLVO MERRA-2 (no el AOD total de MODIS) y fracción de nieve MODIS MCD43C3, en la celda de 0,05° del sitio. `af`: índice (0-1), percentil, dimensiones y gemelo de cada perfil de engine/analog_profiles.json (mejor celda a <= 10 km).",
- "generado_utc": "2026-11-14T21:18:34+00:00",
+ "_doc": "SITIOS CON DATOS REALES (Analog Finder). Variables físicas medidas con datos abiertos: precipitación GPM IMERG 2023, NDVI MODIS MOD13C2 2023, temperatura de superficie MODIS MOD11C3 2023 (media día-noche y amplitud), cociente de emisividad ASTER GED (b10-12 / b13-14), pendiente y altitud Copernicus DEM GLO-90 (~370 m), AOD de POLVO MERRA-2 (no el AOD total de MODIS) y fracción de nieve MODIS MCD43C3, en la celda de 0,05° del sitio. `af`: índice (0-1), percentil, dimensiones y gemelo de cada perfil de engine/analog_profiles.json (mejor celda a <= 10 km). Una dimensión AUSENTE en `af[perfil].dims` significa «sin dato» (p. ej. sin clase litológica o sin emisividad ASTER en costas e islas): el índice se normaliza con los pesos de las dimensiones disponibles, índice = Σ w·dim / Σ w sobre las presentes, igual que en el motor. En Atacama, `precip_mm` es la mediana GPM de las celdas del interior (la celda de Yungay da 280 mm/año por un artefacto junto a la costa); `af` no cambia porque ya usa la mejor celda a <= 10 km.",
+ "generado_utc": "2026-11-15T08:40:35+00:00",
  "sites": [
   {
    "id": "atacama_yungay",
@@ -10,12 +10,12 @@
    "lon": -70.02,
    "conocido": true,
    "baliza": "verde",
-   "nota": "Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice. Aquí sale en el percentil 96 y no en el 100: la celda de lluvia de GPM (0,1°) mezcla la costa con el desierto y da 280 mm/año, cuando en Yungay llueven pocos milímetros.",
+   "nota": "Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice. Aquí sale en el percentil 96 y no en el 100 porque su relieve se parece poco al de los sitios de los rovers (terreno 0,32) y apenas hay polvo en el aire (polvo 0,02); la lluvia no es la causa. La celda de lluvia de GPM (0,1°) de Yungay da 280 mm/año por un artefacto junto a la costa, así que usamos la mediana del interior (52 mm/año). Aun así GPM sobrestima la lluvia del desierto: en Yungay llueven pocos milímetros al año.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 972,
+   "articulos": 131,
    "lit_clase": "muy estudiado",
-   "precip_mm": 280.0,
+   "precip_mm": 52.0,
    "ndvi_max": 0.1,
    "lst_media_c": 27.1,
    "lst_amplitud_c": 33.1,
@@ -102,7 +102,7 @@
    "nota": "Cráter de impacto polar. Base del Haughton-Mars Project.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 276,
+   "articulos": 54,
    "lit_clase": "muy estudiado",
    "precip_mm": 83.0,
    "ndvi_max": 0.127,
@@ -191,7 +191,7 @@
    "nota": "Desierto polar frío y seco. Análogo de referencia para hielo y suelos de Marte.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 385,
+   "articulos": 46,
    "lit_clase": "muy estudiado",
    "precip_mm": 0.0,
    "ndvi_max": 0.0,
@@ -280,7 +280,7 @@
    "nota": "Campos de lava y tubos volcánicos usados por la ESA para formar astronautas (PANGAEA).",
    "tipo": "conocido",
    "region": null,
-   "articulos": 109,
+   "articulos": 25,
    "lit_clase": "muy estudiado",
    "precip_mm": 309.0,
    "ndvi_max": 0.15,
@@ -367,7 +367,7 @@
    "nota": "Aguas ácidas ricas en hierro y sulfatos (jarosita) como en Meridiani. El índice satelital no capta esa química: hace falta el dato de campo.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 444,
+   "articulos": 94,
    "lit_clase": "muy estudiado",
    "precip_mm": 398.0,
    "ndvi_max": 0.369,
@@ -545,7 +545,7 @@
    "nota": "Desierto salino frío y de gran altitud, con depósitos de sulfatos y cloruros.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 176,
+   "articulos": 58,
    "lit_clase": "muy estudiado",
    "precip_mm": 38.0,
    "ndvi_max": 0.058,
@@ -634,8 +634,8 @@
    "nota": "Badlands de margas con barrancos y abanicos aluviales. Candidato para probar rovers en pendientes erosionadas.",
    "tipo": "conocido",
    "region": null,
-   "articulos": 17,
-   "lit_clase": "estudiado",
+   "articulos": 1,
+   "lit_clase": "poco estudiado",
    "precip_mm": 196.0,
    "ndvi_max": 0.269,
    "lst_media_c": 20.4,
@@ -1164,7 +1164,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US-CA",
-   "articulos": 202,
+   "articulos": 16,
    "lit_clase": "muy estudiado",
    "precip_mm": 188.0,
    "ndvi_max": 0.136,
@@ -1253,7 +1253,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US-CA",
-   "articulos": 498,
+   "articulos": 57,
    "lit_clase": "muy estudiado",
    "precip_mm": 211.0,
    "ndvi_max": 0.106,
@@ -1342,8 +1342,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "IS",
-   "articulos": 48,
-   "lit_clase": "muy estudiado",
+   "articulos": 9,
+   "lit_clase": "estudiado",
    "precip_mm": 653.0,
    "ndvi_max": -0.004,
    "lst_media_c": -4.0,
@@ -1431,7 +1431,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US-HI",
-   "articulos": 245,
+   "articulos": 38,
    "lit_clase": "muy estudiado",
    "precip_mm": 1371.0,
    "ndvi_max": 0.23,
@@ -1520,7 +1520,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US-UT",
-   "articulos": 200,
+   "articulos": 63,
    "lit_clase": "muy estudiado",
    "precip_mm": 219.0,
    "ndvi_max": 0.105,
@@ -1609,8 +1609,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US",
-   "articulos": 312,
-   "lit_clase": "muy estudiado",
+   "articulos": 9,
+   "lit_clase": "estudiado",
    "precip_mm": 273.0,
    "ndvi_max": 0.163,
    "lst_media_c": 17.8,
@@ -1698,8 +1698,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US",
-   "articulos": 257,
-   "lit_clase": "muy estudiado",
+   "articulos": 9,
+   "lit_clase": "estudiado",
    "precip_mm": 391.0,
    "ndvi_max": 0.288,
    "lst_media_c": 6.9,
@@ -1787,8 +1787,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "US-CA",
-   "articulos": 63,
-   "lit_clase": "muy estudiado",
+   "articulos": 5,
+   "lit_clase": "estudiado",
    "precip_mm": 432.0,
    "ndvi_max": 0.283,
    "lst_media_c": 11.3,
@@ -1876,7 +1876,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "EUR",
-   "articulos": 409,
+   "articulos": 83,
    "lit_clase": "muy estudiado",
    "precip_mm": 561.0,
    "ndvi_max": 0.214,
@@ -1964,7 +1964,7 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "AU",
-   "articulos": 238,
+   "articulos": 24,
    "lit_clase": "muy estudiado",
    "precip_mm": 315.0,
    "ndvi_max": 0.307,
@@ -2053,8 +2053,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "AFR",
-   "articulos": 56,
-   "lit_clase": "muy estudiado",
+   "articulos": 7,
+   "lit_clase": "estudiado",
    "precip_mm": 394.0,
    "ndvi_max": 0.083,
    "lst_media_c": 39.2,
@@ -2142,8 +2142,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "SAM",
-   "articulos": 35,
-   "lit_clase": "muy estudiado",
+   "articulos": 2,
+   "lit_clase": "poco estudiado",
    "precip_mm": 213.0,
    "ndvi_max": 0.041,
    "lst_media_c": 8.7,
@@ -2231,8 +2231,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "AFR",
-   "articulos": 218,
-   "lit_clase": "muy estudiado",
+   "articulos": 7,
+   "lit_clase": "estudiado",
    "precip_mm": 20.0,
    "ndvi_max": 0.125,
    "lst_media_c": 28.0,
@@ -2320,8 +2320,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "NAM",
-   "articulos": 18,
-   "lit_clase": "estudiado",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
    "precip_mm": 143.0,
    "ndvi_max": 0.23,
    "lst_media_c": 26.3,
@@ -2409,8 +2409,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "MA",
-   "articulos": 15,
-   "lit_clase": "estudiado",
+   "articulos": 2,
+   "lit_clase": "poco estudiado",
    "precip_mm": 50.0,
    "ndvi_max": 0.085,
    "lst_media_c": 29.7,
@@ -2498,8 +2498,8 @@
    "nota": "Análogo conocido: ya se usa en investigación o en misiones de entrenamiento.",
    "tipo": "conocido",
    "region": "ANT",
-   "articulos": 32,
-   "lit_clase": "muy estudiado",
+   "articulos": 2,
+   "lit_clase": "poco estudiado",
    "precip_mm": 4.0,
    "ndvi_max": 0.0,
    "lst_media_c": -21.4,
@@ -2665,8 +2665,188 @@
    "img": "img/af_moonbas_8.png"
   },
   {
+   "id": "af_moonbas_10",
+   "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+   "pais": "Canadá",
+   "lat": 71.825,
+   "lon": -114.175,
+   "conocido": false,
+   "baliza": "gris",
+   "nota": "Candidata nueva para «Luna · polo sur», fuera de los análogos conocidos.",
+   "tipo": "candidato",
+   "perfil_origen": "moon_south_pole_base",
+   "region": "CA",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
+   "precip_mm": 125.0,
+   "ndvi_max": 0.184,
+   "lst_media_c": -14.8,
+   "lst_amplitud_c": 2.3,
+   "mafico_ratio": 1.0,
+   "pendiente_deg": 1.0,
+   "altitud_m": 330.0,
+   "aod": 0.012,
+   "nieve_frac": 0.429,
+   "af": {
+    "moon_south_pole_base": {
+     "indice": 0.6192,
+     "percentil": 98.0,
+     "dims": {
+      "terrain": 0.903,
+      "ice_free": 0.571,
+      "cold": 0.456,
+      "frozen": 0.0,
+      "barren": 0.615,
+      "low_sun": 0.585
+     },
+     "gemelo": "Slater Plain",
+     "gemelo_cuerpo": "Luna",
+     "gemelo_lat": -88.079,
+     "gemelo_lon": 111.288,
+     "celda": [
+      71.825,
+      -114.175
+     ]
+    },
+    "moon_mars_caves": {
+     "indice": 0.3018,
+     "percentil": 50.7,
+     "dims": {
+      "terrain": 0.5,
+      "volcanic": 0.0,
+      "lithology": 0.0,
+      "nonsilicic": 0.493,
+      "arid": 0.445,
+      "barren": 0.515,
+      "ice_free": 0.571
+     },
+     "gemelo": "candidato a cueva CC0903",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": -0.663,
+     "gemelo_lon": 175.483,
+     "celda": [
+      71.825,
+      -114.025
+     ]
+    },
+    "mars_astrobiology": {
+     "indice": 0.4205,
+     "percentil": 63.8,
+     "dims": {
+      "terrain": 0.763,
+      "arid": 0.445,
+      "barren": 0.568,
+      "lithology": 0.4,
+      "thermal": 0.0,
+      "albedo": 0.002,
+      "dust": 0.031
+     },
+     "gemelo": "Vastitas Borealis (Phoenix)",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 68.22,
+     "gemelo_lon": -125.75,
+     "celda": [
+      71.825,
+      -114.075
+     ]
+    }
+   },
+   "perfil_destacado": "moon_south_pole_base",
+   "img": "img/af_moonbas_10.png"
+  },
+  {
+   "id": "af_moonbas_12",
+   "nombre": "Tsodrel Jangma, Shuanghu County",
+   "pais": "China",
+   "lat": 36.325,
+   "lon": 87.225,
+   "conocido": false,
+   "baliza": "gris",
+   "nota": "Candidata nueva para «Luna · polo sur», fuera de los análogos conocidos.",
+   "tipo": "candidato",
+   "perfil_origen": "moon_south_pole_base",
+   "region": "CN",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
+   "precip_mm": 207.0,
+   "ndvi_max": 0.052,
+   "lst_media_c": -13.4,
+   "lst_amplitud_c": 13.3,
+   "mafico_ratio": 0.999,
+   "pendiente_deg": 7.2,
+   "altitud_m": 5800.0,
+   "aod": 0.05,
+   "nieve_frac": 0.283,
+   "af": {
+    "moon_south_pole_base": {
+     "indice": 0.6163,
+     "percentil": 97.8,
+     "dims": {
+      "terrain": 0.919,
+      "ice_free": 0.717,
+      "cold": 0.301,
+      "frozen": 0.418,
+      "barren": 1.0,
+      "low_sun": 0.0
+     },
+     "gemelo": "Slater Plain",
+     "gemelo_cuerpo": "Luna",
+     "gemelo_lat": -88.079,
+     "gemelo_lon": 111.288,
+     "celda": [
+      36.325,
+      87.225
+     ]
+    },
+    "moon_mars_caves": {
+     "indice": 0.4923,
+     "percentil": 98.2,
+     "dims": {
+      "terrain": 0.678,
+      "volcanic": 0.65,
+      "lithology": 0.0,
+      "nonsilicic": 0.049,
+      "arid": 0.481,
+      "barren": 0.864,
+      "ice_free": 0.965
+     },
+     "gemelo": "candidato a cueva CC0500",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 32.21,
+     "gemelo_lon": 142.359,
+     "celda": [
+      36.225,
+      87.325
+     ]
+    },
+    "mars_astrobiology": {
+     "indice": 0.6461,
+     "percentil": 98.4,
+     "dims": {
+      "terrain": 0.8,
+      "arid": 0.509,
+      "barren": 0.999,
+      "lithology": 0.4,
+      "thermal": 0.559,
+      "albedo": 0.975,
+      "dust": 0.108
+     },
+     "gemelo": "Vastitas Borealis (Phoenix)",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 68.22,
+     "gemelo_lon": -125.75,
+     "celda": [
+      36.225,
+      87.225
+     ]
+    }
+   },
+   "perfil_destacado": "mars_astrobiology",
+   "img": "img/af_moonbas_12.png"
+  },
+  {
    "id": "af_moonbas_14",
-   "nombre": "Kitikmeot Region, Nunavut (72.0°N, 98.5°O)",
+   "nombre": "Kitikmeot Region, Nunavut (72,0°N · 98,5°O)",
    "pais": "Canadá",
    "lat": 72.025,
    "lon": -98.475,
@@ -2935,278 +3115,8 @@
    "img": "img/af_moonbas_17.png"
   },
   {
-   "id": "af_moonbas_18",
-   "nombre": "Al Khurmah, Makkah Region",
-   "pais": "Arabia Saudí",
-   "lat": 22.025,
-   "lon": 43.025,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Luna · polo sur», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_south_pole_base",
-   "region": "ASI",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 147.0,
-   "ndvi_max": 0.079,
-   "lst_media_c": 32.2,
-   "lst_amplitud_c": 20.9,
-   "mafico_ratio": 0.867,
-   "pendiente_deg": 0.8,
-   "altitud_m": 881.0,
-   "aod": 0.181,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.6,
-     "percentil": 96.9,
-     "dims": {
-      "terrain": 1.0,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 1.0,
-      "low_sun": 0.0
-     },
-     "gemelo": "Peak near Cabeus B",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -82.259,
-     "gemelo_lon": -54.585,
-     "celda": [
-      22.025,
-      43.025
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.4543,
-     "percentil": 92.1,
-     "dims": {
-      "terrain": 0.994,
-      "volcanic": 0.033,
-      "lithology": 0.0,
-      "nonsilicic": 0.071,
-      "arid": 0.422,
-      "barren": 1.0,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0188",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 17.436,
-     "gemelo_lon": -107.829,
-     "celda": [
-      22.125,
-      42.875
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.6586,
-     "percentil": 98.7,
-     "dims": {
-      "terrain": 0.953,
-      "arid": 0.449,
-      "barren": 1.0,
-      "lithology": 0.6,
-      "thermal": 0.433,
-      "albedo": 0.524,
-      "dust": 0.452
-     },
-     "gemelo": "Meridiani Planum (Opportunity)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -1.946,
-     "gemelo_lon": -5.527,
-     "celda": [
-      21.925,
-      43.175
-     ]
-    }
-   },
-   "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_moonbas_18.png"
-  },
-  {
-   "id": "af_moonbas_20",
-   "nombre": "Minfeng County, Hotan Prefecture",
-   "pais": "China",
-   "lat": 37.925,
-   "lon": 82.775,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Luna · polo sur», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_south_pole_base",
-   "region": "CN",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 29.0,
-   "ndvi_max": 0.059,
-   "lst_media_c": 18.9,
-   "lst_amplitud_c": 25.6,
-   "mafico_ratio": 0.906,
-   "pendiente_deg": 0.7,
-   "altitud_m": 1266.0,
-   "aod": 0.396,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5999,
-     "percentil": 96.9,
-     "dims": {
-      "terrain": 1.0,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 1.0,
-      "low_sun": 0.0
-     },
-     "gemelo": "Peak near Cabeus B",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -82.259,
-     "gemelo_lon": -54.585,
-     "celda": [
-      37.925,
-      82.775
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.3977,
-     "percentil": 75.7,
-     "dims": {
-      "terrain": 0.665,
-      "volcanic": 0.005,
-      "lithology": 0.0,
-      "nonsilicic": 0.058,
-      "arid": 0.748,
-      "barren": 1.0,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0875",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 8.52,
-     "gemelo_lon": 164.133,
-     "celda": [
-      38.025,
-      82.675
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.6824,
-     "percentil": 99.2,
-     "dims": {
-      "terrain": 0.479,
-      "arid": 0.763,
-      "barren": 1.0,
-      "lithology": 0.6,
-      "thermal": 0.645,
-      "albedo": 0.68,
-      "dust": 0.989
-     },
-     "gemelo": "Gusev (Spirit)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -14.572,
-     "gemelo_lon": 175.478,
-     "celda": [
-      37.975,
-      82.775
-     ]
-    }
-   },
-   "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_moonbas_20.png"
-  },
-  {
-   "id": "af_moonbas_21",
-   "nombre": "Tazhong Town, Qarqan County",
-   "pais": "China",
-   "lat": 38.325,
-   "lon": 84.575,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Luna · polo sur», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_south_pole_base",
-   "region": "CN",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 24.0,
-   "ndvi_max": 0.067,
-   "lst_media_c": 17.8,
-   "lst_amplitud_c": 25.7,
-   "mafico_ratio": 0.892,
-   "pendiente_deg": 0.8,
-   "altitud_m": 1198.0,
-   "aod": 0.396,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5999,
-     "percentil": 96.9,
-     "dims": {
-      "terrain": 1.0,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 1.0,
-      "low_sun": 0.0
-     },
-     "gemelo": "Peak near Cabeus B",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -82.259,
-     "gemelo_lon": -54.585,
-     "celda": [
-      38.325,
-      84.575
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.4134,
-     "percentil": 80.1,
-     "dims": {
-      "terrain": 0.676,
-      "volcanic": 0.013,
-      "lithology": 0.0,
-      "nonsilicic": 0.099,
-      "arid": 0.818,
-      "barren": 1.0,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0875",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 8.52,
-     "gemelo_lon": 164.133,
-     "celda": [
-      38.225,
-      84.575
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.7475,
-     "percentil": 99.9,
-     "dims": {
-      "terrain": 0.768,
-      "arid": 0.798,
-      "barren": 1.0,
-      "lithology": 0.6,
-      "thermal": 0.613,
-      "albedo": 0.582,
-      "dust": 0.933
-     },
-     "gemelo": "Gusev (Spirit)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -14.572,
-     "gemelo_lon": 175.478,
-     "celda": [
-      38.225,
-      84.725
-     ]
-    }
-   },
-   "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_moonbas_21.png"
-  },
-  {
    "id": "af_moonbas_1",
-   "nombre": "Antártida (83.6°S, 51.0°O)",
+   "nombre": "Antártida (83,6°S · 51,0°O)",
    "pais": "Antártida",
    "lat": -83.575,
    "lon": -50.975,
@@ -3296,7 +3206,7 @@
   },
   {
    "id": "af_moonbas_3",
-   "nombre": "Antártida (83.1°S, 47.0°O)",
+   "nombre": "Antártida (83,1°S · 47,0°O)",
    "pais": "Antártida",
    "lat": -83.075,
    "lon": -46.975,
@@ -3473,6 +3383,276 @@
    },
    "perfil_destacado": "moon_mars_caves",
    "img": "img/af_mooncav_1.png"
+  },
+  {
+   "id": "af_mooncav_4",
+   "nombre": "Maricopa County, Arizona",
+   "pais": "Estados Unidos",
+   "lat": 32.725,
+   "lon": -113.125,
+   "conocido": false,
+   "baliza": "gris",
+   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
+   "tipo": "candidato",
+   "perfil_origen": "moon_mars_caves",
+   "region": "US",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
+   "precip_mm": 146.0,
+   "ndvi_max": 0.134,
+   "lst_media_c": 28.6,
+   "lst_amplitud_c": 23.5,
+   "mafico_ratio": 0.966,
+   "pendiente_deg": 0.2,
+   "altitud_m": 217.0,
+   "aod": 0.029,
+   "nieve_frac": 0.0,
+   "af": {
+    "moon_south_pole_base": {
+     "indice": 0.5455,
+     "percentil": 88.4,
+     "dims": {
+      "terrain": 0.921,
+      "ice_free": 1.0,
+      "cold": 0.0,
+      "frozen": 0.0,
+      "barren": 0.732,
+      "low_sun": 0.0
+     },
+     "gemelo": "Slater Plain",
+     "gemelo_cuerpo": "Luna",
+     "gemelo_lat": -88.079,
+     "gemelo_lon": 111.288,
+     "celda": [
+      32.675,
+      -113.125
+     ]
+    },
+    "moon_mars_caves": {
+     "indice": 0.8734,
+     "percentil": 100.0,
+     "dims": {
+      "terrain": 0.946,
+      "volcanic": 0.804,
+      "lithology": 1.0,
+      "nonsilicic": 0.944,
+      "arid": 0.416,
+      "barren": 0.8,
+      "ice_free": 1.0
+     },
+     "gemelo": "candidato a cueva CC0843",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 23.27,
+     "gemelo_lon": -110.501,
+     "celda": [
+      32.725,
+      -113.125
+     ]
+    },
+    "mars_astrobiology": {
+     "indice": 0.6686,
+     "percentil": 99.0,
+     "dims": {
+      "terrain": 0.991,
+      "arid": 0.429,
+      "barren": 0.797,
+      "lithology": 0.6,
+      "thermal": 0.427,
+      "albedo": 0.971,
+      "dust": 0.08
+     },
+     "gemelo": "Vastitas Borealis (Phoenix)",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 68.22,
+     "gemelo_lon": -125.75,
+     "celda": [
+      32.775,
+      -113.275
+     ]
+    }
+   },
+   "perfil_destacado": "moon_mars_caves",
+   "img": "img/af_mooncav_4.png"
+  },
+  {
+   "id": "af_mooncav_5",
+   "nombre": "District of Al-Jufra, Libya",
+   "pais": "Libia",
+   "lat": 27.175,
+   "lon": 17.225,
+   "conocido": false,
+   "baliza": "gris",
+   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
+   "tipo": "candidato",
+   "perfil_origen": "moon_mars_caves",
+   "region": "AFR",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
+   "precip_mm": 21.0,
+   "ndvi_max": 0.095,
+   "lst_media_c": 28.3,
+   "lst_amplitud_c": 22.7,
+   "mafico_ratio": 0.977,
+   "pendiente_deg": 0.6,
+   "altitud_m": 888.0,
+   "aod": 0.147,
+   "nieve_frac": 0.0,
+   "af": {
+    "moon_south_pole_base": {
+     "indice": 0.5942,
+     "percentil": 96.4,
+     "dims": {
+      "terrain": 0.991,
+      "ice_free": 1.0,
+      "cold": 0.0,
+      "frozen": 0.0,
+      "barren": 0.974,
+      "low_sun": 0.0
+     },
+     "gemelo": "Slater Plain",
+     "gemelo_cuerpo": "Luna",
+     "gemelo_lat": -88.079,
+     "gemelo_lon": 111.288,
+     "celda": [
+      27.125,
+      17.075
+     ]
+    },
+    "moon_mars_caves": {
+     "indice": 0.8624,
+     "percentil": 100.0,
+     "dims": {
+      "terrain": 0.883,
+      "volcanic": 0.566,
+      "lithology": 1.0,
+      "nonsilicic": 0.984,
+      "arid": 0.828,
+      "barren": 0.944,
+      "ice_free": 1.0
+     },
+     "gemelo": "candidato a cueva CC0190",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": -2.192,
+     "gemelo_lon": -110.263,
+     "celda": [
+      27.175,
+      17.225
+     ]
+    },
+    "mars_astrobiology": {
+     "indice": 0.7756,
+     "percentil": 100.0,
+     "dims": {
+      "terrain": 0.881,
+      "arid": 0.851,
+      "barren": 0.964,
+      "lithology": 0.6,
+      "thermal": 0.51,
+      "albedo": 0.866,
+      "dust": 0.372
+     },
+     "gemelo": "Utopia Planitia (Zhurong)",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 25.066,
+     "gemelo_lon": 109.925,
+     "celda": [
+      27.075,
+      17.175
+     ]
+    }
+   },
+   "perfil_destacado": "moon_mars_caves",
+   "img": "img/af_mooncav_5.png"
+  },
+  {
+   "id": "af_mooncav_6",
+   "nombre": "Municipio de Durango, Durango",
+   "pais": "México",
+   "lat": 24.125,
+   "lon": -104.475,
+   "conocido": false,
+   "baliza": "gris",
+   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
+   "tipo": "candidato",
+   "perfil_origen": "moon_mars_caves",
+   "region": "NAM",
+   "articulos": 0,
+   "lit_clase": "sin estudios como análogo",
+   "precip_mm": 370.0,
+   "ndvi_max": 0.357,
+   "lst_media_c": 24.2,
+   "lst_amplitud_c": 22.2,
+   "mafico_ratio": 1.003,
+   "pendiente_deg": 0.1,
+   "altitud_m": 1858.0,
+   "aod": 0.006,
+   "nieve_frac": 0.0,
+   "af": {
+    "moon_south_pole_base": {
+     "indice": 0.4869,
+     "percentil": 70.0,
+     "dims": {
+      "terrain": 0.963,
+      "ice_free": 1.0,
+      "cold": 0.0,
+      "frozen": 0.0,
+      "barren": 0.0,
+      "low_sun": 0.0
+     },
+     "gemelo": "Slater Plain",
+     "gemelo_cuerpo": "Luna",
+     "gemelo_lat": -88.079,
+     "gemelo_lon": 111.288,
+     "celda": [
+      24.125,
+      -104.325
+     ]
+    },
+    "moon_mars_caves": {
+     "indice": 0.8517,
+     "percentil": 100.0,
+     "dims": {
+      "terrain": 0.995,
+      "volcanic": 0.927,
+      "lithology": 1.0,
+      "nonsilicic": 0.958,
+      "arid": 0.215,
+      "barren": 0.0,
+      "ice_free": 1.0
+     },
+     "gemelo": "candidato a cueva CC0258",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": 12.274,
+     "gemelo_lon": -116.398,
+     "celda": [
+      24.125,
+      -104.475
+     ]
+    },
+    "mars_astrobiology": {
+     "indice": 0.5357,
+     "percentil": 83.9,
+     "dims": {
+      "terrain": 0.978,
+      "arid": 0.213,
+      "barren": 0.003,
+      "lithology": 0.6,
+      "thermal": 0.493,
+      "albedo": 0.977,
+      "dust": 0.014
+     },
+     "gemelo": "Gusev (Spirit)",
+     "gemelo_cuerpo": "Marte",
+     "gemelo_lat": -14.572,
+     "gemelo_lon": 175.478,
+     "celda": [
+      24.075,
+      -104.325
+     ]
+    }
+   },
+   "perfil_destacado": "moon_mars_caves",
+   "img": "img/af_mooncav_6.png"
   },
   {
    "id": "af_mooncav_7",
@@ -3835,276 +4015,6 @@
    "img": "img/af_mooncav_11.png"
   },
   {
-   "id": "af_mooncav_13",
-   "nombre": "Al Mahd, Medina Province",
-   "pais": "Arabia Saudí",
-   "lat": 22.975,
-   "lon": 41.075,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_mars_caves",
-   "region": "ASI",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 194.0,
-   "ndvi_max": 0.093,
-   "lst_media_c": 32.6,
-   "lst_amplitud_c": 20.1,
-   "mafico_ratio": 0.934,
-   "pendiente_deg": 0.3,
-   "altitud_m": 983.0,
-   "aod": 0.134,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5913,
-     "percentil": 96.1,
-     "dims": {
-      "terrain": 0.996,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 0.926,
-      "low_sun": 0.0
-     },
-     "gemelo": "Peak near Cabeus B",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -82.259,
-     "gemelo_lon": -54.585,
-     "celda": [
-      23.025,
-      40.925
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.8173,
-     "percentil": 100.0,
-     "dims": {
-      "terrain": 0.973,
-      "volcanic": 0.479,
-      "lithology": 1.0,
-      "nonsilicic": 0.952,
-      "arid": 0.355,
-      "barren": 0.951,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0550",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -2.044,
-     "gemelo_lon": -109.296,
-     "celda": [
-      22.975,
-      41.075
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.6785,
-     "percentil": 99.2,
-     "dims": {
-      "terrain": 0.946,
-      "arid": 0.382,
-      "barren": 0.974,
-      "lithology": 0.6,
-      "thermal": 0.423,
-      "albedo": 1.0,
-      "dust": 0.335
-     },
-     "gemelo": "Vastitas Borealis (Phoenix)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 68.22,
-     "gemelo_lon": -125.75,
-     "celda": [
-      22.875,
-      41.075
-     ]
-    }
-   },
-   "perfil_destacado": "moon_mars_caves",
-   "img": "img/af_mooncav_13.png"
-  },
-  {
-   "id": "af_mooncav_16",
-   "nombre": "Lokori/Kochodin ward, Turkana East",
-   "pais": "Kenia",
-   "lat": 1.875,
-   "lon": 36.425,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_mars_caves",
-   "region": "AFR",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 695.0,
-   "ndvi_max": 0.076,
-   "lst_media_c": 39.9,
-   "lst_amplitud_c": 22.0,
-   "mafico_ratio": 0.99,
-   "pendiente_deg": 0.8,
-   "altitud_m": 319.0,
-   "aod": 0.029,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5781,
-     "percentil": 94.5,
-     "dims": {
-      "terrain": 0.94,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 0.992,
-      "low_sun": 0.0
-     },
-     "gemelo": "Haworth",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -87.45,
-     "gemelo_lon": -5.17,
-     "celda": [
-      1.775,
-      36.325
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.8035,
-     "percentil": 100.0,
-     "dims": {
-      "terrain": 0.756,
-      "volcanic": 0.792,
-      "lithology": 1.0,
-      "nonsilicic": 0.983,
-      "arid": 0.079,
-      "barren": 1.0,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0180",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -39.39,
-     "gemelo_lon": 4.981,
-     "celda": [
-      1.875,
-      36.425
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.5755,
-     "percentil": 93.2,
-     "dims": {
-      "terrain": 0.929,
-      "arid": 0.073,
-      "barren": 0.899,
-      "lithology": 0.6,
-      "thermal": 0.415,
-      "albedo": 1.0,
-      "dust": 0.074
-     },
-     "gemelo": "Utopia Planitia (Zhurong)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 25.066,
-     "gemelo_lon": 109.925,
-     "celda": [
-      1.775,
-      36.375
-     ]
-    }
-   },
-   "perfil_destacado": "moon_mars_caves",
-   "img": "img/af_mooncav_16.png"
-  },
-  {
-   "id": "af_mooncav_17",
-   "nombre": "Rwaished Sub-District, Rwaished District",
-   "pais": "Jordania",
-   "lat": 32.325,
-   "lon": 37.675,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_mars_caves",
-   "region": "ASI",
-   "articulos": 0,
-   "lit_clase": "sin estudios como análogo",
-   "precip_mm": 92.0,
-   "ndvi_max": 0.098,
-   "lst_media_c": 26.8,
-   "lst_amplitud_c": 19.9,
-   "mafico_ratio": 0.985,
-   "pendiente_deg": 0.8,
-   "altitud_m": 864.0,
-   "aod": 0.092,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5876,
-     "percentil": 95.7,
-     "dims": {
-      "terrain": 0.978,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 0.954,
-      "low_sun": 0.0
-     },
-     "gemelo": "Slater Plain",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -88.079,
-     "gemelo_lon": 111.288,
-     "celda": [
-      32.325,
-      37.625
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.8008,
-     "percentil": 100.0,
-     "dims": {
-      "terrain": 0.91,
-      "volcanic": 0.84,
-      "lithology": 1.0,
-      "nonsilicic": 0.069,
-      "arid": 0.516,
-      "barren": 0.934,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0860",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 46.415,
-     "gemelo_lon": -119.587,
-     "celda": [
-      32.325,
-      37.675
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.6961,
-     "percentil": 99.4,
-     "dims": {
-      "terrain": 0.947,
-      "arid": 0.516,
-      "barren": 0.934,
-      "lithology": 0.6,
-      "thermal": 0.396,
-      "albedo": 0.959,
-      "dust": 0.23
-     },
-     "gemelo": "Vastitas Borealis (Phoenix)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 68.22,
-     "gemelo_lon": -125.75,
-     "celda": [
-      32.325,
-      37.675
-     ]
-    }
-   },
-   "perfil_destacado": "moon_mars_caves",
-   "img": "img/af_mooncav_17.png"
-  },
-  {
    "id": "af_mooncav_2",
    "nombre": "Tibesti, Chad",
    "pais": "Chad",
@@ -4116,8 +4026,8 @@
    "tipo": "candidato",
    "perfil_origen": "moon_mars_caves",
    "region": "AFR",
-   "articulos": 9,
-   "lit_clase": "estudiado",
+   "articulos": 1,
+   "lit_clase": "poco estudiado",
    "precip_mm": 96.0,
    "ndvi_max": 0.098,
    "lst_media_c": 25.6,
@@ -4206,7 +4116,7 @@
    "tipo": "candidato",
    "perfil_origen": "moon_mars_caves",
    "region": "SAM",
-   "articulos": 2,
+   "articulos": 1,
    "lit_clase": "poco estudiado",
    "precip_mm": 212.0,
    "ndvi_max": 0.192,
@@ -4285,98 +4195,8 @@
    "img": "img/af_mooncav_3.png"
   },
   {
-   "id": "af_mooncav_4",
-   "nombre": "Maricopa County, Arizona",
-   "pais": "Estados Unidos",
-   "lat": 32.725,
-   "lon": -113.125,
-   "conocido": false,
-   "baliza": "gris",
-   "nota": "Candidata nueva para «Cuevas y tubos de lava», fuera de los análogos conocidos.",
-   "tipo": "candidato",
-   "perfil_origen": "moon_mars_caves",
-   "region": "US",
-   "articulos": 3,
-   "lit_clase": "poco estudiado",
-   "precip_mm": 146.0,
-   "ndvi_max": 0.134,
-   "lst_media_c": 28.6,
-   "lst_amplitud_c": 23.5,
-   "mafico_ratio": 0.966,
-   "pendiente_deg": 0.2,
-   "altitud_m": 217.0,
-   "aod": 0.029,
-   "nieve_frac": 0.0,
-   "af": {
-    "moon_south_pole_base": {
-     "indice": 0.5455,
-     "percentil": 88.4,
-     "dims": {
-      "terrain": 0.921,
-      "ice_free": 1.0,
-      "cold": 0.0,
-      "frozen": 0.0,
-      "barren": 0.732,
-      "low_sun": 0.0
-     },
-     "gemelo": "Slater Plain",
-     "gemelo_cuerpo": "Luna",
-     "gemelo_lat": -88.079,
-     "gemelo_lon": 111.288,
-     "celda": [
-      32.675,
-      -113.125
-     ]
-    },
-    "moon_mars_caves": {
-     "indice": 0.8734,
-     "percentil": 100.0,
-     "dims": {
-      "terrain": 0.946,
-      "volcanic": 0.804,
-      "lithology": 1.0,
-      "nonsilicic": 0.944,
-      "arid": 0.416,
-      "barren": 0.8,
-      "ice_free": 1.0
-     },
-     "gemelo": "candidato a cueva CC0843",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 23.27,
-     "gemelo_lon": -110.501,
-     "celda": [
-      32.725,
-      -113.125
-     ]
-    },
-    "mars_astrobiology": {
-     "indice": 0.6686,
-     "percentil": 99.0,
-     "dims": {
-      "terrain": 0.991,
-      "arid": 0.429,
-      "barren": 0.797,
-      "lithology": 0.6,
-      "thermal": 0.427,
-      "albedo": 0.971,
-      "dust": 0.08
-     },
-     "gemelo": "Vastitas Borealis (Phoenix)",
-     "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 68.22,
-     "gemelo_lon": -125.75,
-     "celda": [
-      32.775,
-      -113.275
-     ]
-    }
-   },
-   "perfil_destacado": "moon_mars_caves",
-   "img": "img/af_mooncav_4.png"
-  },
-  {
    "id": "af_marsast_1",
-   "nombre": "Burj Umar Idris, In Amenas District (26.8°N, 6.2°E)",
+   "nombre": "Burj Umar Idris, In Amenas District (26,8°N · 6,2°E)",
    "pais": "Argelia",
    "lat": 26.775,
    "lon": 6.225,
@@ -4825,11 +4645,11 @@
    "img": "img/af_marsast_6.png"
   },
   {
-   "id": "af_marsast_19",
-   "nombre": "Delgo - دلقو, Northern State",
-   "pais": "Sudán",
-   "lat": 20.075,
-   "lon": 30.525,
+   "id": "af_marsast_8",
+   "nombre": "Murzuq, Libya",
+   "pais": "Libia",
+   "lat": 24.875,
+   "lon": 17.675,
    "conocido": false,
    "baliza": "gris",
    "nota": "Candidata nueva para «Marte · astrobiología», fuera de los análogos conocidos.",
@@ -4838,25 +4658,25 @@
    "region": "AFR",
    "articulos": 0,
    "lit_clase": "sin estudios como análogo",
-   "precip_mm": 9.0,
-   "ndvi_max": 0.083,
-   "lst_media_c": 34.2,
-   "lst_amplitud_c": 18.8,
-   "mafico_ratio": 0.893,
+   "precip_mm": 13.0,
+   "ndvi_max": 0.053,
+   "lst_media_c": 30.7,
+   "lst_amplitud_c": 23.3,
+   "mafico_ratio": 0.905,
    "pendiente_deg": 0.3,
-   "altitud_m": 222.0,
-   "aod": 0.253,
+   "altitud_m": 424.0,
+   "aod": 0.203,
    "nieve_frac": 0.0,
    "af": {
     "moon_south_pole_base": {
-     "indice": 0.5864,
-     "percentil": 95.6,
+     "indice": 0.5509,
+     "percentil": 89.6,
      "dims": {
-      "terrain": 0.965,
+      "terrain": 0.86,
       "ice_free": 1.0,
       "cold": 0.0,
       "frozen": 0.0,
-      "barren": 0.988,
+      "barren": 1.0,
       "low_sun": 0.0
      },
      "gemelo": "Peak near Cabeus B",
@@ -4864,62 +4684,62 @@
      "gemelo_lat": -82.259,
      "gemelo_lon": -54.585,
      "celda": [
-      20.175,
-      30.575
+      24.925,
+      17.775
      ]
     },
     "moon_mars_caves": {
-     "indice": 0.5008,
-     "percentil": 98.4,
+     "indice": 0.675,
+     "percentil": 99.9,
      "dims": {
-      "terrain": 0.984,
-      "volcanic": 0.002,
+      "terrain": 0.975,
+      "volcanic": 0.881,
       "lithology": 0.0,
-      "nonsilicic": 0.049,
-      "arid": 1.0,
-      "barren": 0.99,
+      "nonsilicic": 0.094,
+      "arid": 0.958,
+      "barren": 1.0,
       "ice_free": 1.0
      },
-     "gemelo": "candidato a cueva CC0561",
+     "gemelo": "candidato a cueva CC0622",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": -8.271,
-     "gemelo_lon": -111.965,
+     "gemelo_lat": -2.675,
+     "gemelo_lon": -107.789,
      "celda": [
-      20.075,
-      30.525
+      24.875,
+      17.825
      ]
     },
     "mars_astrobiology": {
-     "indice": 0.8173,
+     "indice": 0.8412,
      "percentil": 100.0,
      "dims": {
-      "terrain": 0.993,
-      "arid": 1.0,
-      "barren": 0.99,
+      "terrain": 0.958,
+      "arid": 0.932,
+      "barren": 1.0,
       "lithology": 0.6,
-      "thermal": 0.351,
-      "albedo": 0.634,
-      "dust": 0.633
+      "thermal": 0.533,
+      "albedo": 0.999,
+      "dust": 0.508
      },
-     "gemelo": "Utopia Planitia (Zhurong)",
+     "gemelo": "Meridiani Planum (Opportunity)",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 25.066,
-     "gemelo_lon": 109.925,
+     "gemelo_lat": -1.946,
+     "gemelo_lon": -5.527,
      "celda": [
-      20.075,
-      30.525
+      24.875,
+      17.675
      ]
     }
    },
    "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_marsast_19.png"
+   "img": "img/af_marsast_8.png"
   },
   {
-   "id": "af_marsast_20",
-   "nombre": "Illizi, Illizi District (25.7°N, 9.4°E)",
-   "pais": "Argelia",
-   "lat": 25.675,
-   "lon": 9.425,
+   "id": "af_marsast_10",
+   "nombre": "New Valley, Egypt",
+   "pais": "Egipto",
+   "lat": 23.625,
+   "lon": 25.475,
    "conocido": false,
    "baliza": "gris",
    "nota": "Candidata nueva para «Marte · astrobiología», fuera de los análogos conocidos.",
@@ -4928,25 +4748,25 @@
    "region": "AFR",
    "articulos": 0,
    "lit_clase": "sin estudios como análogo",
-   "precip_mm": 9.0,
-   "ndvi_max": 0.081,
-   "lst_media_c": 30.2,
-   "lst_amplitud_c": 19.0,
-   "mafico_ratio": 0.897,
+   "precip_mm": 10.0,
+   "ndvi_max": 0.077,
+   "lst_media_c": 28.4,
+   "lst_amplitud_c": 22.4,
+   "mafico_ratio": 0.908,
    "pendiente_deg": 0.3,
-   "altitud_m": 900.0,
-   "aod": 0.187,
+   "altitud_m": 1011.0,
+   "aod": 0.14,
    "nieve_frac": 0.0,
    "af": {
     "moon_south_pole_base": {
-     "indice": 0.5852,
-     "percentil": 95.5,
+     "indice": 0.5881,
+     "percentil": 95.8,
      "dims": {
-      "terrain": 0.973,
+      "terrain": 0.993,
       "ice_free": 1.0,
       "cold": 0.0,
       "frozen": 0.0,
-      "barren": 0.946,
+      "barren": 0.905,
       "low_sun": 0.0
      },
      "gemelo": "Slater Plain",
@@ -4954,89 +4774,89 @@
      "gemelo_lat": -88.079,
      "gemelo_lon": 111.288,
      "celda": [
-      25.775,
-      9.325
+      23.525,
+      25.425
      ]
     },
     "moon_mars_caves": {
-     "indice": 0.5083,
-     "percentil": 98.6,
+     "indice": 0.5017,
+     "percentil": 98.4,
      "dims": {
-      "terrain": 0.981,
-      "volcanic": 0.044,
+      "terrain": 0.996,
+      "volcanic": 0.0,
       "lithology": 0.0,
-      "nonsilicic": 0.046,
-      "arid": 1.0,
-      "barren": 0.996,
+      "nonsilicic": 0.037,
+      "arid": 0.988,
+      "barren": 1.0,
       "ice_free": 1.0
      },
-     "gemelo": "candidato a cueva CC0830",
+     "gemelo": "candidato a cueva CC0549",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 44.169,
-     "gemelo_lon": 25.689,
+     "gemelo_lat": -2.036,
+     "gemelo_lon": -109.329,
      "celda": [
-      25.675,
-      9.425
+      23.675,
+      25.425
      ]
     },
     "mars_astrobiology": {
-     "indice": 0.8172,
+     "indice": 0.8326,
      "percentil": 100.0,
      "dims": {
-      "terrain": 0.988,
-      "arid": 1.0,
-      "barren": 0.996,
+      "terrain": 0.984,
+      "arid": 0.988,
+      "barren": 1.0,
       "lithology": 0.5,
-      "thermal": 0.361,
-      "albedo": 0.86,
-      "dust": 0.469
+      "thermal": 0.497,
+      "albedo": 0.973,
+      "dust": 0.35
      },
-     "gemelo": "Vastitas Borealis (Phoenix)",
+     "gemelo": "Meridiani Planum (Opportunity)",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 68.22,
-     "gemelo_lon": -125.75,
+     "gemelo_lat": -1.946,
+     "gemelo_lon": -5.527,
      "celda": [
-      25.675,
-      9.425
+      23.625,
+      25.475
      ]
     }
    },
    "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_marsast_20.png"
+   "img": "img/af_marsast_10.png"
   },
   {
-   "id": "af_marsast_29",
-   "nombre": "Yuli County, Bayingolin",
-   "pais": "China",
-   "lat": 40.675,
-   "lon": 89.325,
+   "id": "af_marsast_11",
+   "nombre": "Pozo Almonte, Provincia del Tamarugal",
+   "pais": "Chile",
+   "lat": -20.425,
+   "lon": -69.475,
    "conocido": false,
    "baliza": "gris",
    "nota": "Candidata nueva para «Marte · astrobiología», fuera de los análogos conocidos.",
    "tipo": "candidato",
    "perfil_origen": "mars_astrobiology",
-   "region": "CN",
+   "region": "CL",
    "articulos": 0,
    "lit_clase": "sin estudios como análogo",
-   "precip_mm": 28.0,
-   "ndvi_max": 0.047,
-   "lst_media_c": 19.0,
-   "lst_amplitud_c": 23.6,
-   "mafico_ratio": 0.908,
+   "precip_mm": 22.0,
+   "ndvi_max": 0.103,
+   "lst_media_c": 30.5,
+   "lst_amplitud_c": 34.7,
+   "mafico_ratio": 0.939,
    "pendiente_deg": 0.4,
-   "altitud_m": 816.0,
-   "aod": 0.309,
+   "altitud_m": 1010.0,
+   "aod": 0.008,
    "nieve_frac": 0.0,
    "af": {
     "moon_south_pole_base": {
-     "indice": 0.56,
-     "percentil": 91.5,
+     "indice": 0.5836,
+     "percentil": 95.3,
      "dims": {
-      "terrain": 0.886,
+      "terrain": 0.979,
       "ice_free": 1.0,
       "cold": 0.0,
       "frozen": 0.0,
-      "barren": 1.0,
+      "barren": 0.908,
       "low_sun": 0.0
      },
      "gemelo": "Peak near Cabeus B",
@@ -5044,55 +4864,55 @@
      "gemelo_lat": -82.259,
      "gemelo_lon": -54.585,
      "celda": [
-      40.625,
-      89.475
+      -20.525,
+      -69.325
      ]
     },
     "moon_mars_caves": {
-     "indice": 0.522,
-     "percentil": 98.9,
+     "indice": 0.6029,
+     "percentil": 99.7,
      "dims": {
-      "terrain": 0.81,
-      "volcanic": 0.0,
+      "terrain": 0.982,
+      "volcanic": 0.147,
       "lithology": 0.0,
-      "nonsilicic": 0.992,
-      "arid": 0.702,
-      "barren": 1.0,
+      "nonsilicic": 0.944,
+      "arid": 0.845,
+      "barren": 0.981,
       "ice_free": 1.0
      },
-     "gemelo": "candidato a cueva CC0846",
+     "gemelo": "candidato a cueva CC0621",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 28.024,
-     "gemelo_lon": -109.18,
+     "gemelo_lat": 1.727,
+     "gemelo_lon": -107.212,
      "celda": [
-      40.775,
-      89.225
+      -20.325,
+      -69.575
      ]
     },
     "mars_astrobiology": {
-     "indice": 0.8027,
+     "indice": 0.832,
      "percentil": 100.0,
      "dims": {
-      "terrain": 0.972,
-      "arid": 0.768,
-      "barren": 1.0,
-      "lithology": 0.5,
-      "thermal": 0.544,
+      "terrain": 0.982,
+      "arid": 0.824,
+      "barren": 0.914,
+      "lithology": 0.6,
+      "thermal": 0.987,
       "albedo": 0.996,
-      "dust": 0.771
+      "dust": 0.02
      },
-     "gemelo": "Vastitas Borealis (Phoenix)",
+     "gemelo": "Oxia Planum (Rosalind Franklin)",
      "gemelo_cuerpo": "Marte",
-     "gemelo_lat": 68.22,
-     "gemelo_lon": -125.75,
+     "gemelo_lat": 18.2,
+     "gemelo_lon": -24.55,
      "celda": [
-      40.675,
-      89.325
+      -20.425,
+      -69.475
      ]
     }
    },
    "perfil_destacado": "mars_astrobiology",
-   "img": "img/af_marsast_29.png"
+   "img": "img/af_marsast_11.png"
   },
   {
    "id": "af_marsast_4",

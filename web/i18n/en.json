@@ -1,5 +1,8 @@
 {
 "textos": {
+"Kitikmeot Region, Nunavut (72,0°N · 98,5°O)": "Kitikmeot Region, Nunavut (72.0°N · 98.5°W)",
+"Burj Umar Idris, In Amenas District (26,8°N · 6,2°E)": "Burj Umar Idris, In Amenas District (26.8°N · 6.2°E)",
+"Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice. Aquí sale en el percentil 96 y no en el 100 porque su relieve se parece poco al de los sitios de los rovers (terreno 0,32) y apenas hay polvo en el aire (polvo 0,02); la lluvia no es la causa. La celda de lluvia de GPM (0,1°) de Yungay da 280 mm/año por un artefacto junto a la costa, así que usamos la mediana del interior (52 mm/año). Aun así GPM sobrestima la lluvia del desierto: en Yungay llueven pocos milímetros al año.": "Classic Mars analog because of its hyperaridity. It serves as a reference to calibrate the index. Here it comes out at percentile 96 rather than 100 because its relief is not very similar to that of the rover sites (terrain 0.32) and there is hardly any dust in the air (dust 0.02); rain is not the cause. The GPM rain cell (0.1°) at Yungay gives 280 mm/year because of an artefact near the coast, so we use the inland median (52 mm/year). Even so, GPM overestimates desert rain: Yungay gets only a few millimetres a year.",
 "Antártida (83,1°S · 47,0°O)": "Antarctica (83.1°S · 47.0°W)",
 "Antártida (83,5°S · 48,0°O)": "Antarctica (83.5°S · 48.0°W)",
 "Antártida (83,6°S · 51,0°O)": "Antarctica (83.6°S · 51.0°W)",
