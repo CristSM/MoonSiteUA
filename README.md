@@ -150,15 +150,5 @@ documentacion/   README técnico, datos y recursos del reto, guion del vídeo de
 
 Los detalles técnicos están en `documentacion/README_TECNICO.md`. Los datos y recursos del reto, en `documentacion/DATOS.md`.
 
-14. Estado y pendientes
-
-**Hecho:**
-- Motor Analog Finder con datos reales: Método, Demo y Juego los usan.
-- Web completa en dos idiomas, con escenas 3D interactivas y el vídeo de 30 segundos.
-- Zona de exploradores con base de datos.
-- Validación, monedas, bases, habitaciones, objetivos y premios.
-- 60 tests.
-
-**Pendiente:**
-- Hacer la presentación.
-- En los scripts de exportación del proyecto de datos: no etiquetar como «Antártida» las candidatas sin topónimo fuera de la Antártida (juego), revisar los recuentos de OpenAlex que mezclan lugares con el mismo nombre y escribir los decimales con coma en los textos en español.
+14. Enlace Visual.
+    https://cristsm.github.io/MoonSiteUA/
