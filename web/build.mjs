@@ -35,22 +35,16 @@ const info = (p, t, clip) => ({ t, k: p.scale(), tx: p.translate()[0], ty: p.tra
 const worldProj = geoNaturalEarth1().fitExtent([[4, 4], [W - 4, H - 4]], { type: 'Sphere' });
 const world = { ...build(land110, worldProj, W, H), proj: [info(worldProj, 'ne', [0, 0, W, H])] };
 
-// Recuadro de España: península a escala grande + Canarias en una caja abajo a la derecha.
+// Mapa regional para la geovalla: suroeste de Norteamérica (El Pinacate, Mojave, Valle de la Muerte, Meteor Crater…).
 // Anillos en sentido horario: d3 trabaja con polígonos esféricos.
 const box = (w, s, e, n) => ({ type: 'Feature', geometry: { type: 'Polygon', coordinates: [[[w, s], [w, n], [e, n], [e, s], [w, s]]] } });
-const IW = 480, IH = 340;
-const penProj = geoMercator().fitExtent([[0, 0], [IW, IH]], box(-9.6, 35.9, 3.4, 43.9)).clipExtent([[0, 0], [IW, IH]]);
-const pen = build(land50, penProj, IW, IH);
-const CX = [[IW - 176, IH - 86], [IW - 6, IH - 6]];
-const canProj = geoMercator().fitExtent([[CX[0][0] + 6, CX[0][1] + 6], [CX[1][0] - 6, CX[1][1] - 6]], box(-18.3, 27.5, -13.3, 29.5)).clipExtent(CX);
-const can = build(land50, canProj, IW, IH);
-const iberia = { w: IW, h: IH, d: pen.d, d2: can.d, pts: {},
-  proj: [info(canProj, 'merc', [CX[0][0], CX[0][1], CX[1][0], CX[1][1]]), info(penProj, 'merc', [0, 0, IW, IH])], frames: [[CX[0][0], CX[0][1], CX[1][0] - CX[0][0], CX[1][1] - CX[0][1], 'Canarias']] };
-for (const s of sites.sites) iberia.pts[s.id] = s.lon < -12 ? can.pts[s.id] : pen.pts[s.id];
+const RW = 480, RH = 340;
+const regProj = geoMercator().fitExtent([[0, 0], [RW, RH]], box(-121.5, 26.5, -105.5, 42.5)).clipExtent([[0, 0], [RW, RH]]);
+const region = { ...build(land50, regProj, RW, RH), proj: [info(regProj, 'merc', [0, 0, RW, RH])] };
 
 // perfiles de Analog Finder para la Demo (si existen)
 const perfiles = existsSync(new URL('../engine/analog_profiles.json', here)) ? JSON.parse(read('../engine/analog_profiles.json')) : null;
-const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, iberia }, demo: sites._doc.startsWith('SITIOS DE DEMO'), perfiles };
+const data = { targets: targets.targets, axesDoc: targets.axes, sites: sites.sites, map: { world, region }, demo: sites._doc.startsWith('SITIOS DE DEMO'), perfiles };
 const html = read('template.html')
   .replace('/*__DATA__*/null', JSON.stringify(data))
   .replace('/*__DISENOS__*/', () => read('../app/static/disenos.js'))
@@ -79,14 +73,14 @@ const PAGES = [
 ];
 // Texto ampliado de cada apartado en el índice de la portada
 const MAS = {
-  demo: 'Mapa mundial y de España con el Índice de Analogía Planetaria de cada sitio frente a cuatro destinos. Cada ficha muestra en qué se parece y en qué no, y lo que la Tierra no puede imitar. Puedes cambiar el peso de cada eje y aportar tus propios datos.',
+  demo: 'Mapa mundial con el índice de cada sitio para los tres perfiles de misión. Cada ficha muestra en qué se parece y en qué no, y lo que la Tierra no puede imitar. Puedes cambiar el peso de cada dimensión y aportar tus propios datos.',
   juego: 'Tres juegos con los datos reales del motor: elige el mejor análogo para cada destino, encuentra el gemelo lunar o marciano de un relieve terrestre y adivina qué lugares ya estudia la ciencia.',
   app: 'Moon Coins para decorar y Mars Coins para premios físicos. Cada zona tiene una base que crece una planta cada cinco exploradores, con habitaciones que cada uno decora a su gusto.',
   metodo: 'Comparamos 7,9 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte usando las mismas métricas de relieve, puntuamos tres perfiles de misión con pesos explícitos, comprobamos que el método recupera los análogos conocidos y medimos cuánto se ha estudiado ya cada candidata.',
   validacion: 'Nadie confirma un análogo en solitario: hacen falta varios exploradores independientes que coincidan. Las zonas peligrosas se cierran al público y pasan a misiones con robots.',
   comunidad: 'Misiones que llevan a la gente a los datos que faltan, insignias para quien descubre primero y bases virtuales que crecen con cada explorador que llega.',
   seguridad: 'Una persona, una cuenta; captura de datos sin cobertura móvil; una geovalla que impide enviar datos desde casa; y ninguna misión en zonas peligrosas o protegidas.',
-  datos: 'Todo sale de datos abiertos: satélites de la NASA para la Tierra, LRO para la Luna y Perseverance y MRO para Marte, con ampliaciones de la ESA, la CSA y la JAXA.',
+  datos: 'Todo sale de datos abiertos: satélites de la NASA y Copernicus DEM para la Tierra, LRO para la Luna y MGS para Marte, con datos de la ESA, la JAXA y Japón (METI).',
   video: 'La idea completa en medio minuto: del satélite al terreno y del terreno a la comunidad.',
   explorador: 'Crea tu cuenta, aporta fotos y medidas, funda una base o únete a una existente, decora tu habitación y gana monedas.',
 };

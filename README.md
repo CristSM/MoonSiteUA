@@ -82,14 +82,14 @@ La web tiene 11 apartados, cada uno en su página, en español y en inglés (bot
 | Página | Contenido |
 |---|---|
 | Inicio | La idea, las tres capas y un índice desplegable de apartados con una figura de cada uno |
-| Demo | Los 3 perfiles de Analog Finder sobre 56 sitios reales: mapas, ranking, ficha con radar frente a la mediana de los análogos conocidos, gemelo planetario, novedad bibliográfica, pesos ajustables y panel «Aportar datos» |
+| Explorar (`demo.html`) | Los 3 perfiles de Analog Finder sobre 56 sitios reales: mapa mundial, ranking, ficha con radar frente a la mediana de los análogos conocidos, gemelo planetario, novedad bibliográfica, pesos ajustables y panel «Aportar datos» |
 | Juego | Tres modos con datos reales: duelo de análogos (con señuelos), encuentra el gemelo y ¿estudiado o por descubrir? |
 | Recompensas | Monedas en 3D y cómo se ganan, diorama de la base por niveles, habitación en 3D y catálogo de premios |
 | Método | Pasos, fórmulas, huella de terreno, gemelos, perfiles, dimensiones, validación, novedad, fuentes y límites |
 | Validación | Simulador 3D de balizas por consenso, escalado robótico (nivel 3) en 3D y tolerancias de medida |
 | Comunidad | Bucle de la comunidad, monedas, tablón de misiones, insignias y diorama 3D de la colonia que crece con los exploradores |
 | Seguridad | Geovalla interactiva sobre el mapa, una persona una cuenta, modo expedición offline, seguridad física y RGPD |
-| Datos | Fuentes de la NASA (Tierra, Luna y Marte) y de las agencias socias (ESA, CSA, JAXA) |
+| Datos | Las fuentes reales del motor (Tierra, Luna, Marte y validación) y las agencias socias (ESA, JAXA, METI; CSA como ampliación prevista) |
 | Vídeo | El vídeo de presentación de 30 segundos (`web/media/`) |
 | Explorador | Zona con cuenta de usuario |
 

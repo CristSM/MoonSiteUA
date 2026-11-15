@@ -602,7 +602,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     <p class="kicker">NASA Space Apps Challenge 2026 · Análogos terrestres de la Luna y Marte</p>
     <h1 aria-label="La Tierra es el campo de pruebas"><span><b>La Tierra</b></span><span><b>es el campo</b></span><span><b>de pruebas</b></span></h1>
     <p class="lead">MoonSiteUA compara cada rincón del planeta con las futuras bases lunares y los lugares de aterrizaje en Marte usando datos abiertos de la NASA. Después, exploradores sobre el terreno confirman los mejores candidatos y los convierten en bases virtuales compartidas.</p>
-    <div class="cta"><a class="btn primary" href="demo.html">Probar la demo</a><a class="btn" href="video.html">Ver el vídeo</a></div>
+    <div class="cta"><a class="btn primary" href="demo.html">Explorar análogos</a><a class="btn" href="video.html">Ver el vídeo</a></div>
   </div>
   <div class="ticker" aria-label="Sitios candidatos y sus coordenadas"><div id="ticker"></div></div>
 </header>
@@ -617,7 +617,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
       <p class="muted">Tres capas que se apoyan entre sí: los datos de la NASA señalan dónde mirar, los exploradores comprueban sobre el terreno lo que el satélite no ve y la comunidad hace que todo siga creciendo.</p>
     </div>
     <div class="pipe">
-      <div><span class="n">Satélite</span><h3>El motor descubre</h3><p class="muted">Cruzamos temperatura, vegetación, lluvia, relieve, mineralogía, polvo y nieve de misiones NASA y calculamos el Índice de Analogía Planetaria de cada zona. Las mejores aparecen en el mapa como Zonas de Interés sin explorar.</p></div>
+      <div><span class="n">Satélite</span><h3>El motor descubre</h3><p class="muted">Comparamos el relieve de cada rincón de la Tierra con el de la Luna y Marte, le sumamos temperatura, vegetación, lluvia, roca, polvo y nieve de misiones de la NASA y sus socias, y calculamos un índice para cada perfil de misión. Las mejores zonas que nadie ha estudiado aparecen en el mapa como candidatas.</p></div>
       <div><span class="n">Campo</span><h3>Los exploradores verifican</h3><p class="muted">Personas en el lugar suben medidas y fotos con el móvil. Cuando varios exploradores aportan datos parecidos, el sitio se propone a la NASA para que lo estudie si los datos tienen interés.</p></div>
       <div><span class="n">Comunidad</span><h3>Se construyen bases</h3><p class="muted">Para mantener activa la comunidad, cada aportación se premia con monedas, insignias y reconocimiento. Usar la app es ayudar a la exploración espacial, y los exploradores construyen juntos bases virtuales.</p></div>
     </div>
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const $j = (s) => document.querySelector(s), esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
   const EN = document.documentElement.lang === 'en', BASE = location.pathname.includes('/en/') ? '../' : '';
   const img = (ruta) => BASE + 'img/juego/' + String(ruta).replace('img/', '');
-  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d});
+  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always'});
   const azar = (a) => a[Math.floor(Math.random() * a.length)];
   const baraja = (a) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const k = Math.floor(Math.random() * (i + 1)); [b[i], b[k]] = [b[k], b[i]]; } return b; };
   // textos fijos (el build los traduce en la versión inglesa)
@@ -979,7 +979,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="txt">
         <p class="kicker">Nivel 3 · Escalado robótico</p>
         <h3>Donde no debe ir una persona, va un robot</h3>
-        <p class="muted">Si una zona tiene un IAP alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.</p>
+        <p class="muted">Si una zona tiene un índice alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.</p>
       </div>
       <div><div class="lienzo" id="robotLienzo"><svg id="robotSvg" viewBox="0 0 520 300" role="img" aria-label="Corte del terreno: el explorador se queda en el perímetro seguro y los robots entran en la zona cerrada">
   <defs><pattern id="rayasCierre" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" style="stroke:var(--bad)" stroke-width="1.5" opacity=".5"/></pattern></defs>
@@ -998,7 +998,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="stack" style="gap:18px">
       <p class="kicker">Qué se mide y con qué tolerancia</p>
-      <div class="tols"><article class="tol"><b>± 4°</b><div><h3>Pendiente</h3><span class="mono">Inclinómetro del móvil</span><p>Todos los móviles tienen acelerómetro; se compara con NASADEM.</p></div></article><article class="tol"><b>± 25 m</b><div><h3>Altitud</h3><span class="mono">GPS + barómetro</span><p>El barómetro afina la altitud del GPS en la mayoría de gama media.</p></div></article><article class="tol"><b>60 % de acuerdo</b><div><h3>Tipo de suelo</h3><span class="mono">Lista cerrada + foto en vivo</span><p>Basalto, arcilla, yeso, arena, sal… Elegir de una lista hace comparables los reportes.</p></div></article><article class="tol"><b>± 3 °C de anomalía</b><div><h3>Temperatura</h3><span class="mono">Sensor Bluetooth emparejado</span><p>Los móviles no tienen termómetro ambiental. Se compara la diferencia con el satélite del mismo momento, no el valor bruto.</p></div></article><article class="tol"><b>± 12 %</b><div><h3>Humedad</h3><span class="mono">Sensor Bluetooth emparejado</span><p>Igual que la temperatura: sin sensor externo no cuenta.</p></div></article></div>
+      <div class="tols"><article class="tol"><b>± 4°</b><div><h3>Pendiente</h3><span class="mono">Inclinómetro del móvil</span><p>Todos los móviles tienen acelerómetro; se compara con el relieve de Copernicus DEM GLO-90.</p></div></article><article class="tol"><b>± 25 m</b><div><h3>Altitud</h3><span class="mono">GPS + barómetro</span><p>El barómetro afina la altitud del GPS en la mayoría de gama media.</p></div></article><article class="tol"><b>60 % de acuerdo</b><div><h3>Tipo de suelo</h3><span class="mono">Lista cerrada + foto en vivo</span><p>Basalto, arcilla, yeso, arena, sal… Elegir de una lista hace comparables los reportes.</p></div></article><article class="tol"><b>± 3 °C de anomalía</b><div><h3>Temperatura</h3><span class="mono">Sensor Bluetooth emparejado</span><p>Los móviles no tienen termómetro ambiental. Se compara la diferencia con el satélite del mismo momento, no el valor bruto.</p></div></article><article class="tol"><b>± 12 %</b><div><h3>Humedad</h3><span class="mono">Sensor Bluetooth emparejado</span><p>Igual que la temperatura: sin sensor externo no cuenta.</p></div></article></div>
     </div>
   </div>
 </section>
@@ -1019,13 +1019,13 @@ document.addEventListener('DOMContentLoaded', () => {
       <li><b>Construye</b><span>Tu módulo en la base de la zona</span></li>
     </ol>
     <div class="monedas">
-      <article><span class="coin" data-coin="moon"></span><div><p class="kicker">Fácil de ganar</p><h3>Puntos de Exploración</h3><p class="muted">Por validar puntos, subir fotos y medir. Se canjean por cosméticos de la base virtual. Las medidas que luego resultan inconsistentes no puntúan.</p></div></article>
-      <article><span class="coin" data-coin="mars"></span><div><p class="kicker">Escasos</p><h3>Puntos de Misión</h3><p class="muted">Escasos. Por liderar expediciones validadas o completar objetivos de alto valor. Se canjean por pins y parches de misión, financiados con patrocinio.</p></div></article>
+      <article><span class="coin" data-coin="moon"></span><div><p class="kicker">Fácil de ganar</p><h3>Moon Coins</h3><p class="muted">Por entrar cada día, subir fotos y medir. Sirven para decorar tu habitación de la base virtual. Las medidas que luego resultan inconsistentes no puntúan.</p></div></article>
+      <article><span class="coin" data-coin="mars"></span><div><p class="kicker">Escasas</p><h3>Mars Coins</h3><p class="muted">Por fundar una base, visitar varias zonas o completar objetivos de alto valor. Se canjean por pins, parches y camisetas, financiados con patrocinio.</p></div></article>
     </div>
     <div class="stack" style="gap:18px">
       <p class="kicker">Tablón de misiones · ejemplos</p>
       <div class="tablon">
-        <article class="mision"><div class="cab"><span>Objetivo local</span><b>×3</b></div><h3>Misiones dirigidas</h3><p class="muted">Ejemplo: «Tabernas tiene pendiente y suelo validados pero le falta humedad: lecturas con higrómetro, puntuación ×3». Nunca se generan en espacios protegidos ni zonas peligrosas.</p></article>
+        <article class="mision"><div class="cab"><span>Objetivo local</span><b>×3</b></div><h3>Misiones dirigidas</h3><p class="muted">Ejemplo: «El Pinacate tiene pendiente y suelo validados pero le falta humedad: lecturas con higrómetro, puntuación ×3». Nunca se generan en espacios protegidos ni zonas peligrosas.</p></article>
         <article class="mision"><div class="cab"><span>Reto del mes</span><b>0/3</b></div><h3>Misiones globales</h3><p class="muted">Retos mensuales como «Documenta 3 zonas kársticas este mes». Cuentan sitios distintos, así que no compensa repetir el mismo.</p><div class="progreso" aria-hidden="true"><i></i><i></i><i></i></div></article>
       </div>
     </div>
@@ -1060,15 +1060,15 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="txt">
         <p class="kicker">Geovalla</p>
         <h3>Contra envíos desde el sofá</h3>
-        <p class="muted">La geovalla se aplica a la posición de la captura y se amplía con el tiempo transcurrido (30 km + 120 km/h). Quien «estuvo» en Tabernas no puede sincronizar una hora después desde otro continente.</p>
-        <label for="geoHoras">Horas desde la captura en Tabernas</label>
+        <p class="muted">La geovalla se aplica a la posición de la captura y se amplía con el tiempo transcurrido (30 km + 120 km/h). Quien «estuvo» en El Pinacate (México) no puede sincronizar una hora después desde otro continente.</p>
+        <label for="geoHoras">Horas desde la captura en El Pinacate</label>
         <input type="range" id="geoHoras" min="0" max="8" step="0.5" value="1">
         <div class="lectura"><div><b id="geoH">1 h</b><span>tiempo</span></div><div><b id="geoKm">150 km</b><span>radio permitido</span></div></div>
       </div>
-      <svg id="geoMap" role="img" aria-label="Mapa de la geovalla alrededor de Tabernas"></svg>
+      <svg id="geoMap" role="img" aria-label="Mapa de la geovalla alrededor de El Pinacate"></svg>
     </div>
     <div class="reglas">
-      <article class="regla"><span class="n">01</span><h3>Una persona, una cuenta</h3><p>Registro con Google o Apple y verificación por SMS: un teléfono único por perfil, guardado solo como hash. Se suma la verificación del dispositivo (Play Integrity / App Attest). Sin pedir DNI.</p><svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="15" y="4" width="26" height="48"/><path d="M24 46h8"/><circle cx="28" cy="20" r="5" stroke="var(--accent)"/><path d="M19 36c1.5-6 5-8 9-8s7.5 2 9 8" stroke="var(--accent)"/></svg></article>
+      <article class="regla"><span class="n">01</span><h3>Una persona, una cuenta</h3><p>Registro con nombre, usuario, correo, contraseña y un teléfono único por perfil. En la app, el teléfono se verifica por SMS y se guarda solo como hash, y se suma la verificación del dispositivo (Play Integrity / App Attest). Sin pedir DNI.</p><svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><rect x="15" y="4" width="26" height="48"/><path d="M24 46h8"/><circle cx="28" cy="20" r="5" stroke="var(--accent)"/><path d="M19 36c1.5-6 5-8 9-8s7.5 2 9 8" stroke="var(--accent)"/></svg></article>
       <article class="regla"><span class="n">02</span><h3>Modo Expedición offline</h3><p>Sin cobertura móvil, en desiertos o montaña, el GPS sigue funcionando porque solo necesita ver los satélites. La app sella posición, hora, foto y medidas al capturar y firma el paquete. En cuevas, donde no llega la señal, vale la posición fijada en la entrada. Al sincronizar comprueba la firma, que no hayan pasado más de 14 días y que el viaje hasta allí sea posible.</p><svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M8 44v-6M16 44V32M24 44V26M32 44V20"/><path d="M6 14l30 32" /><path d="M44 8c-5 0-9 4-9 9 0 7 9 15 9 15s9-8 9-15c0-5-4-9-9-9z" stroke="var(--accent)"/><circle cx="44" cy="17" r="3" stroke="var(--accent)"/></svg></article>
       <article class="regla"><span class="n">03</span><h3>Seguridad física</h3><p>Sin misiones en espacios protegidos, propiedades privadas, cuevas sin acceso autorizado ni zonas peligrosas. Antes de cada expedición offline: avisos de calor y aislamiento y una lista de comprobación (agua, ruta compartida).</p><svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M28 6L52 48H4z"/><path d="M28 21v14" stroke="var(--accent)" stroke-width="4"/><circle cx="28" cy="41" r="1.5" fill="var(--accent)" stroke="var(--accent)"/></svg></article>
       <article class="regla"><span class="n">04</span><h3>Privacidad (RGPD)</h3><p>El GPS solo se pide al capturar y al sincronizar, nunca en segundo plano. Los recorridos no se publican: el mapa muestra nodos, no personas.</p><svg viewBox="0 0 56 56" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path d="M4 28s9-14 24-14 24 14 24 14-9 14-24 14S4 28 4 28z"/><circle cx="28" cy="28" r="6" stroke="var(--accent)"/><path d="M8 48L48 8"/></svg></article>
@@ -1083,14 +1083,15 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="head read" style="margin:0">
       <p class="kicker">Datos abiertos</p>
       <h2>Fuentes que usamos</h2>
-      <p class="muted">Todo lo que calcula MoonSiteUA sale de datos públicos. Los de la Tierra dan los nueve ejes del índice; los de la Luna y Marte dan el perfil de cada destino.</p>
+      <p class="muted">Todo lo que calcula MoonSiteUA sale de datos públicos. Los de la Tierra dan las dimensiones de cada perfil; los de la Luna y Marte, los sitios de referencia con los que se compara el terreno. Son las mismas fuentes que se detallan en Método.</p>
     </div>
-    <div class="cuerpo"><div class="nombre"><b>Tierra</b><span>NASA · 9 ejes del índice</span></div><ul class="fuentes"><li><b>MODIS MOD11A2</b><span class="mono">Temperatura de superficie · 1 km</span><span class="eje">Ejes de frío y amplitud térmica</span></li><li><b>MODIS MOD13A2</b><span class="mono">NDVI · 1 km</span><span class="eje">Eje de suelo sin vegetación</span></li><li><b>GPM IMERG V07</b><span class="mono">Precipitación mensual · 0,1°</span><span class="eje">Eje de aridez</span></li><li><b>NASADEM</b><span class="mono">Modelo de elevación · 30 m</span><span class="eje">Altitud y pendiente</span></li><li><b>ASTER GED AG100</b><span class="mono">Emisividad térmica · 100 m</span><span class="eje">Indicador de roca basáltica</span></li><li><b>MODIS MOD08_M3 y MOD10A1</b><span class="mono">Aerosoles y nieve</span><span class="eje">Ejes de polvo y hielo</span></li></ul></div>
-    <div class="cuerpo"><div class="nombre"><b>Luna</b><span>Polo sur y mares basálticos</span></div><ul class="fuentes"><li><b>LRO Diviner</b><span class="mono">Lunar Reconnaissance Orbiter</span><span class="eje">Temperatura</span></li><li><b>LRO LOLA</b><span class="mono">Altímetro láser</span><span class="eje">Relieve e iluminación</span></li><li><b>LRO LEND y Mini-RF</b><span class="mono">Neutrones y radar</span><span class="eje">Hidrógeno y hielo</span></li><li><b>LRO LROC</b><span class="mono">Cámaras</span><span class="eje">Imágenes de simas y tubos de lava</span></li></ul></div>
-    <div class="cuerpo"><div class="nombre"><b>Marte</b><span>Jezero y Arcadia Planitia</span></div><ul class="fuentes"><li><b>Perseverance MEDA</b><span class="mono">Estación meteorológica</span><span class="eje">Meteorología de Jezero</span></li><li><b>MRO CRISM</b><span class="mono">Espectrómetro</span><span class="eje">Mineralogía</span></li><li><b>MRO HiRISE y CTX</b><span class="mono">Cámaras</span><span class="eje">Morfología</span></li><li><b>SWIM · MRO SHARAD</b><span class="mono">Radar subsuperficial</span><span class="eje">Hielo enterrado en Arcadia Planitia</span></li></ul></div>
-    <div class="cuerpo"><div class="nombre"><b>Socias</b><span>Ampliaciones previstas</span></div><ul class="fuentes"><li><b>Copernicus Sentinel</b><span class="mono">ESA</span><span class="eje">Radar para rugosidad y humedad</span></li><li><b>RADARSAT</b><span class="mono">CSA</span><span class="eje">Radar de apertura sintética</span></li><li><b>G-Portal</b><span class="mono">JAXA</span><span class="eje">Imágenes de detalle</span></li></ul></div>
+    <div class="cuerpo"><div class="nombre"><b>Tierra</b><span>Terreno y dimensiones de cada perfil</span></div><ul class="fuentes"><li><b>Copernicus DEM GLO-90</b><span class="mono">Relieve · ~370 m</span><span class="eje">Terreno (huella y gemelo)</span></li><li><b>MODIS MOD11C3</b><span class="mono">Temperatura de superficie · 0,05°</span><span class="eje">Frío, suelo congelado y amplitud térmica</span></li><li><b>MODIS MOD13C2</b><span class="mono">Vegetación (NDVI) · 0,05°</span><span class="eje">Sin vegetación</span></li><li><b>MODIS MCD43C3</b><span class="mono">Albedo y nieve · 0,05°</span><span class="eje">Sin hielo y albedo</span></li><li><b>ASTER GED</b><span class="mono">Emisividad térmica · 0,05°</span><span class="eje">Roca basáltica</span></li><li><b>GPM IMERG V07</b><span class="mono">Precipitación anual · 0,1°</span><span class="eje">Aridez</span></li><li><b>MERRA-2</b><span class="mono">Polvo en el aire · 0,5°</span><span class="eje">Polvo</span></li><li><b>GLiM</b><span class="mono">Mapa litológico · 0,5°</span><span class="eje">Litología y glaciares</span></li><li><b>Smithsonian GVP · Wikidata</b><span class="mono">Volcanes e impactos · puntos</span><span class="eje">Volcanes</span></li></ul></div>
+    <div class="cuerpo"><div class="nombre"><b>Luna</b><span>Polo sur y pozos lunares</span></div><ul class="fuentes"><li><b>LRO LOLA</b><span class="mono">Relieve · ~400–474 m (polo sur a 80 m)</span><span class="eje">Terreno de los sitios Artemis III y de los pozos</span></li><li><b>LRO Diviner</b><span class="mono">Temperatura y rocas · ~950 m</span><span class="eje">Contexto térmico del polo sur</span></li><li><b>LROC Lunar Pit Atlas</b><span class="mono">Pozos lunares</span><span class="eje">Sitios de referencia del perfil de cuevas</span></li></ul></div>
+    <div class="cuerpo"><div class="nombre"><b>Marte</b><span>Sitios de rovers y cuevas</span></div><ul class="fuentes"><li><b>MGS MOLA</b><span class="mono">Relieve · 463 m</span><span class="eje">Terreno de los sitios de rovers y de las cuevas</span></li><li><b>MGS TES</b><span class="mono">Albedo · 7,4 km</span><span class="eje">Albedo de los sitios de rovers</span></li><li><b>Mars Odyssey GRS</b><span class="mono">Química y agua somera · 5°</span><span class="eje">Contexto de los sitios de rovers</span></li><li><b>MGC3</b><span class="mono">Catálogo global de candidatos a cueva</span><span class="eje">Sitios de referencia del perfil de cuevas</span></li></ul></div>
+    <div class="cuerpo"><div class="nombre"><b>Validación</b><span>Comprobar el método y medir la novedad</span></div><ul class="fuentes"><li><b>OpenStreetMap</b><span class="mono">Cuevas y tubos de lava cartografiados</span><span class="eje">¿Recupera el perfil de cuevas lo que ya se conoce?</span></li><li><b>OpenAlex</b><span class="mono">Catálogo abierto de artículos científicos</span><span class="eje">Novedad bibliográfica de cada candidata</span></li></ul></div>
+    <div class="cuerpo"><div class="nombre"><b>Socias</b><span>Agencias que aportan datos</span></div><ul class="fuentes"><li><b>ESA</b><span class="mono">Copernicus DEM GLO-90</span><span class="eje">Relieve de toda la Tierra</span></li><li><b>JAXA</b><span class="mono">GPM IMERG (misión conjunta con la NASA)</span><span class="eje">Precipitación</span></li><li><b>METI (Japón)</b><span class="mono">ASTER (instrumento a bordo de Terra, de la NASA)</span><span class="eje">Emisividad y roca basáltica</span></li><li><b>CSA</b><span class="mono">RADARSAT · ampliación prevista</span><span class="eje">Radar para rugosidad y humedad del suelo</span></li></ul></div>
     <div class="stack" style="gap:14px"><p class="kicker">Enlaces</p>
-    <div class="enlaces"><a href="https://search.earthdata.nasa.gov/">NASA Earthdata Search</a><a href="https://worldview.earthdata.nasa.gov/">NASA Worldview</a><a href="https://pds.nasa.gov/">NASA PDS</a><a href="https://pds-geosciences.wustl.edu/missions/lro/diviner.htm">LRO Diviner</a><a href="https://swim.psi.edu/">SWIM</a><a href="https://dataspace.copernicus.eu/">Copernicus Data Space</a><a href="https://gportal.jaxa.jp/">JAXA G-Portal</a></div></div>
+    <div class="enlaces"><a href="https://search.earthdata.nasa.gov/">NASA Earthdata Search</a><a href="https://worldview.earthdata.nasa.gov/">NASA Worldview</a><a href="https://pds.nasa.gov/">NASA PDS</a><a href="https://dataspace.copernicus.eu/">Copernicus Data Space</a><a href="https://gpm.nasa.gov/data/imerg">GPM IMERG</a><a href="https://volcano.si.edu/">Smithsonian GVP</a><a href="https://openalex.org/">OpenAlex</a><a href="https://www.openstreetmap.org/">OpenStreetMap</a></div></div>
   </div>
 </section>
 <!--/PAGE-->
@@ -1324,7 +1325,9 @@ function missions(s) {
 const TIPO_SITIO = {conocido: ['Análogo conocido', ''], candidato: ['Candidato nuevo', 'nuevo'], ejemplo: ['Ejemplo', 'gris']};
 const CLASE_LIT = {'sin estudios como análogo': 'verde', 'poco estudiado': 'gris', 'estudiado': 'naranja', 'muy estudiado': 'rojo'};
 const BASE_IMG = location.pathname.includes('/en/') ? '../' : '';
-const coordTxt = (la, lo) => `${Math.abs(la).toFixed(2)}° ${la >= 0 ? 'N' : 'S'}, ${Math.abs(lo).toFixed(2)}° ${lo >= 0 ? 'E' : (document.documentElement.lang === 'en' ? 'W' : 'O')}`;
+// decimales con coma en español y con punto en inglés
+const dec = (v, n) => { const t = Number(v).toFixed(n); return document.documentElement.lang === 'en' ? t : t.replace('.', ','); };
+const coordTxt = (la, lo) => `${dec(Math.abs(la), 2)}° ${la >= 0 ? 'N' : 'S'} · ${dec(Math.abs(lo), 2)}° ${lo >= 0 ? 'E' : (document.documentElement.lang === 'en' ? 'W' : 'O')}`;
 function renderFicha(rows) {
   const row = rows.find((x) => x.s.id === state.sel) || rows[0];
   state.sel = row.s.id;
@@ -1335,8 +1338,8 @@ function renderFicha(rows) {
   $('#ficha').innerHTML = `
     <div class="top"><div class="stack" style="gap:6px"><h3>${esc(s.nombre)}</h3>
       <div class="pills">${s.pais ? `<span class="pill">${esc(s.pais)}</span>` : ''}<span class="pill ${tp[1]}">${tp[0]}</span><span class="pill ${s.baliza}">${b[1]}</span></div></div>
-      <div class="iap"><b class="mono">${r.iap.toFixed(1)}</b><span>Índice · ${esc(p.cuerpo)}</span></div></div>
-    <p class="mono" style="font-size:.8rem;color:var(--accent)">Más parecido que el ${a.percentil.toFixed(1)} % de la tierra emergida</p>
+      <div class="iap"><b class="mono">${dec(r.iap, 1)}</b><span>Índice 0–100 · ${esc(p.cuerpo)}</span></div></div>
+    <p class="mono" style="font-size:.8rem;color:var(--accent)">${a.percentil >= 99.95 ? 'Entre el 0,1 % más parecido de la tierra emergida' : `Más parecido que el ${dec(a.percentil, 1)} % de la tierra emergida`}</p>
     <p class="muted" style="font-size:.92rem">${esc(s.nota)}</p>
     ${radar(r.sim, ref, p)}
     <div class="two">
@@ -1371,7 +1374,7 @@ function renderFichaComunidad(id) {
 
 function renderRank(rows) {
   const list = state.onlyNew ? rows.filter((x) => !x.s.conocido) : rows;
-  $('#rank').innerHTML = list.map(({s, r}, i) => `<button data-id="${s.id}" class="${s.id === state.sel ? 'sel' : ''}"><span class="mono muted">${i + 1}</span><span class="nm">${esc(s.nombre)}</span><span class="bar"><i style="width:${r.iap}%"></i></span><span class="mono" style="text-align:right">${r.iap.toFixed(1)}</span></button>`).join('');
+  $('#rank').innerHTML = list.map(({s, r}, i) => `<button data-id="${s.id}" class="${s.id === state.sel ? 'sel' : ''}"><span class="mono muted">${i + 1}</span><span class="nm">${esc(s.nombre)}</span><span class="bar"><i style="width:${r.iap}%"></i></span><span class="mono" style="text-align:right">${dec(r.iap, 1)}</span></button>`).join('');
   $('#rank').querySelectorAll('button').forEach((bt) => bt.addEventListener('click', () => select(bt.dataset.id)));
 }
 
@@ -1396,8 +1399,8 @@ function renderControls() {
     renderControls(); render();
   }));
   const ds = Object.keys(state.p.pesos);
-  $('#weights').innerHTML = ds.map((d) => `<label for="w_${d}">${esc(DIMN[d] || d)} <span class="mono" id="wv_${d}">${state.w[d].toFixed(2)}</span><input type="range" id="w_${d}" min="0" max="0.5" step="0.05" value="${state.w[d]}"></label>`).join('');
-  ds.forEach((d) => $('#w_' + d).addEventListener('input', (e) => { state.w[d] = +e.target.value; $('#wv_' + d).textContent = state.w[d].toFixed(2); render(); }));
+  $('#weights').innerHTML = ds.map((d) => `<label for="w_${d}">${esc(DIMN[d] || d)} <span class="mono" id="wv_${d}">${dec(state.w[d], 2)}</span><input type="range" id="w_${d}" min="0" max="0.5" step="0.05" value="${state.w[d]}"></label>`).join('');
+  ds.forEach((d) => $('#w_' + d).addEventListener('input', (e) => { state.w[d] = +e.target.value; $('#wv_' + d).textContent = dec(state.w[d], 2); render(); }));
 }
 $('#resetW')?.addEventListener('click', () => { state.w = {...state.p.pesos}; renderControls(); render(); });
 $('#onlyNew')?.addEventListener('change', (e) => { state.onlyNew = e.target.checked; render(); });
@@ -1715,7 +1718,7 @@ if ($('#ticker')) {
 // ---------------------------------------------------------------- geovalla (seguridad y portada)
 // Radio permitido = 30 km + 120 km/h desde la captura. En Mercator, d km son d/6371 · k / cos(lat) píxeles.
 function geovalla(svg, horas) {
-  const m = D.map.iberia, p = m.proj[1], tab = D.sites.find((x) => x.id === 'tabernas');
+  const m = D.map.region, p = m.proj[0], tab = D.sites.find((x) => x.id === 'pinacate');
   if (!tab) return 0;
   const c = proyectar(m, tab.lon, tab.lat), pxKm = p.k / 6371 / Math.cos(tab.lat * Math.PI / 180);
   const km = 30 + 120 * horas;
@@ -1723,11 +1726,11 @@ function geovalla(svg, horas) {
   let h = `<clipPath id="geoClip-${svg.id}"><rect width="${m.w}" height="${m.h}"/></clipPath><path class="land" d="${m.d}"/>`;
   h += `<g clip-path="url(#geoClip-${svg.id})"><circle class="alcance" cx="${c[0]}" cy="${c[1]}" r="${km * pxKm}"/><circle class="base30" cx="${c[0]}" cy="${c[1]}" r="${30 * pxKm}"/></g>`;
   for (const s of D.sites) {
-    const q = m.pts[s.id]; if (!q || s.lon < -12) continue;
+    const q = m.pts[s.id]; if (!q) continue;
     const dentro = Math.hypot(q[0] - c[0], q[1] - c[1]) <= km * pxKm;
-    h += `<circle cx="${q[0]}" cy="${q[1]}" r="${s.id === 'tabernas' ? 6 : 4}" style="fill:${s.id === 'tabernas' ? 'var(--accent)' : dentro ? 'var(--text)' : 'var(--muted)'}"/>`;
+    h += `<circle cx="${q[0]}" cy="${q[1]}" r="${s.id === 'pinacate' ? 6 : 4}" style="fill:${s.id === 'pinacate' ? 'var(--accent)' : dentro ? 'var(--text)' : 'var(--muted)'}"/>`;
   }
-  h += `<text x="${c[0] + 10}" y="${c[1] - 10}" font-size="13" font-family="DM Mono, monospace" style="fill:var(--accent)">Tabernas</text>`;
+  h += `<text x="${c[0] + 10}" y="${c[1] - 10}" font-size="13" font-family="DM Mono, monospace" style="fill:var(--accent)">El Pinacate</text>`;
   svg.innerHTML = h;
   return km;
 }
@@ -1761,7 +1764,7 @@ const FIG = {
   },
   comunidad: (el) => { diorama(el, {n: 18}).catch(() => { el.innerHTML = Disenos.base(4, '#ffd23f', '#2b2b28', 18); }); },
   seguridad: (el) => { const o = document.createElementNS(NS, 'svg'); o.id = 'geoMini'; el.append(o); geovalla(o, 1.5); },
-  datos: (el) => { el.innerHTML = `<div class="tags">${['MODIS', 'GPM', 'NASADEM', 'ASTER', 'LRO', 'MRO', 'Perseverance', 'SWIM', 'Sentinel'].map((t) => `<span>${t}</span>`).join('')}</div>`; },
+  datos: (el) => { el.innerHTML = `<div class="tags">${['Copernicus DEM', 'MODIS', 'GPM', 'ASTER', 'MERRA-2', 'LRO', 'MGS', 'MGC3', 'OpenAlex'].map((t) => `<span>${t}</span>`).join('')}</div>`; },
   video: (el) => { el.innerHTML = '<canvas aria-hidden="true"></canvas><svg viewBox="0 0 400 300" style="position:absolute;inset:0" aria-hidden="true"><path d="M182 124v52l44-26z" style="fill:var(--accent)"/></svg>'; lunaTramada(el.querySelector('canvas'), 7); },
   explorador: (el) => { el.innerHTML = Disenos.parche(); el.firstElementChild.removeAttribute('width'); el.firstElementChild.removeAttribute('height'); },
 };
@@ -2180,7 +2183,7 @@ if (window.METODO && $('#mtPasosLista')) {
     Argentina: 'Argentina', Bolivia: 'Bolivia', Mexico: 'México', Australia: 'Australia', Ethiopia: 'Etiopía', Yemen: 'Yemen', Oman: 'Omán', Namibia: 'Namibia', 'South Africa': 'Sudáfrica',
     Greenland: 'Groenlandia', Iceland: 'Islandia', Russia: 'Rusia', Kazakhstan: 'Kazajistán', Turkmenistan: 'Turkmenistán', Afghanistan: 'Afganistán', Pakistan: 'Pakistán', India: 'India', Jordan: 'Jordania', Antarctica: 'Antártida'};
   const pais = (p) => (EN ? p : PAIS[p] || p);
-  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d});
+  const num = (v, d = 0) => Number(v).toLocaleString(EN ? 'en-US' : 'es-ES', {minimumFractionDigits: d, maximumFractionDigits: d, useGrouping: 'always'});
   const pct = (v) => `${num(v * 100, v * 100 < 1 ? 2 : 1)} %`;
   const coord = ([la, lo]) => `${num(Math.abs(la), 2)}° ${la >= 0 ? 'N' : 'S'} ${num(Math.abs(lo), 2)}° ${lo >= 0 ? 'E' : (EN ? 'W' : 'O')}`;
   const perfil = Object.fromEntries(M.perfiles.map((p) => [p.id, p]));
