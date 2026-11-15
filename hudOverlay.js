@@ -1,3 +1,5 @@
+import { AUDIO_ENVELOPE } from './audioEnvelope.js';
+
 function clamp01(v) {
   return v < 0 ? 0 : v > 1 ? 1 : v;
 }
@@ -8,28 +10,14 @@ function smoothstep(a, b, x) {
 }
 
 /**
- * Computes normalized speech envelope (0..1) matching the 7 English voiceover segments.
+ * Samples deterministic 60fps audio envelope extracted from mastered voiceover + SFX stems.
  */
 function sampleVoiceoverEnvelope(elapsedSeconds) {
-  // Exact 7 voiceover cadence windows (with micro pauses between words)
-  const windows = [
-    [0.15, 3.35], // "Testing space tech requires planetary analogs—Wait..."
-    [3.55, 7.85], // "Meet MoonSiteUA. Powered by NASA and ESA satellite data..."
-    [8.05, 12.85], // "...turning grey discoveries into green, crowd-verified..."
-    [13.05, 17.35], // "Anti-bot security and offline geofencing keep every metric real."
-    [17.55, 21.35], // "Hunt data-gap bounties, earn physical mission gear..."
-    [21.55, 25.35], // "...and build collaborative virtual space bases module by module."
-    [25.60, 29.55], // "Too hazardous for humans? ... Explore Earth. Unlock Space."
-  ];
-  let active = 0;
-  for (const [s, e] of windows) {
-    if (elapsedSeconds >= s && elapsedSeconds <= e) {
-      const fadeIn = smoothstep(s, s + 0.14, elapsedSeconds);
-      const fadeOut = 1.0 - smoothstep(e - 0.16, e, elapsedSeconds);
-      active = Math.max(active, fadeIn * fadeOut);
-    }
-  }
-  return active;
+  const f = clamp01(elapsedSeconds / 30.0) * 1800.0;
+  const i0 = Math.min(1800, Math.floor(f));
+  const i1 = Math.min(1800, i0 + 1);
+  const frac = f - i0;
+  return AUDIO_ENVELOPE[i0] * (1.0 - frac) + AUDIO_ENVELOPE[i1] * frac;
 }
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -231,7 +219,7 @@ export function createHudOverlay() {
       mEl.classList.toggle('passed', done && i !== actIdx);
     });
 
-    // 24-Bar Audio Waveform Visualizer synced to voiceover cadence
+    // 28-Bar Audio Waveform Visualizer synced deterministically to real voiceover + SFX envelope
     const env = sampleVoiceoverEnvelope(elapsedSeconds);
     for (let i = 0; i < waveBars.length; i++) {
       const harmonic =
