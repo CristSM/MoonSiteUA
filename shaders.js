@@ -1,26 +1,14 @@
 import * as THREE from 'three';
+import { createMulberry32 } from './pbrTextures.js';
 
-/**
- * Deterministic Mulberry32 Seeded PRNG (seed = 202609).
- * Guarantees zero runtime nondeterminism across parallel render workers.
- */
-export function createMulberry32(seed = 202609) {
-  let state = seed >>> 0;
-  return function next() {
-    state |= 0;
-    state = (state + 0x6d2b79f5) | 0;
-    let t = Math.imul(state ^ (state >>> 15), 1 | state);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
+export { createMulberry32 };
 
 /**
  * Deterministic 2D hash + smooth noise + RidgedFBM for CPU vertex height sampling.
  * Keeps 3D props, rover wheels, habitat struts, and HUD anchors flush with GLSL terrain.
  */
 function hash2(ix, iz) {
-  const n = Math.sin(ix * 127.1 + iz * 311.7 + 20.2609) * 43758.5453123;
+  const n = Math.sin(ix * 127.1 + iz * 311.7 + 20.261115) * 43758.5453123;
   return n - Math.floor(n);
 }
 
@@ -83,8 +71,9 @@ function smoothstep(edge0, edge1, x) {
 /**
  * Deterministic geological elevation sampler for the 240x240 planetary analog terrain.
  * Shapes canyons, arid plateaus, the Act 4 karst cove, Act 6 colony terrace, and Act 7 fissure.
+ * Exported as both `getTerrainHeight` (spec API) and `sampleTerrainHeight`.
  */
-export function sampleTerrainHeight(x, z) {
+export function getTerrainHeight(x, z) {
   const ridged = ridgedFbm2D(x * 0.032 + 4.2, z * 0.032 - 2.7, 5);
   const macro = fbm2D(x * 0.015 - 1.8, z * 0.015 + 3.1, 4);
   const micro = fbm2D(x * 0.14 + 9.0, z * 0.14 - 5.0, 2) * 0.28;
@@ -122,7 +111,7 @@ export function sampleTerrainHeight(x, z) {
   const mColony = 1.0 - smoothstep(9.0, 22.0, dColony);
   h = h * (1.0 - mColony * 0.9) + 1.4 * (mColony * 0.9);
 
-  // Act 7 Extreme Hazard volcanic fissure (-60, -8) & sheer basalt cliff (-72, -10)
+  // Act 7 Extreme Hazard volcanic fissure (-60, -8) & sheer basalt cliff (-74, -10)
   // Smooth slope transitions avoid coarse vertex triangles at close camera range
   const dFissure = Math.hypot((x + 60) * 1.25, (z + 8) * 0.65);
   const mFissure = 1.0 - smoothstep(2.5, 13.5, dFissure);
@@ -132,16 +121,28 @@ export function sampleTerrainHeight(x, z) {
   const mCliff = 1.0 - smoothstep(5.0, 21.0, dCliff);
   h += mCliff * 9.8;
 
+  // Deterministic rocky crawl undulations along Act 7 rover path for genuine rocker-bogie wheel articulation
+  const dRoverTrack = Math.hypot((x + 60.5) * 0.55, (z + 0.5) * 0.45);
+  const mRover = 1.0 - smoothstep(2.5, 11.0, dRoverTrack);
+  const rockBumps =
+    Math.sin(x * 1.15 + z * 0.85) * 0.24 +
+    Math.cos(x * 2.1 - z * 1.4) * 0.16;
+  h += rockBumps * mRover;
+
   return h;
 }
 
-export function sampleTerrainNormal(x, z, eps = 0.45) {
-  const hL = sampleTerrainHeight(x - eps, z);
-  const hR = sampleTerrainHeight(x + eps, z);
-  const hD = sampleTerrainHeight(x, z - eps);
-  const hU = sampleTerrainHeight(x, z + eps);
+export const sampleTerrainHeight = getTerrainHeight;
+
+export function getTerrainNormal(x, z, eps = 0.45) {
+  const hL = getTerrainHeight(x - eps, z);
+  const hR = getTerrainHeight(x + eps, z);
+  const hD = getTerrainHeight(x, z - eps);
+  const hU = getTerrainHeight(x, z + eps);
   return new THREE.Vector3(hL - hR, 2.0 * eps, hD - hU).normalize();
 }
+
+export const sampleTerrainNormal = getTerrainNormal;
 
 /**
  * Shared GLSL 3D Simplex Noise block used across planetary & post-processing shaders.
@@ -303,6 +304,7 @@ export function createEarthSurfaceMaterial(sunDir) {
       uTime: { value: 0 },
       uSunDir: { value: sunDir.clone().normalize() },
       uNightLightsMix: { value: 1.0 },
+      uCloudRotDelta: { value: 0.0 },
     },
     vertexShader: /* glsl */ `
       varying vec3 vObjPos;
@@ -321,12 +323,26 @@ export function createEarthSurfaceMaterial(sunDir) {
       uniform float uTime;
       uniform vec3 uSunDir;
       uniform float uNightLightsMix;
+      uniform float uCloudRotDelta;
       varying vec3 vObjPos;
       varying vec3 vWorldPos;
       varying vec3 vWorldNormal;
 
       float earthRelief(vec3 p) {
         return fbm3(p * 2.15 + vec3(1.2, -0.7, 2.4));
+      }
+
+      vec3 rotateY(vec3 v, float a) {
+        float c = cos(a);
+        float s = sin(a);
+        return vec3(v.x * c + v.z * s, v.y, -v.x * s + v.z * c);
+      }
+
+      float sampleCloudDensity(vec3 dirObj) {
+        vec3 p = normalize(dirObj) * 3.4 + vec3(uTime * 0.04, 0.0, -uTime * 0.02);
+        float c = fbm3(p);
+        float swirl = fbm3(p * 2.2 + vec3(c * 0.8));
+        return smoothstep(0.08, 0.48, c + swirl * 0.35);
       }
 
       void main() {
@@ -352,7 +368,7 @@ export function createEarthSurfaceMaterial(sunDir) {
         vec3 savannaCol = vec3(0.24, 0.21, 0.12);
         vec3 aridCol = vec3(0.42, 0.25, 0.15);
         vec3 peakCol = vec3(0.62, 0.58, 0.55);
-        // Organic domain-warped continental biomes (no abs() contour worm-lines)
+        // Organic domain-warped continental biomes
         float biomeField = snoise(p * 4.5 + vec3(cont * 1.4)) * 0.5 + 0.5;
         float lat = abs(p.y);
         float aridMix = smoothstep(0.28, 0.72, biomeField * 0.72 + (1.0 - lat) * 0.28);
@@ -371,9 +387,16 @@ export function createEarthSurfaceMaterial(sunDir) {
         float day = smoothstep(-0.08, 0.26, NdotL);
         float terminatorBand = exp(-pow((NdotL + 0.03) * 9.0, 2.0));
 
-        // Ocean sun-glint
+        // Synchronized Cloud Drop Shadow cast along grazing -sun tangent onto ocean/land below
+        vec3 pCloud = rotateY(p, -uCloudRotDelta);
+        vec3 sunTangent = normalize(L - vWorldNormal * dot(L, vWorldNormal) + vec3(0.0001));
+        vec3 shadowSampleDir = normalize(pCloud + rotateY(sunTangent, -uCloudRotDelta) * 0.022);
+        float cloudShadow = sampleCloudDensity(shadowSampleDir) * smoothstep(-0.05, 0.30, NdotL);
+        float shadowMul = 1.0 - cloudShadow * 0.58;
+
+        // Ocean sun-glint (attenuated inside cloud shadows)
         vec3 H = normalize(L + V);
-        float spec = pow(max(dot(N, H), 0.0), 64.0) * (1.0 - landMask) * smoothstep(0.02, 0.35, NdotL);
+        float spec = pow(max(dot(N, H), 0.0), 64.0) * (1.0 - landMask) * smoothstep(0.02, 0.35, NdotL) * shadowMul;
 
         // Pinprick explorer city lights strictly on the dark hemisphere (zero blobs)
         float cityNoise = snoise(p * 34.0) * 0.55 + snoise(p * 68.0) * 0.45;
@@ -384,7 +407,7 @@ export function createEarthSurfaceMaterial(sunDir) {
         vec3 scatter = vec3(0.0, 0.75, 1.0) * terminatorBand * 0.18 + vec3(1.0, 0.45, 0.15) * terminatorBand * 0.09;
 
         vec3 ambient = albedo * vec3(0.025, 0.045, 0.085);
-        vec3 direct = albedo * max(NdotL, 0.0) * 1.48;
+        vec3 direct = albedo * max(NdotL, 0.0) * 1.48 * shadowMul;
         vec3 color = ambient + direct + vec3(0.78, 0.92, 1.0) * spec * 0.85 + nightGlow + scatter;
         gl_FragColor = vec4(color, 1.0);
       }
@@ -519,15 +542,103 @@ export function createMoonMaterial(sunDir) {
 }
 
 /**
- * Custom Triplanar Geological PBR Material (onBeforeCompile on MeshStandardMaterial).
- * Preserves real PCFSoftShadowMap self-shadowing and FogExp2 while computing slope-blended
- * dark volcanic basalt cliffs, ochre Martian regolith valleys, wet karst limestone,
- * and dynamic Act 2/3/5/7 laser/beacon illumination overlays.
+ * Physically inspired Rayleigh + Mie Atmospheric Scattering Sky Dome Shader.
+ * Renders deep space zenith (#060B18), horizon dust scattering, 14° golden-hour solar disc
+ * with Henyey-Greenstein forward Mie halo, and subtle non-flickering orbital stars.
  */
-export function createTriplanarTerrainMaterial(grainNormalMap) {
+export function createSkyDomeMaterial(sunDir) {
+  return new THREE.ShaderMaterial({
+    side: THREE.BackSide,
+    depthWrite: false,
+    uniforms: {
+      uSunDir: { value: sunDir.clone().normalize() },
+    },
+    vertexShader: /* glsl */ `
+      varying vec3 vWorldDir;
+      void main() {
+        vec4 wp = modelMatrix * vec4(position, 1.0);
+        vWorldDir = normalize(position);
+        gl_Position = projectionMatrix * viewMatrix * wp;
+      }
+    `,
+    fragmentShader: /* glsl */ `
+      ${GLSL_SIMPLEX_NOISE}
+      uniform vec3 uSunDir;
+      varying vec3 vWorldDir;
+
+      void main() {
+        vec3 dir = normalize(vWorldDir);
+        vec3 sun = normalize(uSunDir);
+        float y = clamp(dir.y, -0.25, 1.0);
+        float up = clamp(dir.y, 0.0, 1.0);
+
+        // Deep stratospheric zenith (#060B18) transitioning through dusty Martian/analog horizon
+        vec3 zenithCol = vec3(0.012, 0.022, 0.052);
+        vec3 midSkyCol = vec3(0.042, 0.075, 0.138);
+        vec3 horizonCol = vec3(0.165, 0.105, 0.095);
+        vec3 nadirCol = vec3(0.018, 0.014, 0.020);
+
+        vec3 sky = mix(horizonCol, midSkyCol, smoothstep(0.0, 0.34, up));
+        sky = mix(sky, zenithCol, smoothstep(0.24, 0.85, up));
+        if (y < 0.0) {
+          sky = mix(horizonCol, nadirCol, smoothstep(0.0, -0.22, y));
+        }
+
+        // Rayleigh blue scatter + Henyey-Greenstein Mie forward golden-hour solar halo
+        float mu = max(dot(dir, sun), 0.0);
+        float g = 0.78;
+        float g2 = g * g;
+        float mie = (1.0 - g2) / pow(max(1.0 + g2 - 2.0 * g * mu, 0.02), 1.5);
+        float horizonGlow = exp(-abs(dir.y) * 5.2);
+        vec3 warmHalo = vec3(1.0, 0.78, 0.56);
+        vec3 crispRayleigh = vec3(0.32, 0.62, 1.0);
+
+        sky += crispRayleigh * (0.045 * horizonGlow * (0.4 + 0.6 * mu));
+        sky += warmHalo * (pow(mu, 6.0) * 0.32 + mie * 0.032) * (0.35 + 0.65 * horizonGlow);
+
+        // Soft solar core visible only when elevation > -0.02
+        float sunCore = smoothstep(0.99925, 0.99975, dot(dir, sun)) * smoothstep(-0.02, 0.05, dir.y);
+        sky += vec3(1.0, 0.96, 0.88) * sunCore * 2.8;
+
+        // Deterministic static high-altitude stars fading gently toward the dusty horizon
+        float starCell = snoise(dir * 135.0);
+        float starFine = snoise(dir * 260.0 + vec3(4.1));
+        float stars = smoothstep(0.76, 0.94, starCell) * smoothstep(0.45, 0.82, starFine) * smoothstep(0.14, 0.58, up);
+        sky += vec3(0.78, 0.88, 1.0) * stars * 0.55;
+
+        gl_FragColor = vec4(sky, 1.0);
+      }
+    `,
+  });
+}
+
+/**
+ * Custom Triplanar Geological PBR Material (onBeforeCompile on MeshStandardMaterial).
+ * Uses 1024x1024 synthesized PBR map sets (Diffuse, Sobel Normal, Roughness, AO) for:
+ *   1. Vesicular Volcanic Basalt (steep cliffs & peaks)
+ *   2. Iron-Oxide Martian Regolith + Wind-Rippled Sand (valley floors)
+ *   3. Wet Karstic Cave Limestone (Act 4 cavern zone around (44, -6))
+ * Plus dynamic Act 2/3/5/7 telemetry overlays and Act 7 mineral veins (Olivine, Pyroxene, Hematite).
+ */
+export function createTriplanarTerrainMaterial(pbrMaps, fallbackGrainTex = null) {
+  const basalt = pbrMaps?.volcanicBasalt;
+  const regolith = pbrMaps?.martianRegolith;
+  const limestone = pbrMaps?.wetLimestone;
+
   const uniforms = {
     uTime: { value: 0 },
-    uGrainTex: { value: grainNormalMap },
+    uBasaltMap: { value: basalt?.map || fallbackGrainTex },
+    uBasaltNorm: { value: basalt?.normalMap || fallbackGrainTex },
+    uBasaltRough: { value: basalt?.roughnessMap || fallbackGrainTex },
+    uBasaltAO: { value: basalt?.aoMap || fallbackGrainTex },
+    uRegolithMap: { value: regolith?.map || fallbackGrainTex },
+    uRegolithNorm: { value: regolith?.normalMap || fallbackGrainTex },
+    uRegolithRough: { value: regolith?.roughnessMap || fallbackGrainTex },
+    uRegolithAO: { value: regolith?.aoMap || fallbackGrainTex },
+    uLimeMap: { value: limestone?.map || fallbackGrainTex },
+    uLimeNorm: { value: limestone?.normalMap || fallbackGrainTex },
+    uLimeRough: { value: limestone?.roughnessMap || fallbackGrainTex },
+    uLimeAO: { value: limestone?.aoMap || fallbackGrainTex },
     // Act 2 Orbital radar sweep
     uRadarSweepPos: { value: new THREE.Vector2(-18, 52) },
     uRadarSweepRadius: { value: 0 },
@@ -541,7 +652,7 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
     uGapNodePos: { value: new THREE.Vector3(16, 0, -32) },
     uGapScanAlpha: { value: 0 },
     uGapScanPhase: { value: 0 },
-    // Act 7 Volcanic magma fissure + multispectral scan beam projection
+    // Act 7 Volcanic magma fissure + multispectral scan beam projection + mineral veins
     uFissurePos: { value: new THREE.Vector3(-60, 0, -8) },
     uFissureGlow: { value: 0 },
     uScanPlaneZ: { value: -8.0 },
@@ -550,7 +661,7 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
 
   const mat = new THREE.MeshStandardMaterial({
     color: 0xffffff,
-    roughness: 0.9,
+    roughness: 1.0,
     metalness: 0.04,
   });
 
@@ -582,7 +693,18 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
         /* glsl */ `
         #include <common>
         uniform float uTime;
-        uniform sampler2D uGrainTex;
+        uniform sampler2D uBasaltMap;
+        uniform sampler2D uBasaltNorm;
+        uniform sampler2D uBasaltRough;
+        uniform sampler2D uBasaltAO;
+        uniform sampler2D uRegolithMap;
+        uniform sampler2D uRegolithNorm;
+        uniform sampler2D uRegolithRough;
+        uniform sampler2D uRegolithAO;
+        uniform sampler2D uLimeMap;
+        uniform sampler2D uLimeNorm;
+        uniform sampler2D uLimeRough;
+        uniform sampler2D uLimeAO;
         uniform vec2 uRadarSweepPos;
         uniform float uRadarSweepRadius;
         uniform float uRadarSweepAlpha;
@@ -600,13 +722,33 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
         varying vec3 vTriWorldPos;
         varying vec3 vTriWorldNormal;
 
-        vec3 triplanarSample(sampler2D tex, vec3 p, vec3 n, float scale) {
-          vec3 w = pow(abs(n), vec3(4.0));
-          w /= max(dot(w, vec3(1.0)), 0.0001);
+        vec3 triWeights(vec3 n) {
+          vec3 w = pow(abs(n), vec3(4.5));
+          return w / max(dot(w, vec3(1.0)), 0.0001);
+        }
+
+        vec3 triplanarColor(sampler2D tex, vec3 p, vec3 w, float scale) {
           vec3 cx = texture2D(tex, p.yz * scale).rgb;
           vec3 cy = texture2D(tex, p.xz * scale).rgb;
           vec3 cz = texture2D(tex, p.xy * scale).rgb;
           return cx * w.x + cy * w.y + cz * w.z;
+        }
+
+        float triplanarScalar(sampler2D tex, vec3 p, vec3 w, float scale) {
+          float cx = texture2D(tex, p.yz * scale).r;
+          float cy = texture2D(tex, p.xz * scale).r;
+          float cz = texture2D(tex, p.xy * scale).r;
+          return cx * w.x + cy * w.y + cz * w.z;
+        }
+
+        vec3 triplanarWorldNormalDelta(sampler2D tex, vec3 p, vec3 w, float scale) {
+          vec2 nx = texture2D(tex, p.zy * scale).xy * 2.0 - 1.0;
+          vec2 ny = texture2D(tex, p.xz * scale).xy * 2.0 - 1.0;
+          vec2 nz = texture2D(tex, p.xy * scale).xy * 2.0 - 1.0;
+          vec3 dx = vec3(0.0, nx.y, nx.x);
+          vec3 dy = vec3(ny.x, 0.0, ny.y);
+          vec3 dz = vec3(nz.x, nz.y, 0.0);
+          return dx * w.x + dy * w.y + dz * w.z;
         }
         `
       )
@@ -615,31 +757,42 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
         /* glsl */ `
         #include <map_fragment>
         vec3 wn = normalize(vTriWorldNormal);
+        vec3 tw = triWeights(wn);
         float slope = 1.0 - clamp(wn.y, 0.0, 1.0);
-        vec3 tri = triplanarSample(uGrainTex, vTriWorldPos, wn, 0.14);
-        vec3 strataTex = triplanarSample(uGrainTex, vTriWorldPos * vec3(1.0, 2.8, 1.0), wn, 0.045);
+        float cliffMask = smoothstep(0.20, 0.56, slope + smoothstep(3.2, 10.5, vTriWorldPos.y) * 0.36);
 
-        // Stratified sediment bands & fine granular detail
-        float strataBand = sin(vTriWorldPos.y * 2.6 + strataTex.r * 3.8) * 0.5 + 0.5;
-        vec3 basaltDark = vec3(0.085, 0.095, 0.115) * (0.72 + strataBand * 0.45);
-        vec3 basaltCliff = mix(basaltDark, vec3(0.18, 0.14, 0.13), strataBand * 0.55);
-
-        // Iron-oxide red/ochre Martian regolith in flatter canyon floors (#8C3B2B to #C86D51 linear equiv)
-        vec3 regolithDeep = vec3(0.24, 0.048, 0.025);
-        vec3 regolithLight = vec3(0.54, 0.155, 0.085);
-        vec3 regolith = mix(regolithDeep, regolithLight, smoothstep(0.25, 0.78, tri.r * 0.65 + strataBand * 0.35));
-
-        // Height + slope geological blend
-        float cliffMask = smoothstep(0.26, 0.62, slope + smoothstep(3.5, 11.0, vTriWorldPos.y) * 0.35);
-        vec3 geoCol = mix(regolith, basaltCliff, cliffMask);
-
-        // Subsurface wet dark karst limestone zone around Act 4 cave mouth (44, -6)
         float karstDist = length(vTriWorldPos.xz - vec2(44.0, -6.0));
-        float karstMask = 1.0 - smoothstep(4.5, 14.5, karstDist);
-        vec3 karstCol = vec3(0.035, 0.052, 0.068) * (0.75 + tri.g * 0.4);
-        geoCol = mix(geoCol, karstCol, karstMask * 0.88);
+        float karstMask = 1.0 - smoothstep(4.2, 14.0, karstDist);
 
-        diffuseColor.rgb = geoCol;
+        vec3 geoCol = vec3(0.0);
+        float geoAO = 1.0;
+
+        if (cliffMask < 0.995) {
+          // Dual-scale XZ projection prevents visible macro tiling across canyon flats
+          vec3 regMacro = texture2D(uRegolithMap, vTriWorldPos.xz * 0.095).rgb;
+          vec3 regDetail = texture2D(uRegolithMap, vTriWorldPos.xz * 0.31 + vec2(0.17, 0.43)).rgb;
+          vec3 regCol = mix(regMacro, regDetail, 0.32);
+          float regAO = texture2D(uRegolithAO, vTriWorldPos.xz * 0.095).r;
+          geoCol += regCol * (1.0 - cliffMask);
+          geoAO = mix(geoAO, regAO, 1.0 - cliffMask);
+        }
+        if (cliffMask > 0.005) {
+          vec3 basMacro = triplanarColor(uBasaltMap, vTriWorldPos, tw, 0.125);
+          vec3 basStrata = triplanarColor(uBasaltMap, vTriWorldPos * vec3(1.0, 2.2, 1.0), tw, 0.055);
+          vec3 basCol = mix(basMacro, basStrata, 0.28);
+          float basAO = triplanarScalar(uBasaltAO, vTriWorldPos, tw, 0.125);
+          geoCol = mix(geoCol, basCol, cliffMask);
+          geoAO = mix(geoAO, basAO, cliffMask);
+        }
+        if (karstDist < 16.0) {
+          vec3 limeCol = triplanarColor(uLimeMap, vTriWorldPos, tw, 0.145);
+          float limeAO = triplanarScalar(uLimeAO, vTriWorldPos, tw, 0.145);
+          geoCol = mix(geoCol, limeCol, karstMask * 0.92);
+          geoAO = mix(geoAO, limeAO, karstMask * 0.92);
+        }
+
+        // Convert baked sRGB PBR albedo texture approximation cleanly + crevice AO
+        diffuseColor.rgb = geoCol * mix(0.56, 1.0, clamp(geoAO, 0.0, 1.0));
         `
       )
       .replace(
@@ -647,20 +800,55 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
         /* glsl */ `
         #include <roughnessmap_fragment>
         vec3 wnR = normalize(vTriWorldNormal);
+        vec3 twR = triWeights(wnR);
         float slopeR = 1.0 - clamp(wnR.y, 0.0, 1.0);
+        float cliffMaskR = smoothstep(0.20, 0.56, slopeR + smoothstep(3.2, 10.5, vTriWorldPos.y) * 0.36);
+
+        float roughVal = 0.88;
+        if (cliffMaskR < 0.995) {
+          float regR = texture2D(uRegolithRough, vTriWorldPos.xz * 0.095).r;
+          roughVal = mix(roughVal, regR, 1.0 - cliffMaskR);
+        }
+        if (cliffMaskR > 0.005) {
+          float basR = triplanarScalar(uBasaltRough, vTriWorldPos, twR, 0.125);
+          roughVal = mix(roughVal, basR, cliffMaskR);
+        }
         float karstDistR = length(vTriWorldPos.xz - vec2(44.0, -6.0));
-        float karstMaskR = 1.0 - smoothstep(4.0, 12.5, karstDistR);
-        float puddle = smoothstep(0.45, 0.62, triplanarSample(uGrainTex, vTriWorldPos, wnR, 0.14).r);
-        roughnessFactor = mix(0.84, 0.92, smoothstep(0.22, 0.58, slopeR));
-        roughnessFactor = mix(roughnessFactor, mix(0.42, 0.20, puddle), karstMaskR);
+        if (karstDistR < 16.0) {
+          float karstMaskR = 1.0 - smoothstep(4.2, 14.0, karstDistR);
+          float limeR = triplanarScalar(uLimeRough, vTriWorldPos, twR, 0.145);
+          roughVal = mix(roughVal, limeR, karstMaskR * 0.94);
+        }
+        roughnessFactor = clamp(roughVal, 0.12, 0.98);
         `
       )
       .replace(
         '#include <normal_fragment_maps>',
         /* glsl */ `
         #include <normal_fragment_maps>
-        vec3 triNorm = triplanarSample(uGrainTex, vTriWorldPos, normalize(vTriWorldNormal), 0.24) * 2.0 - 1.0;
-        normal = normalize(normal + (viewMatrix * vec4(triNorm * 0.35, 0.0)).xyz);
+        vec3 wnN = normalize(vTriWorldNormal);
+        vec3 twN = triWeights(wnN);
+        float slopeN = 1.0 - clamp(wnN.y, 0.0, 1.0);
+        float cliffMaskN = smoothstep(0.20, 0.56, slopeN + smoothstep(3.2, 10.5, vTriWorldPos.y) * 0.36);
+
+        vec3 worldDelta = vec3(0.0);
+        if (cliffMaskN < 0.995) {
+          vec2 regN = texture2D(uRegolithNorm, vTriWorldPos.xz * 0.095).xy * 2.0 - 1.0;
+          vec2 regDetailN = texture2D(uRegolithNorm, vTriWorldPos.xz * 0.31 + vec2(0.17, 0.43)).xy * 2.0 - 1.0;
+          vec2 rComb = regN * 0.72 + regDetailN * 0.28;
+          worldDelta += vec3(rComb.x, 0.0, rComb.y) * (1.0 - cliffMaskN) * 0.65;
+        }
+        if (cliffMaskN > 0.005) {
+          vec3 basDelta = triplanarWorldNormalDelta(uBasaltNorm, vTriWorldPos, twN, 0.125);
+          worldDelta += basDelta * cliffMaskN * 0.85;
+        }
+        float karstDistN = length(vTriWorldPos.xz - vec2(44.0, -6.0));
+        if (karstDistN < 16.0) {
+          float karstMaskN = 1.0 - smoothstep(4.2, 14.0, karstDistN);
+          vec3 limeDelta = triplanarWorldNormalDelta(uLimeNorm, vTriWorldPos, twN, 0.145);
+          worldDelta = mix(worldDelta, limeDelta * 0.90, karstMaskN * 0.92);
+        }
+        normal = normalize(normal + (viewMatrix * vec4(worldDelta, 0.0)).xyz);
         `
       )
       .replace(
@@ -699,18 +887,35 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
           totalEmissiveRadiance += vec3(1.0, 0.84, 0.0) * sweep * mask * 0.58 * uGapScanAlpha;
         }
 
-        // Act 7: Volcanic magma fissure heat glow & drone multispectral laser projection
+        // Act 7: Volcanic magma fissure heat glow & drone multispectral laser + hidden Mineral Veins
         if (uFissureGlow > 0.001) {
           float fd = length((vTriWorldPos.xz - uFissurePos.xz) * vec2(1.4, 0.75));
           float fissureCore = (1.0 - smoothstep(1.2, 6.2, fd)) * smoothstep(-1.5, -6.5, vTriWorldPos.y);
           totalEmissiveRadiance += vec3(1.0, 0.22, 0.03) * fissureCore * 2.4 * uFissureGlow;
         }
         if (uScanAlpha > 0.001) {
-          float cliffRegion = 1.0 - smoothstep(12.0, 32.0, length(vTriWorldPos.xz - vec2(-68.0, -10.0)));
+          float cliffRegion = 1.0 - smoothstep(10.0, 30.0, length(vTriWorldPos.xz - vec2(-68.0, -8.5)));
           float lineD = abs(vTriWorldPos.z - uScanPlaneZ);
-          float scanLine = exp(-pow(lineD * 2.2, 2.0));
+          float scanLine = exp(-pow(lineD * 2.4, 2.0));
+          float scannedPersist = smoothstep(uScanPlaneZ + 3.5, uScanPlaneZ - 1.5, vTriWorldPos.z) * 0.65 + scanLine;
           vec3 spectral = mix(vec3(0.0, 0.95, 1.0), vec3(0.82, 0.18, 1.0), smoothstep(-2.0, 9.0, vTriWorldPos.y));
-          totalEmissiveRadiance += spectral * scanLine * cliffRegion * 2.6 * uScanAlpha;
+          totalEmissiveRadiance += spectral * scanLine * cliffRegion * 2.7 * uScanAlpha;
+
+          // Hidden Fluorescent Mineral Seams (organic jagged crystalline veins: Olivine, Pyroxene, Hematite)
+          float w1 = sin(vTriWorldPos.x * 1.35 + cos(vTriWorldPos.y * 1.9) * 1.4) + sin(vTriWorldPos.z * 1.65 - vTriWorldPos.y * 1.2) * 0.85;
+          float w2 = cos(vTriWorldPos.z * 2.35 + vTriWorldPos.x * 0.95 + w1 * 1.25);
+          float veinBaseA = abs(sin(vTriWorldPos.y * 1.85 + w1 * 1.55 + cos(vTriWorldPos.x * 2.8) * 0.45));
+          float veinBaseB = abs(sin(vTriWorldPos.x * 1.55 - vTriWorldPos.z * 1.45 + w2 * 1.65));
+          float veinBaseC = abs(cos(vTriWorldPos.y * 2.15 - vTriWorldPos.z * 1.25 + w1 * 1.15 - w2 * 0.65));
+          float olivineVein = exp(-pow(veinBaseA * 22.0, 2.0)) * smoothstep(0.1, 0.7, sin(vTriWorldPos.x * 0.42 + vTriWorldPos.z * 0.51) * 0.5 + 0.5);
+          float pyroxeneVein = exp(-pow(veinBaseB * 24.0, 2.0)) * smoothstep(0.15, 0.75, cos(vTriWorldPos.y * 0.65 - vTriWorldPos.z * 0.48) * 0.5 + 0.5);
+          float hematiteVein = exp(-pow(veinBaseC * 20.0, 2.0)) * smoothstep(0.2, 0.8, sin(vTriWorldPos.z * 0.55 + vTriWorldPos.y * 0.5) * 0.5 + 0.5);
+          vec3 mineralGlow =
+            vec3(0.22, 1.0, 0.42) * olivineVein * 2.1 +
+            vec3(0.0, 0.92, 1.0) * pyroxeneVein * 1.95 +
+            vec3(1.0, 0.36, 0.12) * hematiteVein * 1.85;
+          float revealBoost = clamp(scanLine * 1.5 + scannedPersist * 0.72, 0.0, 1.6);
+          totalEmissiveRadiance += mineralGlow * cliffRegion * revealBoost * smoothstep(-2.5, 4.5, vTriWorldPos.y) * uScanAlpha;
         }
         `
       );
@@ -721,7 +926,7 @@ export function createTriplanarTerrainMaterial(grainNormalMap) {
 }
 
 /**
- * Volumetric Vertical Survey Beacon Beam Shader (Act 3).
+ * Volumetric Vertical Survey Beacon Beam Shader (Act 3) with Animated Upward Data-Stream Rings.
  */
 export function createBeaconBeamMaterial() {
   return new THREE.ShaderMaterial({
@@ -758,9 +963,14 @@ export function createBeaconBeamMaterial() {
         vec3 V = normalize(vViewPos);
         float edge = pow(abs(dot(N, V)), 1.45);
         float verticalFade = smoothstep(0.0, 0.12, vUv.y) * (1.0 - smoothstep(0.45, 1.0, vUv.y));
-        float pulse = 0.68 + 0.32 * sin(vUv.y * 18.0 - uTime * 9.0);
-        float intensity = edge * verticalFade * pulse * uOpacity;
-        gl_FragColor = vec4(uColor * (1.15 + pulse * 0.55), intensity);
+        float pulse = 0.65 + 0.35 * sin(vUv.y * 18.0 - uTime * 9.0);
+        // Upward rising telemetry data-stream rings & packet segments
+        float ringPhase = fract(vUv.y * 5.0 - uTime * 2.2);
+        float streamRing = exp(-pow((ringPhase - 0.5) * 9.5, 2.0));
+        float packetMask = 0.55 + 0.45 * step(0.28, fract(vUv.x * 8.0 + uTime * 0.75));
+        float intensity = edge * verticalFade * (pulse * 0.85 + streamRing * packetMask * 1.15) * uOpacity;
+        vec3 col = uColor * (1.15 + pulse * 0.45) + mix(uColor, vec3(1.0), 0.45) * streamRing * 0.95;
+        gl_FragColor = vec4(col, intensity);
       }
     `,
   });
@@ -917,10 +1127,10 @@ export function createMultispectralScanMaterial() {
 }
 
 /**
- * Custom Final Cinema Post-Processing Shader Pass (Pass #4 of EffectComposer):
- * - Horizontal anamorphic lens flare streaks on bright highlights
- * - Dynamic RGB Chromatic Aberration (uRGBShift: 0.0008 normal -> 0.009 whip-pan spike)
- * - Deterministic 35mm organic film grain seeded strictly by uFrame (intensity: 0.035)
+ * Custom Final Cinema Post-Processing Shader Pass (Pass #5 of EffectComposer):
+ * - Horizontal anamorphic lens flare streaks on specular peaks > 0.85
+ * - Dynamic RGB Chromatic Aberration (uAbberation: 0.0006 baseline -> 0.008 whip-pan spike)
+ * - Deterministic 35mm Kodak Vision3 500T film grain seeded strictly by uFrame (0.028)
  * - Optical lens vignette
  * - ACES Filmic Tone Mapping + Linear-to-sRGB transfer
  */
@@ -928,11 +1138,11 @@ export const CinemaPostShader = {
   uniforms: {
     tDiffuse: { value: null },
     uResolution: { value: new THREE.Vector2(1920, 1080) },
-    uRGBShift: { value: 0.0008 },
-    uGrainIntensity: { value: 0.015 },
+    uAbberation: { value: 0.0006 },
+    uGrainIntensity: { value: 0.028 },
     uVignette: { value: 0.34 },
     uAnamorphic: { value: 0.24 },
-    uExposure: { value: 1.15 },
+    uExposure: { value: 1.12 },
     uFrame: { value: 0.0 },
   },
   vertexShader: /* glsl */ `
@@ -945,7 +1155,7 @@ export const CinemaPostShader = {
   fragmentShader: /* glsl */ `
     uniform sampler2D tDiffuse;
     uniform vec2 uResolution;
-    uniform float uRGBShift;
+    uniform float uAbberation;
     uniform float uGrainIntensity;
     uniform float uVignette;
     uniform float uAnamorphic;
@@ -978,14 +1188,14 @@ export const CinemaPostShader = {
     void main() {
       vec2 center = vUv - 0.5;
       float radial = length(center);
-      vec2 shiftDir = normalize(center + vec2(0.0001, 0.0001)) * uRGBShift * (0.45 + radial * 1.35);
+      vec2 shiftDir = normalize(center + vec2(0.0001, 0.0001)) * uAbberation * (0.45 + radial * 1.35);
 
       float r = texture2D(tDiffuse, clamp(vUv + shiftDir, 0.001, 0.999)).r;
       float g = texture2D(tDiffuse, vUv).g;
       float b = texture2D(tDiffuse, clamp(vUv - shiftDir, 0.001, 0.999)).b;
       vec3 col = vec3(r, g, b);
 
-      // Subtle horizontal anamorphic cyan/gold flare streaks on bright highlights
+      // Horizontal anamorphic lens flare streaks on specular peaks > 0.85
       vec3 streak = vec3(0.0);
       float texelX = 1.0 / uResolution.x;
       for (int i = -6; i <= 6; i++) {
@@ -993,10 +1203,10 @@ export const CinemaPostShader = {
         float w = exp(-abs(fi) * 0.34);
         vec3 s = texture2D(tDiffuse, clamp(vUv + vec2(fi * texelX * 14.0, 0.0), 0.001, 0.999)).rgb;
         float lum = dot(s, vec3(0.2126, 0.7152, 0.0722));
-        vec3 hi = max(s - vec3(0.95), vec3(0.0)) * smoothstep(0.85, 1.45, lum);
+        vec3 hi = max(s - vec3(0.85), vec3(0.0)) * smoothstep(0.85, 1.38, lum);
         streak += hi * w;
       }
-      col += streak * vec3(0.32, 0.88, 1.0) * (uAnamorphic * 0.085);
+      col += streak * vec3(0.32, 0.88, 1.0) * (uAnamorphic * 0.088);
 
       // ACES Filmic Tone Mapping + Linear-to-sRGB calibration
       col = acesFilmic(col * uExposure);
@@ -1006,7 +1216,7 @@ export const CinemaPostShader = {
       float vig = 1.0 - smoothstep(0.38, 0.96, radial) * uVignette;
       col *= vig;
 
-      // Deterministic 35mm midtone film grain locked strictly to frame index
+      // Deterministic 35mm Kodak Vision3 500T film grain weighted to luminance midtones
       float luma = dot(col, vec3(0.2126, 0.7152, 0.0722));
       float grainMask = smoothstep(0.03, 0.22, luma) * (1.0 - smoothstep(0.75, 1.0, luma) * 0.6);
       float grain = hashGrain(gl_FragCoord.xy, uFrame);

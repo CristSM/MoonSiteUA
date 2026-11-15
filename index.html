@@ -103,11 +103,11 @@
     /* Tactile Optical Glassmorphism System */
     .glass-card {
       position: absolute;
-      background: linear-gradient(135deg, rgba(16, 24, 42, 0.76) 0%, rgba(8, 12, 22, 0.88) 100%);
-      backdrop-filter: blur(22px) saturate(180%);
-      -webkit-backdrop-filter: blur(22px) saturate(180%);
+      background: linear-gradient(145deg, rgba(14, 21, 36, 0.74), rgba(6, 10, 18, 0.88));
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
       border: 1px solid rgba(0, 240, 255, 0.28);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 20px 50px rgba(0, 0, 0, 0.65);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.16);
       border-radius: 14px;
       padding: 18px 22px;
       color: #F4F8FF;
@@ -148,6 +148,7 @@
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.08em;
+      white-space: nowrap;
       background: rgba(8, 12, 22, 0.88);
       border: 1px solid rgba(0, 240, 255, 0.28);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 24px rgba(0, 0, 0, 0.5);
@@ -194,7 +195,7 @@
     }
 
     .wf-box {
-      width: 240px;
+      width: 268px;
       padding: 8px 12px;
       border-radius: 8px;
       background: rgba(5, 9, 18, 0.88);
@@ -214,7 +215,7 @@
       height: 28px;
       display: flex;
       align-items: flex-end;
-      gap: 4px;
+      gap: 3px;
     }
 
     .wf-bar {
@@ -514,7 +515,7 @@
 
     /* Act 4 */
     #act4-shield-card {
-      width: 520px;
+      width: 575px;
       opacity: 0;
     }
 
@@ -633,10 +634,11 @@
     .econ-card {
       position: relative;
       flex: 1;
-      background: linear-gradient(135deg, rgba(16, 24, 42, 0.82) 0%, rgba(8, 12, 22, 0.92) 100%);
-      backdrop-filter: blur(22px) saturate(180%);
-      border: 1px solid rgba(0, 240, 255, 0.32);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 24px 55px rgba(0, 0, 0, 0.72);
+      background: linear-gradient(145deg, rgba(14, 21, 36, 0.74), rgba(6, 10, 18, 0.88));
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(0, 240, 255, 0.28);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.16);
       border-radius: 16px;
       padding: 20px 22px;
       transform-style: preserve-3d;
@@ -841,7 +843,7 @@
         <div class="act1-eyebrow display">TESTING SPACE TECH</div>
         <div class="act1-odo-wrap">
           <div id="act1-odo" class="display">$0</div>
-          <div class="act1-cost-label mono">ORBITAL LAUNCH COST // PROHIBITIVE CADENCE</div>
+          <div class="act1-cost-label mono">LAUNCH COST // ORBITAL TESTBED</div>
           <div id="act1-slash"></div>
         </div>
       </div>
@@ -862,9 +864,9 @@
           SECTOR: ES-IBERIA // OPTIMIZED COUNTRY-SEGMENTED ENGINE
         </div>
         <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-          <div class="hud-pill mono">[SOURCE: NASA / ESA SATELLITE CROSS-DATA]</div>
+          <div class="hud-pill mono">[NASA / ESA SATELLITE TELEMETRY]</div>
           <div class="hotspot-alert mono">
-            ● UNEXPLORED HOTSPOTS (ZERO FIELD TELEMETRY)
+            ● UNEXPLORED ZONES OF INTEREST (ZERO FIELD TELEMETRY)
           </div>
         </div>
       </div>
@@ -877,7 +879,7 @@
 
       <div id="card-node02" class="glass-card node-card">
         <div class="card-kicker mono" style="color: var(--cyan-nasa);">COMMUNITY MICRO-ANALOG // NODE_02</div>
-        <div class="card-title display">KARSTIC SUBSURFACE SYSTEM</div>
+        <div class="card-title display">KARSTIC CAVERN SYSTEM</div>
         <div class="card-coords mono">38.34°N, 0.48°W // LAVA-TUBE PROXY</div>
       </div>
 
@@ -905,24 +907,21 @@
       <!-- ACT 4: Anti-Sybil Identity Shield & Offline Geofencing -->
       <div id="act4-shield-card" class="glass-card">
         <div class="card-kicker mono">SECURITY PROTOCOL 01 // ZERO-SPOOFING</div>
-        <div class="card-title display" style="font-size:24px;">ANTI-SYBIL IDENTITY SHIELD</div>
+        <div class="card-title display" style="font-size:21px;">ANTI-SYBIL SHIELD: OAuth + UNIQUE SMS OTP</div>
         <div class="sec-flow mono">
-          <div class="sec-step">[OAuth (Google / Apple) + Mandatory Unique SMS OTP]</div>
+          <div class="sec-step">[Google / Apple OAuth + Mandatory Unique SMS Verification]</div>
           <div class="sec-step" style="border-color: rgba(0,255,136,0.45); color: var(--emerald-verified);">
-            ➔ [1 Unique Phone = 1 Real Human]
+            ➔ [1 Phone = 1 Real Human • Zero Sensitive ID / No DNI]
           </div>
-        </div>
-        <div class="mono" style="font-size:12px; color:#A3E4D7;">
-          ZERO SENSITIVE ID (NO DNI) // PRIVACY-FIRST TRACEABILITY
         </div>
       </div>
 
       <div id="act4-offline-card" class="glass-card">
         <div class="mono" style="font-size:14px; color: var(--amber-martian); font-weight:700;">
-          SIGNAL: 0 BARS — ASYNC OFFLINE EXPEDITION MODE ACTIVE
+          OFFLINE EXPEDITION MODE — 0 BARS SIGNAL
         </div>
         <div class="mono" style="font-size:12px; color:#B6C4D8; margin-top:4px;">
-          CRYPTOSIGNED FIELD TELEMETRY BUFFERED LOCALLY IN KARST CLEFT
+          CRYPTOSIGNED FIELD TELEMETRY BUFFERED LOCALLY IN KARSTIC CAVERN
         </div>
       </div>
 
@@ -943,7 +942,7 @@
 
       <div id="act4-spoof-card" class="glass-card" style="width:390px; border-color: rgba(255,30,66,0.55);">
         <div class="card-kicker mono" style="color: var(--crimson-hazard);">ANOMALY MITIGATION</div>
-        <div class="card-title display" style="color: var(--crimson-hazard);">COUCH SPOOFING REJECTED ✕</div>
+        <div class="card-title display" style="color: var(--crimson-hazard);">COUCH SPOOFING BLOCKED ✕</div>
         <div class="card-coords mono">OUTSIDE LOGICAL GEOFENCE PERIMETER</div>
       </div>
 
@@ -1059,7 +1058,7 @@
       <div id="act7-relay-badge" class="glass-card">
         <div class="card-kicker mono" style="color: var(--gold-mission);">INSTITUTIONAL ESCALATION</div>
         <div class="card-title display" style="font-size:20px;">
-          🤖 TIER 3 RELAY: UNIVERSITY &amp; SPACE AGENCY AUTOMATED MISSION
+          🤖 TIER 3 AUTOMATED MISSION: UNIVERSITY &amp; SPACE AGENCY RELAY
         </div>
       </div>
 

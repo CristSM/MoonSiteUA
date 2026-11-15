@@ -41,7 +41,7 @@ function ensureLeader(svg, id, color) {
     g.setAttribute('data-leader', id);
     const path = document.createElementNS(SVG_NS, 'path');
     path.setAttribute('fill', 'none');
-    path.setAttribute('stroke-width', '1.6');
+    path.setAttribute('stroke-width', '1.0');
     path.setAttribute('stroke-linecap', 'round');
     const halo = document.createElementNS(SVG_NS, 'circle');
     halo.setAttribute('r', '9');
@@ -106,10 +106,10 @@ export function createHudOverlay() {
   const leaderSvg = document.getElementById('hud-leader-svg');
   const waveformEl = document.getElementById('hud-waveform');
 
-  // Build 24 deterministic audio visualizer bars once
+  // Build 28 deterministic audio-reactive waveform visualizer bars once
   const waveBars = [];
   waveformEl.innerHTML = '';
-  for (let i = 0; i < 24; i++) {
+  for (let i = 0; i < 28; i++) {
     const bar = document.createElement('div');
     bar.className = 'wf-bar';
     waveformEl.appendChild(bar);
