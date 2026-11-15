@@ -1,2725 +1,1128 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MoonSiteUA — Gamified Citizen Science Planetary Exploration Pitch (60fps / 1920x1080)</title>
+  <meta name="viewport" content="width=1920, height=1080, initial-scale=1.0" />
+  <title>MoonSiteUA — 3D Cinematic Pitch Composition</title>
 
-  <!-- Google Fonts: Space Grotesk (headers) & JetBrains Mono (telemetry) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Space+Grotesk:wght@700;800&display=swap"
+    rel="stylesheet"
+  />
 
-  <!-- GSAP 3 Core (HyperFrames compatible) -->
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./node_modules/three/build/three.module.js",
+        "three/addons/": "./node_modules/three/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
 
   <style>
     :root {
       --bg-void: #05070B;
-      --bg-panel: rgba(14, 21, 38, 0.78);
-      --border-panel: rgba(0, 240, 255, 0.25);
       --cyan-nasa: #00F0FF;
       --grey-beacon: #8E9BAE;
       --amber-martian: #FF6B00;
       --emerald-verified: #00FF88;
       --purple-bounty: #B829FF;
       --gold-mission: #FFD700;
-      --solar-gold: #FFB800;
       --crimson-hazard: #FF1E42;
-      --text-primary: #F4F8FF;
-      --text-muted: #9CB0C9;
-      --font-display: 'Space Grotesk', sans-serif;
-      --font-mono: 'JetBrains Mono', monospace;
+      --solar-gold: #FFB800;
     }
 
-    *, *::before, *::after {
+    * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background: #05070B;
-      color: var(--text-primary);
-      font-family: var(--font-display);
+    html,
+    body {
+      width: 1920px;
+      height: 1080px;
       overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--bg-void);
+      color: #F4F8FF;
+      font-family: 'Space Grotesk', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
 
-    /* Master 1920x1080 Canvas */
-    #root {
+    [data-composition-id='moonsiteua'] {
+      position: relative;
       width: 1920px;
       height: 1080px;
-      position: relative;
       overflow: hidden;
-      background: var(--bg-void);
-      flex-shrink: 0;
+      background: #05070B;
     }
 
-    /* Background Deep Space + Topographic Grid */
-    #bg-world {
+    #webgl-canvas {
       position: absolute;
       inset: 0;
+      width: 1920px;
+      height: 1080px;
+      display: block;
       z-index: 1;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse 75% 55% at 50% 48%, rgba(0, 240, 255, 0.08) 0%, rgba(14, 21, 38, 0.42) 45%, rgba(5, 7, 11, 0.98) 100%),
-        linear-gradient(180deg, #05070B 0%, #070C16 52%, #05070B 100%);
     }
 
-    #topo-grid-wrap {
-      position: absolute;
-      inset: -140px;
-      opacity: 0.12;
-      will-change: transform;
-    }
-
-    #starfield-svg {
+    #hud-leader-svg {
       position: absolute;
       inset: 0;
       width: 1920px;
       height: 1080px;
-      opacity: 0.72;
+      pointer-events: none;
+      z-index: 40;
     }
 
-    /* Global 3D Camera Rig */
-    #camera-rig {
-      position: absolute;
-      inset: 0;
-      z-index: 10;
-      transform-style: preserve-3d;
-      perspective: 1200px;
-    }
-
-    #camera-drift, #camera-punch {
-      position: absolute;
-      inset: 0;
-      transform-style: preserve-3d;
-      will-change: transform;
-    }
-
-    /* Timed Scene Layers (.clip elements remain un-transformed directly by GSAP) */
-    .scene-layer {
+    #hud-root {
       position: absolute;
       inset: 0;
       width: 1920px;
       height: 1080px;
-      overflow: hidden;
+      pointer-events: none;
+      z-index: 50;
     }
 
-    .scene-stage {
-      position: absolute;
-      inset: 0;
-      padding: 84px 88px 88px 88px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      will-change: transform, opacity;
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Typography Utilities */
-    .font-display {
-      font-family: var(--font-display);
-      font-weight: 700;
+    .display {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      letter-spacing: -0.03em;
       text-transform: uppercase;
-      letter-spacing: -0.03em;
+      font-variant-numeric: tabular-nums;
     }
 
-    .font-mono {
-      font-family: var(--font-mono);
-      font-weight: 500;
-    }
-
-    .font-mono-bold {
-      font-family: var(--font-mono);
-      font-weight: 700;
-    }
-
-    /* Glassmorphic Panel Token */
-    .glass-panel {
-      background: var(--bg-panel);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-panel);
-      border-radius: 14px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    }
-
-    .badge-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 9px 18px;
-      border-radius: 999px;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 15px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      border: 1px solid rgba(0, 240, 255, 0.35);
-      background: rgba(14, 21, 38, 0.85);
-    }
-
-    .stamp-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: 6px;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    /* ==================== SCENE 1 STYLES ==================== */
-    #s1-card-3d-wrap {
-      position: relative;
-      width: 1620px;
-      height: 760px;
-      perspective: 1600px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #s1-card-3d {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-    }
-
-    .s1-face {
+    /* Tactile Optical Glassmorphism System */
+    .glass-card {
       position: absolute;
-      inset: 0;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .s1-face-back {
-      transform: rotateY(180deg);
-      opacity: 0;
-    }
-
-    #s1-line1 {
-      font-size: 48px;
-      line-height: 1.05;
-      color: var(--cyan-nasa);
-      letter-spacing: 0.08em;
-      text-shadow: 0 0 28px rgba(0, 240, 255, 0.45);
-      margin-bottom: 18px;
-    }
-
-    #s1-launch-box {
-      position: relative;
-      padding: 28px 54px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      background: rgba(10, 15, 28, 0.72);
-      border-radius: 18px;
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.72);
-    }
-
-    #s1-line2 {
-      font-size: 110px;
-      line-height: 0.98;
-      color: #FFFFFF;
-      letter-spacing: -0.03em;
-      text-shadow: 0 0 40px rgba(255, 255, 255, 0.25);
-      white-space: nowrap;
-    }
-
-    #s1-laser-slash {
-      position: absolute;
-      left: -40px;
-      right: -40px;
-      top: 50%;
-      height: 12px;
-      margin-top: -6px;
-      background: linear-gradient(90deg, transparent 0%, #FF1E42 15%, #FFFFFF 50%, #FF1E42 85%, transparent 100%);
-      box-shadow: 0 0 32px #FF1E42, 0 0 68px rgba(255, 30, 66, 0.85);
-      border-radius: 999px;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #s1-cost-sub {
-      margin-top: 24px;
-      font-size: 18px;
-      color: var(--text-muted);
-      letter-spacing: 0.14em;
-    }
-
-    #s1-earth-grid {
-      display: grid;
-      grid-template-columns: 620px 1fr;
-      gap: 44px;
-      width: 1580px;
-      align-items: center;
-    }
-
-    #s1-headline-green {
-      font-size: 92px;
-      line-height: 0.94;
-      color: var(--emerald-verified);
-      text-shadow: 0 0 42px rgba(0, 255, 136, 0.4);
-      margin-bottom: 18px;
-    }
-
-    #s1-sub-badge-wrap {
-      overflow: hidden;
-      display: inline-block;
-      margin-bottom: 24px;
-    }
-
-    #s1-sub-badge {
-      font-size: 16px;
-      color: #05070B;
-      background: var(--emerald-verified);
-      padding: 10px 18px;
-      border-radius: 6px;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-
-    #s1-morph-card {
-      padding: 20px 26px;
-      border-radius: 16px;
-      border: 1px solid rgba(0, 255, 136, 0.35);
-      background: rgba(9, 16, 30, 0.82);
-    }
-
-    /* ==================== SCENE 2 STYLES ==================== */
-    #s2-brand-overlay {
-      position: absolute;
-      inset: 84px 88px 88px 88px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 20;
-    }
-
-    #s2-brand-title {
-      font-size: 104px;
-      letter-spacing: -0.03em;
-      color: #FFFFFF;
-      text-shadow: 0 0 36px rgba(0, 240, 255, 0.55);
-      margin-top: 12px;
-    }
-
-    #s2-brand-sub {
-      font-size: 20px;
-      color: var(--cyan-nasa);
-      letter-spacing: 0.24em;
-      margin-top: 8px;
-    }
-
-    #s2-map-workspace {
-      position: relative;
-      width: 1700px;
-      height: 860px;
-      display: grid;
-      grid-template-columns: 1120px 1fr;
-      gap: 28px;
-      align-items: stretch;
-      opacity: 0;
-    }
-
-    #s2-map-panel {
-      position: relative;
-      overflow: hidden;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .s2-map-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      z-index: 5;
-    }
-
-    #s2-map-canvas {
-      position: relative;
-      flex: 1;
-      border-radius: 10px;
-      border: 1px solid rgba(0, 240, 255, 0.2);
-      background: radial-gradient(circle at 52% 48%, rgba(16, 32, 56, 0.85), rgba(5, 8, 15, 0.96));
-      overflow: hidden;
-    }
-
-    #s2-sat-sweep {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 180px;
-      background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.16) 65%, rgba(0, 240, 255, 0.85) 98%, #FFFFFF 100%);
-      pointer-events: none;
-      opacity: 0;
-      z-index: 4;
-    }
-
-    #s2-sidebar {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      justify-content: space-between;
-    }
-
-    .s2-node-card {
-      padding: 18px 20px;
-      border-radius: 12px;
-      background: rgba(14, 21, 38, 0.88);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    /* ==================== SCENE 3 STYLES ==================== */
-    #s3-header {
-      width: 1720px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    #s3-pipeline-grid {
-      width: 1720px;
-      display: grid;
-      grid-template-columns: 500px 110px 500px 110px 500px;
-      align-items: center;
-    }
-
-    .s3-stage-card {
-      height: 550px;
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .s3-fiber-pipe {
-      height: 14px;
-      background: rgba(142, 155, 174, 0.18);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 999px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .s3-fiber-fill {
-      position: absolute;
-      inset: 0;
-      transform-origin: left center;
-    }
-
-    #s3-final-stamp {
-      margin-top: 22px;
-      padding: 18px 34px;
-      border-radius: 10px;
-      border: 3px solid var(--emerald-verified);
-      background: rgba(0, 32, 20, 0.92);
-      color: var(--emerald-verified);
-      font-size: 24px;
-      letter-spacing: 0.06em;
-      box-shadow: 0 0 44px rgba(0, 255, 136, 0.38);
-      opacity: 0;
-    }
-
-    /* ==================== SCENE 4 STYLES ==================== */
-    #s4-split {
-      width: 1720px;
-      height: 830px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-    }
-
-    .s4-panel {
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .s4-flow-row {
-      display: grid;
-      grid-template-columns: 1fr 28px 1fr 28px 1fr;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .s4-step-box {
-      padding: 14px 12px;
-      border-radius: 10px;
-      background: rgba(8, 13, 25, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.35;
-    }
-
-    #s4-push-modal {
-      position: absolute;
-      left: 28px;
-      right: 28px;
-      top: 96px;
-      padding: 14px 18px;
-      border-radius: 12px;
-      background: rgba(11, 18, 34, 0.96);
-      border: 1.5px solid var(--cyan-nasa);
-      box-shadow: 0 22px 54px rgba(0, 0, 0, 0.78);
-      z-index: 15;
-      opacity: 0;
-    }
-
-    /* ==================== SCENE 5 STYLES ==================== */
-    #s5-layout {
-      width: 1720px;
-      height: 850px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-      justify-content: space-between;
-    }
-
-    #s5-top-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-      height: 330px;
-    }
-
-    #s5-ticker-bar {
-      padding: 12px 22px;
-      border-radius: 10px;
-      border: 1px solid rgba(184, 41, 255, 0.45);
-      background: rgba(24, 12, 42, 0.85);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    #s5-cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      flex: 1;
-    }
-
-    .s5-reward-card {
-      padding: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* ==================== SCENE 6 STYLES ==================== */
-    #s6-layout {
-      width: 1720px;
-      height: 860px;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    #s6-topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 10;
-    }
-
-    #s6-iso-stage {
-      position: relative;
-      flex: 1;
-      margin-top: 14px;
-      border-radius: 16px;
-      border: 1px solid rgba(0, 240, 255, 0.24);
-      background: radial-gradient(ellipse at 50% 56%, rgba(46, 22, 16, 0.55) 0%, rgba(12, 18, 32, 0.92) 68%, rgba(5, 7, 11, 0.98) 100%);
-      overflow: hidden;
-    }
-
-    #s6-palette-ui {
-      position: absolute;
-      left: 28px;
-      top: 28px;
-      width: 340px;
-      padding: 18px;
-      z-index: 20;
-    }
-
-    #s6-feed-ui {
-      position: absolute;
-      right: 28px;
-      top: 28px;
-      width: 360px;
-      padding: 18px;
-      z-index: 20;
-    }
-
-    #s6-mod-nw,
-    #s6-mod-ne,
-    #s6-mod-sw,
-    #s6-mod-se,
-    #s6-dust-cloud,
-    #s6-interior-items,
-    #s4-couch-spoof {
-      transform-box: fill-box;
-    }
-
-    /* ==================== SCENE 7 STYLES ==================== */
-    #s7-robotics-wrap {
-      position: absolute;
-      inset: 84px 88px 88px 88px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    #s7-alert-stack {
-      position: relative;
-      height: 88px;
-      perspective: 1200px;
-    }
-
-    #s7-alert-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      transform-style: preserve-3d;
-    }
-
-    .s7-banner-face {
-      position: absolute;
-      inset: 0;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 28px;
-    }
-
-    .s7-banner-back {
-      transform: rotateX(180deg);
-      opacity: 0;
-    }
-
-    #s7-rob-grid {
-      display: grid;
-      grid-template-columns: 1120px 1fr;
-      gap: 24px;
-      flex: 1;
-      margin: 18px 0;
-    }
-
-    #s7-finale-wrap {
-      position: absolute;
-      inset: 84px 88px 88px 88px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-    }
-
-    #s7-hero-title {
-      font-size: 130px;
-      line-height: 0.95;
-      color: #FFFFFF;
-      letter-spacing: -0.03em;
-      text-shadow: 0 0 42px rgba(0, 240, 255, 0.7), 0 0 90px rgba(0, 240, 255, 0.3);
-      z-index: 5;
-    }
-
-    #s7-pillars-row {
-      display: flex;
-      gap: 16px;
-      margin-top: 26px;
-      z-index: 5;
-    }
-
-    #s7-punchline-wrap {
-      margin-top: 32px;
-      font-size: 38px;
-      color: var(--emerald-verified);
-      letter-spacing: 0.16em;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    /* ==================== FX & CHROMATIC ABERRATION ==================== */
-    #fx-overlay {
-      position: absolute;
-      inset: 0;
-      z-index: 900;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .fx-rgb-slice {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      mix-blend-mode: screen;
-    }
-
-    #fx-rgb-cyan {
-      box-shadow: inset 14px 0 0 rgba(0, 240, 255, 0.55), inset -14px 0 0 rgba(255, 30, 66, 0.55);
-      background: linear-gradient(90deg, rgba(0, 240, 255, 0.14) 0%, transparent 18%, transparent 82%, rgba(255, 30, 66, 0.14) 100%);
-    }
-
-    #fx-rgb-flash {
-      background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.25), rgba(0, 240, 255, 0.14) 45%, transparent 75%);
-    }
-
-    #fx-laser-wipe {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 10px;
-      background: #FFFFFF;
-      box-shadow: 0 0 32px var(--cyan-nasa), 0 0 80px var(--cyan-nasa);
-      opacity: 0;
-    }
-
-    #fx-shockwave {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 240px;
-      height: 240px;
-      margin-left: -120px;
-      margin-top: -120px;
-      border-radius: 50%;
-      border: 4px solid var(--cyan-nasa);
-      box-shadow: 0 0 32px rgba(0, 240, 255, 0.7), inset 0 0 24px rgba(0, 240, 255, 0.4);
-      opacity: 0;
-    }
-
-    /* ==================== PERSISTENT HUD CHROME ==================== */
-    #hud-chrome {
-      position: absolute;
-      inset: 0;
-      z-index: 999;
-      pointer-events: none;
-    }
-
-    #hud-scanlines {
-      position: absolute;
-      inset: 0;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0) 0px,
-        rgba(255, 255, 255, 0) 2px,
-        rgba(0, 0, 0, 0.22) 3px,
-        rgba(0, 0, 0, 0.22) 4px
-      );
-      opacity: 0.28;
-    }
-
-    #hud-vignette {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse 84% 82% at 50% 50%, transparent 58%, rgba(2, 4, 8, 0.78) 100%);
-    }
-
-    #hud-top-left {
-      position: absolute;
-      top: 24px;
-      left: 36px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .hud-sys-bar {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 14px;
-      border-radius: 6px;
-      background: rgba(9, 14, 26, 0.76);
+      background: linear-gradient(135deg, rgba(16, 24, 42, 0.76) 0%, rgba(8, 12, 22, 0.88) 100%);
+      backdrop-filter: blur(22px) saturate(180%);
+      -webkit-backdrop-filter: blur(22px) saturate(180%);
       border: 1px solid rgba(0, 240, 255, 0.28);
-      font-family: var(--font-mono);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 20px 50px rgba(0, 0, 0, 0.65);
+      border-radius: 14px;
+      padding: 18px 22px;
+      color: #F4F8FF;
+    }
+
+    /* Corner Micro-Reticles */
+    .reticle {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      border-color: rgba(0, 240, 255, 0.45);
+      border-style: solid;
+      z-index: 55;
+    }
+    .ret-tl { top: 20px; left: 20px; border-width: 2px 0 0 2px; }
+    .ret-tr { top: 20px; right: 20px; border-width: 2px 2px 0 0; }
+    .ret-bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
+    .ret-br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
+
+    /* Top Persistent Telemetry Bar */
+    .hud-top {
+      position: absolute;
+      top: 28px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      z-index: 55;
+    }
+
+    .hud-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
       letter-spacing: 0.08em;
-      color: var(--text-primary);
+      background: rgba(8, 12, 22, 0.88);
+      border: 1px solid rgba(0, 240, 255, 0.28);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
-    #hud-led {
+    .live-dot {
       width: 9px;
       height: 9px;
       border-radius: 50%;
       background: var(--emerald-verified);
-      box-shadow: 0 0 12px var(--emerald-verified);
+      box-shadow: 0 0 10px var(--emerald-verified);
+    }
+
+    .hud-act-sub {
       display: inline-block;
-    }
-
-    #hud-sector-tag {
-      font-family: var(--font-mono);
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      color: var(--cyan-nasa);
-      padding-left: 4px;
-    }
-
-    #hud-top-right {
-      position: absolute;
-      top: 24px;
-      right: 36px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .hud-chip {
-      padding: 7px 14px;
+      margin-top: 8px;
+      padding: 5px 12px;
       border-radius: 6px;
-      background: rgba(9, 14, 26, 0.76);
-      border: 1px solid rgba(0, 240, 255, 0.28);
-      font-family: var(--font-mono);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
-      letter-spacing: 0.06em;
+      letter-spacing: 0.14em;
+      color: #8BF8FF;
+      background: rgba(5, 9, 18, 0.86);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
     }
 
-    #hud-bottom-bar {
+    .hud-top-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* Bottom Persistent Waveform + Hairline 7-Milestone Bar */
+    .hud-bottom {
       position: absolute;
-      left: 36px;
-      right: 36px;
-      bottom: 20px;
+      bottom: 26px;
+      left: 48px;
+      right: 48px;
       display: flex;
       align-items: flex-end;
       gap: 28px;
+      z-index: 55;
     }
 
-    #hud-waveform-box {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 7px 14px;
+    .wf-box {
+      width: 240px;
+      padding: 8px 12px;
       border-radius: 8px;
-      background: rgba(9, 14, 26, 0.8);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      flex-shrink: 0;
+      background: rgba(5, 9, 18, 0.88);
+      border: 1px solid rgba(0, 240, 255, 0.24);
     }
 
-    #hud-waveform-bars {
+    .wf-label {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--cyan-nasa);
+      margin-bottom: 5px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    #hud-waveform {
+      height: 28px;
       display: flex;
       align-items: flex-end;
-      gap: 3px;
-      height: 26px;
+      gap: 4px;
     }
 
     .wf-bar {
-      width: 3px;
-      height: 24px;
+      flex: 1;
+      height: 6px;
       border-radius: 2px;
       background: linear-gradient(180deg, var(--cyan-nasa), var(--emerald-verified));
-      transform-origin: bottom center;
-      will-change: transform;
     }
 
-    #hud-progress-area {
+    .timeline-wrap {
       flex: 1;
+      padding: 8px 14px 10px;
+      border-radius: 8px;
+      background: rgba(5, 9, 18, 0.88);
+      border: 1px solid rgba(0, 240, 255, 0.22);
+    }
+
+    .milestones-row {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      padding-bottom: 4px;
+      justify-content: space-between;
+      margin-bottom: 8px;
     }
 
-    #hud-milestones {
-      position: relative;
-      height: 18px;
-      font-family: var(--font-mono);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-    }
-
-    .hud-ms {
-      position: absolute;
-      top: 0;
+    .hud-milestone {
       display: flex;
       align-items: center;
-      gap: 5px;
-      color: var(--grey-beacon);
-      white-space: nowrap;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: #B8C7DC;
     }
 
-    .hud-ms-dot {
+    .hud-milestone .m-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
-      background: var(--grey-beacon);
-      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: #7A8DA8;
     }
 
-    #hud-track {
-      position: relative;
-      height: 5px;
-      border-radius: 999px;
-      background: rgba(142, 155, 174, 0.24);
+    .hud-milestone.passed {
+      color: #5BFFB3;
+    }
+    .hud-milestone.passed .m-dot {
+      background: var(--emerald-verified);
+    }
+
+    .hud-milestone.active {
+      color: #6AF5FF;
+      font-weight: 700;
+    }
+    .hud-milestone.active .m-dot {
+      background: var(--cyan-nasa);
+      box-shadow: 0 0 10px var(--cyan-nasa);
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 3px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.14);
       overflow: hidden;
     }
 
-    #hud-track-fill {
+    #hud-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan-nasa), var(--emerald-verified), var(--amber-martian), var(--purple-bounty), var(--gold-mission));
+    }
+
+    /* ---------------- ACT-SPECIFIC PANELS ---------------- */
+
+    #act1-launch {
       position: absolute;
       inset: 0;
-      background: linear-gradient(90deg, var(--cyan-nasa) 0%, var(--emerald-verified) 50%, var(--purple-bounty) 75%, var(--gold-mission) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    .act1-eyebrow {
+      font-size: 34px;
+      letter-spacing: 0.18em;
+      color: var(--cyan-nasa);
+      background: rgba(5, 7, 11, 0.78);
+      border: 1px solid rgba(0, 240, 255, 0.32);
+      padding: 6px 22px;
+      border-radius: 999px;
+      text-shadow: 0 0 24px rgba(0, 240, 255, 0.5);
+      margin-bottom: 14px;
+    }
+
+    .act1-odo-wrap {
+      position: relative;
+      display: inline-block;
+      padding: 18px 46px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, rgba(16, 24, 42, 0.72) 0%, rgba(8, 12, 22, 0.88) 100%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 24px 64px rgba(0, 0, 0, 0.75);
+    }
+
+    #act1-odo {
+      font-size: 112px;
+      line-height: 1.02;
+      color: #FFFFFF;
+      text-shadow: 0 0 40px rgba(255, 215, 0, 0.28);
+    }
+
+    .act1-cost-label {
+      margin-top: 8px;
+      font-size: 18px;
+      letter-spacing: 0.28em;
+      color: var(--gold-mission);
+    }
+
+    #act1-slash {
+      position: absolute;
+      left: -36px;
+      right: -36px;
+      top: 50%;
+      height: 5px;
+      border-radius: 3px;
+      background: linear-gradient(90deg, transparent, #FF1E42, #FFFFFF, #FF1E42, transparent);
+      box-shadow: 0 0 18px #FF1E42, 0 0 36px rgba(255, 30, 66, 0.85);
       transform-origin: left center;
-      will-change: transform;
+      opacity: 0;
+    }
+
+    /* Keep inactive act overlays out of compositor render tree until active */
+    #act1-rovers,
+    #act2-brand,
+    #act2-map-hud,
+    .node-card,
+    #act3-card,
+    #act4-shield-card,
+    #act4-offline-card,
+    #act4-push-card,
+    #act4-prox-card,
+    #act4-spoof-card,
+    #act5-gap-card,
+    #act5-bounty-card,
+    #act5-economy-row,
+    #act6-genesis-card,
+    #act6-expand-card,
+    #act7-hazard-card,
+    #act7-relay-badge,
+    #act7-mineral-card,
+    #act7-finale {
+      display: none;
+    }
+
+    #act1-rovers {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 145px;
+      text-align: center;
+      opacity: 0;
+    }
+
+    .rovers-title {
+      font-size: 74px;
+      color: #FFFFFF;
+      text-shadow: 0 10px 42px rgba(0, 0, 0, 0.9), 0 0 28px rgba(0, 255, 136, 0.38);
+    }
+    .rovers-title span {
+      color: var(--emerald-verified);
+    }
+
+    .rovers-badge {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 15px;
+      letter-spacing: 0.14em;
+      color: var(--emerald-verified);
+      background: rgba(8, 18, 22, 0.85);
+      border: 1px solid rgba(0, 255, 136, 0.35);
+    }
+
+    /* Act 2 */
+    #act2-brand {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 135px;
+      text-align: center;
+      opacity: 0;
+    }
+
+    .brand-hero {
+      font-size: 98px;
+      letter-spacing: -0.02em;
+      color: #FFFFFF;
+      text-shadow: 0 0 42px rgba(0, 240, 255, 0.5);
+    }
+    .brand-hero span {
+      color: var(--cyan-nasa);
+    }
+
+    .brand-sub {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 6px 18px;
+      border-radius: 8px;
+      font-size: 16px;
+      letter-spacing: 0.24em;
+      color: var(--cyan-nasa);
+      background: rgba(10, 18, 32, 0.82);
+      border: 1px solid rgba(0, 240, 255, 0.28);
+    }
+
+    #act2-map-hud {
+      position: absolute;
+      top: 112px;
+      left: 48px;
+      right: 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      opacity: 0;
+    }
+
+    .hotspot-alert {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      background: rgba(38, 10, 18, 0.86);
+      border: 1px solid rgba(255, 30, 66, 0.55);
+      color: #FF8FA3;
+      box-shadow: 0 10px 30px rgba(255, 30, 66, 0.2);
+    }
+
+    .node-card {
+      width: 390px;
+      opacity: 0;
+    }
+
+    .card-kicker {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      margin-bottom: 6px;
+      color: var(--cyan-nasa);
+    }
+
+    .card-title {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+
+    .card-coords {
+      font-size: 13px;
+      color: var(--grey-beacon);
+    }
+
+    /* Act 3 */
+    #act3-card {
+      width: 480px;
+      opacity: 0;
+    }
+
+    .seg-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .seg-item {
+      flex: 1;
+      height: 5px;
+      border-radius: 4px;
+    }
+
+    #act3-count {
+      font-size: 30px;
+      font-weight: 800;
+      margin: 6px 0;
+    }
+
+    .status-stamp {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+    }
+
+    /* Act 4 */
+    #act4-shield-card {
+      width: 520px;
+      opacity: 0;
+    }
+
+    .sec-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .sec-step {
+      padding: 9px 12px;
+      border-radius: 8px;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      font-size: 13px;
+    }
+
+    #act4-offline-card {
+      top: 150px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 560px;
+      text-align: center;
+      border-color: rgba(255, 107, 0, 0.55);
+      opacity: 0;
+    }
+
+    #act4-push-card {
+      top: 145px;
+      left: 96px;
+      width: 440px;
+      opacity: 0;
+      overflow: hidden;
+    }
+
+    #act4-push-btn {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 700;
+      background: rgba(0, 240, 255, 0.16);
+      border: 1px solid var(--cyan-nasa);
+      color: var(--cyan-nasa);
+    }
+
+    #act4-push-btn.authorized {
+      background: rgba(0, 255, 136, 0.22);
+      border-color: var(--emerald-verified);
+      color: var(--emerald-verified);
+    }
+
+    #act4-cursor {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      pointer-events: none;
+    }
+
+    /* Act 5 */
+    #act5-gap-card {
+      width: 495px;
+      border-color: rgba(184, 41, 255, 0.45);
+      opacity: 0;
+    }
+
+    .diag-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      margin-top: 6px;
+      font-size: 13px;
+    }
+
+    .diag-row.warn {
+      background: rgba(255, 30, 66, 0.16);
+      border: 1px solid rgba(255, 30, 66, 0.45);
+      color: #FF758F;
+    }
+
+    #act5-bounty-card {
+      right: 84px;
+      top: 250px;
+      width: 500px;
+      border-color: rgba(255, 215, 0, 0.48);
+      opacity: 0;
+    }
+
+    #act5-multiplier {
+      display: inline-block;
+      margin: 12px 0 8px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--purple-bounty), var(--gold-mission));
+      color: #05070B;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    #act5-economy-row {
+      position: absolute;
+      left: 72px;
+      right: 72px;
+      bottom: 132px;
+      display: flex;
+      gap: 24px;
+      perspective: 1100px;
+      opacity: 0;
+    }
+
+    .econ-card {
+      position: relative;
+      flex: 1;
+      background: linear-gradient(135deg, rgba(16, 24, 42, 0.82) 0%, rgba(8, 12, 22, 0.92) 100%);
+      backdrop-filter: blur(22px) saturate(180%);
+      border: 1px solid rgba(0, 240, 255, 0.32);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 24px 55px rgba(0, 0, 0, 0.72);
+      border-radius: 16px;
+      padding: 20px 22px;
+      transform-style: preserve-3d;
+    }
+
+    .merch-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    /* Act 6 */
+    #act6-genesis-card {
+      width: 440px;
+      opacity: 0;
+    }
+
+    .swatch-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .swatch {
+      flex: 1;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .swatch.selected {
+      border-color: #FFFFFF;
+      box-shadow: 0 0 18px rgba(255, 184, 0, 0.45);
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .swatch-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+
+    #act6-expand-card {
+      width: 430px;
+      opacity: 0;
+    }
+
+    .ci-item {
+      padding: 7px 10px;
+      border-radius: 6px;
+      margin-top: 6px;
+      font-size: 13px;
+      background: rgba(0, 255, 136, 0.09);
+      border-left: 3px solid var(--emerald-verified);
+    }
+
+    /* Act 7 */
+    #act7-hazard-card {
+      width: 460px;
+      border-color: rgba(255, 30, 66, 0.65);
+      background: linear-gradient(135deg, rgba(46, 10, 18, 0.84) 0%, rgba(18, 6, 10, 0.92) 100%);
+      opacity: 0;
+    }
+
+    #act7-relay-badge {
+      position: absolute;
+      left: 96px;
+      bottom: 132px;
+      width: 520px;
+      border-color: rgba(255, 215, 0, 0.45);
+      opacity: 0;
+    }
+
+    #act7-mineral-card {
+      width: 430px;
+      opacity: 0;
+    }
+
+    .min-bar-wrap {
+      height: 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      margin-top: 4px;
+      overflow: hidden;
+    }
+
+    .min-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+
+    #act7-finale {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(ellipse 68% 42% at 50% 50%, rgba(5, 7, 11, 0.78) 0%, rgba(5, 7, 11, 0.42) 52%, transparent 82%);
+      opacity: 0;
+    }
+
+    .finale-title {
+      font-size: 134px;
+      letter-spacing: -0.03em;
+      color: #FFFFFF;
+      text-shadow: 0 0 60px rgba(0, 240, 255, 0.55), 0 12px 42px rgba(0, 0, 0, 0.9);
+    }
+    .finale-title span {
+      color: var(--cyan-nasa);
+    }
+
+    .finale-pills {
+      display: flex;
+      gap: 14px;
+      margin: 18px 0 24px;
+    }
+
+    .finale-pill {
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      background: linear-gradient(135deg, rgba(16, 24, 42, 0.82), rgba(8, 12, 22, 0.92));
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 14px 34px rgba(0, 0, 0, 0.6);
+    }
+
+    .finale-tagline {
+      font-size: 32px;
+      letter-spacing: 0.2em;
+      color: var(--emerald-verified);
+      text-shadow: 0 0 24px rgba(0, 255, 136, 0.45);
+    }
+
+    #act7-tagline-cursor {
+      display: inline-block;
+      width: 14px;
+      height: 30px;
+      vertical-align: -4px;
+      margin-left: 8px;
+      background: var(--cyan-nasa);
+      box-shadow: 0 0 16px var(--cyan-nasa);
     }
   </style>
 </head>
 <body>
-  <div id="root" data-composition-id="moonsiteua" data-start="0" data-duration="30" data-width="1920" data-height="1080">
-    <!--
-      OPTIONAL VOICEOVER AUDIO TRACK:
-      Drop your ElevenLabs `voiceover.mp3` file next to index.html and uncomment:
+  <div
+    data-composition-id="moonsiteua"
+    data-width="1920"
+    data-height="1080"
+    data-duration="30"
+    data-fps="60"
+  >
+    <!-- Optional Audio Voiceover Sync Track (uncomment when placing voiceover.mp3 next to index.html)
       <audio id="voiceover-audio" data-start="0" data-duration="30" data-volume="1" src="voiceover.mp3"></audio>
     -->
 
-    <!-- ==================== PERSISTENT DEEP SPACE & TOPOGRAPHIC WORLD ==================== -->
-    <div id="bg-world" data-layout-ignore>
-      <div id="topo-grid-wrap">
-        <svg id="topo-grid-svg" viewBox="0 0 2200 1360" width="2200" height="1360" fill="none">
-          <defs>
-            <pattern id="minor-grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" stroke="#00F0FF" stroke-width="0.6" stroke-opacity="0.35" />
-            </pattern>
-            <pattern id="major-grid" width="160" height="160" patternUnits="userSpaceOnUse">
-              <rect width="160" height="160" fill="url(#minor-grid)" />
-              <path d="M 160 0 L 0 0 0 160" stroke="#00F0FF" stroke-width="1.3" stroke-opacity="0.7" />
-            </pattern>
-          </defs>
-          <rect width="2200" height="1360" fill="url(#major-grid)" />
-          <!-- Topographic contour ellipses -->
-          <g stroke="#00F0FF" stroke-width="1.4" stroke-opacity="0.65">
-            <path d="M-80 280 C 260 120, 620 420, 980 260 C 1340 100, 1740 380, 2260 190" />
-            <path d="M-80 340 C 290 190, 650 470, 1020 310 C 1380 150, 1770 430, 2260 250" />
-            <path d="M-80 760 C 310 610, 680 910, 1090 730 C 1450 560, 1810 830, 2260 680" />
-            <path d="M-80 830 C 340 690, 720 970, 1130 790 C 1490 620, 1840 890, 2260 750" />
-            <ellipse cx="520" cy="480" rx="280" ry="160" stroke-dasharray="10 8" />
-            <ellipse cx="520" cy="480" rx="180" ry="96" />
-            <ellipse cx="1640" cy="540" rx="310" ry="180" stroke-dasharray="12 8" />
-            <ellipse cx="1640" cy="540" rx="200" ry="112" />
-          </g>
+    <!-- Full-Frame WebGL Planetary & Geological Engine -->
+    <canvas id="webgl-canvas" width="1920" height="1080"></canvas>
+
+    <!-- Diegetic SVG Elbow Leader Line Tracker Overlay -->
+    <svg id="hud-leader-svg" viewBox="0 0 1920 1080" xmlns="http://www.w3.org/2000/svg"></svg>
+
+    <!-- Persistent Master Telemetry & Diegetic HUD Overlay -->
+    <div id="hud-root">
+      <div class="reticle ret-tl"></div>
+      <div class="reticle ret-tr"></div>
+      <div class="reticle ret-bl"></div>
+      <div class="reticle ret-br"></div>
+
+      <!-- Persistent Top Chrome -->
+      <div class="hud-top">
+        <div>
+          <div class="hud-pill mono">
+            <span id="hud-live-led" class="live-dot"></span>
+            <span>SYS.MOONSITE_UA // BUILD v2.6 // TELEMETRY: LIVE</span>
+          </div>
+          <div id="hud-act-tag" class="hud-act-sub mono">ACT 01 // LAUNCH ECONOMICS VS. HUMAN ROVERS</div>
+        </div>
+        <div class="hud-top-right mono">
+          <div id="hud-dof" class="hud-pill">DOF FOCUS 35.0m</div>
+          <div id="hud-frame" class="hud-pill">FRAME 0000 / 1800</div>
+          <div id="hud-clock" class="hud-pill">T+ 00:00:00.00</div>
+          <div class="hud-pill" style="color: var(--emerald-verified); border-color: rgba(0,255,136,0.35);">
+            SAT-LINK: NASA-LANDSAT-9 // ESA-SENTINEL-2 [LOCKED]
+          </div>
+        </div>
+      </div>
+
+      <!-- ACT 1: Launch Cost vs. Human Rovers -->
+      <div id="act1-launch">
+        <div class="act1-eyebrow display">TESTING SPACE TECH</div>
+        <div class="act1-odo-wrap">
+          <div id="act1-odo" class="display">$0</div>
+          <div class="act1-cost-label mono">ORBITAL LAUNCH COST // PROHIBITIVE CADENCE</div>
+          <div id="act1-slash"></div>
+        </div>
+      </div>
+
+      <div id="act1-rovers">
+        <div class="rovers-title display">MILLIONS OF <span>HUMAN ROVERS</span> ON EARTH</div>
+        <div class="rovers-badge mono">[CITIZEN SCIENCE PLANETARY EXPLORATION NETWORK — TELEMETRY ONLINE]</div>
+      </div>
+
+      <!-- ACT 2: Brand Reveal & Dual Data Layer Map -->
+      <div id="act2-brand">
+        <div class="brand-hero display">MOONSITE<span>UA</span></div>
+        <div class="brand-sub mono">GAMIFIED CITIZEN SCIENCE PLATFORM</div>
+      </div>
+
+      <div id="act2-map-hud">
+        <div class="hud-pill mono" style="border-color: rgba(0,240,255,0.45);">
+          SECTOR: ES-IBERIA // OPTIMIZED COUNTRY-SEGMENTED ENGINE
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <div class="hud-pill mono">[SOURCE: NASA / ESA SATELLITE CROSS-DATA]</div>
+          <div class="hotspot-alert mono">
+            ● UNEXPLORED HOTSPOTS (ZERO FIELD TELEMETRY)
+          </div>
+        </div>
+      </div>
+
+      <div id="card-node01" class="glass-card node-card">
+        <div class="card-kicker mono" style="color: var(--emerald-verified);">COMMUNITY MICRO-ANALOG // NODE_01</div>
+        <div class="card-title display">BASALTIC LAVA FIELD</div>
+        <div class="card-coords mono">28.27°N, 16.64°W // VOLCANIC REGOLITH</div>
+      </div>
+
+      <div id="card-node02" class="glass-card node-card">
+        <div class="card-kicker mono" style="color: var(--cyan-nasa);">COMMUNITY MICRO-ANALOG // NODE_02</div>
+        <div class="card-title display">KARSTIC SUBSURFACE SYSTEM</div>
+        <div class="card-coords mono">38.34°N, 0.48°W // LAVA-TUBE PROXY</div>
+      </div>
+
+      <div id="card-node03" class="glass-card node-card">
+        <div class="card-kicker mono" style="color: var(--amber-martian);">COMMUNITY MICRO-ANALOG // NODE_03</div>
+        <div class="card-title display">EXTREME THERMAL ARID BASIN</div>
+        <div class="card-coords mono">37.04°N, 2.46°W // ΔT 42°C DIURNAL</div>
+      </div>
+
+      <!-- ACT 3: Crowd-Verification Traffic Light Consensus -->
+      <div id="act3-card" class="glass-card">
+        <div class="seg-bar">
+          <div id="act3-seg-1" class="seg-item" style="background: var(--grey-beacon);"></div>
+          <div id="act3-seg-2" class="seg-item" style="background: var(--amber-martian);"></div>
+          <div id="act3-seg-3" class="seg-item" style="background: var(--emerald-verified);"></div>
+        </div>
+        <div id="act3-header" class="card-kicker mono" style="font-size:13px;">1. GREY BEACON // DISCOVERY</div>
+        <div id="act3-count" class="display">EXPLORERS: 01 / 10</div>
+        <div id="act3-meta" class="mono" style="font-size:13px; color:#B6C4D8;">
+          TEMP: 39.4°C • HUMIDITY: 11.2% • SOIL: BASALT
+        </div>
+        <div id="act3-stamp" class="status-stamp mono">[UNVERIFIED IN-SITU UPLOAD]</div>
+      </div>
+
+      <!-- ACT 4: Anti-Sybil Identity Shield & Offline Geofencing -->
+      <div id="act4-shield-card" class="glass-card">
+        <div class="card-kicker mono">SECURITY PROTOCOL 01 // ZERO-SPOOFING</div>
+        <div class="card-title display" style="font-size:24px;">ANTI-SYBIL IDENTITY SHIELD</div>
+        <div class="sec-flow mono">
+          <div class="sec-step">[OAuth (Google / Apple) + Mandatory Unique SMS OTP]</div>
+          <div class="sec-step" style="border-color: rgba(0,255,136,0.45); color: var(--emerald-verified);">
+            ➔ [1 Unique Phone = 1 Real Human]
+          </div>
+        </div>
+        <div class="mono" style="font-size:12px; color:#A3E4D7;">
+          ZERO SENSITIVE ID (NO DNI) // PRIVACY-FIRST TRACEABILITY
+        </div>
+      </div>
+
+      <div id="act4-offline-card" class="glass-card">
+        <div class="mono" style="font-size:14px; color: var(--amber-martian); font-weight:700;">
+          SIGNAL: 0 BARS — ASYNC OFFLINE EXPEDITION MODE ACTIVE
+        </div>
+        <div class="mono" style="font-size:12px; color:#B6C4D8; margin-top:4px;">
+          CRYPTOSIGNED FIELD TELEMETRY BUFFERED LOCALLY IN KARST CLEFT
+        </div>
+      </div>
+
+      <div id="act4-push-card" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--emerald-verified);">SIGNAL RESTORED // TRANSPARENT SYNC</div>
+        <div style="font-size:16px; font-weight:700;">Connection Restored — Grant One-Time GPS Check to Sync?</div>
+        <div id="act4-push-btn" class="mono">AUTHORIZE ONE-TIME GPS</div>
+        <svg id="act4-cursor" viewBox="0 0 24 24" fill="none">
+          <path d="M4 2L20 11L12 13L9 21L4 2Z" fill="#FFFFFF" stroke="#05070B" stroke-width="1.5" />
         </svg>
       </div>
-      <svg id="starfield-svg" viewBox="0 0 1920 1080" fill="none">
-        <g id="starfield-group"></g>
-      </svg>
-    </div>
 
-    <!-- ==================== GLOBAL 3D CAMERA RIG ==================== -->
-    <div id="camera-rig">
-      <div id="camera-drift">
-        <div id="camera-punch">
-
-          <!-- ==================== SCENE 1: THE HOOK (00.0s - 03.5s) ==================== -->
-          <section id="scene-1" class="clip scene-layer" data-start="0" data-duration="3.5" data-track-index="1">
-            <div id="s1-stage" class="scene-stage">
-              <div id="s1-card-3d-wrap">
-                <div id="s1-card-3d">
-                  <!-- FRONT FACE: BILLION-DOLLAR LAUNCH -->
-                  <div class="s1-face s1-face-front">
-                    <!-- Subtle Launch Rocket Telemetry Vector Backdrop -->
-                    <svg width="920" height="220" viewBox="0 0 920 220" fill="none" style="margin-bottom: 12px; opacity: 0.72;" data-layout-ignore>
-                      <line x1="60" y1="110" x2="860" y2="110" stroke="#00F0FF" stroke-opacity="0.25" stroke-dasharray="6 6" />
-                      <circle cx="460" cy="110" r="88" stroke="#00F0FF" stroke-opacity="0.25" stroke-width="1.5" />
-                      <circle cx="460" cy="110" r="64" stroke="#FF1E42" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="8 5" />
-                      <g id="s1-rocket-icon">
-                        <path d="M460 32 L478 76 L478 142 L442 142 L442 76 Z" fill="rgba(14,21,38,0.9)" stroke="#00F0FF" stroke-width="2" />
-                        <path d="M442 114 L424 148 L442 142 Z" fill="#FF1E42" fill-opacity="0.7" />
-                        <path d="M478 114 L496 148 L478 142 Z" fill="#FF1E42" fill-opacity="0.7" />
-                        <circle cx="460" cy="88" r="8" fill="#00F0FF" />
-                        <path d="M448 144 L460 192 L472 144 Z" fill="#FF6B00" fill-opacity="0.85" />
-                      </g>
-                      <text x="120" y="96" fill="#8E9BAE" font-family="JetBrains Mono" font-size="13">CAPEX OVERHEAD // SINGLE PAYLOAD</text>
-                      <text x="640" y="96" fill="#FF1E42" font-family="JetBrains Mono" font-size="13">WAIT TIME: 4-8 YEARS</text>
-                    </svg>
-
-                    <div id="s1-line1" class="font-display">TESTING SPACE TECH</div>
-                    <div id="s1-launch-box">
-                      <div id="s1-line2" class="font-display">$0 LAUNCH?</div>
-                      <div id="s1-laser-slash"></div>
-                    </div>
-                    <div id="s1-cost-sub" class="font-mono">TRADITIONAL PLANETARY ANALOG MISSION BUDGET // LEGACY MODEL</div>
-                  </div>
-
-                  <!-- BACK FACE: MILLIONS OF HUMAN ROVERS -->
-                  <div class="s1-face s1-face-back">
-                    <div id="s1-earth-grid">
-                      <!-- Left: Exploding Earth Radar Network SVG -->
-                      <div style="position: relative; display: flex; justify-content: center;">
-                        <svg id="s1-earth-svg" viewBox="0 0 600 600" width="580" height="580" fill="none">
-                          <defs>
-                            <radialGradient id="earth-glow" cx="50%" cy="50%" r="50%">
-                              <stop offset="0%" stop-color="#00FF88" stop-opacity="0.22" />
-                              <stop offset="70%" stop-color="#00F0FF" stop-opacity="0.08" />
-                              <stop offset="100%" stop-color="#05070B" stop-opacity="0" />
-                            </radialGradient>
-                          </defs>
-                          <circle cx="300" cy="300" r="285" fill="url(#earth-glow)" />
-                          <circle cx="300" cy="300" r="228" fill="rgba(10, 18, 34, 0.9)" stroke="#00F0FF" stroke-width="2" />
-                          <ellipse cx="300" cy="300" rx="228" ry="84" stroke="#00F0FF" stroke-opacity="0.28" stroke-width="1.2" />
-                          <ellipse cx="300" cy="300" rx="228" ry="156" stroke="#00F0FF" stroke-opacity="0.22" stroke-width="1.2" />
-                          <ellipse cx="300" cy="300" rx="126" ry="228" stroke="#00F0FF" stroke-opacity="0.28" stroke-width="1.2" />
-                          <ellipse cx="300" cy="300" rx="54" ry="228" stroke="#00F0FF" stroke-opacity="0.22" stroke-width="1.2" />
-                          <line x1="72" y1="300" x2="528" y2="300" stroke="#00F0FF" stroke-opacity="0.3" />
-                          <line x1="300" y1="72" x2="300" y2="528" stroke="#00F0FF" stroke-opacity="0.3" />
-                          <!-- Simplified Crisp Continental Polygons -->
-                          <path d="M168 180 L235 168 L255 210 L215 262 L175 245 Z" fill="rgba(0, 240, 255, 0.16)" stroke="#00F0FF" stroke-width="1.2" />
-                          <path d="M210 295 L258 312 L248 415 L218 430 L195 360 Z" fill="rgba(0, 240, 255, 0.16)" stroke="#00F0FF" stroke-width="1.2" />
-                          <path d="M285 165 L370 155 L425 205 L385 255 L292 248 Z" fill="rgba(0, 255, 136, 0.22)" stroke="#00FF88" stroke-width="1.6" />
-                          <path d="M295 272 L372 268 L390 368 L336 420 L292 340 Z" fill="rgba(0, 240, 255, 0.16)" stroke="#00F0FF" stroke-width="1.2" />
-                          <path d="M402 325 L455 335 L465 385 L412 390 Z" fill="rgba(0, 240, 255, 0.16)" stroke="#00F0FF" stroke-width="1.2" />
-                          <!-- Radar Arcs + Exploding Citizen Nodes -->
-                          <g id="s1-radar-arcs" stroke="#00FF88" stroke-width="1.6" stroke-dasharray="5 4" stroke-opacity="0.75">
-                            <path d="M210 212 Q 290 120 340 198" />
-                            <path d="M340 198 Q 375 260 338 334" />
-                            <path d="M225 352 Q 295 310 340 198" />
-                            <path d="M340 198 Q 415 240 434 356" />
-                          </g>
-                          <g id="s1-earth-nodes">
-                            <circle class="s1-node-ring" cx="322" cy="196" r="24" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.55" />
-                            <circle class="s1-node-ring" cx="204" cy="212" r="22" stroke="#00F0FF" stroke-width="1.5" stroke-opacity="0.55" />
-                            <circle class="s1-node-ring" cx="344" cy="322" r="22" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.55" />
-                            <circle class="s1-node-ring" cx="432" cy="354" r="20" stroke="#00F0FF" stroke-width="1.5" stroke-opacity="0.55" />
-                            <circle class="s1-node-dot" cx="322" cy="196" r="6" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="305" cy="214" r="5" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="352" cy="188" r="5" fill="#00F0FF" />
-                            <circle class="s1-node-dot" cx="204" cy="212" r="6" fill="#00F0FF" />
-                            <circle class="s1-node-dot" cx="232" cy="238" r="4" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="228" cy="350" r="5" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="344" cy="322" r="6" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="395" cy="222" r="5" fill="#00F0FF" />
-                            <circle class="s1-node-dot" cx="432" cy="354" r="5" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="288" cy="260" r="4" fill="#00F0FF" />
-                            <circle class="s1-node-dot" cx="185" cy="192" r="4" fill="#00FF88" />
-                            <circle class="s1-node-dot" cx="364" cy="240" r="4" fill="#00FF88" />
-                          </g>
-                        </svg>
-                      </div>
-
-                      <!-- Right: Headline + Badge + Mars Rover -> Human Explorer Morph SVG -->
-                      <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                        <div id="s1-headline-green" class="font-display">MILLIONS OF<br />HUMAN ROVERS</div>
-                        <div id="s1-sub-badge-wrap">
-                          <div id="s1-sub-badge" class="font-mono-bold">[CITIZEN SCIENCE PLANETARY EXPLORATION NETWORK — ACTIVE ON EARTH]</div>
-                        </div>
-
-                        <div id="s1-morph-card" style="width: 100%;">
-                          <div class="font-mono" style="font-size: 13px; color: #00F0FF; margin-bottom: 10px; letter-spacing: 0.1em;">UNIT MORPHOLOGY // HARDWARE ANALOG → CITIZEN SENSOR</div>
-                          <svg id="s1-morph-svg" viewBox="0 0 820 210" width="820" height="210" fill="none">
-                            <!-- Orbit Satellite Target Top-Right -->
-                            <g id="s1-sat-target" transform="translate(690, 26)">
-                              <rect x="-12" y="-8" width="24" height="16" rx="2" fill="#0E1526" stroke="#00F0FF" stroke-width="1.8" />
-                              <rect x="-42" y="-5" width="26" height="10" fill="rgba(0, 240, 255, 0.3)" stroke="#00F0FF" stroke-width="1.2" />
-                              <rect x="16" y="-5" width="26" height="10" fill="rgba(0, 240, 255, 0.3)" stroke="#00F0FF" stroke-width="1.2" />
-                              <circle cx="0" cy="14" r="3" fill="#00FF88" />
-                            </g>
-
-                            <!-- Left State: Mars Rover Silhouette -->
-                            <g id="s1-rover-group">
-                              <rect x="64" y="96" width="128" height="44" rx="6" fill="rgba(0, 240, 255, 0.16)" stroke="#00F0FF" stroke-width="2.5" />
-                              <path d="M168 96 L168 48 L192 48 L192 66 L168 66" stroke="#00F0FF" stroke-width="2.5" fill="rgba(0, 240, 255, 0.25)" />
-                              <circle cx="182" cy="57" r="4" fill="#FFD700" />
-                              <!-- Rocker-Bogie Struts -->
-                              <path d="M78 140 L62 172 M128 140 L128 172 M176 140 L194 172" stroke="#8E9BAE" stroke-width="3" />
-                              <circle cx="62" cy="176" r="18" fill="#0E1526" stroke="#00F0FF" stroke-width="3" />
-                              <circle cx="128" cy="176" r="18" fill="#0E1526" stroke="#00F0FF" stroke-width="3" />
-                              <circle cx="194" cy="176" r="18" fill="#0E1526" stroke="#00F0FF" stroke-width="3" />
-                              <text x="58" y="206" fill="#8E9BAE" font-family="JetBrains Mono" font-size="12" font-weight="700">$2.7B ROVER</text>
-                            </g>
-
-                            <!-- Morph Transfer Chevrons -->
-                            <g id="s1-morph-arrows">
-                              <path d="M275 124 L310 124 M300 112 L314 124 L300 136" stroke="#00F0FF" stroke-width="3" stroke-linecap="round" />
-                              <path d="M335 124 L370 124 M360 112 L374 124 L360 136" stroke="#00FF88" stroke-width="3" stroke-linecap="round" />
-                              <path d="M395 124 L430 124 M420 112 L434 124 L420 136" stroke="#00FF88" stroke-width="3" stroke-linecap="round" />
-                              <text x="274" y="96" fill="#00FF88" font-family="JetBrains Mono" font-size="12" font-weight="700">MORPHING TO HUMAN NODE</text>
-                            </g>
-
-                            <!-- Right State: Human Hiker Holding Smartphone + Satellite Beam -->
-                            <g id="s1-hiker-group">
-                              <!-- Ground Arc -->
-                              <path d="M475 190 Q 545 174 620 190" stroke="#00FF88" stroke-width="2" stroke-opacity="0.6" />
-                              <!-- Human Explorer Silhouette -->
-                              <circle cx="526" cy="74" r="14" fill="#00FF88" />
-                              <!-- Backpack -->
-                              <rect x="498" y="94" width="16" height="40" rx="5" fill="#00F0FF" fill-opacity="0.85" />
-                              <!-- Torso & Legs -->
-                              <path d="M518 94 L538 94 L542 142 L516 142 Z" fill="#00FF88" />
-                              <path d="M520 142 L506 186 M536 142 L554 186" stroke="#00FF88" stroke-width="8" stroke-linecap="round" />
-                              <!-- Raised Arm + Smartphone -->
-                              <path d="M538 102 L572 78 L584 64" stroke="#00FF88" stroke-width="6" stroke-linecap="round" />
-                              <rect x="580" y="44" width="14" height="24" rx="2.5" fill="#05070B" stroke="#00F0FF" stroke-width="2.5" />
-                              <!-- Uplink Beam to Satellite -->
-                              <path id="s1-uplink-beam" d="M594 48 L684 36" stroke="#00F0FF" stroke-width="2.5" stroke-dasharray="6 5" />
-                              <path d="M600 38 A 18 18 0 0 1 612 52" stroke="#00FF88" stroke-width="2" />
-                              <path d="M608 30 A 28 28 0 0 1 624 52" stroke="#00FF88" stroke-width="2" stroke-opacity="0.7" />
-                              <text x="478" y="206" fill="#00FF88" font-family="JetBrains Mono" font-size="12" font-weight="700">HUMAN ROVER // IN-SITU UPLINK</text>
-                            </g>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 2: DATA ENGINE & DUAL-LAYER MAP (03.5s - 08.0s) ==================== -->
-          <section id="scene-2" class="clip scene-layer" data-start="3.5" data-duration="4.5" data-track-index="2">
-            <div id="s2-stage" class="scene-stage">
-              <!-- Phase 1 (03.5s - 04.8s): MoonSiteUA 3D Orbital Hero Brand Reveal -->
-              <div id="s2-brand-overlay">
-                <svg id="s2-emblem-svg" viewBox="0 0 360 360" width="320" height="320" fill="none">
-                  <g id="s2-emblem-rings">
-                    <circle cx="180" cy="180" r="164" stroke="#00F0FF" stroke-width="1.5" stroke-dasharray="10 8" stroke-opacity="0.65" />
-                    <circle cx="180" cy="180" r="138" stroke="#00FF88" stroke-width="2" stroke-dasharray="48 16" stroke-opacity="0.8" />
-                    <ellipse cx="180" cy="180" rx="168" ry="64" transform="rotate(-24 180 180)" stroke="#00F0FF" stroke-width="2" />
-                    <circle cx="322" cy="116" r="7" fill="#00FF88" />
-                  </g>
-                  <!-- Crescent Moon Merging Into Topographic Contours -->
-                  <path d="M196 92 A 88 88 0 1 0 264 216 A 68 68 0 1 1 196 92 Z" fill="rgba(0, 240, 255, 0.22)" stroke="#00F0FF" stroke-width="3" />
-                  <path d="M108 188 Q 145 162, 184 182 T 264 176" stroke="#00FF88" stroke-width="2.2" />
-                  <path d="M102 208 Q 148 184, 192 204 T 266 196" stroke="#00F0FF" stroke-width="1.8" stroke-opacity="0.85" />
-                  <path d="M114 228 Q 156 208, 200 224 T 256 218" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.7" />
-                  <circle cx="184" cy="182" r="7" fill="#FFD700" />
-                </svg>
-                <div id="s2-brand-title" class="font-display">MOONSITE<span style="color: var(--cyan-nasa);">UA</span></div>
-                <div id="s2-brand-sub" class="font-mono-bold">GAMIFIED CITIZEN SCIENCE PLATFORM</div>
-              </div>
-
-              <!-- Phase 2 (04.8s - 08.0s): Core Interactive Map Engine (Iberia / Spain Sector) -->
-              <div id="s2-map-workspace">
-                <div id="s2-map-panel" class="glass-panel">
-                  <div class="s2-map-topbar">
-                    <div class="badge-pill" style="border-color: rgba(0, 240, 255, 0.5); color: var(--cyan-nasa);">
-                      <span>SECTOR: ES-IBERIA // OPTIMIZED MESH</span>
-                    </div>
-                    <div id="s2-nasa-tag" class="stamp-tag" style="background: rgba(0, 240, 255, 0.14); border: 1px solid var(--cyan-nasa); color: #FFFFFF;">
-                      [SOURCE: NASA + ESA SATELLITE CROSS-DATA]
-                    </div>
-                  </div>
-
-                  <div id="s2-map-canvas" data-layout-allow-overflow>
-                    <div id="s2-sat-sweep" data-layout-ignore>
-                      <svg width="72" height="52" viewBox="0 0 72 52" fill="none" style="position: absolute; top: 18px; right: -28px;">
-                        <rect x="24" y="16" width="24" height="20" rx="3" fill="#0E1526" stroke="#00F0FF" stroke-width="2" />
-                        <rect x="2" y="20" width="18" height="12" fill="rgba(0, 240, 255, 0.45)" stroke="#00F0FF" stroke-width="1.5" />
-                        <rect x="52" y="20" width="18" height="12" fill="rgba(0, 240, 255, 0.45)" stroke="#00F0FF" stroke-width="1.5" />
-                        <circle cx="36" cy="40" r="3.5" fill="#00FF88" />
-                      </svg>
-                    </div>
-                    <svg id="s2-iberia-svg" data-layout-allow-overflow viewBox="0 0 1080 740" width="100%" height="100%" fill="none">
-                      <!-- Surrounding Country Polygons (France, Portugal, North Africa) -->
-                      <path d="M620 0 L1080 0 L1080 260 L820 206 L584 166 L540 120 Z" fill="rgba(14, 24, 44, 0.72)" stroke="rgba(142, 155, 174, 0.35)" stroke-width="1.5" />
-                      <text x="820" y="90" fill="#8E9BAE" font-family="JetBrains Mono" font-size="14" opacity="0.6">FR // EU-WEST MESH</text>
-
-                      <path d="M180 620 L740 620 L780 740 L120 740 Z" fill="rgba(14, 24, 44, 0.72)" stroke="rgba(142, 155, 174, 0.35)" stroke-width="1.5" />
-                      <text x="410" y="695" fill="#8E9BAE" font-family="JetBrains Mono" font-size="14" opacity="0.6">NORTH AFRICA // ATLAS SECTOR</text>
-
-                      <!-- Portugal Polygon -->
-                      <path d="M240 165 L322 172 L318 286 L296 364 L322 448 L294 522 L214 504 L222 406 L202 332 L228 240 Z" fill="rgba(16, 30, 54, 0.85)" stroke="rgba(0, 240, 255, 0.38)" stroke-width="1.8" />
-                      <text x="234" y="366" fill="#8E9BAE" font-family="JetBrains Mono" font-size="13">PT-01</text>
-
-                      <!-- Spain Mainland Polygon (High-Contrast Active Mesh) -->
-                      <path id="s2-spain-poly" d="M242 164 L305 112 L428 118 L544 134 L588 164 L785 204 L854 226 L832 288 L738 344 L692 404 L704 476 L622 536 L504 562 L396 574 L334 548 L294 522 L322 448 L296 364 L318 286 L322 172 Z" fill="rgba(12, 34, 62, 0.88)" stroke="#00F0FF" stroke-width="2.5" />
-
-                      <!-- Balearic Islands -->
-                      <path d="M846 332 L898 318 L912 346 L862 358 Z" fill="rgba(12, 34, 62, 0.88)" stroke="#00F0FF" stroke-width="1.8" />
-                      <path d="M798 368 L822 360 L826 382 L802 386 Z" fill="rgba(12, 34, 62, 0.88)" stroke="#00F0FF" stroke-width="1.8" />
-
-                      <!-- Internal Terrain Mesh Contours -->
-                      <g stroke="#00F0FF" stroke-opacity="0.24" stroke-width="1.2">
-                        <path d="M350 220 L520 210 L660 250 L620 340 L440 350 L360 290 Z" stroke-dasharray="6 4" />
-                        <path d="M390 390 L570 382 L645 455 L520 512 L380 480 Z" stroke-dasharray="6 4" />
-                        <line x1="220" y1="260" x2="880" y2="260" stroke-opacity="0.14" />
-                        <line x1="220" y1="420" x2="880" y2="420" stroke-opacity="0.14" />
-                        <line x1="480" y1="90" x2="480" y2="590" stroke-opacity="0.14" />
-                        <line x1="660" y1="90" x2="660" y2="590" stroke-opacity="0.14" />
-                      </g>
-
-                      <!-- Canary Islands Sector Inset Box (Bottom-Left) -->
-                      <g id="s2-canary-inset" transform="translate(26, 486)">
-                        <rect width="236" height="196" rx="10" fill="rgba(8, 15, 30, 0.92)" stroke="#00F0FF" stroke-width="1.8" />
-                        <text x="14" y="24" fill="#00F0FF" font-family="JetBrains Mono" font-size="11" font-weight="700">INSET: CANARY ARCHIPELAGO</text>
-                        <!-- Tenerife + Gran Canaria + Lanzarote polygons -->
-                        <path d="M78 106 L124 88 L138 112 L94 134 Z" fill="rgba(12, 38, 68, 0.9)" stroke="#00F0FF" stroke-width="1.8" />
-                        <path d="M150 118 L174 114 L178 140 L152 142 Z" fill="rgba(12, 38, 68, 0.9)" stroke="#00F0FF" stroke-width="1.4" />
-                        <path d="M196 86 L216 80 L214 106 L194 108 Z" fill="rgba(12, 38, 68, 0.9)" stroke="#00F0FF" stroke-width="1.4" />
-                        <text x="14" y="180" fill="#8E9BAE" font-family="JetBrains Mono" font-size="11">28.27° N, 16.64° W // TEIDE</text>
-                      </g>
-
-                      <!-- LAYER 1: UNEXPLORED HOTSPOTS (Thermal Polygons) -->
-                      <g id="s2-hotspots" opacity="0">
-                        <polygon points="560,468 646,456 672,516 584,544 532,514" fill="rgba(255, 30, 66, 0.36)" stroke="#FF1E42" stroke-width="2.5" />
-                        <polygon points="658,396 716,406 704,468 644,458" fill="rgba(0, 240, 255, 0.28)" stroke="#00F0FF" stroke-width="2.5" />
-                        <polygon points="98,572 174,562 184,618 110,626" fill="rgba(255, 107, 0, 0.34)" stroke="#FF6B00" stroke-width="2.5" />
-                        <g transform="translate(362, 138)">
-                          <rect x="0" y="0" width="440" height="34" rx="6" fill="rgba(255, 30, 66, 0.9)" />
-                          <text x="16" y="22" fill="#FFFFFF" font-family="JetBrains Mono" font-size="13" font-weight="700">UNEXPLORED HOTSPOTS (Zonas de Interés No Exploradas)</text>
-                        </g>
-                      </g>
-
-                      <!-- LAYER 2: COMMUNITY DISCOVERED NODES -->
-                      <!-- Node A: Basaltic Formation (Canary Inset) -->
-                      <g id="s2-pin-a" transform="translate(136, 594)">
-                        <circle cx="0" cy="0" r="24" stroke="#00FF88" stroke-width="2" stroke-opacity="0.7" />
-                        <circle cx="0" cy="0" r="9" fill="#00FF88" stroke="#05070B" stroke-width="2" />
-                        <rect x="-12" y="-44" width="72" height="24" rx="4" fill="#05070B" stroke="#00FF88" stroke-width="1.5" />
-                        <text x="-4" y="-28" fill="#00FF88" font-family="JetBrains Mono" font-size="11" font-weight="700">NODE A</text>
-                      </g>
-
-                      <!-- Node B: Karstic Cavern (Alicante) -->
-                      <g id="s2-pin-b" transform="translate(682, 434)">
-                        <circle cx="0" cy="0" r="26" stroke="#00F0FF" stroke-width="2" stroke-opacity="0.75" />
-                        <circle cx="0" cy="0" r="10" fill="#00F0FF" stroke="#05070B" stroke-width="2" />
-                        <rect x="20" y="-14" width="150" height="28" rx="5" fill="#05070B" stroke="#00F0FF" stroke-width="1.5" />
-                        <text x="29" y="5" fill="#00F0FF" font-family="JetBrains Mono" font-size="12" font-weight="700">NODE B // #ES-042</text>
-                      </g>
-
-                      <!-- Node C: Extreme Thermal Arid (Tabernas) -->
-                      <g id="s2-pin-c" transform="translate(596, 504)">
-                        <circle cx="0" cy="0" r="26" stroke="#FF6B00" stroke-width="2" stroke-opacity="0.75" />
-                        <circle cx="0" cy="0" r="10" fill="#FF6B00" stroke="#05070B" stroke-width="2" />
-                        <rect x="-152" y="-14" width="132" height="28" rx="5" fill="#05070B" stroke="#FF6B00" stroke-width="1.5" />
-                        <text x="-142" y="5" fill="#FF6B00" font-family="JetBrains Mono" font-size="12" font-weight="700">NODE C // #ES-08</text>
-                      </g>
-                    </svg>
-                  </div>
-                </div>
-
-                <!-- Right Sidebar: Layer Status + 3 Community Node Cards -->
-                <div id="s2-sidebar">
-                  <div class="glass-panel" style="padding: 18px 20px; border-color: rgba(0, 240, 255, 0.45);">
-                    <div class="font-mono-bold" style="font-size: 13px; color: var(--cyan-nasa); letter-spacing: 0.1em; margin-bottom: 8px;">DUAL DATA LAYER ENGINE</div>
-                    <div style="font-size: 26px; font-weight: 700; line-height: 1.15;">SATELLITE BASE +<br />CITIZEN MICRO-ANALOGS</div>
-                  </div>
-
-                  <!-- Node A Card -->
-                  <div id="s2-card-a" class="s2-node-card">
-                    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" style="flex-shrink: 0;">
-                      <rect width="46" height="46" rx="10" fill="rgba(0, 255, 136, 0.14)" stroke="#00FF88" stroke-width="1.5" />
-                      <path d="M11 34 L19 16 L24 22 L29 13 L35 34 Z" fill="rgba(0, 255, 136, 0.35)" stroke="#00FF88" stroke-width="1.8" />
-                    </svg>
-                    <div>
-                      <div class="font-mono-bold" style="font-size: 12px; color: var(--emerald-verified);">NODE A // 28.27° N, 16.64° W</div>
-                      <div style="font-size: 18px; font-weight: 700; margin: 4px 0;">BASALTIC FORMATION</div>
-                      <div class="font-mono" style="font-size: 13px; color: var(--text-muted);">VOLCANIC REGOLITH // HIGH IRON</div>
-                    </div>
-                  </div>
-
-                  <!-- Node B Card -->
-                  <div id="s2-card-b" class="s2-node-card">
-                    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" style="flex-shrink: 0;">
-                      <rect width="46" height="46" rx="10" fill="rgba(0, 240, 255, 0.14)" stroke="#00F0FF" stroke-width="1.5" />
-                      <path d="M10 34 C10 18, 36 18, 36 34 Z" fill="rgba(0, 240, 255, 0.2)" stroke="#00F0FF" stroke-width="1.8" />
-                      <path d="M17 34 C17 24, 29 24, 29 34 Z" fill="#05070B" stroke="#00F0FF" stroke-width="1.4" />
-                    </svg>
-                    <div>
-                      <div class="font-mono-bold" style="font-size: 12px; color: var(--cyan-nasa);">NODE B // 38.34° N, 0.48° W</div>
-                      <div style="font-size: 18px; font-weight: 700; margin: 4px 0;">KARSTIC CAVERN SYSTEM</div>
-                      <div class="font-mono" style="font-size: 13px; color: var(--text-muted);">SUBSURFACE ANALOG // LAVA-TUBE PROXY</div>
-                    </div>
-                  </div>
-
-                  <!-- Node C Card -->
-                  <div id="s2-card-c" class="s2-node-card">
-                    <svg width="46" height="46" viewBox="0 0 46 46" fill="none" style="flex-shrink: 0;">
-                      <rect width="46" height="46" rx="10" fill="rgba(255, 107, 0, 0.14)" stroke="#FF6B00" stroke-width="1.5" />
-                      <circle cx="23" cy="20" r="7" fill="rgba(255, 107, 0, 0.4)" stroke="#FF6B00" stroke-width="1.8" />
-                      <path d="M11 33 Q 17 29 23 33 T 35 33" stroke="#FF6B00" stroke-width="2" />
-                    </svg>
-                    <div>
-                      <div class="font-mono-bold" style="font-size: 12px; color: var(--amber-martian);">NODE C // 37.04° N, 2.46° W</div>
-                      <div style="font-size: 18px; font-weight: 700; margin: 4px 0;">EXTREME THERMAL ARID ZONE</div>
-                      <div class="font-mono" style="font-size: 13px; color: var(--text-muted);">ΔT 42°C DIURNAL SWING // TABERNAS</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 3: CROWD-VERIFICATION TRAFFIC LIGHT (08.0s - 13.0s) ==================== -->
-          <section id="scene-3" class="clip scene-layer" data-start="8.0" data-duration="5.0" data-track-index="3">
-            <div id="s3-stage" class="scene-stage" data-layout-allow-overflow>
-              <div id="s3-header">
-                <div>
-                  <div class="font-mono-bold" style="font-size: 14px; color: var(--cyan-nasa); letter-spacing: 0.14em;">SCIENTIFIC CONSENSUS PIPELINE // TRAFFIC-LIGHT PROTOCOL</div>
-                  <div class="font-display" style="font-size: 44px; margin-top: 4px;">NODE #ES-042 // ALICANTE-MURCIA ARID BASIN</div>
-                </div>
-                <div class="badge-pill" style="border-color: var(--emerald-verified); color: var(--emerald-verified);">
-                  TARGET QUORUM: 10 INDEPENDENT EXPLORERS
-                </div>
-              </div>
-
-              <div id="s3-pipeline-grid">
-                <!-- STAGE 1: GREY BEACON -->
-                <div id="s3-card-1" class="glass-panel s3-stage-card" style="border-color: rgba(142, 155, 174, 0.55);">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 15px; color: var(--grey-beacon);">1. GREY BEACON // DISCOVERY</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-                      <!-- 3D Terrain Pin SVG -->
-                      <svg id="s3-pin-svg-1" width="140" height="128" viewBox="0 0 140 128" fill="none" style="overflow: visible;" data-layout-allow-overflow>
-                        <polygon points="10,104 70,78 130,104 70,124" fill="rgba(142,155,174,0.16)" stroke="#8E9BAE" stroke-width="1.5" />
-                        <ellipse cx="70" cy="100" rx="28" ry="11" stroke="#8E9BAE" stroke-width="1.6" stroke-dasharray="4 3" />
-                        <g id="s3-pin-1">
-                          <path d="M70 16 C52 16, 40 30, 40 46 C40 68, 70 98, 70 98 C70 98, 100 68, 100 46 C100 30, 88 16, 70 16 Z" fill="#8E9BAE" stroke="#FFFFFF" stroke-width="2" />
-                          <circle cx="70" cy="46" r="11" fill="#05070B" />
-                        </g>
-                      </svg>
-                      <div style="text-align: right;">
-                        <div class="font-mono" style="font-size: 12px; color: var(--text-muted);">EXPLORERS</div>
-                        <div id="s3-count-1" class="font-mono-bold" style="font-size: 46px; color: var(--grey-beacon);">01 / 10</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- In-Situ Telemetry Card -->
-                  <div id="s3-telem-1" style="padding: 16px; border-radius: 10px; background: rgba(6, 10, 20, 0.88); border: 1px solid rgba(142, 155, 174, 0.35);">
-                    <div class="font-mono-bold" style="font-size: 12px; color: var(--cyan-nasa); margin-bottom: 10px;">IN-SITU TELEMETRY PACKET #01</div>
-                    <div class="font-mono" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px;">
-                      <div>TEMP: <strong style="color:#FFF;">39.4°C</strong></div>
-                      <div>HUMIDITY: <strong style="color:#FFF;">11.2%</strong></div>
-                      <div style="grid-column: span 2;">SOIL: <strong style="color:#FFF;">Iron-Rich Basalt</strong></div>
-                    </div>
-                  </div>
-
-                  <div class="stamp-tag" style="background: rgba(142, 155, 174, 0.16); border: 1px solid var(--grey-beacon); color: var(--grey-beacon);">
-                    [RAW IN-SITU UPLOAD — UNVERIFIED SCIENTIFIC STATUS]
-                  </div>
-                </div>
-
-                <!-- FIBER PIPE 1 -> 2 -->
-                <div class="s3-fiber-pipe">
-                  <div id="s3-fiber-1" class="s3-fiber-fill" style="background: linear-gradient(90deg, #8E9BAE, #FF6B00);"></div>
-                </div>
-
-                <!-- STAGE 2: ORANGE BEACON -->
-                <div id="s3-card-2" class="glass-panel s3-stage-card" style="border-color: rgba(255, 107, 0, 0.65);">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 15px; color: var(--amber-martian);">2. ORANGE BEACON // IN VERIFICATION</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-                      <svg width="140" height="128" viewBox="0 0 140 128" fill="none">
-                        <polygon points="10,104 70,78 130,104 70,124" fill="rgba(255,107,0,0.16)" stroke="#FF6B00" stroke-width="1.5" />
-                        <ellipse cx="70" cy="100" rx="38" ry="15" stroke="#FF6B00" stroke-width="1.6" />
-                        <!-- Converging Explorer GPS Vectors -->
-                        <path d="M14 48 L50 74 M126 48 L90 74" stroke="#00F0FF" stroke-width="2" stroke-dasharray="4 3" />
-                        <g id="s3-pin-2">
-                          <path d="M70 16 C52 16, 40 30, 40 46 C40 68, 70 98, 70 98 C70 98, 100 68, 100 46 C100 30, 88 16, 70 16 Z" fill="#FF6B00" stroke="#FFD700" stroke-width="2" />
-                          <circle cx="70" cy="46" r="11" fill="#05070B" />
-                        </g>
-                      </svg>
-                      <div style="text-align: right;">
-                        <div class="font-mono" style="font-size: 11px; color: var(--text-muted);">INDEPENDENT EXPLORERS</div>
-                        <div id="s3-count-2" class="font-mono-bold" style="font-size: 46px; color: var(--amber-martian);">01 / 10</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style="padding: 16px; border-radius: 10px; background: rgba(24, 14, 6, 0.88); border: 1px solid rgba(255, 107, 0, 0.45);">
-                    <div class="font-mono-bold" style="font-size: 12px; color: var(--amber-martian); margin-bottom: 8px;">PRECISION HUD READOUT</div>
-                    <div class="font-mono" style="font-size: 13px; line-height: 1.55;">
-                      GPS DRIFT MARGIN: <strong style="color:#FFF;">±1.4m (MINIMAL ERROR)</strong><br />
-                      METRIC CONSISTENCY: <strong id="s3-consistency-pct" style="color: var(--emerald-verified); font-size: 18px;">0.0%</strong>
-                    </div>
-                  </div>
-
-                  <div class="stamp-tag" style="background: rgba(255, 107, 0, 0.16); border: 1px solid var(--amber-martian); color: var(--amber-martian);">
-                    [CROSS-CHECKING INDEPENDENT FIELD READINGS...]
-                  </div>
-                </div>
-
-                <!-- FIBER PIPE 2 -> 3 -->
-                <div class="s3-fiber-pipe">
-                  <div id="s3-fiber-2" class="s3-fiber-fill" style="background: linear-gradient(90deg, #FF6B00, #00FF88);"></div>
-                </div>
-
-                <!-- STAGE 3: GREEN BEACON -->
-                <div id="s3-card-3" class="glass-panel s3-stage-card" style="border-color: rgba(0, 255, 136, 0.78); box-shadow: 0 0 42px rgba(0, 255, 136, 0.22);">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 15px; color: var(--emerald-verified);">3. GREEN BEACON // CONFIRMED ANALOG</div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
-                      <svg width="140" height="128" viewBox="0 0 140 128" fill="none" style="overflow: visible;" data-layout-allow-overflow>
-                        <polygon points="10,104 70,78 130,104 70,124" fill="rgba(0,255,136,0.2)" stroke="#00FF88" stroke-width="1.8" />
-                        <circle id="s3-emerald-wave" cx="70" cy="60" r="46" stroke="#00FF88" stroke-width="2" stroke-opacity="0.7" data-layout-ignore />
-                        <g id="s3-pin-3">
-                          <path d="M70 16 C52 16, 40 30, 40 46 C40 68, 70 98, 70 98 C70 98, 100 68, 100 46 C100 30, 88 16, 70 16 Z" fill="#00FF88" stroke="#FFFFFF" stroke-width="2" />
-                          <path d="M60 46 L67 53 L81 38" stroke="#05070B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-                        </g>
-                        <!-- Deterministic Data Confetti Dots -->
-                        <g id="s3-confetti" opacity="0" data-layout-ignore>
-                          <rect x="20" y="16" width="6" height="6" fill="#00FF88" />
-                          <rect x="116" y="20" width="6" height="6" fill="#00F0FF" />
-                          <rect x="16" y="64" width="5" height="5" fill="#FFD700" />
-                          <rect x="122" y="68" width="5" height="5" fill="#00FF88" />
-                          <circle cx="42" cy="12" r="3" fill="#00F0FF" />
-                          <circle cx="98" cy="14" r="3" fill="#FFD700" />
-                        </g>
-                      </svg>
-                      <div style="text-align: right;">
-                        <div class="font-mono" style="font-size: 11px; color: var(--emerald-verified);">CONSENSUS REACHED</div>
-                        <div id="s3-count-3" class="font-mono-bold" style="font-size: 46px; color: var(--emerald-verified);">03 / 10</div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style="padding: 16px; border-radius: 10px; background: rgba(4, 24, 16, 0.9); border: 1px solid rgba(0, 255, 136, 0.45);">
-                    <div class="font-mono-bold" style="font-size: 12px; color: var(--emerald-verified); margin-bottom: 8px;">SCIENTIFIC DB RECORD LOCKED</div>
-                    <div class="font-mono" style="font-size: 13px; color: #D8FFF0; line-height: 1.55;">
-                      STATUS: <strong style="color:#00FF88;">10 / 10 VALIDATED</strong><br />
-                      ANALOG CLASS: <strong style="color:#FFF;">LUNAR / MARTIAN REGOLITH</strong>
-                    </div>
-                  </div>
-
-                  <div class="stamp-tag" style="background: rgba(0, 255, 136, 0.22); border: 1px solid var(--emerald-verified); color: var(--emerald-verified);">
-                    [CONFIRMED TERRESTRIAL ANALOG]
-                  </div>
-                </div>
-              </div>
-
-              <!-- Heavy Metallic Slam Stamp -->
-              <div id="s3-final-stamp" class="font-mono-bold">
-                [LEGITIMATE TERRESTRIAL ANALOG — CONSOLIDATED IN SCIENTIFIC DB]
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 4: SECURITY ARCHITECTURE (13.0s - 17.5s) ==================== -->
-          <section id="scene-4" class="clip scene-layer" data-start="13.0" data-duration="4.5" data-track-index="4">
-            <div id="s4-stage" class="scene-stage">
-              <div id="s4-split">
-                <!-- LEFT PANEL: ANTI-SYBIL IDENTITY SHIELD -->
-                <div id="s4-left-panel" class="glass-panel s4-panel" style="border-color: rgba(0, 240, 255, 0.48);">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 13px; color: var(--cyan-nasa); letter-spacing: 0.12em;">SECURITY LAYER 01 // SYBIL RESISTANCE</div>
-                    <div class="font-display" style="font-size: 36px; margin-top: 6px;">ANTI-SYBIL IDENTITY SHIELD</div>
-                  </div>
-
-                  <!-- Bot Swarm Vaporization SVG Arena -->
-                  <div style="border-radius: 12px; background: rgba(6, 10, 20, 0.85); border: 1px solid rgba(0, 240, 255, 0.25); padding: 14px;">
-                    <svg id="s4-firewall-svg" viewBox="0 0 760 280" width="100%" height="260" fill="none">
-                      <!-- Safe Protected Map Side (Right) -->
-                      <rect x="520" y="20" width="218" height="240" rx="10" fill="rgba(0, 255, 136, 0.08)" stroke="#00FF88" stroke-opacity="0.4" />
-                      <text x="546" y="48" fill="#00FF88" font-family="JetBrains Mono" font-size="12" font-weight="700">VERIFIED MAP LAYER</text>
-                      <circle cx="628" cy="148" r="46" stroke="#00FF88" stroke-width="1.5" stroke-dasharray="5 4" />
-                      <circle cx="608" cy="136" r="6" fill="#00FF88" />
-                      <circle cx="648" cy="162" r="6" fill="#00FF88" />
-                      <circle cx="632" cy="118" r="6" fill="#00F0FF" />
-
-                      <!-- Glowing Cyan Firewall Barrier -->
-                      <g id="s4-shield-barrier">
-                        <path d="M460 14 C488 76, 488 204, 460 266" stroke="#00F0FF" stroke-width="6" />
-                        <path d="M460 14 C488 76, 488 204, 460 266" stroke="#FFFFFF" stroke-width="2" />
-                        <polygon points="448,140 468,116 492,126 492,154 468,164" fill="rgba(0, 240, 255, 0.35)" stroke="#00F0FF" stroke-width="2" />
-                      </g>
-
-                      <!-- Swarm of Red Wireframe Bots (wrapped cleanly so GSAP x/y never wipes translate) -->
-                      <g id="s4-bot-swarm">
-                        <g transform="translate(52, 46)">
-                          <g class="s4-bot">
-                            <rect width="38" height="30" rx="5" fill="rgba(255,30,66,0.28)" stroke="#FF1E42" stroke-width="2" />
-                            <circle cx="12" cy="15" r="3" fill="#FF1E42" />
-                            <circle cx="26" cy="15" r="3" fill="#FF1E42" />
-                            <line x1="19" y1="0" x2="19" y2="-8" stroke="#FF1E42" stroke-width="2" />
-                          </g>
-                        </g>
-                        <g transform="translate(128, 114)">
-                          <g class="s4-bot">
-                            <rect width="38" height="30" rx="5" fill="rgba(255,30,66,0.28)" stroke="#FF1E42" stroke-width="2" />
-                            <circle cx="12" cy="15" r="3" fill="#FF1E42" />
-                            <circle cx="26" cy="15" r="3" fill="#FF1E42" />
-                            <line x1="19" y1="0" x2="19" y2="-8" stroke="#FF1E42" stroke-width="2" />
-                          </g>
-                        </g>
-                        <g transform="translate(68, 194)">
-                          <g class="s4-bot">
-                            <rect width="38" height="30" rx="5" fill="rgba(255,30,66,0.28)" stroke="#FF1E42" stroke-width="2" />
-                            <circle cx="12" cy="15" r="3" fill="#FF1E42" />
-                            <circle cx="26" cy="15" r="3" fill="#FF1E42" />
-                            <line x1="19" y1="0" x2="19" y2="-8" stroke="#FF1E42" stroke-width="2" />
-                          </g>
-                        </g>
-                        <g transform="translate(206, 62)">
-                          <g class="s4-bot">
-                            <rect width="38" height="30" rx="5" fill="rgba(255,30,66,0.28)" stroke="#FF1E42" stroke-width="2" />
-                            <circle cx="12" cy="15" r="3" fill="#FF1E42" />
-                            <circle cx="26" cy="15" r="3" fill="#FF1E42" />
-                            <line x1="19" y1="0" x2="19" y2="-8" stroke="#FF1E42" stroke-width="2" />
-                          </g>
-                        </g>
-                        <g transform="translate(216, 176)">
-                          <g class="s4-bot">
-                            <rect width="38" height="30" rx="5" fill="rgba(255,30,66,0.28)" stroke="#FF1E42" stroke-width="2" />
-                            <circle cx="12" cy="15" r="3" fill="#FF1E42" />
-                            <circle cx="26" cy="15" r="3" fill="#FF1E42" />
-                            <line x1="19" y1="0" x2="19" y2="-8" stroke="#FF1E42" stroke-width="2" />
-                          </g>
-                        </g>
-                      </g>
-
-                      <!-- Vaporization Sparks at Firewall -->
-                      <g id="s4-vaporize-sparks" opacity="0">
-                        <circle cx="458" cy="78" r="14" stroke="#00F0FF" stroke-width="2.5" />
-                        <circle cx="468" cy="140" r="18" stroke="#FFFFFF" stroke-width="2.5" />
-                        <circle cx="458" cy="202" r="14" stroke="#00F0FF" stroke-width="2.5" />
-                        <rect x="276" y="122" width="164" height="34" rx="6" fill="rgba(255, 30, 66, 0.9)" />
-                        <text x="290" y="144" fill="#FFFFFF" font-family="JetBrains Mono" font-size="12" font-weight="700">BOT FARM VAPORIZED</text>
-                      </g>
-                    </svg>
-                  </div>
-
-                  <!-- 3-Step Auth Flow -->
-                  <div class="s4-flow-row">
-                    <div class="s4-step-box font-mono-bold">
-                      <div style="color: var(--cyan-nasa); margin-bottom: 4px;">STEP 1</div>
-                      OAuth Social Auth<br />(Google / Apple)
-                    </div>
-                    <div style="text-align: center; color: var(--cyan-nasa); font-size: 20px;">➔</div>
-                    <div class="s4-step-box font-mono-bold">
-                      <div style="color: var(--cyan-nasa); margin-bottom: 4px;">STEP 2</div>
-                      Mandatory Unique<br />SMS OTP Verify
-                    </div>
-                    <div style="text-align: center; color: var(--emerald-verified); font-size: 20px;">➔</div>
-                    <div class="s4-step-box font-mono-bold" style="border-color: var(--emerald-verified); background: rgba(0, 255, 136, 0.12);">
-                      <div style="color: var(--emerald-verified); margin-bottom: 4px;">VERIFIED</div>
-                      1 Unique Phone =<br />1 Human Explorer
-                    </div>
-                  </div>
-
-                  <!-- Privacy Callout Badge -->
-                  <div class="stamp-tag" style="background: rgba(0, 255, 136, 0.16); border: 1.5px solid var(--emerald-verified); color: var(--emerald-verified); justify-content: center; padding: 14px;">
-                    NO SENSITIVE ID (NO DNI REQUIRED) // 100% PRIVACY-PRESERVING TRACEABILITY
-                  </div>
-                </div>
-
-                <!-- RIGHT PANEL: TRANSPARENT OFFLINE EXPEDITION GEOFENCING -->
-                <div id="s4-right-panel" class="glass-panel s4-panel" style="border-color: rgba(0, 255, 136, 0.48);">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 13px; color: var(--emerald-verified); letter-spacing: 0.12em;">SECURITY LAYER 02 // FIELD INTEGRITY</div>
-                    <div class="font-display" style="font-size: 36px; margin-top: 6px;">OFFLINE EXPEDITION GEOFENCING</div>
-                  </div>
-
-                  <!-- Push Notification Overlay Modal (Phase B) -->
-                  <div id="s4-push-modal">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                      <span class="font-mono-bold" style="font-size: 12px; color: var(--cyan-nasa);">MOONSITEUA // SYNC PROMPT</span>
-                      <span class="font-mono" style="font-size: 11px; color: var(--emerald-verified);">4G/5G RESTORED</span>
-                    </div>
-                    <div style="font-size: 16px; color: #FFFFFF; margin-bottom: 12px;">
-                      "MoonSiteUA: Connection restored. Grant one-time GPS check to sync field packet?"
-                    </div>
-                    <div style="display: flex; justify-content: flex-end;">
-                      <div id="s4-auth-btn" class="font-mono-bold" style="padding: 9px 18px; border-radius: 8px; background: var(--cyan-nasa); color: #05070B; font-size: 13px;">
-                        [AUTHORIZE ONE-TIME GPS]
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Canyon -> Coverage -> Geofence SVG Simulation -->
-                  <div style="border-radius: 12px; background: rgba(6, 10, 20, 0.88); border: 1px solid rgba(0, 240, 255, 0.25); padding: 14px;">
-                    <svg id="s4-geofence-svg" viewBox="0 0 760 360" width="100%" height="340" fill="none">
-                      <!-- Phase A: Deep Canyon Dead Zone -->
-                      <path d="M24 270 L130 140 L256 170 L328 290 L24 336 Z" fill="rgba(255, 107, 0, 0.12)" stroke="#FF6B00" stroke-width="1.5" stroke-dasharray="6 4" />
-                      <text x="42" y="130" fill="#FF6B00" font-family="JetBrains Mono" font-size="12" font-weight="700">SIGNAL: 0 BARS // SATELLITE BLOCKED</text>
-
-                      <!-- Trail from Canyon to Ridge -->
-                      <path d="M128 250 Q 250 220 392 178" stroke="#8E9BAE" stroke-width="3" stroke-dasharray="7 5" />
-
-                      <!-- Phase B/C: Coverage Zone + Expanded Logical Geofence Radius -->
-                      <circle id="s4-geofence-ring" cx="388" cy="178" r="118" fill="rgba(0, 255, 136, 0.1)" stroke="#00FF88" stroke-width="3" stroke-dasharray="10 6" opacity="0" />
-                      <circle cx="388" cy="178" r="10" fill="#00FF88" />
-                      <text x="304" y="42" fill="#00F0FF" font-family="JetBrains Mono" font-size="12" font-weight="700">4G/5G RESTORED // EXPANDED LOGICAL GEOFENCE</text>
-
-                      <!-- Moving Explorer Smartphone Marker (wrapped so x/y preserves translate) -->
-                      <g transform="translate(116, 232)">
-                        <g id="s4-explorer-phone">
-                          <rect x="0" y="0" width="28" height="44" rx="5" fill="#0E1526" stroke="#00F0FF" stroke-width="2.5" />
-                          <circle cx="14" cy="36" r="2.5" fill="#00FF88" />
-                          <rect x="5" y="7" width="18" height="22" fill="rgba(0, 240, 255, 0.35)" />
-                        </g>
-                      </g>
-
-                      <!-- Phase C: Couch Fraudster in Distant City Blocked -->
-                      <g transform="translate(556, 178)">
-                        <g id="s4-couch-spoof" opacity="0">
-                          <rect x="0" y="0" width="184" height="148" rx="10" fill="rgba(255, 30, 66, 0.14)" stroke="#FF1E42" stroke-width="2" />
-                          <!-- Couch Icon -->
-                          <path d="M46 84 L138 84 L138 106 L46 106 Z M54 66 L130 66 L130 84 L54 84 Z" fill="rgba(255, 30, 66, 0.45)" stroke="#FF1E42" stroke-width="1.8" />
-                          <!-- Crimson Cross-Out X -->
-                          <line x1="28" y1="22" x2="156" y2="122" stroke="#FF1E42" stroke-width="5" stroke-linecap="round" />
-                          <line x1="156" y1="22" x2="28" y2="122" stroke="#FF1E42" stroke-width="5" stroke-linecap="round" />
-                          <text x="16" y="138" fill="#FF1E42" font-family="JetBrains Mono" font-size="11" font-weight="700">COUCH SPOOFING BLOCKED</text>
-                        </g>
-                      </g>
-                    </svg>
-                  </div>
-
-                  <!-- Dynamic Phase Status Stamp -->
-                  <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <div id="s4-offline-badge" class="stamp-tag" style="background: rgba(255, 107, 0, 0.18); border: 1px solid var(--amber-martian); color: var(--amber-martian); justify-content: center;">
-                      [ASYNC OFFLINE EXPEDITION MODE — RECORDING IN-SITU PACKET]
-                    </div>
-                    <div id="s4-verified-badge" class="stamp-tag" style="background: rgba(0, 255, 136, 0.2); border: 1.5px solid var(--emerald-verified); color: var(--emerald-verified); justify-content: center; opacity: 0;">
-                      [PROXIMITY VERIFIED — ASYNC DATA PACKET UPLOADED]
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 5: TARGETED BOUNTIES & DUAL ECONOMY (17.5s - 21.5s) ==================== -->
-          <section id="scene-5" class="clip scene-layer" data-start="17.5" data-duration="4.0" data-track-index="5">
-            <div id="s5-stage" class="scene-stage">
-              <div id="s5-layout">
-                <!-- TOP HALF: DATA-GAP BOUNTY ENGINE -->
-                <div id="s5-top-grid">
-                  <!-- Scan Card -->
-                  <div id="s5-scan-card" class="glass-panel" style="padding: 24px; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;">
-                    <div id="s5-scanner-line" style="position: absolute; left: 0; right: 0; top: 0; height: 4px; background: var(--purple-bounty); box-shadow: 0 0 24px var(--purple-bounty);"></div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <div>
-                        <div class="font-mono-bold" style="font-size: 13px; color: var(--cyan-nasa);">DYNAMIC DATA-GAP ENGINE // LIVE AUDIT</div>
-                        <div class="font-display" style="font-size: 32px; margin-top: 4px;">ANALOG #ES-08 // TABERNAS SECTOR</div>
-                      </div>
-                      <div class="font-mono-bold" style="font-size: 13px; color: var(--amber-martian);">37.04°N, 2.46°W</div>
-                    </div>
-
-                    <div class="font-mono" style="display: flex; flex-direction: column; gap: 12px; font-size: 17px;">
-                      <div style="display: flex; justify-content: space-between; padding: 10px 16px; border-radius: 8px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.35);">
-                        <span>TEMPERATURE</span>
-                        <strong style="color: var(--emerald-verified);">[VALIDATED ✓]</strong>
-                      </div>
-                      <div style="display: flex; justify-content: space-between; padding: 10px 16px; border-radius: 8px; background: rgba(0,255,136,0.1); border: 1px solid rgba(0,255,136,0.35);">
-                        <span>SOIL TYPE</span>
-                        <strong style="color: var(--emerald-verified);">[VALIDATED ✓]</strong>
-                      </div>
-                      <div id="s5-gap-row" style="display: flex; justify-content: space-between; padding: 10px 16px; border-radius: 8px; background: rgba(255,30,66,0.16); border: 1.5px solid var(--crimson-hazard);">
-                        <span>HUMIDITY</span>
-                        <strong style="color: #FF6B00;">[⚠️ DATA GAP DETECTED — MISSING HYGROMETER]</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Auto-Launched Purple/Gold Bounty Card -->
-                  <div id="s5-bounty-card" class="glass-panel" style="padding: 24px; border: 2px solid var(--purple-bounty); background: linear-gradient(135deg, rgba(46, 12, 74, 0.88), rgba(14, 21, 38, 0.92)); box-shadow: 0 0 48px rgba(184, 41, 255, 0.32); display: flex; flex-direction: column; justify-content: space-between;">
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                      <div class="stamp-tag" style="background: rgba(184, 41, 255, 0.25); border: 1px solid var(--purple-bounty); color: #FFF;">
-                        🎯 LOCAL MISSION BOUNTY LAUNCHED
-                      </div>
-                      <div class="font-mono-bold" style="color: var(--gold-mission); font-size: 14px;">ACTIVE // URGENT</div>
-                    </div>
-
-                    <div style="font-size: 28px; font-weight: 700; line-height: 1.25;">
-                      OBJECTIVE: Capture Hygrometer Readings at Coords <span style="color: var(--cyan-nasa);">37.04°N, 2.46°W</span>
-                    </div>
-
-                    <div id="s5-multiplier-pill" class="font-display" style="padding: 16px 24px; border-radius: 12px; background: linear-gradient(90deg, #B829FF, #FF6B00, #FFD700); color: #05070B; font-size: 26px; text-align: center; box-shadow: 0 0 36px rgba(255, 215, 0, 0.45);">
-                      🔥 REWARD: 3X VIRTUAL EXPLORATION POINTS
-                    </div>
-                  </div>
-                </div>
-
-                <!-- SECONDARY TICKER -->
-                <div id="s5-ticker-bar">
-                  <div class="font-mono-bold" style="font-size: 16px; color: #F4E0FF;">
-                    [GLOBAL MONTHLY BOUNTY: Document 3 Karstic Zones — <span style="color: var(--gold-mission);">2/3 Completed</span>]
-                  </div>
-                  <div style="width: 320px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden;">
-                    <div style="width: 66.7%; height: 100%; background: linear-gradient(90deg, var(--purple-bounty), var(--gold-mission));"></div>
-                  </div>
-                </div>
-
-                <!-- BOTTOM HALF: 3 DUAL-REWARD ECONOMY CARDS -->
-                <div id="s5-cards-grid">
-                  <!-- Card 1: Exploration Points -->
-                  <div id="s5-card-1" class="glass-panel s5-reward-card" style="border-color: rgba(0, 240, 255, 0.5);">
-                    <div>
-                      <div class="font-mono-bold" style="font-size: 13px; color: var(--cyan-nasa);">VIRTUAL CURRENCY</div>
-                      <div class="font-display" style="font-size: 26px; margin-top: 4px;">EXPLORATION POINTS</div>
-                      <div id="s5-xp-counter" class="font-mono-bold" style="font-size: 48px; color: var(--emerald-verified); margin-top: 10px;">+0 XP</div>
-                      <div class="font-mono" style="font-size: 12px; color: var(--purple-bounty); font-weight: 700;">3X BOUNTY MULTIPLIER APPLIED</div>
-                    </div>
-                    <!-- Digital Cosmetics & Habitat Furniture SVGs -->
-                    <svg viewBox="0 0 460 110" width="100%" height="105" fill="none">
-                      <rect x="8" y="8" width="136" height="94" rx="10" fill="rgba(0,240,255,0.08)" stroke="rgba(0,240,255,0.35)" />
-                      <circle cx="76" cy="46" r="22" fill="rgba(0,240,255,0.22)" stroke="#00F0FF" stroke-width="2" />
-                      <path d="M62 46 Q76 34 90 46" stroke="#FFFFFF" stroke-width="2" />
-                      <text x="34" y="88" fill="#9CB0C9" font-family="JetBrains Mono" font-size="11">AVATAR SUITS</text>
-
-                      <rect x="162" y="8" width="136" height="94" rx="10" fill="rgba(184,41,255,0.08)" stroke="rgba(184,41,255,0.35)" />
-                      <polygon points="230,22 252,44 230,66 208,44" fill="rgba(184,41,255,0.35)" stroke="#B829FF" stroke-width="2" />
-                      <text x="180" y="88" fill="#9CB0C9" font-family="JetBrains Mono" font-size="11">APP COSMETICS</text>
-
-                      <rect x="316" y="8" width="136" height="94" rx="10" fill="rgba(0,255,136,0.08)" stroke="rgba(0,255,136,0.35)" />
-                      <path d="M364 62 L404 62 L404 42 L384 32 L364 42 Z" fill="rgba(0,255,136,0.3)" stroke="#00FF88" stroke-width="2" />
-                      <text x="334" y="88" fill="#9CB0C9" font-family="JetBrains Mono" font-size="11">HAB FURNITURE</text>
-                    </svg>
-                  </div>
-
-                  <!-- Card 2: Mission Points (Scarce Physical Currency) -->
-                  <div id="s5-card-2" class="glass-panel s5-reward-card" style="border-color: rgba(255, 215, 0, 0.72); box-shadow: 0 0 36px rgba(255, 215, 0, 0.16);">
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                      <div>
-                        <div class="font-mono-bold" style="font-size: 13px; color: var(--gold-mission);">SCARCE PHYSICAL CURRENCY</div>
-                        <div class="font-display" style="font-size: 26px; margin-top: 4px;">MISSION POINTS</div>
-                        <div class="font-mono-bold" style="font-size: 24px; color: var(--gold-mission); margin-top: 10px;">+1 PREMIUM MISSION POINT</div>
-                      </div>
-                      <svg id="s5-gold-token" width="66" height="66" viewBox="0 0 66 66" fill="none">
-                        <circle cx="33" cy="33" r="30" fill="rgba(255, 215, 0, 0.22)" stroke="#FFD700" stroke-width="3" />
-                        <circle cx="33" cy="33" r="22" stroke="#FFB800" stroke-width="1.5" stroke-dasharray="4 3" />
-                        <text x="24" y="40" fill="#FFD700" font-family="Space Grotesk" font-size="22" font-weight="700">M</text>
-                      </svg>
-                    </div>
-                    <!-- Physical Merch Vectors: Patch, Enamel Pin, Crew T-Shirt -->
-                    <svg viewBox="0 0 460 110" width="100%" height="105" fill="none">
-                      <rect x="8" y="8" width="136" height="94" rx="10" fill="rgba(255,215,0,0.08)" stroke="rgba(255,215,0,0.4)" />
-                      <polygon points="76,18 98,30 98,54 76,66 54,54 54,30" fill="rgba(255,215,0,0.28)" stroke="#FFD700" stroke-width="2" />
-                      <path d="M68 42 A10 10 0 1 0 84 48" stroke="#00F0FF" stroke-width="2" />
-                      <text x="28" y="88" fill="#FFD700" font-family="JetBrains Mono" font-size="11">MISSION PATCH</text>
-
-                      <rect x="162" y="8" width="136" height="94" rx="10" fill="rgba(255,215,0,0.08)" stroke="rgba(255,215,0,0.4)" />
-                      <circle cx="230" cy="42" r="20" fill="rgba(255,184,0,0.35)" stroke="#FFD700" stroke-width="2.5" />
-                      <polygon points="230,28 235,38 246,39 238,47 240,58 230,52 220,58 222,47 214,39 225,38" fill="#FFD700" />
-                      <text x="192" y="88" fill="#FFD700" font-family="JetBrains Mono" font-size="11">ENAMEL PIN</text>
-
-                      <rect x="316" y="8" width="136" height="94" rx="10" fill="rgba(255,215,0,0.08)" stroke="rgba(255,215,0,0.4)" />
-                      <path d="M362 24 L374 20 L394 20 L406 24 L414 38 L402 44 L402 68 L366 68 L366 44 L354 38 Z" fill="rgba(0,240,255,0.2)" stroke="#FFD700" stroke-width="2" />
-                      <text x="334" y="88" fill="#FFD700" font-family="JetBrains Mono" font-size="11">CREW T-SHIRT</text>
-                    </svg>
-                  </div>
-
-                  <!-- Card 3: Immutable Discoverer Insignia -->
-                  <div id="s5-card-3" class="glass-panel s5-reward-card" style="border-color: rgba(255, 215, 0, 0.55); background: linear-gradient(160deg, rgba(28, 24, 12, 0.9), rgba(14, 21, 38, 0.9));">
-                    <div style="display: flex; align-items: center; gap: 14px;">
-                      <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-                        <polygon points="28,4 48,15 48,41 28,52 8,41 8,15" fill="rgba(255, 215, 0, 0.24)" stroke="#FFD700" stroke-width="2.5" />
-                        <path d="M18 28 L26 36 L38 20" stroke="#FFD700" stroke-width="3" stroke-linecap="round" />
-                      </svg>
-                      <div>
-                        <div class="font-mono-bold" style="font-size: 12px; color: var(--gold-mission);">IMMUTABLE DISCOVERER INSIGNIA</div>
-                        <div class="font-display" style="font-size: 24px;">HISTORICAL LEDGER LOCK</div>
-                      </div>
-                    </div>
-
-                    <div id="s5-plaque" style="padding: 18px; border-radius: 10px; background: rgba(5, 7, 11, 0.85); border: 1.5px solid #FFD700; font-family: var(--font-mono); font-size: 14px; line-height: 1.5; color: #FFF3C4;">
-                      <strong style="color: var(--gold-mission);">"PIONEER TITLE:</strong> First Explorer to Document &amp; Validate Node #ES-08 — Permanently Etched in Node History"
-                    </div>
-
-                    <div class="stamp-tag" style="background: rgba(255, 215, 0, 0.16); border: 1px solid var(--gold-mission); color: var(--gold-mission); justify-content: center;">
-                      🔒 CRYPTOGRAPHICALLY SEALED TO EXPLORER RECORD
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 6: VIRTUAL HABITAT CONSTRUCTION (21.5s - 25.5s) ==================== -->
-          <section id="scene-6" class="clip scene-layer" data-start="21.5" data-duration="4.0" data-track-index="6">
-            <div id="s6-stage" class="scene-stage">
-              <div id="s6-layout">
-                <div id="s6-topbar">
-                  <div>
-                    <div class="font-mono-bold" style="font-size: 13px; color: var(--cyan-nasa); letter-spacing: 0.14em;">THE SOCIAL LOOP // REAL-WORLD COORDINATES → ISOMETRIC COLONY</div>
-                    <div class="font-display" style="font-size: 42px;">HABITAT BASE #ES-08 // TABERNAS REGOLITH</div>
-                  </div>
-                  <div class="badge-pill" style="border-color: var(--emerald-verified); color: var(--emerald-verified);">
-                    COLONY MODULES: <span id="s6-module-count" style="color: #FFF; font-size: 18px; margin-left: 6px;">01</span> / 15
-                  </div>
-                </div>
-
-                <div id="s6-iso-stage">
-                  <!-- Floating Founder Customization Palette (Left) -->
-                  <div id="s6-palette-ui" class="glass-panel" style="border-color: rgba(0, 240, 255, 0.5);">
-                    <div class="font-mono-bold" style="font-size: 12px; color: var(--gold-mission); letter-spacing: 0.08em;">GENESIS MODULE // FOUNDER PRIVILEGE</div>
-                    <div class="font-mono-bold" style="font-size: 16px; margin: 6px 0 12px 0;">FOUNDER: @Explorer_01</div>
-                    <div class="font-mono" style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">CORPORATE BASE COLORS (2 SELECTED):</div>
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 14px;">
-                      <div id="s6-swatch-1" style="width: 34px; height: 34px; border-radius: 8px; background: #00F0FF; border: 3px solid #FFF; box-shadow: 0 0 14px #00F0FF;"></div>
-                      <div id="s6-swatch-2" style="width: 34px; height: 34px; border-radius: 8px; background: #FFB800; border: 3px solid #FFF; box-shadow: 0 0 14px #FFB800;"></div>
-                      <div style="width: 34px; height: 34px; border-radius: 8px; background: #B829FF; opacity: 0.4;"></div>
-                      <div style="width: 34px; height: 34px; border-radius: 8px; background: #00FF88; opacity: 0.4;"></div>
-                    </div>
-                    <div class="font-mono" style="font-size: 12px; color: var(--emerald-verified); line-height: 1.5;">
-                      ✓ HULL STRIPES REPAINTED<br />
-                      ✓ HOLO-WORKSTATION UNLOCKED<br />
-                      ✓ HYDROPONIC RACK INSTALLED
-                    </div>
-                  </div>
-
-                  <!-- Floating Collaborative Feed (Right) -->
-                  <div id="s6-feed-ui" class="glass-panel" style="border-color: rgba(0, 255, 136, 0.45);">
-                    <div class="font-mono-bold" style="font-size: 12px; color: var(--emerald-verified); margin-bottom: 10px;">COLLABORATIVE FIELD VALIDATIONS</div>
-                    <div class="font-mono" style="display: flex; flex-direction: column; gap: 8px; font-size: 12px;">
-                      <div id="s6-feed-1" style="padding: 7px 10px; border-radius: 6px; background: rgba(0,255,136,0.12); color: #D8FFF0;">@Explorer_02 [FIELD VALIDATED] +SOLAR</div>
-                      <div id="s6-feed-2" style="padding: 7px 10px; border-radius: 6px; background: rgba(0,240,255,0.12); color: #D8FFF0;">@Explorer_03 [FIELD VALIDATED] +COMMS</div>
-                      <div id="s6-feed-3" style="padding: 7px 10px; border-radius: 6px; background: rgba(255,184,0,0.12); color: #FFF3D4;">@Explorer_07 [FIELD VALIDATED] +BIOLAB</div>
-                      <div id="s6-feed-4" style="padding: 7px 10px; border-radius: 6px; background: rgba(184,41,255,0.16); color: #F5DBFF;">@Explorer_15 [FIELD VALIDATED] +HAB POD</div>
-                    </div>
-                    <div id="s6-dock-toast" class="stamp-tag" style="margin-top: 10px; background: rgba(0,255,136,0.22); border: 1px solid var(--emerald-verified); color: var(--emerald-verified); width: 100%; justify-content: center;">
-                      MODULE DOCKED // +1 COLONY CAPACITY
-                    </div>
-                  </div>
-
-                  <!-- 2.5D Isometric Vector Colony SVG -->
-                  <svg id="s6-colony-svg" data-layout-allow-overflow viewBox="0 0 1720 740" width="100%" height="100%" fill="none">
-                    <!-- Isometric Martian/Lunar Terrain Grid -->
-                    <g stroke="rgba(255, 107, 0, 0.22)" stroke-width="1.2">
-                      <polygon points="860,120 1560,410 860,700 160,410" fill="rgba(42, 20, 14, 0.35)" />
-                      <line x1="510" y1="265" x2="1210" y2="555" />
-                      <line x1="685" y1="192" x2="1385" y2="482" />
-                      <line x1="335" y1="338" x2="1035" y2="628" />
-                      <line x1="1210" y1="265" x2="510" y2="555" />
-                      <line x1="1035" y1="192" x2="335" y2="482" />
-                      <line x1="1385" y1="338" x2="685" y2="628" />
-                    </g>
-
-                    <!-- Pressurized Docking Tunnels (centered cleanly around 860, 396) -->
-                    <g transform="translate(860, 396)">
-                      <g id="s6-tunnels">
-                        <path d="M-95 -24 L-300 -124" stroke="#8E9BAE" stroke-width="26" stroke-linecap="round" />
-                        <path d="M-95 -24 L-300 -124" stroke="#00F0FF" stroke-width="4" stroke-dasharray="10 8" />
-                        <path d="M95 -24 L300 -112" stroke="#8E9BAE" stroke-width="26" stroke-linecap="round" />
-                        <path d="M95 -24 L300 -112" stroke="#00FF88" stroke-width="4" stroke-dasharray="10 8" />
-                        <path d="M-95 44 L-308 130" stroke="#8E9BAE" stroke-width="26" stroke-linecap="round" />
-                        <path d="M-95 44 L-308 130" stroke="#FFB800" stroke-width="4" stroke-dasharray="10 8" />
-                        <path d="M95 44 L306 124" stroke="#8E9BAE" stroke-width="26" stroke-linecap="round" />
-                        <path d="M95 44 L306 124" stroke="#B829FF" stroke-width="4" stroke-dasharray="10 8" />
-                      </g>
-                    </g>
-
-                    <!-- Satellite Module NW: Solar Wing Array -->
-                    <g transform="translate(470, 212)">
-                      <g id="s6-mod-nw">
-                        <ellipse cx="90" cy="86" rx="74" ry="34" fill="rgba(0,0,0,0.45)" />
-                        <rect x="44" y="34" width="92" height="52" rx="10" fill="#13223D" stroke="#00F0FF" stroke-width="2.5" />
-                        <polygon points="-36,42 40,26 40,66 -36,82" fill="rgba(0, 240, 255, 0.35)" stroke="#00F0FF" stroke-width="2" />
-                        <polygon points="140,26 216,42 216,82 140,66" fill="rgba(0, 240, 255, 0.35)" stroke="#00F0FF" stroke-width="2" />
-                        <text x="54" y="64" fill="#FFF" font-family="JetBrains Mono" font-size="11" font-weight="700">SOLAR GRID</text>
-                      </g>
-                    </g>
-
-                    <!-- Satellite Module NE: Deep Space Comms Tower -->
-                    <g transform="translate(1070, 196)">
-                      <g id="s6-mod-ne">
-                        <ellipse cx="90" cy="100" rx="72" ry="32" fill="rgba(0,0,0,0.45)" />
-                        <path d="M40 88 L90 66 L140 88 L90 110 Z" fill="#13223D" stroke="#00FF88" stroke-width="2.5" />
-                        <line x1="90" y1="88" x2="90" y2="12" stroke="#00FF88" stroke-width="5" />
-                        <path d="M62 24 Q90 48 118 24" stroke="#00F0FF" stroke-width="4" fill="rgba(0,240,255,0.22)" />
-                        <circle cx="90" cy="8" r="6" fill="#00FF88" />
-                        <text x="50" y="130" fill="#00FF88" font-family="JetBrains Mono" font-size="11" font-weight="700">COMMS RELAY</text>
-                      </g>
-                    </g>
-
-                    <!-- Satellite Module SW: Hydroponic Bio-Lab -->
-                    <g transform="translate(456, 466)">
-                      <g id="s6-mod-sw">
-                        <ellipse cx="96" cy="88" rx="84" ry="36" fill="rgba(0,0,0,0.45)" />
-                        <path d="M36 74 L36 44 C36 10, 156 10, 156 44 L156 74 Z" fill="rgba(0, 255, 136, 0.2)" stroke="#00FF88" stroke-width="2.5" />
-                        <rect x="58" y="42" width="24" height="26" fill="#00FF88" fill-opacity="0.7" />
-                        <rect x="92" y="42" width="24" height="26" fill="#00FF88" fill-opacity="0.7" />
-                        <rect x="122" y="42" width="16" height="26" fill="#FFB800" fill-opacity="0.8" />
-                        <text x="48" y="106" fill="#FFB800" font-family="JetBrains Mono" font-size="11" font-weight="700">BIO-GEO LAB #07</text>
-                      </g>
-                    </g>
-
-                    <!-- Satellite Module SE: Rover Bay & Habitat Pod -->
-                    <g transform="translate(1070, 464)">
-                      <g id="s6-mod-se">
-                        <ellipse cx="96" cy="88" rx="84" ry="36" fill="rgba(0,0,0,0.45)" />
-                        <rect x="38" y="28" width="116" height="58" rx="14" fill="#18223C" stroke="#B829FF" stroke-width="2.5" />
-                        <rect x="52" y="44" width="88" height="10" rx="4" fill="#FFB800" />
-                        <text x="54" y="106" fill="#F5DBFF" font-family="JetBrains Mono" font-size="11" font-weight="700">HAB POD #15</text>
-                      </g>
-                    </g>
-
-                    <!-- CENTRAL GENESIS MODULE (Founder's Dome wrapped cleanly at 860, 396) -->
-                    <g transform="translate(860, 396)">
-                      <g id="s6-genesis-module">
-                        <!-- Landing Dust Cloud -->
-                        <ellipse id="s6-dust-cloud" cx="0" cy="74" rx="188" ry="62" fill="rgba(255, 107, 0, 0.25)" opacity="0" data-layout-ignore />
-                        <!-- Hydraulic Landing Struts -->
-                        <path d="M-118 46 L-156 82 M118 46 L156 82 M-64 70 L-88 106 M64 70 L88 106" stroke="#8E9BAE" stroke-width="6" stroke-linecap="round" />
-                        <!-- Pressurized Base Hull -->
-                        <ellipse cx="0" cy="48" rx="142" ry="56" fill="#141F36" stroke="#8E9BAE" stroke-width="3" />
-                        <!-- Dynamic Corporate Color Hull Stripes -->
-                        <path id="s6-hull-stripe-1" d="M-136 38 A 140 54 0 0 0 136 38" stroke="#8E9BAE" stroke-width="10" fill="none" />
-                        <path id="s6-hull-stripe-2" d="M-126 52 A 132 50 0 0 0 126 52" stroke="#8E9BAE" stroke-width="6" fill="none" />
-
-                        <!-- Cutaway Geodesic Dome -->
-                        <path d="M-134 26 C-134 -116, 134 -116, 134 26 Z" fill="rgba(0, 240, 255, 0.14)" stroke="#00F0FF" stroke-width="3" />
-                        <!-- Geodesic Lattice -->
-                        <path d="M-134 26 L-74 -48 L0 -82 L74 -48 L134 26 M-74 -48 L0 12 L74 -48 M-100 -10 L0 12 L100 -10" stroke="#00F0FF" stroke-opacity="0.45" stroke-width="1.5" />
-
-                        <!-- Cutaway Interior Items (Pop in with Exploration Points) -->
-                        <g id="s6-interior-items" opacity="0">
-                          <!-- Holographic Workstation -->
-                          <rect x="-56" y="-8" width="44" height="24" rx="4" fill="#0B1324" stroke="#00F0FF" stroke-width="2" />
-                          <polygon points="-44,-14 -24,-14 -16,-36 -52,-36" fill="rgba(0, 240, 255, 0.35)" stroke="#00F0FF" stroke-width="1.4" />
-                          <!-- Hydroponic Rack -->
-                          <rect x="20" y="-26" width="42" height="44" rx="4" fill="#081C18" stroke="#00FF88" stroke-width="2" />
-                          <line x1="24" y1="-12" x2="58" y2="-12" stroke="#00FF88" stroke-width="4" />
-                          <line x1="24" y1="2" x2="58" y2="2" stroke="#00FF88" stroke-width="4" />
-                          <!-- Founder's Custom Flag -->
-                          <line x1="0" y1="-82" x2="0" y2="-136" stroke="#FFFFFF" stroke-width="3" />
-                          <polygon points="0,-136 48,-122 0,-108" fill="#FFB800" stroke="#00F0FF" stroke-width="1.5" />
-                        </g>
-
-                        <rect x="-92" y="88" width="184" height="30" rx="6" fill="#05070B" stroke="#00F0FF" stroke-width="1.8" />
-                        <text x="-66" y="108" fill="#FFFFFF" font-family="JetBrains Mono" font-size="13" font-weight="700">GENESIS MODULE</text>
-                      </g>
-                    </g>
-                  </svg>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <!-- ==================== SCENE 7: TIER 3 ROBOTICS & GRAND FINALE (25.5s - 30.0s) ==================== -->
-          <section id="scene-7" class="clip scene-layer" data-start="25.5" data-duration="4.5" data-track-index="7">
-            <div id="s7-stage" class="scene-stage">
-              <!-- PART A (25.5s - 28.0s): TIER 3 ROBOTIC ESCALATION & MULTISPECTRAL ANALYSIS -->
-              <div id="s7-robotics-wrap">
-                <!-- Flipping Hazard -> Tier 3 Institutional Banner -->
-                <div id="s7-alert-stack">
-                  <div id="s7-alert-inner">
-                    <div class="s7-banner-face s7-banner-front" style="background: repeating-linear-gradient(-45deg, rgba(255,30,66,0.92), rgba(255,30,66,0.92) 22px, rgba(120,10,24,0.95) 22px, rgba(120,10,24,0.95) 44px); border: 2px solid #FFFFFF;">
-                      <div class="font-display" style="font-size: 32px; color: #FFFFFF;">⚠️ EXTREME HAZARD ZONE — CIVILIAN HUMAN ACCESS LOCKED FOR SAFETY</div>
-                      <div class="font-mono-bold" style="font-size: 16px; background: #05070B; color: #FF1E42; padding: 8px 16px; border-radius: 6px;">GEOLOGICAL INDEX: 9.9 / 10</div>
-                    </div>
-                    <div class="s7-banner-face s7-banner-back" style="background: linear-gradient(90deg, rgba(20, 30, 56, 0.96), rgba(44, 34, 8, 0.94)); border: 2px solid var(--gold-mission); box-shadow: 0 0 36px rgba(255, 215, 0, 0.35);">
-                      <div class="font-display" style="font-size: 30px; color: var(--gold-mission);">🤖 TIER 3 AUTOMATED MISSION ACTIVATED // UNIVERSITY &amp; SPACE AGENCY RELAY</div>
-                      <div class="font-mono-bold" style="font-size: 15px; color: var(--cyan-nasa);">AUTONOMOUS PROTOCOL ENGAGED</div>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Main Robotics + Multispectral Split -->
-                <div id="s7-rob-grid">
-                  <!-- Left: Volcanic Lava Tube + Autonomous Rover + Quadcopter Drone + Multispectral Sweep -->
-                  <div class="glass-panel" style="position: relative; overflow: hidden; padding: 16px; border-color: rgba(0, 240, 255, 0.45);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                      <div class="font-mono-bold" style="font-size: 14px; color: var(--cyan-nasa);">VOLCANIC LAVA TUBE &amp; SHEER CLIFF // MULTISPECTRAL SCANNER</div>
-                      <div id="s7-spectrum-mode" class="stamp-tag" style="background: rgba(0, 240, 255, 0.16); border: 1px solid var(--cyan-nasa); color: #FFF;">
-                        BAND: RGB OPTICAL
-                      </div>
-                    </div>
-
-                    <svg id="s7-cliff-svg" data-layout-allow-overflow viewBox="0 0 1080 560" width="100%" height="520" fill="none">
-                      <defs>
-                        <linearGradient id="cliff-rgb" x1="0" y1="0" x2="1" y2="1">
-                          <stop offset="0%" stop-color="#271E24" />
-                          <stop offset="50%" stop-color="#191622" />
-                          <stop offset="100%" stop-color="#0D0C14" />
-                        </linearGradient>
-                        <linearGradient id="cliff-thermal" x1="0" y1="0" x2="1" y2="0">
-                          <stop offset="0%" stop-color="#B829FF" stop-opacity="0.35" />
-                          <stop offset="50%" stop-color="#FF6B00" stop-opacity="0.45" />
-                          <stop offset="100%" stop-color="#00FF88" stop-opacity="0.35" />
-                        </linearGradient>
-                        <linearGradient id="spectral-beam" x1="0" y1="0" x2="1" y2="0">
-                          <stop offset="0%" stop-color="#00F0FF" stop-opacity="0" />
-                          <stop offset="50%" stop-color="#B829FF" stop-opacity="0.55" />
-                          <stop offset="85%" stop-color="#00FF88" stop-opacity="0.85" />
-                          <stop offset="100%" stop-color="#FFD700" stop-opacity="0.95" />
-                        </linearGradient>
-                      </defs>
-
-                      <!-- Volcanic Cliff + Deep Lava Tube Cavity -->
-                      <path d="M0 160 L260 150 L410 190 L510 380 L1080 430 L1080 560 L0 560 Z" fill="url(#cliff-rgb)" stroke="#8E9BAE" stroke-width="2" />
-                      <path id="s7-cliff-heatmap" d="M0 160 L260 150 L410 190 L510 380 L1080 430 L1080 560 L0 560 Z" fill="url(#cliff-thermal)" opacity="0" />
-                      <path d="M520 560 C540 240, 740 120, 990 150 L1080 180 L1080 560 Z" fill="#060810" stroke="#FF6B00" stroke-width="2" stroke-opacity="0.55" />
-                      <!-- Basalt Rock Strata Lines -->
-                      <path d="M560 320 Q680 280 860 310 M610 390 Q740 350 930 375 M650 460 Q790 430 980 450" stroke="#FF6B00" stroke-opacity="0.55" stroke-width="2.2" />
-
-                      <!-- Multispectral Vision Overlay Sweep -->
-                      <rect id="s7-spectral-sweep" x="0" y="90" width="220" height="460" fill="url(#spectral-beam)" opacity="0.85" data-layout-ignore />
-
-                      <!-- Autonomous 6-Wheeled Research Rover on Cliff Ledge (wrapped cleanly) -->
-                      <g transform="translate(86, 134)">
-                        <g id="s7-rover">
-                          <rect x="20" y="18" width="136" height="42" rx="6" fill="#182644" stroke="#FFD700" stroke-width="2.5" />
-                          <rect x="40" y="28" width="54" height="18" rx="3" fill="rgba(0, 240, 255, 0.35)" />
-                          <!-- LiDAR Mast + Scan Cone -->
-                          <line x1="130" y1="18" x2="130" y2="-28" stroke="#FFD700" stroke-width="4" />
-                          <rect x="116" y="-44" width="38" height="18" rx="4" fill="#0E1526" stroke="#00F0FF" stroke-width="2" />
-                          <circle cx="144" cy="-35" r="4" fill="#00FF88" />
-                          <polygon points="154,-35 320,-75 320,45" fill="rgba(0, 240, 255, 0.14)" stroke="#00F0FF" stroke-opacity="0.55" stroke-dasharray="5 4" />
-                          <!-- 6 Wheels -->
-                          <path d="M36 60 L26 84 M88 60 L88 84 M140 60 L152 84" stroke="#8E9BAE" stroke-width="3.5" />
-                          <circle cx="26" cy="88" r="14" fill="#05070B" stroke="#FFD700" stroke-width="3" />
-                          <circle cx="88" cy="88" r="14" fill="#05070B" stroke="#FFD700" stroke-width="3" />
-                          <circle cx="152" cy="88" r="14" fill="#05070B" stroke="#FFD700" stroke-width="3" />
-                          <text x="16" y="-56" fill="#FFD700" font-family="JetBrains Mono" font-size="12" font-weight="700">6x6 AUTONOMOUS ROVER</text>
-                        </g>
-                      </g>
-
-                      <!-- High-Precision Quadcopter Drone Deploying Into Lava Tube (wrapped cleanly) -->
-                      <g transform="translate(740, 206)">
-                        <g id="s7-drone">
-                          <!-- Rotor Discs -->
-                          <ellipse cx="-52" cy="-16" rx="34" ry="7" fill="rgba(0, 240, 255, 0.45)" stroke="#00F0FF" stroke-width="1.5" />
-                          <ellipse cx="52" cy="-16" rx="34" ry="7" fill="rgba(0, 240, 255, 0.45)" stroke="#00F0FF" stroke-width="1.5" />
-                          <path d="M-52 -10 L-22 4 L22 4 L52 -10" stroke="#FFD700" stroke-width="4" />
-                          <rect x="-26" y="-6" width="52" height="22" rx="6" fill="#182644" stroke="#00F0FF" stroke-width="2" />
-                          <!-- Multispectral Sensor Pod + Downward Scan Cone -->
-                          <circle cx="0" cy="22" r="8" fill="#B829FF" stroke="#FFF" stroke-width="1.5" />
-                          <polygon points="0,28 -110,220 110,220" fill="rgba(0, 255, 136, 0.18)" stroke="#00FF88" stroke-width="1.5" stroke-dasharray="6 4" />
-                          <text x="-84" y="-34" fill="#00F0FF" font-family="JetBrains Mono" font-size="12" font-weight="700">UNI-LAB MULTISPECTRAL DRONE</text>
-                        </g>
-                      </g>
-                    </svg>
-                  </div>
-
-                  <!-- Right: Live Mineralogical Composition Chart HUD -->
-                  <div class="glass-panel" style="padding: 24px; display: flex; flex-direction: column; justify-content: space-between; border-color: rgba(255, 215, 0, 0.45);">
-                    <div>
-                      <div class="font-mono-bold" style="font-size: 13px; color: var(--gold-mission); letter-spacing: 0.1em;">RAMAN + NIR SPECTROMETRY</div>
-                      <div class="font-display" style="font-size: 30px; margin-top: 6px;">MINERALOGICAL COMPOSITION</div>
-                    </div>
-
-                    <div style="display: flex; flex-direction: column; gap: 22px;">
-                      <!-- Mineral 1 -->
-                      <div>
-                        <div class="font-mono-bold" style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 8px;">
-                          <span>BASALTIC OLIVINE</span>
-                          <span id="s7-min-1-pct" style="color: var(--emerald-verified);">0.0%</span>
-                        </div>
-                        <div style="height: 14px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
-                          <div id="s7-min-1-bar" style="width: 44.2%; height: 100%; background: var(--emerald-verified); transform-origin: left center;"></div>
-                        </div>
-                      </div>
-                      <!-- Mineral 2 -->
-                      <div>
-                        <div class="font-mono-bold" style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 8px;">
-                          <span>PYROXENE</span>
-                          <span id="s7-min-2-pct" style="color: var(--cyan-nasa);">0.0%</span>
-                        </div>
-                        <div style="height: 14px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
-                          <div id="s7-min-2-bar" style="width: 33.8%; height: 100%; background: var(--cyan-nasa); transform-origin: left center;"></div>
-                        </div>
-                      </div>
-                      <!-- Mineral 3 -->
-                      <div>
-                        <div class="font-mono-bold" style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 8px;">
-                          <span>IRON OXIDE (HEMATITE)</span>
-                          <span id="s7-min-3-pct" style="color: var(--amber-martian);">0.0%</span>
-                        </div>
-                        <div style="height: 14px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
-                          <div id="s7-min-3-bar" style="width: 18.5%; height: 100%; background: var(--amber-martian); transform-origin: left center;"></div>
-                        </div>
-                      </div>
-                      <!-- Mineral 4 -->
-                      <div>
-                        <div class="font-mono-bold" style="display: flex; justify-content: space-between; font-size: 15px; margin-bottom: 8px;">
-                          <span>HYDRATED SILICATES</span>
-                          <span id="s7-min-4-pct" style="color: var(--purple-bounty);">0.0%</span>
-                        </div>
-                        <div style="height: 14px; border-radius: 999px; background: rgba(255,255,255,0.1); overflow: hidden;">
-                          <div id="s7-min-4-bar" style="width: 3.5%; height: 100%; background: var(--purple-bounty); transform-origin: left center;"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div class="stamp-tag" style="background: rgba(0, 240, 255, 0.14); border: 1px solid var(--cyan-nasa); color: var(--cyan-nasa); justify-content: center;">
-                      GEOLOGICAL INDEX: 9.9 / 10 // PEER EXPORT READY
-                    </div>
-                  </div>
-                </div>
-
-                <div class="font-mono-bold" style="text-align: center; font-size: 15px; color: var(--text-muted); letter-spacing: 0.14em;">
-                  [BRIDGING CITIZEN SCIENCE &amp; PROFESSIONAL PLANETARY RESEARCH]
-                </div>
-              </div>
-
-              <!-- PART B (28.0s - 30.0s): JURY FINALE & ORBITAL CONSTELLATION -->
-              <div id="s7-finale-wrap">
-                <!-- Orbital Earth Constellation Backdrop SVG -->
-                <svg id="s7-orbit-svg" viewBox="0 0 1720 840" width="1720" height="840" fill="none" style="position: absolute; inset: 0; opacity: 0.85;" data-layout-ignore>
-                  <circle cx="860" cy="440" r="350" fill="rgba(10, 20, 42, 0.72)" stroke="#00F0FF" stroke-width="2" stroke-opacity="0.55" />
-                  <circle cx="860" cy="440" r="420" stroke="#00FF88" stroke-width="1.5" stroke-dasharray="10 8" stroke-opacity="0.45" />
-                  <ellipse cx="860" cy="440" rx="580" ry="180" transform="rotate(-14 860 440)" stroke="#00F0FF" stroke-width="1.8" stroke-opacity="0.5" />
-                  <ellipse cx="860" cy="440" rx="580" ry="180" transform="rotate(18 860 440)" stroke="#FFD700" stroke-width="1.5" stroke-opacity="0.45" stroke-dasharray="8 6" />
-                  <!-- Constellation Pins & Colony Nodes -->
-                  <g>
-                    <circle cx="660" cy="300" r="9" fill="#00FF88" />
-                    <circle cx="660" cy="300" r="22" stroke="#00FF88" stroke-opacity="0.6" />
-                    <circle cx="960" cy="260" r="9" fill="#00FF88" />
-                    <circle cx="960" cy="260" r="22" stroke="#00FF88" stroke-opacity="0.6" />
-                    <circle cx="1090" cy="410" r="9" fill="#FFD700" />
-                    <circle cx="1090" cy="410" r="24" stroke="#FFD700" stroke-opacity="0.6" />
-                    <circle cx="710" cy="618" r="9" fill="#00F0FF" />
-                    <circle cx="710" cy="618" r="22" stroke="#00F0FF" stroke-opacity="0.6" />
-                    <circle cx="990" cy="618" r="9" fill="#00FF88" />
-                    <path d="M660 300 L960 260 L1090 410 L990 618 L710 618 Z" stroke="#00FF88" stroke-width="1.5" stroke-opacity="0.45" />
-                  </g>
-                </svg>
-
-                <div id="s7-hero-title" class="font-display">MOONSITE<span style="color: var(--cyan-nasa);">UA</span></div>
-
-                <div id="s7-pillars-row">
-                  <div class="badge-pill s7-pillar" style="border-color: var(--cyan-nasa); color: #FFF;">[🛰️ NASA/ESA DATA]</div>
-                  <div class="badge-pill s7-pillar" style="border-color: var(--emerald-verified); color: var(--emerald-verified);">[🟢 CROWD-VERIFIED]</div>
-                  <div class="badge-pill s7-pillar" style="border-color: var(--gold-mission); color: var(--gold-mission);">[🏰 VIRTUAL COLONIES]</div>
-                  <div class="badge-pill s7-pillar" style="border-color: var(--purple-bounty); color: #E4B3FF;">[🤖 TIER 3 ROBOTICS]</div>
-                </div>
-
-                <div id="s7-punchline-wrap" class="font-mono-bold">
-                  <span id="s7-punchline-text">EXPLORE EARTH. UNLOCK SPACE.</span>
-                  <span id="s7-cursor" style="display: inline-block; width: 16px; height: 38px; background: var(--emerald-verified);"></span>
-                </div>
-              </div>
-            </div>
-          </section>
-
-        </div>
-      </div>
-    </div>
-
-    <!-- ==================== TRANSITION FX OVERLAY ==================== -->
-    <div id="fx-overlay" data-layout-ignore>
-      <div id="fx-rgb-cyan" class="fx-rgb-slice"></div>
-      <div id="fx-rgb-flash" class="fx-rgb-slice"></div>
-      <div id="fx-laser-wipe"></div>
-      <div id="fx-shockwave"></div>
-    </div>
-
-    <!-- ==================== PERSISTENT HUD CHROME (z-index: 999) ==================== -->
-    <div id="hud-chrome" data-layout-ignore>
-      <div id="hud-scanlines"></div>
-      <div id="hud-vignette"></div>
-
-      <!-- Top-Left System Telemetry -->
-      <div id="hud-top-left">
-        <div class="hud-sys-bar">
-          <span id="hud-led"></span>
-          <span>SYS.MOONSITE_UA // BUILD v2.6 // TELEMETRY: LIVE</span>
-        </div>
-        <div id="hud-sector-tag">SEC-01 // LAUNCH ECONOMICS VS. HUMAN ROVERS</div>
+      <div id="act4-prox-card" class="glass-card" style="width:390px; border-color: rgba(0,255,136,0.5);">
+        <div class="card-kicker mono" style="color: var(--emerald-verified);">LOGICAL GEOFENCE // VALIDATION</div>
+        <div class="card-title display" style="color: var(--emerald-verified);">PROXIMITY VERIFIED ✓</div>
+        <div class="card-coords mono">IN-SITU PACKET COMMITTED TO ANALOG</div>
       </div>
 
-      <!-- Top-Right Frame Counter, UTC Clock, Satellite Link -->
-      <div id="hud-top-right">
-        <div id="hud-frame-counter" class="hud-chip" style="color: var(--cyan-nasa);">FRAME 0000 / 1800</div>
-        <div id="hud-utc-clock" class="hud-chip" style="color: #FFFFFF;">T+ 00:00:00.00</div>
-        <div class="hud-chip" style="color: var(--emerald-verified); border-color: rgba(0, 255, 136, 0.4);">
-          LINK: NASA-LANDSAT / ESA-SENTINEL-2 [OK]
+      <div id="act4-spoof-card" class="glass-card" style="width:390px; border-color: rgba(255,30,66,0.55);">
+        <div class="card-kicker mono" style="color: var(--crimson-hazard);">ANOMALY MITIGATION</div>
+        <div class="card-title display" style="color: var(--crimson-hazard);">COUCH SPOOFING REJECTED ✕</div>
+        <div class="card-coords mono">OUTSIDE LOGICAL GEOFENCE PERIMETER</div>
+      </div>
+
+      <!-- ACT 5: Data-Gap Bounties & Dual Reward Economy -->
+      <div id="act5-gap-card" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--purple-bounty);">AI DATA-GAP SCANNER // NODE #ES-08</div>
+        <div class="card-title display" style="font-size:22px;">DIAGNOSTIC TELEMETRY AUDIT</div>
+        <div class="diag-row mono">
+          <span>TEMPERATURE</span>
+          <span style="color: var(--emerald-verified);">VALIDATED ✓</span>
+        </div>
+        <div class="diag-row mono">
+          <span>SOIL REGOLITH</span>
+          <span style="color: var(--emerald-verified);">VALIDATED ✓</span>
+        </div>
+        <div class="diag-row warn mono">
+          <span>HUMIDITY</span>
+          <span>⚠️ DATA GAP DETECTED</span>
         </div>
       </div>
 
-      <!-- Bottom Frame: Voiceover Waveform (Left) + 7-Milestone Progress Bar -->
-      <div id="hud-bottom-bar">
-        <div id="hud-waveform-box">
-          <div class="font-mono-bold" style="font-size: 11px; color: var(--cyan-nasa); line-height: 1.3;">
-            VOX SYNC<br /><span style="color: var(--text-muted); font-weight: 500;">voiceover.mp3</span>
+      <div id="act5-bounty-card" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--gold-mission);">DYNAMIC MISSION DISPATCH</div>
+        <div class="card-title display" style="font-size:21px;">🎯 TARGETED LOCAL BOUNTY: HYGROMETER READING NEEDED</div>
+        <div id="act5-multiplier" class="mono">3X VIRTUAL POINTS REWARD</div>
+        <div class="mono" style="font-size:12px; color:#D5DCF0;">
+          [GLOBAL BOUNTY: DOCUMENT 3 KARSTIC ZONES — 2/3]
+        </div>
+      </div>
+
+      <div id="act5-economy-row">
+        <div class="econ-card">
+          <div class="card-kicker mono">LOOP 01 // VIRTUAL EXPLORATION POINTS</div>
+          <div id="act5-xp" class="display" style="font-size:42px; color: var(--cyan-nasa);">+4,500 XP</div>
+          <div class="mono" style="font-size:13px; color:#B6C4D8; margin-top:6px;">
+            UNLOCKS DIGITAL HABITAT FURNITURE &amp; CUSTOM AVATAR SUITS
           </div>
-          <div id="hud-waveform-bars"></div>
         </div>
 
-        <div id="hud-progress-area">
-          <div id="hud-milestones">
-            <div class="hud-ms" data-ms="0" style="left: 0%;"><span class="hud-ms-dot"></span>01 HOOK</div>
-            <div class="hud-ms" data-ms="3.5" style="left: 11.67%;"><span class="hud-ms-dot"></span>02 MAP</div>
-            <div class="hud-ms" data-ms="8.0" style="left: 26.67%;"><span class="hud-ms-dot"></span>03 CONSENSUS</div>
-            <div class="hud-ms" data-ms="13.0" style="left: 43.33%;"><span class="hud-ms-dot"></span>04 SECURITY</div>
-            <div class="hud-ms" data-ms="17.5" style="left: 58.33%;"><span class="hud-ms-dot"></span>05 BOUNTIES</div>
-            <div class="hud-ms" data-ms="21.5" style="left: 71.67%;"><span class="hud-ms-dot"></span>06 COLONY</div>
-            <div class="hud-ms" data-ms="25.5" style="left: 85.00%;"><span class="hud-ms-dot"></span>07 TIER-3</div>
+        <div class="econ-card" style="border-color: rgba(255,215,0,0.48);">
+          <div class="card-kicker mono" style="color: var(--gold-mission);">LOOP 02 // SCARCE PHYSICAL MISSION POINTS</div>
+          <div class="display" style="font-size:32px; color: var(--gold-mission);">+1 MISSION POINT</div>
+          <div class="merch-row">
+            <!-- Vector Embroidered Mission Patch -->
+            <svg width="52" height="52" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="#0B1324" stroke="#FFD700" stroke-width="3" stroke-dasharray="4 2" />
+              <circle cx="32" cy="32" r="21" fill="none" stroke="#00F0FF" stroke-width="1.5" />
+              <path d="M24 38 C24 24, 34 18, 42 22 C33 24, 32 36, 40 42 C32 45, 24 44, 24 38Z" fill="#FFD700" />
+            </svg>
+            <!-- Vector Enamel Pin -->
+            <svg width="52" height="52" viewBox="0 0 64 64">
+              <polygon points="32,6 56,22 48,54 16,54 8,22" fill="#182640" stroke="#00FF88" stroke-width="2.5" />
+              <circle cx="32" cy="31" r="10" fill="none" stroke="#00F0FF" stroke-width="2" />
+              <circle cx="32" cy="31" r="4" fill="#00FF88" />
+            </svg>
+            <!-- Vector Crew Tee -->
+            <svg width="52" height="52" viewBox="0 0 64 64">
+              <path d="M20 12 L26 16 H38 L44 12 L56 20 L50 30 L45 27 V52 H19 V27 L14 30 L8 20 Z" fill="#131E33" stroke="#B829FF" stroke-width="2" />
+              <rect x="26" y="25" width="12" height="6" rx="2" fill="#00F0FF" />
+            </svg>
+            <div class="mono" style="font-size:11px; color:#E8EEF9; line-height:1.4;">
+              OFFICIAL PATCH •<br />ENAMEL PIN • CREW TEE
+            </div>
           </div>
-          <div id="hud-track">
-            <div id="hud-track-fill"></div>
+        </div>
+
+        <div class="econ-card" style="border-color: rgba(0,255,136,0.45);">
+          <div class="card-kicker mono" style="color: var(--emerald-verified);">LOOP 03 // IMMUTABLE HISTORY INSIGNIA</div>
+          <div class="display" style="font-size:21px; line-height:1.25; margin-top:4px;">
+            “PIONEER DISCOVERER — PERMANENTLY ETCHED IN NODE HISTORY”
+          </div>
+          <div class="mono" style="font-size:12px; color:#A3E4D7; margin-top:10px;">
+            VERIFIED ORIGIN SEAL // #ES-08 LEDGER
+          </div>
+        </div>
+      </div>
+
+      <!-- ACT 6: Collaborative Virtual Space Colony -->
+      <div id="act6-genesis-card" class="glass-card">
+        <div class="card-kicker mono">SOCIAL LOOP // FOUNDER DEPLOYMENT</div>
+        <div class="card-title display" style="font-size:22px;">GENESIS MODULE LANDED</div>
+        <div class="mono" style="font-size:12px; color:#B6C4D8;">
+          FOUNDER CUSTOMIZATION // CORPORATE HULL TRIM
+        </div>
+        <div class="swatch-row mono">
+          <div id="act6-swatch-cyan" class="swatch selected">
+            <span class="swatch-dot" style="background: #00F0FF;"></span>
+            <span>#00F0FF CYAN</span>
+          </div>
+          <div id="act6-swatch-gold" class="swatch">
+            <span class="swatch-dot" style="background: #FFB800;"></span>
+            <span>#FFB800 SOLAR</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="act6-expand-card" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--emerald-verified);">COLLABORATIVE EXPANSION</div>
+        <div id="act6-mod-count" class="display" style="font-size:24px;">ONLINE MODULES: 01 / 04</div>
+        <div id="act6-ci-1" class="ci-item mono">@Explorer_02 — HYDROPONIC BAY LOCKED</div>
+        <div id="act6-ci-2" class="ci-item mono">@Explorer_06 — COMMS &amp; LAB MODULE DOCKED</div>
+        <div id="act6-ci-3" class="ci-item mono">@Explorer_14 — SOLAR HAB WING SEALED</div>
+      </div>
+
+      <!-- ACT 7: Tier 3 Robotics & Jury Finale -->
+      <div id="act7-hazard-card" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--crimson-hazard);">VOLCANIC FISSURE // PROXIMITY ALERT</div>
+        <div class="card-title display" style="font-size:22px; color:#FFD0D8;">
+          ⚠️ EXTREME HAZARD — CIVILIAN ACCESS LOCKED FOR SAFETY
+        </div>
+      </div>
+
+      <div id="act7-relay-badge" class="glass-card">
+        <div class="card-kicker mono" style="color: var(--gold-mission);">INSTITUTIONAL ESCALATION</div>
+        <div class="card-title display" style="font-size:20px;">
+          🤖 TIER 3 RELAY: UNIVERSITY &amp; SPACE AGENCY AUTOMATED MISSION
+        </div>
+      </div>
+
+      <div id="act7-mineral-card" class="glass-card">
+        <div class="card-kicker mono">MULTISPECTRAL CLIFF TELEMETRY</div>
+        <div class="card-title display" style="font-size:20px;">GEOLOGICAL INTEREST: 9.9 / 10</div>
+        <div style="margin-top:10px;" class="mono">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span>OLIVINE</span><span style="color:var(--cyan-nasa);">44.2%</span>
+          </div>
+          <div class="min-bar-wrap"><div class="min-bar-fill" style="width:44.2%; background:var(--cyan-nasa);"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:7px;">
+            <span>PYROXENE</span><span style="color:var(--purple-bounty);">33.8%</span>
+          </div>
+          <div class="min-bar-wrap"><div class="min-bar-fill" style="width:33.8%; background:var(--purple-bounty);"></div></div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:7px;">
+            <span>HEMATITE</span><span style="color:var(--amber-martian);">18.5%</span>
+          </div>
+          <div class="min-bar-wrap"><div class="min-bar-fill" style="width:18.5%; background:var(--amber-martian);"></div></div>
+        </div>
+      </div>
+
+      <div id="act7-finale">
+        <div class="finale-title display">MOONSITE<span>UA</span></div>
+        <div class="finale-pills mono">
+          <div class="finale-pill">[🛰️ NASA/ESA DATA]</div>
+          <div class="finale-pill" style="border-color: rgba(0,255,136,0.45);">[🟢 CROWD-VERIFIED]</div>
+          <div class="finale-pill" style="border-color: rgba(255,215,0,0.45);">[🏰 VIRTUAL COLONIES]</div>
+          <div class="finale-pill" style="border-color: rgba(184,41,255,0.45);">[🤖 TIER 3 ROBOTICS]</div>
+        </div>
+        <div class="finale-tagline display">
+          EXPLORE EARTH. UNLOCK SPACE.<span id="act7-tagline-cursor"></span>
+        </div>
+      </div>
+
+      <!-- Persistent Bottom Timeline & Voiceover Waveform Chrome -->
+      <div class="hud-bottom">
+        <div class="wf-box mono">
+          <div class="wf-label">
+            <span>VOX_SYNC // EN</span>
+            <span>voiceover.mp3</span>
+          </div>
+          <div id="hud-waveform"></div>
+        </div>
+
+        <div class="timeline-wrap">
+          <div class="milestones-row mono">
+            <div class="hud-milestone active"><span class="m-dot"></span>01 HOOK</div>
+            <div class="hud-milestone"><span class="m-dot"></span>02 MAP</div>
+            <div class="hud-milestone"><span class="m-dot"></span>03 CONSENSUS</div>
+            <div class="hud-milestone"><span class="m-dot"></span>04 SECURITY</div>
+            <div class="hud-milestone"><span class="m-dot"></span>05 BOUNTIES</div>
+            <div class="hud-milestone"><span class="m-dot"></span>06 COLONY</div>
+            <div class="hud-milestone"><span class="m-dot"></span>07 TIER-3</div>
+          </div>
+          <div class="progress-track">
+            <div id="hud-progress-fill"></div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <script>
-    (function () {
-      "use strict";
-
-      /* ------------------------------------------------------------------
-         1. DETERMINISTIC DOM POPULATION (Starfield & 32-Bar Voiceover HUD)
-         ------------------------------------------------------------------ */
-      const starGroup = document.getElementById("starfield-group");
-      for (let i = 0; i < 42; i++) {
-        const cx = ((i * 197 + 43) % 1880) + 20;
-        const cy = ((i * 313 + 71) % 1040) + 20;
-        const r = (i % 3 === 0) ? 2.1 : 1.2;
-        const star = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        star.setAttribute("cx", String(cx));
-        star.setAttribute("cy", String(cy));
-        star.setAttribute("r", String(r));
-        star.setAttribute("fill", i % 5 === 0 ? "#00F0FF" : "#DCEBFF");
-        star.setAttribute("fill-opacity", i % 4 === 0 ? "0.75" : "0.38");
-        starGroup.appendChild(star);
-      }
-
-      const waveformBars = [];
-      const waveformHost = document.getElementById("hud-waveform-bars");
-      for (let b = 0; b < 32; b++) {
-        const bar = document.createElement("div");
-        bar.className = "wf-bar";
-        waveformHost.appendChild(bar);
-        waveformBars.push(bar);
-      }
-
-      /* ------------------------------------------------------------------
-         2. REUSABLE GSAP NUMBER ROLLER HELPER
-         ------------------------------------------------------------------ */
-      function formatCounterValue(val, opts) {
-        const decimals = opts.decimals || 0;
-        let numStr = decimals > 0 ? val.toFixed(decimals) : Math.round(val).toString();
-        if (opts.padZero && decimals === 0) {
-          numStr = numStr.padStart(opts.padZero, "0");
-        }
-        if (opts.commas) {
-          const parts = numStr.split(".");
-          parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-          numStr = parts.join(".");
-        }
-        return (opts.prefix || "") + numStr + (opts.suffix || "");
-      }
-
-      function animateCounter(timeline, selector, opts, startTime) {
-        const el = typeof selector === "string" ? document.querySelector(selector) : selector;
-        if (!el) return;
-        const proxy = { val: opts.from };
-        timeline.fromTo(
-          proxy,
-          { val: opts.from },
-          {
-            val: opts.to,
-            duration: opts.duration,
-            ease: opts.ease || "power2.out",
-            onUpdate: function () {
-              el.textContent = formatCounterValue(proxy.val, opts);
-            }
-          },
-          startTime
-        );
-      }
-
-      /* ------------------------------------------------------------------
-         3. DETERMINISTIC VOICEOVER ENVELOPE + HUD + CAMERA DRIFT
-         ------------------------------------------------------------------ */
-      const voSegments = [
-        [0.12, 3.35, "SEC-01 // LAUNCH ECONOMICS VS. HUMAN ROVERS"],
-        [3.62, 7.82, "SEC-02 // NASA + ESA DUAL-LAYER MAP ENGINE"],
-        [8.12, 12.82, "SEC-03 // CROWD-VERIFIED TRAFFIC LIGHT CONSENSUS"],
-        [13.12, 17.32, "SEC-04 // ANTI-SYBIL SHIELD & OFFLINE GEOFENCING"],
-        [17.62, 21.35, "SEC-05 // DATA-GAP BOUNTIES & DUAL ECONOMY"],
-        [21.62, 25.32, "SEC-06 // COLLABORATIVE VIRTUAL SPACE COLONY"],
-        [25.62, 29.75, "SEC-07 // TIER-3 ROBOTICS & PLANETARY CONSTELLATION"]
-      ];
-
-      const hudFrameEl = document.getElementById("hud-frame-counter");
-      const hudClockEl = document.getElementById("hud-utc-clock");
-      const hudSectorEl = document.getElementById("hud-sector-tag");
-      const hudLedEl = document.getElementById("hud-led");
-      const hudFillEl = document.getElementById("hud-track-fill");
-      const milestoneEls = Array.from(document.querySelectorAll(".hud-ms"));
-      const topoGridWrap = document.getElementById("topo-grid-wrap");
-      const cameraDriftEl = document.getElementById("camera-drift");
-      const s2EmblemRings = document.getElementById("s2-emblem-rings");
-      const s5GoldToken = document.getElementById("s5-gold-token");
-      const s7Cursor = document.getElementById("s7-cursor");
-
-      function updateWorldAtTime(t) {
-        const clamped = Math.max(0, Math.min(30, t));
-        const frameNum = Math.min(1800, Math.round(clamped * 60));
-        hudFrameEl.textContent = "FRAME " + String(frameNum).padStart(4, "0") + " / 1800";
-
-        const wholeSec = Math.floor(clamped);
-        const centi = Math.floor((clamped - wholeSec) * 100);
-        hudClockEl.textContent =
-          "T+ 00:00:" + String(wholeSec).padStart(2, "0") + "." + String(centi).padStart(2, "0");
-
-        // Blinking green telemetry LED (deterministic)
-        const ledPulse = 0.3 + 0.7 * Math.pow(Math.sin(clamped * 5.2), 2);
-        hudLedEl.style.opacity = ledPulse.toFixed(3);
-
-        // Progress bar scale
-        const progress = clamped / 30;
-        hudFillEl.style.transform = "scaleX(" + progress.toFixed(5) + ")";
-
-        // Sector readout & active milestones
-        let activeSegIdx = 0;
-        for (let i = 0; i < voSegments.length; i++) {
-          if (clamped >= [0, 3.5, 8.0, 13.0, 17.5, 21.5, 25.5][i]) {
-            activeSegIdx = i;
-          }
-        }
-        hudSectorEl.textContent = voSegments[activeSegIdx][2];
-
-        for (let m = 0; m < milestoneEls.length; m++) {
-          const msStart = Number(milestoneEls[m].getAttribute("data-ms"));
-          const dot = milestoneEls[m].querySelector(".hud-ms-dot");
-          if (clamped >= msStart) {
-            milestoneEls[m].style.color = m === activeSegIdx ? "#00F0FF" : "#00FF88";
-            dot.style.background = m === activeSegIdx ? "#00F0FF" : "#00FF88";
-          } else {
-            milestoneEls[m].style.color = "#8E9BAE";
-            dot.style.background = "#8E9BAE";
-          }
-        }
-
-        // Audio-reactive 32-bar voiceover cadence envelope
-        const seg = voSegments[activeSegIdx];
-        const speaking = clamped >= seg[0] && clamped <= seg[1];
-        const speechMod = speaking
-          ? 0.42 + 0.58 * Math.abs(Math.sin(clamped * 11.4) * Math.cos(clamped * 4.3))
-          : 0.14;
-        for (let b = 0; b < waveformBars.length; b++) {
-          const freq = 0.25 + 0.75 * Math.abs(Math.sin(clamped * 17.3 + b * 0.62) * Math.cos(clamped * 7.1 - b * 0.28));
-          const sy = Math.max(0.14, Math.min(1, speechMod * freq + (speaking ? 0.15 : 0)));
-          waveformBars[b].style.transform = "scaleY(" + sy.toFixed(3) + ")";
-        }
-
-        // Background topographic grid subtle motion
-        const gx = -((clamped * 14) % 160);
-        const gy = Math.sin(clamped * 0.45) * 18;
-        topoGridWrap.style.transform = "translate3d(" + gx.toFixed(2) + "px, " + gy.toFixed(2) + "px, 0)";
-
-        // Global camera rig continuous sin/cos floating motion
-        const dx = Math.sin(clamped * 0.92) * 6;
-        const dy = Math.cos(clamped * 0.71) * 4;
-        const rz = Math.sin(clamped * 0.48) * 0.24;
-        cameraDriftEl.style.transform =
-          "translate3d(" + dx.toFixed(2) + "px, " + dy.toFixed(2) + "px, 0) rotateZ(" + rz.toFixed(3) + "deg)";
-
-        // Continuous orbital/token/cursor accents
-        if (s2EmblemRings) {
-          s2EmblemRings.setAttribute("transform", "rotate(" + ((clamped * 26) % 360).toFixed(1) + " 180 180)");
-        }
-        if (s5GoldToken) {
-          const sx = 0.85 + 0.15 * Math.cos(clamped * 4.5);
-          s5GoldToken.style.transform = "scaleX(" + sx.toFixed(3) + ")";
-        }
-        if (s7Cursor) {
-          s7Cursor.style.opacity = Math.sin(clamped * 14) >= 0 ? "1" : "0.1";
-        }
-      }
-
-      /* ------------------------------------------------------------------
-         4. TRANSITION FX HELPER (4-Frame RGB Flash + Laser Wipe + Shockwave)
-         ------------------------------------------------------------------ */
-      function addTransitionFX(masterTl, cutTime) {
-        // Camera aggressive punch-in across transition seam
-        masterTl.fromTo(
-          "#camera-punch",
-          { scale: 1, rotationX: 0 },
-          { scale: 1.35, rotationX: 12, duration: 0.14, ease: "power3.in", immediateRender: false },
-          Math.max(0, cutTime - 0.14)
-        );
-        masterTl.fromTo(
-          "#camera-punch",
-          { scale: 1.35, rotationX: 12 },
-          { scale: 1, rotationX: 0, duration: 0.24, ease: "expo.out", immediateRender: false },
-          cutTime
-        );
-
-        // 4-frame chromatic aberration RGB split flash (~0.067s at 60fps)
-        masterTl.fromTo(
-          "#fx-rgb-cyan",
-          { opacity: 0, x: -16 },
-          { opacity: 0.95, x: 14, duration: 0.04, ease: "none", immediateRender: false },
-          Math.max(0, cutTime - 0.03)
-        );
-        masterTl.fromTo(
-          "#fx-rgb-cyan",
-          { opacity: 0.95, x: 14 },
-          { opacity: 0, x: 0, duration: 0.06, ease: "power2.out", immediateRender: false },
-          cutTime + 0.01
-        );
-        masterTl.fromTo(
-          "#fx-rgb-flash",
-          { opacity: 0 },
-          { opacity: 0.75, duration: 0.035, ease: "none", immediateRender: false },
-          Math.max(0, cutTime - 0.02)
-        );
-        masterTl.fromTo(
-          "#fx-rgb-flash",
-          { opacity: 0.75 },
-          { opacity: 0, duration: 0.08, ease: "power2.out", immediateRender: false },
-          cutTime + 0.015
-        );
-
-        // Laser wipe line + radar shockwave
-        masterTl.fromTo(
-          "#fx-laser-wipe",
-          { x: -40, opacity: 0.95 },
-          { x: 1960, opacity: 0, duration: 0.24, ease: "expo.out", immediateRender: false },
-          Math.max(0, cutTime - 0.04)
-        );
-        masterTl.fromTo(
-          "#fx-shockwave",
-          { scale: 0.15, opacity: 0.9 },
-          { scale: 4.5, opacity: 0, duration: 0.34, ease: "expo.out", immediateRender: false },
-          cutTime
-        );
-      }
-
-      /* ------------------------------------------------------------------
-         5. SCENE 1 TIMELINE (00.0s - 03.5s)
-         ------------------------------------------------------------------ */
-      function scene1() {
-        const s = gsap.timeline();
-        s.fromTo("#s1-stage", { opacity: 0.65 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-        s.fromTo("#s1-card-3d", { rotationY: 0, scale: 1.06 }, { rotationY: 0, scale: 1, duration: 0.4, ease: "expo.out" }, 0);
-        s.fromTo("#s1-line1", { y: -24, opacity: 0.25 }, { y: 0, opacity: 1, duration: 0.28, ease: "expo.out" }, 0.02);
-        s.fromTo("#s1-launch-box", { scale: 0.9, opacity: 0.2 }, { scale: 1, opacity: 1, duration: 0.28, ease: "expo.out" }, 0.08);
-        s.fromTo("#s1-rocket-icon", { y: 12 }, { y: -12, duration: 1.3, ease: "power1.inOut" }, 0.06);
-
-        // Rolling odometer $0 -> $1,000,000,000
-        animateCounter(s, "#s1-line2", {
-          from: 0,
-          to: 1000000000,
-          duration: 1.08,
-          prefix: "$",
-          suffix: " LAUNCH?",
-          commas: true,
-          ease: "power3.out"
-        }, 0.14);
-
-        // 01.4s: Crimson laser slash + screen-shake + snappy 180deg 3D flip
-        s.fromTo("#s1-laser-slash", { scaleX: 0, opacity: 1 }, { scaleX: 1.05, opacity: 1, duration: 0.18, ease: "expo.out" }, 1.38);
-        s.fromTo("#s1-card-3d-wrap", { x: -12, y: 8 }, { x: 12, y: -8, duration: 0.04, repeat: 4, yoyo: true, ease: "none" }, 1.42);
-        s.fromTo("#s1-card-3d-wrap", { x: 12, y: -8 }, { x: 0, y: 0, duration: 0.06, ease: "power2.out", immediateRender: false }, 1.62);
-        s.fromTo("#s1-card-3d", { rotationY: 0 }, { rotationY: 180, duration: 0.38, ease: "power3.inOut", immediateRender: false }, 1.62);
-        s.fromTo(".s1-face-front", { opacity: 1 }, { opacity: 0, duration: 0.03, ease: "none", immediateRender: false }, 1.81);
-        s.fromTo(".s1-face-back", { opacity: 0 }, { opacity: 1, duration: 0.03, ease: "none", immediateRender: false }, 1.81);
-
-        // 01.85s - 03.5s: Earth radar network + Millions of Human Rovers + Morph SVG
-        s.fromTo("#s1-headline-green", { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "back.out(1.6)" }, 1.9);
-        s.fromTo("#s1-sub-badge", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.5, ease: "power2.out" }, 2.02);
-        s.fromTo("#s1-earth-svg", { scale: 0.82, rotation: -12, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 1.86);
-        s.fromTo(".s1-node-ring", { scale: 0.2, opacity: 0 }, { scale: 1.25, opacity: 0.9, duration: 0.45, stagger: 0.06, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.04);
-        s.fromTo("#s1-rover-group", { opacity: 1, x: 0 }, { opacity: 0.62, x: 24, duration: 0.55, ease: "power2.inOut" }, 2.25);
-        s.fromTo("#s1-morph-arrows", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 2.32);
-        s.fromTo("#s1-hiker-group", { opacity: 0, scale: 0.82 }, { opacity: 1, scale: 1, duration: 0.5, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.42);
-        s.fromTo("#s1-uplink-beam", { strokeDashoffset: 48 }, { strokeDashoffset: 0, duration: 0.75, ease: "none" }, 2.55);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         6. SCENE 2 TIMELINE (03.5s - 08.0s -> local 0.0s - 4.5s)
-         ------------------------------------------------------------------ */
-      function scene2() {
-        const s = gsap.timeline();
-        s.fromTo("#s2-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-        // 0.0 - 1.3s (global 3.5 - 4.8s): MoonSiteUA Orbital Hero Emblem
-        s.fromTo("#s2-brand-overlay", { scale: 0.84, opacity: 0.45 }, { scale: 1, opacity: 1, duration: 0.36, ease: "expo.out" }, 0);
-        s.fromTo("#s2-brand-overlay", { scale: 1, opacity: 1 }, { scale: 1.48, opacity: 0, duration: 0.2, ease: "power3.in", immediateRender: false }, 1.24);
-
-        // 1.38s - 4.5s (global 4.88 - 8.0s): Map Workspace Unfolds + Spain Zoom
-        s.fromTo("#s2-map-workspace", { scale: 0.92, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "expo.out" }, 1.38);
-        s.fromTo("#s2-iberia-svg", { scale: 0.88, x: -24, y: 12 }, { scale: 1.05, x: 0, y: 0, duration: 2.35, ease: "power2.out", svgOrigin: "540 370" }, 1.38);
-
-        // Layer 1: NASA + ESA Satellite Sweep + Unexplored Hotspots
-        s.fromTo("#s2-sat-sweep", { x: -180, opacity: 1 }, { x: 1120, opacity: 0.85, duration: 1.1, ease: "power2.inOut" }, 1.65);
-        s.fromTo("#s2-sat-sweep", { opacity: 0.85 }, { opacity: 0, duration: 0.2, immediateRender: false }, 2.76);
-        s.fromTo("#s2-hotspots", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "power2.out" }, 2.05);
-
-        // Layer 2: Community Micro-Analog Nodes & Sidebar Cards Pop In
-        s.fromTo("#s2-pin-a", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)", transformOrigin: "0 0" }, 2.55);
-        s.fromTo("#s2-card-a", { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 2.55);
-
-        s.fromTo("#s2-pin-b", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)", transformOrigin: "0 0" }, 2.85);
-        s.fromTo("#s2-card-b", { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 2.85);
-
-        s.fromTo("#s2-pin-c", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)", transformOrigin: "0 0" }, 3.15);
-        s.fromTo("#s2-card-c", { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 3.15);
-
-        // Tilt/zoom into Node #ES-042 before cut
-        s.fromTo("#s2-iberia-svg", { scale: 1.05 }, { scale: 1.42, x: -160, y: -90, duration: 0.55, ease: "power3.in", svgOrigin: "682 434", immediateRender: false }, 3.92);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         7. SCENE 3 TIMELINE (08.0s - 13.0s -> local 0.0s - 5.0s)
-         ------------------------------------------------------------------ */
-      function scene3() {
-        const s = gsap.timeline();
-        s.fromTo("#s3-stage", { opacity: 0.5, rotationX: 12 }, { opacity: 1, rotationX: 0, duration: 0.24, ease: "expo.out" }, 0);
-        s.fromTo("#s3-header", { y: -18, opacity: 0.3 }, { y: 0, opacity: 1, duration: 0.28, ease: "expo.out" }, 0);
-
-        // Stage 1: Grey Beacon (0.0s - 1.5s)
-        s.fromTo("#s3-card-1", { y: 28, opacity: 0.25 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0.04);
-        s.fromTo("#s3-pin-1", { y: -26, scale: 0.75, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.8)", svgOrigin: "70 98" }, 0.22);
-        s.fromTo("#s3-telem-1", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.55);
-
-        // Stage 2: Orange Beacon (1.5s - 3.2s)
-        s.fromTo("#s3-fiber-1", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.inOut" }, 1.42);
-        s.fromTo("#s3-card-2", { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "back.out(1.6)" }, 1.58);
-        animateCounter(s, "#s3-count-2", { from: 1, to: 3, duration: 0.65, padZero: 2, suffix: " / 10", ease: "power2.out" }, 1.72);
-        animateCounter(s, "#s3-consistency-pct", { from: 0, to: 98.7, duration: 0.85, decimals: 1, suffix: "%", ease: "power3.out" }, 1.85);
-
-        // Stage 3: Green Beacon (3.2s - 5.0s)
-        s.fromTo("#s3-fiber-2", { scaleX: 0 }, { scaleX: 1, duration: 0.36, ease: "power2.inOut" }, 3.12);
-        s.fromTo("#s3-card-3", { scale: 0.88, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)" }, 3.22);
-        animateCounter(s, "#s3-count-3", { from: 3, to: 10, duration: 0.72, padZero: 2, suffix: " / 10", ease: "power2.out" }, 3.28);
-        s.fromTo("#s3-emerald-wave", { scale: 0.3, opacity: 1 }, { scale: 1.65, opacity: 0, duration: 0.65, ease: "expo.out", svgOrigin: "70 60" }, 3.32);
-        s.fromTo("#s3-confetti", { scale: 0.4, opacity: 0 }, { scale: 1.15, opacity: 1, duration: 0.45, ease: "back.out(1.8)", svgOrigin: "70 50" }, 3.35);
-
-        // Heavy Metallic Stamp Slam
-        s.fromTo("#s3-final-stamp", { scale: 2.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, ease: "expo.out" }, 3.42);
-        s.fromTo("#s3-stage", { x: -8, y: 5 }, { x: 0, y: 0, duration: 0.16, ease: "power2.out", immediateRender: false }, 3.48);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         8. SCENE 4 TIMELINE (13.0s - 17.5s -> local 0.0s - 4.5s)
-         ------------------------------------------------------------------ */
-      function scene4() {
-        const s = gsap.timeline();
-        s.fromTo("#s4-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-        s.fromTo("#s4-left-panel", { x: -42, opacity: 0.3 }, { x: 0, opacity: 1, duration: 0.32, ease: "expo.out" }, 0);
-        s.fromTo("#s4-right-panel", { x: 42, opacity: 0.2 }, { x: 0, opacity: 1, duration: 0.34, ease: "expo.out" }, 0.06);
-
-        // Left Panel (0.0s - 2.2s): Bot Swarm Charge & Firewall Vaporization
-        s.fromTo(".s4-bot", { x: 0, opacity: 1, scale: 1 }, { x: 225, opacity: 1, scale: 1, duration: 0.65, stagger: 0.05, ease: "power2.in" }, 0.28);
-        s.fromTo(".s4-bot", { opacity: 1, scale: 1 }, { opacity: 0, scale: 0.2, duration: 0.18, stagger: 0.03, ease: "power2.out", immediateRender: false }, 0.94);
-        s.fromTo("#s4-vaporize-sparks", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.32, ease: "back.out(1.8)", svgOrigin: "450 140" }, 0.94);
-
-        // Right Panel (2.2s - 4.5s -> local 2.2s - 4.5s): Offline Expedition -> Push Prompt -> Geofence
-        s.fromTo("#s4-offline-badge", { scale: 0.95, opacity: 0.6 }, { scale: 1.03, opacity: 1, duration: 0.55, ease: "power1.inOut" }, 2.15);
-        // Move explorer phone from canyon to ridge
-        s.fromTo("#s4-explorer-phone", { x: 0, y: 0 }, { x: 256, y: -74, duration: 0.85, ease: "power2.inOut" }, 2.45);
-        // Push notification modal appears & clicks [AUTHORIZE ONE-TIME GPS]
-        s.fromTo("#s4-push-modal", { y: -32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)" }, 3.02);
-        s.fromTo("#s4-auth-btn", { scale: 1 }, { scale: 0.9, duration: 0.1, ease: "power2.in" }, 3.45);
-        s.fromTo("#s4-auth-btn", { scale: 0.9, backgroundColor: "#00F0FF" }, { scale: 1, backgroundColor: "#00FF88", duration: 0.15, ease: "back.out(1.8)", immediateRender: false }, 3.55);
-        s.fromTo("#s4-push-modal", { opacity: 1, y: 0 }, { opacity: 0, y: -16, duration: 0.2, ease: "power2.in", immediateRender: false }, 3.74);
-
-        // Expanded Logical Geofence Ring + Couch Spoofing Blocked
-        s.fromTo("#s4-geofence-ring", { scale: 0.1, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)", svgOrigin: "388 178" }, 3.78);
-        s.fromTo("#s4-couch-spoof", { scale: 0.75, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.34, ease: "back.out(1.8)", transformOrigin: "center center" }, 3.92);
-        s.fromTo("#s4-verified-badge", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 4.02);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         9. SCENE 5 TIMELINE (17.5s - 21.5s -> local 0.0s - 4.0s)
-         ------------------------------------------------------------------ */
-      function scene5() {
-        const s = gsap.timeline();
-        s.fromTo("#s5-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-        // Top Half (0.0s - 1.8s): Data-Gap Scan + Bounty Trigger
-        s.fromTo("#s5-scan-card", { y: -18, opacity: 0.3 }, { y: 0, opacity: 1, duration: 0.3, ease: "expo.out" }, 0);
-        s.fromTo("#s5-scanner-line", { y: 0 }, { y: 320, duration: 0.85, ease: "power1.inOut" }, 0.15);
-        s.fromTo("#s5-gap-row", { scale: 1 }, { scale: 1.02, duration: 0.25, repeat: 2, yoyo: true, ease: "power1.inOut" }, 0.65);
-        s.fromTo("#s5-bounty-card", { scale: 0.82, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4, ease: "back.out(1.8)" }, 0.85);
-        s.fromTo("#s5-multiplier-pill", { scale: 0.9 }, { scale: 1.04, duration: 0.35, repeat: 1, yoyo: true, ease: "power1.inOut" }, 1.15);
-        s.fromTo("#s5-ticker-bar", { x: -30, opacity: 0 }, { x: 0, opacity: 1, duration: 0.32, ease: "expo.out" }, 1.25);
-
-        // Bottom Half (1.8s - 4.0s): 3 Dual-Reward Cards Pop In
-        s.fromTo("#s5-card-1", { y: 60, scale: 0.88, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.42, ease: "back.out(1.8)" }, 1.78);
-        s.fromTo("#s5-card-2", { y: 60, scale: 0.88, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.42, ease: "back.out(1.8)" }, 1.83);
-        s.fromTo("#s5-card-3", { y: 60, scale: 0.88, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.42, ease: "back.out(1.8)" }, 1.88);
-        animateCounter(s, "#s5-xp-counter", {
-          from: 0,
-          to: 4500,
-          duration: 0.95,
-          prefix: "+",
-          suffix: " XP",
-          commas: true,
-          ease: "power3.out"
-        }, 1.9);
-        s.fromTo("#s5-plaque", { scale: 1.15, opacity: 0.5 }, { scale: 1, opacity: 1, duration: 0.35, ease: "expo.out", immediateRender: false }, 2.15);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         10. SCENE 6 TIMELINE (21.5s - 25.5s -> local 0.0s - 4.0s)
-         ------------------------------------------------------------------ */
-      function scene6() {
-        const s = gsap.timeline();
-        s.fromTo("#s6-stage", { opacity: 0.55 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-
-        // 0.0 - 1.7s: Genesis Module Drops + Founder Repaints Hull + Interior Items
-        s.fromTo("#s6-genesis-module", { y: -140, opacity: 0.35 }, { y: 0, opacity: 1, duration: 0.48, ease: "expo.out" }, 0.02);
-        s.fromTo("#s6-dust-cloud", { scale: 0.3, opacity: 0.8 }, { scale: 1.5, opacity: 0, duration: 0.55, ease: "power2.out", transformOrigin: "center center" }, 0.45);
-        s.fromTo("#s6-palette-ui", { x: -48, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 0.52);
-
-        // Instant Corporate Color Hull Repaint (Cyber Cyan + Solar Gold)
-        s.fromTo("#s6-hull-stripe-1", { stroke: "#8E9BAE" }, { stroke: "#00F0FF", duration: 0.24, ease: "power2.out" }, 0.88);
-        s.fromTo("#s6-hull-stripe-2", { stroke: "#8E9BAE" }, { stroke: "#FFB800", duration: 0.24, ease: "power2.out" }, 0.96);
-        s.fromTo("#s6-interior-items", { scale: 0.7, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)", transformOrigin: "center center" }, 1.12);
-
-        // 1.7 - 4.0s: Collaborative Tunnels & 4 Satellite Colony Modules Dock
-        s.fromTo("#s6-feed-ui", { x: 48, opacity: 0 }, { x: 0, opacity: 1, duration: 0.35, ease: "expo.out" }, 1.65);
-        s.fromTo("#s6-tunnels", { opacity: 0 }, { opacity: 1, duration: 0.45, ease: "expo.out" }, 1.72);
-
-        s.fromTo("#s6-mod-nw", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)", transformOrigin: "center center" }, 1.98);
-        s.fromTo("#s6-mod-ne", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.22);
-        s.fromTo("#s6-mod-sw", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.46);
-        s.fromTo("#s6-mod-se", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "back.out(1.8)", transformOrigin: "center center" }, 2.7);
-        s.fromTo("#s6-dock-toast", { scale: 0.88 }, { scale: 1.04, duration: 0.22, repeat: 2, yoyo: true, ease: "power1.inOut" }, 2.4);
-
-        animateCounter(s, "#s6-module-count", {
-          from: 1,
-          to: 15,
-          duration: 1.6,
-          padZero: 2,
-          ease: "power2.out"
-        }, 1.85);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         11. SCENE 7 TIMELINE (25.5s - 30.0s -> local 0.0s - 4.5s)
-         ------------------------------------------------------------------ */
-      function scene7() {
-        const s = gsap.timeline();
-        s.fromTo("#s7-stage", { opacity: 0.6 }, { opacity: 1, duration: 0.1, ease: "power2.out" }, 0);
-
-        // Part A (0.0s - 2.5s): Hazard Lock -> Tier 3 Flip + Robotics + Multispectral Sweep
-        s.fromTo("#s7-robotics-wrap", { opacity: 0.55 }, { opacity: 1, duration: 0.1 }, 0);
-        s.fromTo("#s7-alert-inner", { rotationX: 0 }, { rotationX: 180, duration: 0.45, ease: "power3.inOut" }, 0.56);
-        s.fromTo(".s7-banner-front", { opacity: 1 }, { opacity: 0, duration: 0.04, ease: "none", immediateRender: false }, 0.78);
-        s.fromTo(".s7-banner-back", { opacity: 0 }, { opacity: 1, duration: 0.04, ease: "none", immediateRender: false }, 0.78);
-
-        // Rover rolls onto volcanic ledge & Drone enters lava tube
-        s.fromTo("#s7-rover", { x: -120, opacity: 0 }, { x: 0, opacity: 1, duration: 0.55, ease: "expo.out" }, 0.25);
-        s.fromTo("#s7-drone", { y: -120, x: 90, opacity: 0 }, { y: 0, x: 0, opacity: 1, duration: 0.65, ease: "expo.out" }, 0.45);
-        s.fromTo("#s7-drone", { y: 0 }, { y: -12, duration: 0.85, repeat: 1, yoyo: true, ease: "power1.inOut", immediateRender: false }, 1.1);
-
-        // Multispectral Vision Sweep + Wavelength Pill Cycles
-        s.fromTo("#s7-spectral-sweep", { x: 0 }, { x: 860, duration: 1.45, ease: "power2.inOut" }, 0.68);
-        s.fromTo("#s7-cliff-heatmap", { opacity: 0 }, { opacity: 0.85, duration: 0.5, ease: "power2.out" }, 0.85);
-        s.fromTo("#s7-cliff-heatmap", { opacity: 0.85 }, { opacity: 0, duration: 0.4, ease: "power2.in", immediateRender: false }, 1.8);
-        const modeEl = document.getElementById("s7-spectrum-mode");
-        const modeProxy = { step: 0 };
-        const bands = ["BAND: RGB OPTICAL", "BAND: THERMAL IR", "BAND: NEAR-INFRARED", "BAND: RAMAN SPECTROMETRY"];
-        s.fromTo(
-          modeProxy,
-          { step: 0 },
-          {
-            step: 3.9,
-            duration: 1.45,
-            ease: "none",
-            onUpdate: function () {
-              if (modeEl) modeEl.textContent = bands[Math.min(3, Math.floor(modeProxy.step))];
-            }
-          },
-          0.68
-        );
-
-        // Mineralogical Bars & Rolling Percentages
-        s.fromTo("#s7-min-1-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 0.85);
-        s.fromTo("#s7-min-2-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 0.95);
-        s.fromTo("#s7-min-3-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 1.05);
-        s.fromTo("#s7-min-4-bar", { scaleX: 0 }, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 1.15);
-
-        animateCounter(s, "#s7-min-1-pct", { from: 0, to: 44.2, duration: 0.9, decimals: 1, suffix: "%" }, 0.85);
-        animateCounter(s, "#s7-min-2-pct", { from: 0, to: 33.8, duration: 0.9, decimals: 1, suffix: "%" }, 0.95);
-        animateCounter(s, "#s7-min-3-pct", { from: 0, to: 18.5, duration: 0.9, decimals: 1, suffix: "%" }, 1.05);
-        animateCounter(s, "#s7-min-4-pct", { from: 0, to: 3.5, duration: 0.9, decimals: 1, suffix: "%" }, 1.15);
-
-        // Warp Pull-Back to Orbit at 2.16s (global 27.66s)
-        s.fromTo("#s7-robotics-wrap", { scale: 1, opacity: 1 }, { scale: 0.38, opacity: 0, duration: 0.28, ease: "power3.in", immediateRender: false }, 2.16);
-
-        // Part B (2.28s - 4.5s -> global 27.78s - 30.0s): Orbital Constellation + Jury Finale Lockup
-        s.fromTo("#s7-finale-wrap", { scale: 1.32, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.38, ease: "expo.out" }, 2.28);
-        s.fromTo("#s7-hero-title", { scale: 1.25, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.36, ease: "expo.out" }, 2.3);
-        s.fromTo(".s7-pillar", { y: 24, scale: 0.8, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: 0.36, stagger: 0.08, ease: "back.out(1.8)" }, 2.52);
-        s.fromTo("#s7-punchline-text", { clipPath: "inset(0 100% 0 0)" }, { clipPath: "inset(0 0% 0 0)", duration: 0.65, ease: "power2.out" }, 2.78);
-
-        return s;
-      }
-
-      /* ------------------------------------------------------------------
-         12. MASTER GSAP TIMELINE ASSEMBLY (EXACTLY 30.0s / 1800 FRAMES @ 60fps)
-         ------------------------------------------------------------------ */
-      const tl = gsap.timeline({ paused: true });
-
-      // Continuous deterministic telemetry, waveform, camera drift & orbital clock
-      const worldState = { t: 0 };
-      tl.fromTo(
-        worldState,
-        { t: 0 },
-        {
-          t: 30,
-          duration: 30,
-          ease: "none",
-          onUpdate: function () {
-            updateWorldAtTime(worldState.t);
-          }
-        },
-        0
-      );
-
-      // Assemble the 7 exact scene timelines
-      tl.add(scene1(), 0);
-      tl.add(scene2(), 3.5);
-      tl.add(scene3(), 8.0);
-      tl.add(scene4(), 13.0);
-      tl.add(scene5(), 17.5);
-      tl.add(scene6(), 21.5);
-      tl.add(scene7(), 25.5);
-
-      // Scene transition punch-ins, 4-frame RGB split flashes, laser wipes, shockwaves
-      addTransitionFX(tl, 3.5);
-      addTransitionFX(tl, 8.0);
-      addTransitionFX(tl, 13.0);
-      addTransitionFX(tl, 17.5);
-      addTransitionFX(tl, 21.5);
-      addTransitionFX(tl, 25.5);
-
-      // Ensure total timeline duration is strictly 30.0s and initialize frame 0 cleanly
-      tl.duration(30);
-      updateWorldAtTime(0);
-
-      // Register for HyperFrames preview/render & external controllers (Remotion / Studio)
-      window.__timelines = window.__timelines || {};
-      window.__timelines["moonsiteua"] = tl;
-    })();
-  </script>
+  <script type="module" src="./timeline.js"></script>
 </body>
 </html>

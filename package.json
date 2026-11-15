@@ -8,9 +8,10 @@
     "lint": "hyperframes lint",
     "check": "hyperframes check",
     "doctor": "hyperframes doctor",
-    "render": "hyperframes render --fps 60 -o moonsiteua-pitch.mp4"
+    "render": "hyperframes render --fps 60 --crf 19 --max-bitrate 16M --buffer-size 32M -o moonsiteua-pitch.mp4"
   },
   "devDependencies": {
-    "hyperframes": "0.9.46"
+    "hyperframes": "0.9.46",
+    "three": "^0.187.0"
   }
 }
