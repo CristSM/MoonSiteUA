@@ -1,5 +1,10 @@
 {
 "textos": {
+"El recorrido completo: el mapa de candidatas, la validación por consenso, la seguridad, las misiones y las bases que crecen con la comunidad.": "The whole tour: the candidate map, consensus validation, safety, missions and the bases that grow with the community.",
+"Vídeo de presentación de MoonSiteUA": "MoonSiteUA presentation video",
+"Vídeo sin sonido · 1280 × 720 · 30 s": "Silent video · 1280 × 720 · 30 s",
+"dᵢ es la puntuación de 0 a 1 de cada dimensión y wᵢ su peso en el perfil. El terreno se mide como percentil de la Tierra: 0,99 significa más parecido que el 99 % de la tierra emergida. La novedad castiga lo que ya está muy estudiado. Si a un lugar le falta el dato de alguna dimensión, su peso se reparte entre las demás.": "dᵢ is the 0–1 score of each dimension and wᵢ its weight in the profile. Terrain is measured as an Earth percentile: 0.99 means more similar than 99 % of land. Novelty penalises what is already well studied. If a place lacks data for a dimension, its weight is shared among the others.",
+"Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice. Aquí sale en el percentil 96 y no en el 100: la celda de lluvia de GPM (0,1°) mezcla la costa con el desierto y da 280 mm/año, cuando en Yungay llueven pocos milímetros.": "Classic Mars analog for its hyper-aridity. It serves as a reference to calibrate the index. Here it comes out at the 96th percentile rather than the 100th: the GPM rain cell (0.1°) mixes the coast with the desert and gives 280 mm/yr, while Yungay gets only a few millimetres.",
 "No se puede evaluar: el lugar no tiene topónimo para buscarlo en la literatura.": "Cannot be assessed: the place has no name to search for in the literature.",
 "sin dato": "no data",
 "Tipo de roca": "Rock type",

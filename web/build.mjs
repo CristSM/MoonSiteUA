@@ -145,5 +145,7 @@ for (const [id, file, label] of PAGES) {
   for (const dir of out) { writeFileSync(new URL(file, dir), es); writeFileSync(new URL('en/' + file, dir), en); }
 }
 console.log(`${PAGES.length} páginas × 2 idiomas · ${sites.sites.length} sitios · demo=${data.demo}`);
-// las imágenes del método no las escribe el build: se copian a la versión de GitHub Pages
+// las imágenes y three.js (web/vendor) no las escribe el build: se copian a la versión de GitHub Pages
 cpSync(new URL('img/', here), new URL('../docs/img/', here), {recursive: true});
+cpSync(new URL('vendor/', here), new URL('../docs/vendor/', here), {recursive: true});
+cpSync(new URL('media/', here), new URL('../docs/media/', here), {recursive: true});

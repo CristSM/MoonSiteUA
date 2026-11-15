@@ -4,3 +4,5 @@ __pycache__/
 app/moonsite.db
 app/uploads/
 web/i18n/_pendientes.json
+.venv/
+.claude/

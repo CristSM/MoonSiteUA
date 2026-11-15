@@ -545,6 +545,10 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .gemelo-demo { display: grid; gap: 6px; }
 .gemelo-demo img { width: 100%; max-width: 100%; height: auto; display: block; border: 3px solid var(--text); filter: contrast(1.1); }
 
+.pitch { margin: 0; display: grid; gap: 8px; border-top: var(--rule); padding-top: 18px; }
+.pitch video { width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; background: #000; border: 3px solid var(--text); }
+.pitch figcaption { font-size: .74rem; }
+
 /* zona de exploradores (la parte con cuentas) */
 /*__EXPLORADOR_CSS__*/
 
@@ -855,7 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="mt-sec" id="mtFormulas">
       <div class="mt-tit"><p class="kicker">Puntuación</p><h3>Las fórmulas</h3></div>
-      <div class="mt-cuerpo"><div class="mt-formulas" id="mtFormulasLista"></div><p class="read muted">dᵢ es la puntuación de 0 a 1 de cada dimensión y wᵢ su peso en el perfil. El terreno se mide como percentil de la Tierra: 0,99 significa más parecido que el 99 % de la tierra emergida. La novedad castiga lo que ya está muy estudiado.</p></div>
+      <div class="mt-cuerpo"><div class="mt-formulas" id="mtFormulasLista"></div><p class="read muted">dᵢ es la puntuación de 0 a 1 de cada dimensión y wᵢ su peso en el perfil. El terreno se mide como percentil de la Tierra: 0,99 significa más parecido que el 99 % de la tierra emergida. La novedad castiga lo que ya está muy estudiado. Si a un lugar le falta el dato de alguna dimensión, su peso se reparte entre las demás.</p></div>
     </div>
     <div class="mt-sec" id="mtHuella">
       <div class="mt-tit"><p class="kicker">Relieve</p><h3>La huella de terreno</h3></div>
@@ -1087,13 +1091,23 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="head read" style="margin:0">
       <p class="kicker">Demo en vídeo · 30 s</p>
       <h2>MoonSiteUA en medio minuto</h2>
+      <p class="muted">El recorrido completo: el mapa de candidatas, la validación por consenso, la seguridad, las misiones y las bases que crecen con la comunidad.</p>
     </div>
-    <!-- Sustituir este bloque por el vídeo final, p. ej.:
-         <video src="demo.mp4" controls style="width:100%;border-radius:10px"></video>
-         o un iframe de YouTube si la web se sirve desde GitHub Pages. -->
-    <div class="card video"><div class="stack"><b style="font-family:var(--f-display);font-size:1.3rem">Vídeo de la demo</b><span class="muted">Se publicará aquí antes del cierre del hackathon.</span></div></div>
+    <!-- Vídeo del pitch en web/media (el build lo copia a docs/media). Las rutas se ajustan para las páginas en inglés. -->
+    <figure class="pitch">
+      <video id="pitchVideo" controls playsinline preload="metadata" width="1280" height="720" aria-label="Vídeo de presentación de MoonSiteUA"></video>
+      <figcaption class="mono muted">Vídeo sin sonido · 1280 × 720 · 30 s</figcaption>
+    </figure>
   </div>
 </section>
+<script>
+(function () {
+  const v = document.getElementById('pitchVideo'); if (!v) return;
+  const base = location.pathname.includes('/en/') ? '../' : '';
+  v.poster = base + 'media/moonsiteua-pitch.jpg';
+  v.src = base + 'media/moonsiteua-pitch.mp4';
+})();
+</script>
 <!--/PAGE-->
 
 
@@ -1750,13 +1764,12 @@ document.querySelectorAll('details.ap').forEach((d) => d.addEventListener('toggl
 // La base crece a lo ancho: cada nivel (5 exploradores) añade edificios, robots y vehículos. Hay cinco edificios
 // habitados con 5 ventanas cada uno; cada explorador enciende una ventana (= una habitación ocupada).
 let threeCarga = null;
+// three.js r128 va incluido en web/vendor (funciona sin conexión); si faltara, se usa la copia de cdnjs
 function cargarThree() {
   if (window.THREE) return Promise.resolve(window.THREE);
-  return threeCarga ||= new Promise((ok, mal) => {
-    const sc = document.createElement('script');
-    sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
-    sc.onload = () => ok(window.THREE); sc.onerror = mal; document.head.append(sc);
-  });
+  const carga = (src) => new Promise((ok, mal) => { const sc = document.createElement('script'); sc.src = src; sc.onload = () => ok(window.THREE); sc.onerror = mal; document.head.append(sc); });
+  const base = location.pathname.includes('/en/') ? '../' : '';
+  return threeCarga ||= carga(base + 'vendor/three.min.js').catch(() => carga('https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js'));
 }
 async function diorama(el, {n = 7, giro = true} = {}) {
   const T = await cargarThree();

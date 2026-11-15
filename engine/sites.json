@@ -10,7 +10,7 @@
    "lon": -70.02,
    "conocido": true,
    "baliza": "verde",
-   "nota": "Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice.",
+   "nota": "Análogo clásico de Marte por su hiperaridez. Sirve de referencia para calibrar el índice. Aquí sale en el percentil 96 y no en el 100: la celda de lluvia de GPM (0,1°) mezcla la costa con el desierto y da 280 mm/año, cuando en Yungay llueven pocos milímetros.",
    "tipo": "conocido",
    "region": null,
    "articulos": 972,
