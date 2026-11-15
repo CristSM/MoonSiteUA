@@ -1,8 +1,8 @@
 {
  "_doc": "Datos reales del método Analog Finder para la página MÉTODO de MoonSiteUA. Generado por scripts/export_metodo_data.py.",
- "generado_utc": "2026-11-15T08:24:40+00:00",
+ "generado_utc": "2026-11-15T08:57:58+00:00",
  "cifras": {
-  "celdas_tierra": 8604242,
+  "celdas_tierra": 7884883,
   "rejilla_tierra": "0,05° (~5,5 km)",
   "escala_terreno_m": 400,
   "sitios_referencia": 1345,
@@ -26,7 +26,7 @@
   {
    "n": 2,
    "titulo": "Gemelo planetario",
-   "texto": "Para cada una de las 8,6 millones de celdas de tierra emergida buscamos el bloque lunar o marciano más parecido entre 1.345 sitios de referencia."
+   "texto": "Para cada una de las 7,9 millones de celdas de tierra emergida buscamos el bloque lunar o marciano más parecido entre 1.345 sitios de referencia."
   },
   {
    "n": 3,
@@ -227,6 +227,7 @@
     "Regolito lunar sin meteorización química"
    ],
    "n_candidatas": 1688,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (38.045) y quedan fuera de los 32 análogos conocidos (36.600 celdas en 14.328 grupos, de los que solo 1.688 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   },
   {
@@ -290,6 +291,7 @@
     "Radiación en superficie (las cuevas son refugio)"
    ],
    "n_candidatas": 693,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (33.731) y quedan fuera de los 32 análogos conocidos (31.106 celdas en 2.768 grupos, de los que solo 693 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   },
   {
@@ -355,6 +357,7 @@
     "Percloratos y oxidantes en el suelo"
    ],
    "n_candidatas": 1018,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra (7.884.883) que están en el 1 % superior del índice (78.849), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (59.983) y quedan fuera de los 32 análogos conocidos (58.515 celdas en 4.768 grupos, de los que solo 1.018 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   }
  ],

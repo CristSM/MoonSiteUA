@@ -451,6 +451,7 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
 .mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-def { margin: 6px 0 0; font-size: .8rem; color: #a9a59a; }
 .mt-leer { display: grid; gap: 8px; margin: 14px 0 22px; padding-left: 1.3em; max-width: 72ch; color: #cbc7bb; font-size: .95rem; }
 .mt-leer b { color: var(--text, #f2efe6); }
 .mt-leer li::marker { color: var(--accent); font-family: var(--f-mono); }
@@ -2434,7 +2435,7 @@ if (window.METODO && $('#mtPasosLista')) {
   const M = window.METODO, EN = document.documentElement.lang === 'en';
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
-  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'zonas candidatas', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
     tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
     novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
@@ -2472,7 +2473,7 @@ if (window.METODO && $('#mtPasosLista')) {
       <h4 class="mt-h4">${esc(L.pesoTit)}</h4>
       <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
       <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
-      <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');
+      <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div>${p.n_candidatas_def ? `<p class="mt-def">${esc(p.n_candidatas_def)}</p>` : ''}</div>`).join('');
   // G. Dimensiones y reglas
   $('#mtDimsLista').innerHTML = M.dimensiones.map((d) => `<tr><td><b>${esc(d.nombre)}</b></td><td>${esc(d.dato)}</td><td class="muted">${esc(d.regla)}</td></tr>`).join('');
   // H. Validación: análogos conocidos (6 por perfil) y cuevas de OSM (sin coordenadas)

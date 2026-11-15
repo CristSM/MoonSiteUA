@@ -451,6 +451,7 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
 .mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-def { margin: 6px 0 0; font-size: .8rem; color: #a9a59a; }
 .mt-leer { display: grid; gap: 8px; margin: 14px 0 22px; padding-left: 1.3em; max-width: 72ch; color: #cbc7bb; font-size: .95rem; }
 .mt-leer b { color: var(--text, #f2efe6); }
 .mt-leer li::marker { color: var(--accent); font-family: var(--f-mono); }
@@ -669,9 +670,9 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 
 <script>window.METODO = {
  "_doc": "Datos reales del método Analog Finder para la página MÉTODO de MoonSiteUA. Generado por scripts/export_metodo_data.py.",
- "generado_utc": "2026-11-15T08:24:40+00:00",
+ "generado_utc": "2026-11-15T08:57:58+00:00",
  "cifras": {
-  "celdas_tierra": 8604242,
+  "celdas_tierra": 7884883,
   "rejilla_tierra": "0,05° (~5,5 km)",
   "escala_terreno_m": 400,
   "sitios_referencia": 1345,
@@ -695,7 +696,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "n": 2,
    "titulo": "Gemelo planetario",
-   "texto": "Para cada una de las 8,6 millones de celdas de tierra emergida buscamos el bloque lunar o marciano más parecido entre 1.345 sitios de referencia."
+   "texto": "Para cada una de las 7,9 millones de celdas de tierra emergida buscamos el bloque lunar o marciano más parecido entre 1.345 sitios de referencia."
   },
   {
    "n": 3,
@@ -896,6 +897,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "Regolito lunar sin meteorización química"
    ],
    "n_candidatas": 1688,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (38.045) y quedan fuera de los 32 análogos conocidos (36.600 celdas en 14.328 grupos, de los que solo 1.688 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   },
   {
@@ -959,6 +961,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "Radiación en superficie (las cuevas son refugio)"
    ],
    "n_candidatas": 693,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (33.731) y quedan fuera de los 32 análogos conocidos (31.106 celdas en 2.768 grupos, de los que solo 693 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   },
   {
@@ -1024,6 +1027,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "Percloratos y oxidantes en el suelo"
    ],
    "n_candidatas": 1018,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra (7.884.883) que están en el 1 % superior del índice (78.849), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (59.983) y quedan fuera de los 32 análogos conocidos (58.515 celdas en 4.768 grupos, de los que solo 1.018 alcanzan el tamaño mínimo); no son celdas ni sitios.",
    "umbral_top": 0.01
   }
  ],
@@ -1953,7 +1957,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     <div class="head read" style="margin:0">
       <p class="kicker">Método</p>
       <h2>Cómo encontramos análogos</h2>
-      <p class="muted">Comparamos 8,6 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte. Cada resultado explica en qué se parece el lugar a su destino y en qué no.</p>
+      <p class="muted">Comparamos 7,9 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte. Cada resultado explica en qué se parece el lugar a su destino y en qué no.</p>
     </div>
     <div class="mt-sec" id="mtPasos">
       <div class="mt-tit"><p class="kicker">Proceso</p><h3>Seis pasos</h3></div>
@@ -1979,7 +1983,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
           <li><b>Sitios de referencia.</b> Los lugares reales de la Luna o Marte con los que se compara el terreno de cada celda de la Tierra.</li>
           <li><b>Peso en el índice.</b> Cuánto cuenta cada dimensión en la nota final del perfil. Los pesos de cada tarjeta suman 100 %. Una barra más larga significa que esa dimensión decide más; no es un resultado, es la receta del perfil.</li>
           <li><b>Dónde se rompe la analogía.</b> Lo que ningún lugar de la Tierra puede imitar. Un análogo terrestre siempre es parcial y conviene decir en qué.</li>
-          <li><b>Candidatas.</b> Cuántos lugares de la Tierra deja el método para ese perfil al quedarse con lo mejor del mapa (el 1 % superior).</li>
+          <li><b>Zonas candidatas.</b> No son celdas sueltas sino zonas: grupos de celdas vecinas que están en el 1 % superior del perfil, siguen ahí en al menos la mitad de los 200 sorteos de pesos, quedan fuera de los análogos conocidos y suman al menos 4 celdas y 100 km².</li>
         </ol>
         <div class="grid3 mt-perfiles" id="mtPerfilesLista"></div></div>
     </div>
@@ -3746,7 +3750,7 @@ if (window.METODO && $('#mtPasosLista')) {
   const M = window.METODO, EN = document.documentElement.lang === 'en';
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
-  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'zonas candidatas', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
     tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
     novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
@@ -3784,7 +3788,7 @@ if (window.METODO && $('#mtPasosLista')) {
       <h4 class="mt-h4">${esc(L.pesoTit)}</h4>
       <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
       <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
-      <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');
+      <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div>${p.n_candidatas_def ? `<p class="mt-def">${esc(p.n_candidatas_def)}</p>` : ''}</div>`).join('');
   // G. Dimensiones y reglas
   $('#mtDimsLista').innerHTML = M.dimensiones.map((d) => `<tr><td><b>${esc(d.nombre)}</b></td><td>${esc(d.dato)}</td><td class="muted">${esc(d.regla)}</td></tr>`).join('');
   // H. Validación: análogos conocidos (6 por perfil) y cuevas de OSM (sin coordenadas)

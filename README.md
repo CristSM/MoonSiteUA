@@ -57,7 +57,7 @@ Para aquellas zonas que alcanzan un alto índice de interés geológico pero son
 
 MoonSiteUA responde al reto «Identify Earth Locations that Analog the Permanent Moon Base Locations and Mars» del NASA Space Apps Challenge 2026: busca en la Tierra lugares parecidos a las futuras bases lunares y a los lugares de aterrizaje en Marte, explica en qué se parecen y en qué no, y deja que la comunidad los valide y los convierta en bases virtuales. El proyecto tiene tres capas:
 
-- **Satélite (descubre):** el motor **Analog Finder** compara 8,6 millones de celdas de tierra emergida (rejilla de 0,05°) con 1.345 sitios de la Luna y Marte y puntúa tres perfiles de misión: base lunar en el polo sur (Artemis III), cuevas y tubos de lava, y astrobiología en Marte.
+- **Satélite (descubre):** el motor **Analog Finder** compara 7,9 millones de celdas de tierra emergida (rejilla de 0,05°) con 1.345 sitios de la Luna y Marte y puntúa tres perfiles de misión: base lunar en el polo sur (Artemis III), cuevas y tubos de lava, y astrobiología en Marte.
 - **Campo (verifica):** los usuarios suben fotos y datos, o crean puntos nuevos que se validan antes de aceptarse.
 - **Comunidad (construye):** cada zona puede tener una base virtual que crece con los exploradores que se unen.
 
