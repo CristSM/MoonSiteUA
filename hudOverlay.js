@@ -1,4 +1,5 @@
 import { AUDIO_ENVELOPE } from './audioEnvelope.js';
+import { CAPTION_CUES } from './captionsData.js';
 
 function clamp01(v) {
   return v < 0 ? 0 : v > 1 ? 1 : v;
@@ -105,13 +106,23 @@ export function createHudOverlay() {
   }
 
   // Persistent HUD readouts
-  const frameEl = document.getElementById('hud-frame');
-  const clockEl = document.getElementById('hud-clock');
-  const dofEl = document.getElementById('hud-dof');
-  const actTagEl = document.getElementById('hud-act-tag');
-  const liveLedEl = document.getElementById('hud-live-led');
   const progressFillEl = document.getElementById('hud-progress-fill');
   const milestoneEls = Array.from(document.querySelectorAll('.hud-milestone'));
+  const captionWrapEl = document.getElementById('hud-caption-wrap');
+  const captionPillEl = document.getElementById('hud-caption-pill');
+
+  const CAPTION_ACCENT_BORDERS = {
+    std: 'rgba(0, 240, 255, 0.36)',
+    cyan: 'rgba(0, 240, 255, 0.58)',
+    emerald: 'rgba(0, 255, 136, 0.58)',
+    gold: 'rgba(255, 215, 0, 0.58)',
+    amber: 'rgba(255, 138, 43, 0.58)',
+    purple: 'rgba(210, 119, 255, 0.58)',
+    crimson: 'rgba(255, 77, 109, 0.58)',
+    grey: 'rgba(180, 194, 214, 0.55)',
+  };
+  let renderedCueIdx = -1;
+  let renderedWordEls = [];
 
   // Act 1 refs
   const act1LaunchEl = document.getElementById('act1-launch');
@@ -173,33 +184,13 @@ export function createHudOverlay() {
   const act7FinaleEl = document.getElementById('act7-finale');
   const act7TagCursorEl = document.getElementById('act7-tagline-cursor');
 
-  const ACT_LABELS = [
-    'ACT 01 // LAUNCH ECONOMICS VS. HUMAN ROVERS',
-    'ACT 02 // NASA-ESA DUAL DATA MAP ENGINE',
-    'ACT 03 // CROWD-VERIFIED CONSENSUS PROTOCOL',
-    'ACT 04 // ANTI-SYBIL & OFFLINE GEOFENCING',
-    'ACT 05 // DATA-GAP BOUNTIES & DUAL ECONOMY',
-    'ACT 06 // COLLABORATIVE VIRTUAL SPACE BASE',
-    'ACT 07 // TIER 3 ROBOTICS & PLANETARY LOCKUP',
-  ];
-
   const ACT_STARTS = [0, 3.5, 8.0, 13.0, 17.5, 21.5, 25.5];
 
   /**
    * Updates all HUD telemetry, diegetic card positions, leader lines, counters & bars.
    */
-  function updateHud(elapsedSeconds, anchors, focusDistance) {
+  function updateHud(elapsedSeconds, anchors) {
     const f = clamp01(elapsedSeconds / 30.0) * 1800.0;
-    const frameIdx = Math.min(1800, Math.round(f));
-
-    // Top HUD Telemetry
-    frameEl.textContent = `FRAME ${String(frameIdx).padStart(4, '0')} / 1800`;
-    clockEl.textContent = `T+ 00:00:${elapsedSeconds.toFixed(2).padStart(5, '0')}`;
-    dofEl.textContent = `DOF FOCUS ${focusDistance.toFixed(1)}m`;
-
-    // Deterministic LED blink (zero CSS @keyframes)
-    const ledPulse = 0.45 + 0.55 * (Math.sin(elapsedSeconds * 8.5) * 0.5 + 0.5);
-    liveLedEl.style.opacity = ledPulse.toFixed(2);
 
     // Active act index
     let actIdx = 0;
@@ -209,7 +200,6 @@ export function createHudOverlay() {
         break;
       }
     }
-    actTagEl.textContent = ACT_LABELS[actIdx];
 
     // Timeline bar + milestone highlights
     progressFillEl.style.width = `${(clamp01(elapsedSeconds / 30.0) * 100).toFixed(2)}%`;
@@ -399,6 +389,55 @@ export function createHudOverlay() {
     // Deterministic blinking cyan cursor at 3Hz (no CSS @keyframes)
     const cursorBlink = Math.floor(elapsedSeconds * 4.5) % 2 === 0 ? 1 : 0.15;
     act7TagCursorEl.style.opacity = cursorBlink.toFixed(2);
+
+    // ---------------- DETERMINISTIC KARAOKE SUBTITLES ----------------
+    let cueIdx = -1;
+    for (let i = 0; i < CAPTION_CUES.length; i++) {
+      if (elapsedSeconds >= CAPTION_CUES[i].start && elapsedSeconds < CAPTION_CUES[i].end) {
+        cueIdx = i;
+        break;
+      }
+    }
+    if (cueIdx === -1) {
+      captionWrapEl.style.display = 'none';
+      captionWrapEl.style.opacity = '0';
+    } else {
+      const cue = CAPTION_CUES[cueIdx];
+      if (cueIdx !== renderedCueIdx) {
+        renderedCueIdx = cueIdx;
+        captionPillEl.innerHTML = '';
+        renderedWordEls = cue.words.map((w) => {
+          const span = document.createElement('span');
+          span.className = `cap-w acc-${w.accent || 'std'}`;
+          span.textContent = w.text;
+          captionPillEl.appendChild(span);
+          return span;
+        });
+      }
+      const cueFade =
+        smoothstep(cue.start, cue.start + 0.04, elapsedSeconds) *
+        (1 - smoothstep(cue.end - 0.05, cue.end, elapsedSeconds));
+      captionWrapEl.style.display = 'flex';
+      captionWrapEl.style.opacity = cueFade.toFixed(3);
+      const slideY = (1 - smoothstep(cue.start, cue.start + 0.06, elapsedSeconds)) * 5;
+      captionPillEl.style.transform = `translateY(${slideY.toFixed(1)}px)`;
+
+      let borderAccent = CAPTION_ACCENT_BORDERS.std;
+      for (let wi = 0; wi < cue.words.length; wi++) {
+        const w = cue.words[wi];
+        const nextW = cue.words[wi + 1];
+        const holdEnd = nextW && nextW.start - w.end < 0.2 ? nextW.start : w.end;
+        const el = renderedWordEls[wi];
+        const isPast = elapsedSeconds >= holdEnd;
+        const isActive = elapsedSeconds >= w.start && elapsedSeconds < holdEnd;
+        el.classList.toggle('past', isPast);
+        el.classList.toggle('active', isActive);
+        if (isActive && w.accent && CAPTION_ACCENT_BORDERS[w.accent]) {
+          borderAccent = CAPTION_ACCENT_BORDERS[w.accent];
+        }
+      }
+      captionPillEl.style.borderColor = borderAccent;
+    }
   }
 
   return {

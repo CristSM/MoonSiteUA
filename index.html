@@ -127,18 +127,6 @@
     .ret-bl { bottom: 20px; left: 20px; border-width: 0 0 2px 2px; }
     .ret-br { bottom: 20px; right: 20px; border-width: 0 2px 2px 0; }
 
-    /* Top Persistent Telemetry Bar */
-    .hud-top {
-      position: absolute;
-      top: 28px;
-      left: 48px;
-      right: 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      z-index: 55;
-    }
-
     .hud-pill {
       display: inline-flex;
       align-items: center;
@@ -154,34 +142,6 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 8px 24px rgba(0, 0, 0, 0.5);
     }
 
-    .live-dot {
-      width: 9px;
-      height: 9px;
-      border-radius: 50%;
-      background: var(--emerald-verified);
-      box-shadow: 0 0 10px var(--emerald-verified);
-    }
-
-    .hud-act-sub {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 5px 12px;
-      border-radius: 6px;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      color: #8BF8FF;
-      background: rgba(5, 9, 18, 0.86);
-      border: 1px solid rgba(0, 240, 255, 0.25);
-      text-shadow: 0 0 12px rgba(0, 240, 255, 0.35);
-    }
-
-    .hud-top-right {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-    }
-
     /* Bottom Persistent Waveform + Hairline 7-Milestone Bar */
     .hud-bottom {
       position: absolute;
@@ -193,6 +153,62 @@
       gap: 28px;
       z-index: 55;
     }
+
+    /* Bottom Telemetry Karaoke Subtitles (zero-collision band bottom: 84..125px) */
+    #hud-caption-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 84px;
+      display: none;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 60;
+      overflow: visible;
+    }
+
+    #hud-caption-pill {
+      display: inline-flex;
+      align-items: baseline;
+      flex-wrap: nowrap;
+      gap: 7px;
+      max-width: 1760px;
+      padding: 6px 20px;
+      border-radius: 999px;
+      background: rgba(4, 7, 15, 0.94);
+      border: 1px solid rgba(0, 240, 255, 0.36);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.76), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.25;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: visible;
+    }
+
+    .cap-w {
+      display: inline-block;
+      transform-origin: center bottom;
+      color: rgba(232, 240, 252, 0.80);
+    }
+
+    .cap-w.past {
+      color: #F8FAFC;
+    }
+
+    .cap-w.active {
+      color: #FFFFFF;
+      transform: scale(1.07);
+      text-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+    }
+    .cap-w.active.acc-cyan { color: #00F0FF; text-shadow: 0 0 18px rgba(0, 240, 255, 0.75); }
+    .cap-w.active.acc-emerald { color: #00FF88; text-shadow: 0 0 18px rgba(0, 255, 136, 0.75); }
+    .cap-w.active.acc-gold { color: #FFD700; text-shadow: 0 0 18px rgba(255, 215, 0, 0.75); }
+    .cap-w.active.acc-amber { color: #FF8A2B; text-shadow: 0 0 18px rgba(255, 138, 43, 0.75); }
+    .cap-w.active.acc-purple { color: #D277FF; text-shadow: 0 0 18px rgba(210, 119, 255, 0.75); }
+    .cap-w.active.acc-crimson { color: #FF4D6D; text-shadow: 0 0 18px rgba(255, 77, 109, 0.75); }
+    .cap-w.active.acc-grey { color: #CBD5E1; text-shadow: 0 0 14px rgba(203, 213, 225, 0.65); }
 
     .wf-box {
       width: 268px;
@@ -820,25 +836,6 @@
       <div class="reticle ret-bl"></div>
       <div class="reticle ret-br"></div>
 
-      <!-- Persistent Top Chrome -->
-      <div class="hud-top">
-        <div>
-          <div class="hud-pill mono">
-            <span id="hud-live-led" class="live-dot"></span>
-            <span>SYS.MOONSITE_UA // BUILD v2.6 // TELEMETRY: LIVE</span>
-          </div>
-          <div id="hud-act-tag" class="hud-act-sub mono">ACT 01 // LAUNCH ECONOMICS VS. HUMAN ROVERS</div>
-        </div>
-        <div class="hud-top-right mono">
-          <div id="hud-dof" class="hud-pill">DOF FOCUS 35.0m</div>
-          <div id="hud-frame" class="hud-pill">FRAME 0000 / 1800</div>
-          <div id="hud-clock" class="hud-pill">T+ 00:00:00.00</div>
-          <div class="hud-pill" style="color: var(--emerald-verified); border-color: rgba(0,255,136,0.35);">
-            SAT-LINK: NASA-LANDSAT-9 // ESA-SENTINEL-2 [LOCKED]
-          </div>
-        </div>
-      </div>
-
       <!-- ACT 1: Launch Cost vs. Human Rovers -->
       <div id="act1-launch">
         <div class="act1-eyebrow display">TESTING SPACE TECH</div>
@@ -1093,6 +1090,11 @@
         <div class="finale-tagline display">
           EXPLORE EARTH. UNLOCK SPACE.<span id="act7-tagline-cursor"></span>
         </div>
+      </div>
+
+      <!-- Karaoke Subtitles Overlay -->
+      <div id="hud-caption-wrap">
+        <div id="hud-caption-pill"></div>
       </div>
 
       <!-- Persistent Bottom Timeline & Voiceover Waveform Chrome -->

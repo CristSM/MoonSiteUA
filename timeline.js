@@ -24,8 +24,8 @@ function boot() {
     lastRenderedFrame = frameIndex;
 
     const exactSeconds = frameIndex / FPS;
-    const { projectedAnchors, focusDistance } = engine.updateAtTime(exactSeconds);
-    hud.updateHud(exactSeconds, projectedAnchors, focusDistance);
+    const { projectedAnchors } = engine.updateAtTime(exactSeconds);
+    hud.updateHud(exactSeconds, projectedAnchors);
   }
 
   // Master paused GSAP timeline driven strictly by HyperFrames / scrub clock
