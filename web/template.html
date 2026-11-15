@@ -451,6 +451,9 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
 .mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-leer { display: grid; gap: 8px; margin: 14px 0 22px; padding-left: 1.3em; max-width: 72ch; color: #cbc7bb; font-size: .95rem; }
+.mt-leer b { color: var(--text, #f2efe6); }
+.mt-leer li::marker { color: var(--accent); font-family: var(--f-mono); }
 .mt-perfiles .refs { font-size: .9rem; color: #cbc7bb; }
 .mt-perfiles .pesos { display: grid; gap: 6px; margin: 6px 0; }
 .mt-perfiles .peso { display: grid; grid-template-columns: 112px 1fr 38px; gap: 8px; align-items: center; font-size: .85rem; }
@@ -871,7 +874,15 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
     <div class="mt-sec" id="mtPerfiles">
       <div class="mt-tit"><p class="kicker">Destinos</p><h3>Tres perfiles de misión</h3></div>
-      <div class="mt-cuerpo"><div class="grid3 mt-perfiles" id="mtPerfilesLista"></div></div>
+      <div class="mt-cuerpo">
+        <p class="read muted">Cada perfil es una pregunta distinta: no buscamos lo mismo para una base en el polo sur lunar que para una cueva o para un rover en Marte. Por eso cada uno se compara con sus propios sitios de la Luna o Marte y da más importancia a unas dimensiones que a otras.</p>
+        <ol class="mt-leer">
+          <li><b>Sitios de referencia.</b> Los lugares reales de la Luna o Marte con los que se compara el terreno de cada celda de la Tierra.</li>
+          <li><b>Peso en el índice.</b> Cuánto cuenta cada dimensión en la nota final del perfil. Los pesos de cada tarjeta suman 100 %. Una barra más larga significa que esa dimensión decide más; no es un resultado, es la receta del perfil.</li>
+          <li><b>Dónde se rompe la analogía.</b> Lo que ningún lugar de la Tierra puede imitar. Un análogo terrestre siempre es parcial y conviene decir en qué.</li>
+          <li><b>Candidatas.</b> Cuántos lugares de la Tierra deja el método para ese perfil al quedarse con lo mejor del mapa (el 1 % superior).</li>
+        </ol>
+        <div class="grid3 mt-perfiles" id="mtPerfilesLista"></div></div>
     </div>
     <div class="mt-sec" id="mtDims">
       <div class="mt-tit"><p class="kicker">Datos de entrada</p><h3>Dimensiones y reglas</h3></div>
@@ -2158,7 +2169,7 @@ if (window.METODO && $('#mtPasosLista')) {
   const M = window.METODO, EN = document.documentElement.lang === 'en';
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
-  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior',
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
     tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
     novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
@@ -2191,7 +2202,9 @@ if (window.METODO && $('#mtPasosLista')) {
   // F. Tres perfiles de misión
   $('#mtPerfilesLista').innerHTML = M.perfiles.map((p) => `<div class="card">
       <p class="kicker">${esc(p.corto)}</p><h3>${esc(p.titulo)}</h3>
+      <h4 class="mt-h4">${esc(L.compara)}</h4>
       <p class="refs"><b>${num(p.referencias.n_sitios)}</b> ${esc(L.sitios)}. ${esc(L.ejemplos)}: ${p.referencias.ejemplos.slice(0, 4).map(esc).join(', ')}.</p>
+      <h4 class="mt-h4">${esc(L.pesoTit)}</h4>
       <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
       <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
       <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');

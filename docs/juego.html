@@ -451,6 +451,9 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
 .mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-leer { display: grid; gap: 8px; margin: 14px 0 22px; padding-left: 1.3em; max-width: 72ch; color: #cbc7bb; font-size: .95rem; }
+.mt-leer b { color: var(--text, #f2efe6); }
+.mt-leer li::marker { color: var(--accent); font-family: var(--f-mono); }
 .mt-perfiles .refs { font-size: .9rem; color: #cbc7bb; }
 .mt-perfiles .pesos { display: grid; gap: 6px; margin: 6px 0; }
 .mt-perfiles .peso { display: grid; grid-template-columns: 112px 1fr 38px; gap: 8px; align-items: center; font-size: .85rem; }
@@ -666,7 +669,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 
 <script>window.JUEGO = {
  "_doc": "Datos reales del juego (Analog Finder). Generado por scripts/export_juego_data.py.",
- "generado_utc": "2026-11-14T20:55:48+00:00",
+ "generado_utc": "2026-11-15T08:24:42+00:00",
  "perfiles": [
   {
    "id": "moon_south_pole_base",
@@ -770,7 +773,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_8",
     "nombre": "Kitikmeot Region, Nunavut",
-    "pais": "Canada",
+    "pais": "Canadá",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6525,
@@ -805,9 +808,28 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Luna"
    },
    {
+    "id": "cand_10",
+    "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6192,
+    "percentil": 98.0,
+    "dims": {
+     "terrain": 0.903,
+     "ice_free": 0.571,
+     "cold": 0.456,
+     "frozen": 0.0,
+     "barren": 0.615,
+     "low_sun": 0.585
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
     "id": "cand_11",
     "nombre": "Kitikmeot Region, Nunavut",
-    "pais": "Canada",
+    "pais": "Canadá",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6169,
@@ -824,9 +846,47 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Luna"
    },
    {
+    "id": "cand_12",
+    "nombre": "Tsodrel Jangma, Shuanghu County",
+    "pais": "China",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6163,
+    "percentil": 97.8,
+    "dims": {
+     "terrain": 0.919,
+     "ice_free": 0.717,
+     "cold": 0.301,
+     "frozen": 0.418,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_13",
+    "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6109,
+    "percentil": 97.5,
+    "dims": {
+     "terrain": 0.899,
+     "ice_free": 0.571,
+     "cold": 0.425,
+     "frozen": 0.0,
+     "barren": 0.583,
+     "low_sun": 0.59
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
     "id": "cand_14",
     "nombre": "Kitikmeot Region, Nunavut",
-    "pais": "Canada",
+    "pais": "Canadá",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6055,
@@ -845,7 +905,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_16",
     "nombre": "Burj Umar Idris, In Amenas District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6,
@@ -864,7 +924,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_17",
     "nombre": "Halayeb District, Red Sea State",
-    "pais": "Sudan",
+    "pais": "Sudán",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6,
@@ -883,7 +943,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_18",
     "nombre": "Al Khurmah, Makkah Region",
-    "pais": "Saudi Arabia",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.6,
@@ -900,69 +960,12 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Luna"
    },
    {
-    "id": "cand_20",
-    "nombre": "Minfeng County, Hotan Prefecture",
-    "pais": "China",
+    "id": "cand_19",
+    "nombre": "Ranyah, Makkah Region",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": 0,
-    "indice": 0.5999,
-    "percentil": 96.9,
-    "dims": {
-     "terrain": 1.0,
-     "ice_free": 1.0,
-     "cold": 0.0,
-     "frozen": 0.0,
-     "barren": 1.0,
-     "low_sun": 0.0
-    },
-    "gemelo": "Peak near Cabeus B",
-    "gemelo_cuerpo": "Luna"
-   },
-   {
-    "id": "cand_21",
-    "nombre": "Tazhong Town, Qarqan County",
-    "pais": "China",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.5999,
-    "percentil": 96.9,
-    "dims": {
-     "terrain": 1.0,
-     "ice_free": 1.0,
-     "cold": 0.0,
-     "frozen": 0.0,
-     "barren": 1.0,
-     "low_sun": 0.0
-    },
-    "gemelo": "Peak near Cabeus B",
-    "gemelo_cuerpo": "Luna"
-   },
-   {
-    "id": "cand_22",
-    "nombre": "Aktikan Dong, Qarqan County",
-    "pais": "China",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.5999,
-    "percentil": 96.9,
-    "dims": {
-     "terrain": 1.0,
-     "ice_free": 1.0,
-     "cold": 0.0,
-     "frozen": 0.0,
-     "barren": 1.0,
-     "low_sun": 0.0
-    },
-    "gemelo": "Peak near Cabeus B",
-    "gemelo_cuerpo": "Luna"
-   },
-   {
-    "id": "cand_25",
-    "nombre": "Halayeb District, Red Sea State",
-    "pais": "Sudan",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.5999,
+    "indice": 0.6,
     "percentil": 96.9,
     "dims": {
      "terrain": 1.0,
@@ -980,7 +983,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "nombre": "Chira County, Hotan Prefecture",
     "pais": "China",
     "tipo": "candidato",
-    "articulos": 0,
+    "articulos": 2,
     "indice": 0.5998,
     "percentil": 96.9,
     "dims": {
@@ -997,9 +1000,9 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_37",
     "nombre": "Abu Hamad, River Nile State",
-    "pais": "Sudan",
+    "pais": "Sudán",
     "tipo": "candidato",
-    "articulos": 2,
+    "articulos": 0,
     "indice": 0.5998,
     "percentil": 96.9,
     "dims": {
@@ -1015,8 +1018,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_43",
-    "nombre": "Antártida (25.0°, 6.0°)",
-    "pais": null,
+    "nombre": "Tamanrasset, Argelia",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.5997,
@@ -1034,8 +1037,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_49",
-    "nombre": "Antártida (39.0°, 54.2°)",
-    "pais": null,
+    "nombre": "Balkan Province, Turkmenistán",
+    "pais": "Turkmenistán",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.5996,
@@ -1053,8 +1056,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_55",
-    "nombre": "Antártida (39.4°, 80.7°)",
-    "pais": null,
+    "nombre": "Xinjiang, China",
+    "pais": "China",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.5995,
@@ -1543,6 +1546,66 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
+    "id": "cand_4",
+    "nombre": "Maricopa County, Arizona",
+    "pais": "Estados Unidos",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8734,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.946,
+     "volcanic": 0.804,
+     "lithology": 1.0,
+     "nonsilicic": 0.944,
+     "arid": 0.416,
+     "barren": 0.8,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0843",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_5",
+    "nombre": "District of Al-Jufra, Libya",
+    "pais": "Libia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8624,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.883,
+     "volcanic": 0.566,
+     "lithology": 1.0,
+     "nonsilicic": 0.984,
+     "arid": 0.828,
+     "barren": 0.944,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0190",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_6",
+    "nombre": "Municipio de Durango, Durango",
+    "pais": "México",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8517,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.995,
+     "volcanic": 0.927,
+     "lithology": 1.0,
+     "nonsilicic": 0.958,
+     "arid": 0.215,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0258",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
     "id": "mcmurdo_dry_valleys",
     "nombre": "Valles Secos de McMurdo",
     "pais": null,
@@ -1563,7 +1626,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_7",
     "nombre": "Ash Shamli, Ḥa'il Province",
-    "pais": "Saudi Arabia",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8447,
@@ -1621,7 +1684,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_8",
     "nombre": "Elmore County, Idaho",
-    "pais": "United States",
+    "pais": "Estados Unidos",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8311,
@@ -1641,7 +1704,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_9",
     "nombre": "Umluj, Tabuk Province",
-    "pais": "Saudi Arabia",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8254,
@@ -1661,7 +1724,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_11",
     "nombre": "Turkana County, Kenya",
-    "pais": "Kenya",
+    "pais": "Kenia",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.825,
@@ -1719,7 +1782,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_13",
     "nombre": "Al Mahd, Medina Province",
-    "pais": "Saudi Arabia",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8173,
@@ -1737,23 +1800,23 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_16",
-    "nombre": "Lokori/Kochodin ward, Turkana East",
-    "pais": "Kenya",
+    "id": "cand_14",
+    "nombre": "Shasta County, California",
+    "pais": "Estados Unidos",
     "tipo": "candidato",
     "articulos": 0,
-    "indice": 0.8035,
+    "indice": 0.8078,
     "percentil": 100.0,
     "dims": {
-     "terrain": 0.756,
-     "volcanic": 0.792,
+     "terrain": 0.977,
+     "volcanic": 0.793,
      "lithology": 1.0,
-     "nonsilicic": 0.983,
-     "arid": 0.079,
-     "barren": 1.0,
-     "ice_free": 1.0
+     "nonsilicic": 0.979,
+     "arid": 0.102,
+     "barren": 0.0,
+     "ice_free": 0.968
     },
-    "gemelo": "candidato a cueva CC0180",
+    "gemelo": "candidato a cueva CC0686",
     "gemelo_cuerpo": "Marte"
    },
    {
@@ -1774,46 +1837,6 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     },
     "gemelo": "candidato a cueva CC0118",
     "gemelo_cuerpo": "Marte"
-   },
-   {
-    "id": "cand_17",
-    "nombre": "Rwaished Sub-District, Rwaished District",
-    "pais": "Jordan",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.8008,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.91,
-     "volcanic": 0.84,
-     "lithology": 1.0,
-     "nonsilicic": 0.069,
-     "arid": 0.516,
-     "barren": 0.934,
-     "ice_free": 1.0
-    },
-    "gemelo": "candidato a cueva CC0860",
-    "gemelo_cuerpo": "Marte"
-   },
-   {
-    "id": "cand_18",
-    "nombre": "Khanfir District, Abyan Governorate",
-    "pais": "Yemen",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.7973,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.463,
-     "volcanic": 0.904,
-     "lithology": 1.0,
-     "nonsilicic": 0.99,
-     "arid": 0.613,
-     "barren": 0.808,
-     "ice_free": 1.0
-    },
-    "gemelo": "Copernicus 2",
-    "gemelo_cuerpo": "Luna"
    },
    {
     "id": "lava_beds",
@@ -1854,31 +1877,11 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_26",
-    "nombre": "Wadi Al Fara, Medina Province",
-    "pais": "Saudi Arabia",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.7792,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.807,
-     "volcanic": 0.642,
-     "lithology": 1.0,
-     "nonsilicic": 0.94,
-     "arid": 0.273,
-     "barren": 0.554,
-     "ice_free": 1.0
-    },
-    "gemelo": "candidato a cueva CC0851",
-    "gemelo_cuerpo": "Marte"
-   },
-   {
     "id": "cand_31",
     "nombre": "East Shewa, Oromia Region",
-    "pais": "Ethiopia",
+    "pais": "Etiopía",
     "tipo": "candidato",
-    "articulos": 9,
+    "articulos": 0,
     "indice": 0.768,
     "percentil": 100.0,
     "dims": {
@@ -1896,9 +1899,9 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_37",
     "nombre": "Municipio de Comondú, Baja California Sur",
-    "pais": "Mexico",
+    "pais": "México",
     "tipo": "candidato",
-    "articulos": 23,
+    "articulos": 0,
     "indice": 0.7615,
     "percentil": 100.0,
     "dims": {
@@ -1915,8 +1918,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_43",
-    "nombre": "Antártida (-20.3°, 144.3°)",
-    "pais": null,
+    "nombre": "Queensland, Australia",
+    "pais": "Australia",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.7531,
@@ -1954,8 +1957,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_49",
-    "nombre": "Antártida (22.0°, 42.2°)",
-    "pais": null,
+    "nombre": "Makkah Region, Arabia Saudí",
+    "pais": "Arabia Saudí",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.747,
@@ -1974,8 +1977,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_55",
-    "nombre": "Antártida (15.2°, 106.4°)",
-    "pais": null,
+    "nombre": "Champasak Province, Laos",
+    "pais": "Laos",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.7426,
@@ -2688,7 +2691,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_1",
     "nombre": "Burj Umar Idris, In Amenas District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8619,
@@ -2708,7 +2711,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_2",
     "nombre": "Illizi, Illizi District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8526,
@@ -2728,7 +2731,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_3",
     "nombre": "Chahar Burjak, Nimruz Province",
-    "pais": "Afghanistan",
+    "pais": "Afganistán",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8491,
@@ -2746,29 +2749,9 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_4",
-    "nombre": "In Amguel, de Tamanrasset District",
-    "pais": "Algeria",
-    "tipo": "candidato",
-    "articulos": 1,
-    "indice": 0.8477,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.991,
-     "arid": 0.892,
-     "barren": 0.976,
-     "lithology": 0.6,
-     "thermal": 0.558,
-     "albedo": 0.922,
-     "dust": 0.831
-    },
-    "gemelo": "Vastitas Borealis (Phoenix)",
-    "gemelo_cuerpo": "Marte"
-   },
-   {
     "id": "cand_5",
     "nombre": "Tombouctou Cercle, Taoudénit Region",
-    "pais": "Mali",
+    "pais": "Malí",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8445,
@@ -2788,7 +2771,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    {
     "id": "cand_6",
     "nombre": "Wadi al Shatii, Libya",
-    "pais": "Libya",
+    "pais": "Libia",
     "tipo": "candidato",
     "articulos": 0,
     "indice": 0.8433,
@@ -2806,43 +2789,103 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_19",
-    "nombre": "Delgo - دلقو, Northern State",
-    "pais": "Sudan",
+    "id": "cand_8",
+    "nombre": "Murzuq, Libya",
+    "pais": "Libia",
     "tipo": "candidato",
     "articulos": 0,
-    "indice": 0.8173,
+    "indice": 0.8412,
     "percentil": 100.0,
     "dims": {
-     "terrain": 0.993,
-     "arid": 1.0,
-     "barren": 0.99,
+     "terrain": 0.958,
+     "arid": 0.932,
+     "barren": 1.0,
      "lithology": 0.6,
-     "thermal": 0.351,
-     "albedo": 0.634,
-     "dust": 0.633
+     "thermal": 0.533,
+     "albedo": 0.999,
+     "dust": 0.508
     },
-    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo": "Meridiani Planum (Opportunity)",
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_20",
-    "nombre": "Illizi, Illizi District",
-    "pais": "Algeria",
+    "id": "cand_10",
+    "nombre": "New Valley, Egypt",
+    "pais": "Egipto",
     "tipo": "candidato",
     "articulos": 0,
-    "indice": 0.8172,
+    "indice": 0.8326,
     "percentil": 100.0,
     "dims": {
-     "terrain": 0.988,
-     "arid": 1.0,
-     "barren": 0.996,
+     "terrain": 0.984,
+     "arid": 0.988,
+     "barren": 1.0,
      "lithology": 0.5,
-     "thermal": 0.361,
-     "albedo": 0.86,
-     "dust": 0.469
+     "thermal": 0.497,
+     "albedo": 0.973,
+     "dust": 0.35
     },
-    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_11",
+    "nombre": "Pozo Almonte, Provincia del Tamarugal",
+    "pais": "Chile",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.832,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.982,
+     "arid": 0.824,
+     "barren": 0.914,
+     "lithology": 0.6,
+     "thermal": 0.987,
+     "albedo": 0.996,
+     "dust": 0.02
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_14",
+    "nombre": "Tabelbala, Beni Abbes",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8291,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.992,
+     "arid": 0.931,
+     "barren": 0.95,
+     "lithology": 0.6,
+     "thermal": 0.504,
+     "albedo": 0.774,
+     "dust": 0.709
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_18",
+    "nombre": "New Valley, Egypt",
+    "pais": "Egipto",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8178,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.96,
+     "arid": 1.0,
+     "barren": 0.953,
+     "lithology": 0.5,
+     "thermal": 0.473,
+     "albedo": 0.928,
+     "dust": 0.35
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
     "gemelo_cuerpo": "Marte"
    },
    {
@@ -2903,31 +2946,11 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_29",
-    "nombre": "Yuli County, Bayingolin",
-    "pais": "China",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.8027,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.972,
-     "arid": 0.768,
-     "barren": 1.0,
-     "lithology": 0.5,
-     "thermal": 0.544,
-     "albedo": 0.996,
-     "dust": 0.771
-    },
-    "gemelo": "Vastitas Borealis (Phoenix)",
-    "gemelo_cuerpo": "Marte"
-   },
-   {
     "id": "cand_31",
     "nombre": "Sali, Reggane District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "tipo": "candidato",
-    "articulos": 55,
+    "articulos": 0,
     "indice": 0.802,
     "percentil": 100.0,
     "dims": {
@@ -2943,31 +2966,11 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "Marte"
    },
    {
-    "id": "cand_33",
-    "nombre": "Suhaj, Egypt",
-    "pais": "Egypt",
-    "tipo": "candidato",
-    "articulos": 0,
-    "indice": 0.8008,
-    "percentil": 100.0,
-    "dims": {
-     "terrain": 0.984,
-     "arid": 1.0,
-     "barren": 0.988,
-     "lithology": 0.5,
-     "thermal": 0.446,
-     "albedo": 0.664,
-     "dust": 0.397
-    },
-    "gemelo": "Vastitas Borealis (Phoenix)",
-    "gemelo_cuerpo": "Marte"
-   },
-   {
     "id": "cand_37",
     "nombre": "Aswan, Egypt",
-    "pais": "Egypt",
+    "pais": "Egipto",
     "tipo": "candidato",
-    "articulos": 14,
+    "articulos": 0,
     "indice": 0.7994,
     "percentil": 100.0,
     "dims": {
@@ -2984,8 +2987,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_43",
-    "nombre": "Antártida (23.8°, 34.1°)",
-    "pais": null,
+    "nombre": "Red Sea, Egipto",
+    "pais": "Egipto",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.7949,
@@ -3004,8 +3007,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_49",
-    "nombre": "Antártida (27.1°, -4.9°)",
-    "pais": null,
+    "nombre": "Tinduf, Argelia",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.7928,
@@ -3024,8 +3027,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "id": "cand_55",
-    "nombre": "Antártida (26.4°, -4.5°)",
-    "pais": null,
+    "nombre": "Tinduf, Argelia",
+    "pais": "Argelia",
     "tipo": "candidato",
     "articulos": null,
     "indice": 0.7904,
@@ -3802,8 +3805,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "id": "gemelo_moon_south_pole_base_1",
    "perfil": "moon_south_pole_base",
    "tierra": {
-    "nombre": "Antártida (-83.6°, -51.0°)",
-    "pais": null,
+    "nombre": "Antártida (83,6°S · 51,0°O)",
+    "pais": "Antártida",
     "lat": -83.575,
     "lon": -50.975,
     "img": "img/tierra_moon_south_pole_base_1.png"
@@ -3840,8 +3843,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "id": "gemelo_moon_south_pole_base_2",
    "perfil": "moon_south_pole_base",
    "tierra": {
-    "nombre": "Antártida (-83.9°, -48.0°)",
-    "pais": null,
+    "nombre": "Antártida (83,9°S · 48,0°O)",
+    "pais": "Antártida",
     "lat": -83.925,
     "lon": -47.975,
     "img": "img/tierra_moon_south_pole_base_2.png"
@@ -3878,8 +3881,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "id": "gemelo_moon_south_pole_base_3",
    "perfil": "moon_south_pole_base",
    "tierra": {
-    "nombre": "Antártida (-83.1°, -47.0°)",
-    "pais": null,
+    "nombre": "Antártida (83,1°S · 47,0°O)",
+    "pais": "Antártida",
     "lat": -83.075,
     "lon": -46.975,
     "img": "img/tierra_moon_south_pole_base_3.png"
@@ -3916,8 +3919,8 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "id": "gemelo_moon_south_pole_base_4",
    "perfil": "moon_south_pole_base",
    "tierra": {
-    "nombre": "Antártida (-83.5°, -48.0°)",
-    "pais": null,
+    "nombre": "Antártida (83,5°S · 48,0°O)",
+    "pais": "Antártida",
     "lat": -83.475,
     "lon": -47.975,
     "img": "img/tierra_moon_south_pole_base_4.png"
@@ -4069,7 +4072,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "perfil": "moon_mars_caves",
    "tierra": {
     "nombre": "Maricopa County, Arizona",
-    "pais": "United States",
+    "pais": "Estados Unidos",
     "lat": 32.725,
     "lon": -113.125,
     "img": "img/tierra_moon_mars_caves_4.png"
@@ -4107,7 +4110,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "perfil": "mars_astrobiology",
    "tierra": {
     "nombre": "Burj Umar Idris, In Amenas District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "lat": 26.775,
     "lon": 6.225,
     "img": "img/tierra_mars_astrobiology_1.png"
@@ -4145,7 +4148,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "perfil": "mars_astrobiology",
    "tierra": {
     "nombre": "Illizi, Illizi District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "lat": 26.675,
     "lon": 8.975,
     "img": "img/tierra_mars_astrobiology_2.png"
@@ -4183,7 +4186,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "perfil": "mars_astrobiology",
    "tierra": {
     "nombre": "Chahar Burjak, Nimruz Province",
-    "pais": "Afghanistan",
+    "pais": "Afganistán",
     "lat": 29.625,
     "lon": 62.375,
     "img": "img/tierra_mars_astrobiology_3.png"
@@ -4221,7 +4224,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "perfil": "mars_astrobiology",
    "tierra": {
     "nombre": "In Amguel, de Tamanrasset District",
-    "pais": "Algeria",
+    "pais": "Argelia",
     "lat": 24.275,
     "lon": 2.075,
     "img": "img/tierra_mars_astrobiology_4.png"
@@ -4259,25 +4262,12 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Desierto de Atacama (Yungay)",
    "termino": "Atacama",
-   "articulos": 972,
+   "articulos": 131,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "THE MOJAVE DESERT: A MARTIAN ANALOG SITE FOR FUTURE ASTROBIOLOGY",
-    "year": 2011,
-    "doi": null
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Desierto de Mojave",
-   "termino": "Mojave",
-   "articulos": 498,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "THE MOJAVE DESERT: A MARTIAN ANALOG SITE FOR FUTURE ASTROBIOLOGY",
-    "year": 2011,
-    "doi": null
+    "title": "Wind-snow interactions at the Ojos del Salado region as a potential Mars analogue site in the Altiplano - Atacama desert region",
+    "year": 2022,
+    "doi": "https://doi.org/10.1016/j.icarus.2022.114941"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
@@ -4285,7 +4275,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Río Tinto",
    "termino": "Rio Tinto",
-   "articulos": 444,
+   "articulos": 94,
    "tipo": "conocido",
    "ejemplo": {
     "title": "The Rio Tinto Mars Analogue site: An extremophilic Raman spectroscopic study",
@@ -4298,10 +4288,10 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Svalbard (Bockfjord, AMASE)",
    "termino": "Svalbard",
-   "articulos": 409,
+   "articulos": 83,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Periglacial Landscapes on Svalbard: Terrestrial Analogues for Cold-Climate Landforms on Mars",
+    "title": "Svalbard as a Mars Analogue Site and the Arctic Mars Analogue Svalbard Expedition (AMASE) Analogue Sites",
     "year": 2011,
     "doi": null
    },
@@ -4309,113 +4299,35 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "ya_estudiado": true
   },
   {
-   "nombre": "Valles Secos de McMurdo",
-   "termino": "McMurdo Dry Valleys",
-   "articulos": 385,
+   "nombre": "Utah (MDRS, Hanksville)",
+   "termino": "Mars Desert Research Station",
+   "articulos": 63,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "The high elevation Dry Valleys in Antarctica as analog sites for subsurface ice on Mars",
-    "year": 2013,
-    "doi": "https://doi.org/10.1016/j.pss.2013.05.019"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Meteor Crater (Arizona)",
-   "termino": "Meteor Crater",
-   "articulos": 312,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Impact Cratering Processes as Understood Through Martian and Terrestrial Analog Studies",
-    "year": 2016,
-    "doi": null
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Tubos de lava de Kilauea (Hawái)",
-   "termino": "Kilauea",
-   "articulos": 310,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Silica in a Mars analog environment: Ka'u Desert, Kilauea Volcano, Hawaii",
+    "title": "Moon-Mars Analogue Mission (EuroMoonMars 1 at the Mars Desert Research Station)",
     "year": 2010,
-    "doi": "https://doi.org/10.1029/2009je003347"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Cráter Haughton, isla Devon",
-   "termino": "Haughton",
-   "articulos": 276,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "NASA/Haughton-Mars Project 2006 Lunar Medical Contingency Simulation",
-    "year": 2007,
     "doi": null
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Craters of the Moon (Idaho)",
-   "termino": "Craters of the Moon",
-   "articulos": 257,
+   "nombre": "Cuenca de Qaidam (China)",
+   "termino": "Qaidam",
+   "articulos": 58,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "A half-century of terrestrial analog studies: From craters on the Moon to searching for life on Mars",
-    "year": 2009,
-    "doi": "https://doi.org/10.1016/j.pss.2009.04.001"
+    "title": "A new terrestrial analogue site for Mars research: The Qaidam Basin, Tibetan Plateau (NW China)",
+    "year": 2016,
+    "doi": "https://doi.org/10.1016/j.earscirev.2016.11.003"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
-   "termino": "Mauna Kea",
-   "articulos": 245,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "The 2012 Moon and Mars Analog Mission",
-    "year": 2014,
-    "doi": null
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Pilbara (Australia)",
-   "termino": "Pilbara",
-   "articulos": 238,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Searching for stromatolites: The 3.4Ga Strelley Pool Formation (Pilbara region, Western Australia) as a Mars analogue",
-    "year": 2013,
-    "doi": "https://doi.org/10.1016/j.icarus.2013.02.006"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Desierto del Namib",
-   "termino": "Namib",
-   "articulos": 218,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Cosmic-Ray Neutron Sensing in Ultra-Dry Environments: Linking Terrestrial Mars Analogs and Planetary Neutron Spectroscopy",
-    "year": 2026,
-    "doi": "https://doi.org/10.5194/egusphere-egu26-3177"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Valle de la Muerte",
-   "termino": "Death Valley",
-   "articulos": 202,
+   "nombre": "Desierto de Mojave",
+   "termino": "Mojave",
+   "articulos": 57,
    "tipo": "conocido",
    "ejemplo": {
     "title": "THE MOJAVE DESERT: A MARTIAN ANALOG SITE FOR FUTURE ASTROBIOLOGY",
@@ -4426,40 +4338,40 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "ya_estudiado": true
   },
   {
-   "nombre": "Utah (MDRS, Hanksville)",
-   "termino": "Mars Desert Research Station",
-   "articulos": 200,
+   "nombre": "Cráter Haughton, isla Devon",
+   "termino": "Haughton",
+   "articulos": 54,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "A wide variety of putative extremophiles and large beta-diversity at the Mars Desert Research Station (Utah)",
-    "year": 2011,
-    "doi": "https://doi.org/10.1017/s1473550411000012"
+    "title": "Haughton-Mars 97 -- I: Overview of Observations at the Haughton Impact Crater, a Unique Mars Analog Site in the Canadian High Arctic",
+    "year": 1998,
+    "doi": null
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Cuenca de Qaidam (China)",
-   "termino": "Qaidam",
-   "articulos": 176,
+   "nombre": "Valles Secos de McMurdo",
+   "termino": "McMurdo Dry Valleys",
+   "articulos": 46,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "A NEW TERRESTRIAL ANALOGUE SITE FOR MARS RESEARCH: THE QAIDAM BASIN, TIBETAN PLATEAU (NW CHINA)",
-    "year": 2017,
-    "doi": "https://doi.org/10.1130/abs/2017cd-292360"
+    "title": "McMurdo Dry Valleys: Exploring Antarctica as a Mars Analogue",
+    "year": 2018,
+    "doi": null
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Sudbury (Canadá)",
-   "termino": "Sudbury",
-   "articulos": 132,
+   "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+   "termino": "Mauna Kea",
+   "articulos": 38,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Detection of biosignatures in terrestrial Mars analogs: Strategical and technical assessments",
-    "year": 2022,
-    "doi": "https://doi.org/10.26464/epp2022042"
+    "title": "Testing Heat Flow Probe in Lunar Analog Site on Mauna Kea, HI",
+    "year": 2010,
+    "doi": null
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
@@ -4467,25 +4379,38 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Lanzarote / Timanfaya",
    "termino": "Lanzarote",
-   "articulos": 109,
+   "articulos": 25,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "The scientific and educational significance of geoparks as planetary analogues: the example of Lanzarote and Chinijo Islands UNESCO Global Geopark",
-    "year": 2017,
-    "doi": "https://doi.org/10.18814/epiiugs/2017/v40i4/017035"
+    "title": "Exploring biosignatures and biogeochemical processes in Lanzarote lava tubes: Implications for Martian analog research",
+    "year": 2024,
+    "doi": "https://doi.org/10.5038/fue3-2024-25"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Cráter de Ries (Alemania)",
-   "termino": "Ries crater",
-   "articulos": 97,
+   "nombre": "Pilbara (Australia)",
+   "termino": "Pilbara",
+   "articulos": 24,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Impact excavation processes studied by Ground-penetrating radar (GPR) on terrestrial analogues for Mars.",
-    "year": 2021,
-    "doi": "https://doi.org/10.5194/epsc2021-799"
+    "title": "Martian analogue test site - pilbara craton, western Australia",
+    "year": 2004,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Tubos de lava de Kilauea (Hawái)",
+   "termino": "Kilauea",
+   "articulos": 23,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Silica in a Mars analog environment: Ka'u Desert, Kilauea Volcano, Hawaii",
+    "year": 2010,
+    "doi": "https://doi.org/10.1029/2009je003347"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
@@ -4493,51 +4418,25 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Isla Axel Heiberg",
    "termino": "Axel Heiberg",
-   "articulos": 89,
+   "articulos": 22,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Biological Characterization of Microenvironments in a Hypersaline Cold Spring Mars Analog",
-    "year": 2017,
-    "doi": "https://doi.org/10.3389/fmicb.2017.02527"
+    "title": "A Martian analog for spatially varying methane microseepage - polygons at Expedition Strip, Axel Heiberg Island",
+    "year": 2025,
+    "doi": "https://doi.org/10.1016/j.actaastro.2025.07.050"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Desierto de Omán (AMADEE-18)",
-   "termino": "Dhofar",
-   "articulos": 70,
+   "nombre": "Valle de la Muerte",
+   "termino": "Death Valley",
+   "articulos": 16,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Laboratory Analysis of Returned Samples from the AMADEE-18 Mars Analog Mission",
-    "year": 2020,
-    "doi": "https://doi.org/10.1089/ast.2019.2038"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Lava Beds (California)",
-   "termino": "Lava Beds",
-   "articulos": 63,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "UAV Imaging of Small Caves in Icelandic Lava Field as Possible Mars Analogues",
-    "year": 2020,
+    "title": "Thermography of Salt Pools, Bad Water, Death Valley, A Martian Analog?",
+    "year": 1971,
     "doi": null
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Dallol / Danakil (Etiopía)",
-   "termino": "Dallol",
-   "articulos": 56,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Extreme Arabian environments and their microbiomes: new frontiers for astrobiology and biosignature discovery",
-    "year": 2026,
-    "doi": "https://doi.org/10.1007/s00792-026-01426-5"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
@@ -4545,23 +4444,23 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Ladakh (Tso Kar / Puga)",
    "termino": "Ladakh",
-   "articulos": 53,
+   "articulos": 16,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Ladakh: diverse, high-altitude extreme environments for off-earth analogue and astrobiology research",
-    "year": 2019,
-    "doi": "https://doi.org/10.1017/s1473550419000119"
+    "title": "Spectroscopic Studies on the Puga Hot Spring Deposits, Ladakh, an Astrobiological Martian Analog Site in India",
+    "year": 2022,
+    "doi": "https://doi.org/10.1029/2022je007299"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
-   "termino": "San Francisco Volcanic Field",
-   "articulos": 51,
+   "nombre": "Arkaroola (Australia)",
+   "termino": "Arkaroola",
+   "articulos": 10,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Airborne Radar Study of Soil Moisture at a Mars Analog Site: Tohachi Wash/Little Colorado River",
+    "title": "The Arkaroola Mars Analogue Region, South Australia",
     "year": 2004,
     "doi": null
    },
@@ -4571,90 +4470,116 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Islandia (Holuhraun / Askja)",
    "termino": "Holuhraun",
-   "articulos": 48,
+   "articulos": 9,
    "tipo": "conocido",
    "ejemplo": {
     "title": "The potential for bioactivity and biological preservation in fumaroles at Holuhraun, a fissure eruption Mars analog site in the Icelandic Highlands",
     "year": 2020,
     "doi": null
    },
-   "clase": "muy estudiado",
+   "clase": "estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Altiplano / Salar de Uyuni",
-   "termino": "Uyuni",
-   "articulos": 35,
+   "nombre": "Meteor Crater (Arizona)",
+   "termino": "Meteor Crater",
+   "articulos": 9,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Insights Into the Microbiology of the Chaotropic Brines of Salar de Atacama, Chile",
-    "year": 2019,
-    "doi": "https://doi.org/10.3389/fmicb.2019.01611"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Lago Untersee (Antártida)",
-   "termino": "Untersee",
-   "articulos": 32,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "Taxonomic and functional analyses of intact microbial communities thriving in extreme, astrobiology-relevant, anoxic sites",
-    "year": 2021,
-    "doi": "https://doi.org/10.1186/s40168-020-00989-5"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
-  },
-  {
-   "nombre": "Arkaroola (Australia)",
-   "termino": "Arkaroola",
-   "articulos": 19,
-   "tipo": "conocido",
-   "ejemplo": {
-    "title": "THE ARKAROOLA MARS ANALOGUE REGION, SOUTH AUSTRALIA. Jonathan D. A. Clarke",
-    "year": 2004,
+    "title": "The Role of debris flows in the origin and evolution of gully systems on crater walls: martian analogs in meteor crater, arizona (usa)",
+    "year": 2011,
     "doi": null
    },
    "clase": "estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
-   "termino": "Pinacate",
-   "articulos": 18,
+   "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+   "termino": "San Francisco Volcanic Field",
+   "articulos": 9,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "Sedimentary Patterns in and around Craters from the Pinacate Volcanic Field, Sonora, Mexico: Some Comparisons with Mars",
-    "year": 1974,
-    "doi": "https://doi.org/10.1130/0016-7606(1974)85<99:spiaac>2.0.co;2"
+    "title": "Distributed Acoustic Sensing for Future Planetary Applications: Initial Results From the San Francisco Volcanic Field, a Lunar Analogue",
+    "year": 2024,
+    "doi": "https://doi.org/10.1029/2024ea003640"
    },
    "clase": "estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Desierto de Tabernas / Almería",
-   "termino": "Tabernas",
-   "articulos": 17,
+   "nombre": "Craters of the Moon (Idaho)",
+   "termino": "Craters of the Moon",
+   "articulos": 9,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "D1.2: Preliminary Terrestrial Analog Description",
-    "year": 2021,
-    "doi": "https://doi.org/10.5281/zenodo.7764150"
+    "title": "Secondary sulfate mineralization and basaltic chemistry of craters of the Moon National Monument, Idaho: Potential martian analog",
+    "year": 2012,
+    "doi": "https://doi.org/10.1016/j.pss.2012.02.002"
    },
    "clase": "estudiado",
    "ya_estudiado": true
   },
   {
-   "nombre": "Desierto de Marruecos (MARS2013, Erfoud)",
-   "termino": "Erfoud",
-   "articulos": 15,
+   "nombre": "Cráter de Ries (Alemania)",
+   "termino": "Ries crater",
+   "articulos": 8,
    "tipo": "conocido",
    "ejemplo": {
-    "title": "D1.2: Preliminary Terrestrial Analog Description",
+    "title": "Terrestrial chondrules, glass spherules and accretionary lapilli from the suevite, Ries Crater, Germany",
+    "year": 1981,
+    "doi": "https://doi.org/10.1016/0012-821x(81)90168-0"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Desierto del Namib",
+   "termino": "Namib",
+   "articulos": 7,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Rivers Beyond Earth: Remote Sensing of Fluvial–Aeolian Interactions in the Namib Desert as a Terrestrial Analog for Titan",
+    "year": 2026,
+    "doi": "https://doi.org/10.26300/1ekh-7g23"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Dallol / Danakil (Etiopía)",
+   "termino": "Dallol",
+   "articulos": 7,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Sulphur springs, sulfates and iron oxides of the Dallol (Danakil Depression, Ethiopia): A spectacular Mars terrestrial analog",
+    "year": 2015,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Desierto de Omán (AMADEE-18)",
+   "termino": "Dhofar",
+   "articulos": 6,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The AMADEE-18 Mars Analog Expedition in the Dhofar Region of Oman",
+    "year": 2020,
+    "doi": "https://doi.org/10.1089/ast.2019.2031"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Lava Beds (California)",
+   "termino": "Lava Beds",
+   "articulos": 5,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Taxonomic Characterization and Microbial Activity Determination of Cold-Adapted Microbial Communities in Lava Tube Ice Caves from Lava Beds National Monument, a High-Fidelity Mars Analogue Environment",
     "year": 2021,
-    "doi": "https://doi.org/10.5281/zenodo.7764150"
+    "doi": "https://doi.org/10.1089/ast.2020.2327"
    },
    "clase": "estudiado",
    "ya_estudiado": true
@@ -4662,7 +4587,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "nombre": "Negev / Makhtesh Ramon (D-MARS)",
    "termino": "Ramon crater",
-   "articulos": 10,
+   "articulos": 5,
    "tipo": "conocido",
    "ejemplo": {
     "title": "Mars Analogs at Ramon Crater Region: D-MARS",
@@ -4671,6 +4596,64 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    "clase": "estudiado",
    "ya_estudiado": true
+  },
+  {
+   "nombre": "Sudbury (Canadá)",
+   "termino": "Sudbury",
+   "articulos": 4,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Science Data Management During Real-Time Geological Lunar Analogue Missions to the Sudbury and Mistastin Lake Impact Structures: Recommendations for Future Ground Data Systems",
+    "year": 2012,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Lago Untersee (Antártida)",
+   "termino": "Untersee",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Desierto de Marruecos (MARS2013, Erfoud)",
+   "termino": "Erfoud",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Altiplano / Salar de Uyuni",
+   "termino": "Uyuni",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Desierto de Tabernas / Almería",
+   "termino": "Tabernas",
+   "articulos": 1,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
+   "termino": "Pinacate",
+   "articulos": 0,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Kitikmeot Region, Nunavut",
@@ -4685,48 +4668,36 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   },
   {
    "nombre": "Inuvialuit Settlement Region, Inuvik Region",
-   "termino": "Inuvik Region",
+   "termino": "Inuvialuit Settlement Region",
    "pais": "Canada",
-   "articulos": 1,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Improved prediction of the vertical distribution of ground ice in Arctic-Antarctic permafrost sediments",
-    "year": 2022,
-    "doi": "https://doi.org/10.1038/s43247-022-00367-z"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Tsodrel Jangma, Shuanghu County",
-   "termino": "Xizang",
+   "termino": "Tsodrel Jangma",
    "pais": "China",
-   "articulos": 6,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "柴达木盆地类火星区域的天体生物学研究",
-    "year": 2025,
-    "doi": "https://doi.org/10.18654/1000-0569/2026.01.16"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Lopnur, Ruoqiang County",
-   "termino": "Lop Nur",
+   "termino": "Xinjiang",
    "pais": "China",
-   "articulos": 8,
+   "articulos": 2,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Quantitative comparison of morphometric and hydrological characteristics of valley networks between Evros Vallis on Mars and Kaidu River in Tarim Basin as terrestrial analog",
-    "year": 2018,
-    "doi": "https://doi.org/10.11834/jrs.20187014"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
   },
   {
    "nombre": "Burj Umar Idris, In Amenas District",
@@ -4765,43 +4736,6 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Ranyah, Makkah Region",
    "termino": "Ranyah",
    "pais": "Saudi Arabia",
-   "articulos": 1,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Is there any health danger by radioactivity on the use of dimensional stones?",
-    "year": 2022,
-    "doi": "https://doi.org/10.1007/s12665-022-10483-w"
-   },
-   "clase": "poco estudiado",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Minfeng County, Hotan Prefecture",
-   "termino": "Minfeng County",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Tazhong Town, Qarqan County",
-   "termino": "Tazhong Town",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Aktikan Dong, Qarqan County",
-   "termino": "Aktikan Dong",
-   "pais": "China",
    "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
@@ -4811,183 +4745,96 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   },
   {
    "nombre": "Nara Taluka, Khairpur District",
-   "termino": "Sindh",
+   "termino": "Nara Taluka",
    "pais": "Pakistan",
-   "articulos": 1,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Structural and elemental X-ray microanalysis with synchrotron radiation in confocal geometry",
-    "year": 2013,
-    "doi": "https://doi.org/10.1016/j.nimb.2013.10.021"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Ghat, Libya",
    "termino": "Ghat",
    "pais": "Libya",
-   "articulos": 35,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Jarosite occurrence in the Deccan Volcanic Province of Kachchh, western India: Spectroscopic studies on a Martian analog locality",
-    "year": 2016,
-    "doi": "https://doi.org/10.1002/2015je004949"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
   },
   {
    "nombre": "Abu Hamad, River Nile State",
    "termino": "Abu Hamad",
    "pais": "Sudan",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "The late Paleozoic ecological–evolutionary laboratory, and land-plant fossil record perspective",
-    "year": 2014,
-    "doi": "https://doi.org/10.2110/sedred.2014.4.4"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Bella Unión, Province of Caravelí",
    "termino": "Arequipa",
    "pais": "Peru",
-   "articulos": 29,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "EVALUACIÓN DE LAS CONDICIONES AMBIENTALES Y GEOMORFOLÓGICAS DE ALPACHACA (CUSCO, PERÚ) COMO ENTORNO ANÁLOGO PARA LA EXPLORACIÓN LUNAR Y MARCIANA",
-    "year": 2026,
-    "doi": "https://doi.org/10.5281/zenodo.22908358"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
   },
   {
    "nombre": "Dongfeng, Ejina Banner",
-   "termino": "Dongfeng",
+   "termino": "Inner Mongolia",
    "pais": "China",
-   "articulos": 0,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
    "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Maralbexi County, Kachgar",
-   "termino": "Maralbexi County",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Makit County, Kachgar",
-   "termino": "Makit County",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Chira County, Hotan Prefecture",
-   "termino": "Chira County",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Qaraqash County, Hotan Prefecture",
-   "termino": "Qaraqash County",
-   "pais": "China",
-   "articulos": 0,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": null,
-   "clase": "sin estudios como análogo",
+   "clase": "poco estudiado",
    "ya_estudiado": false
   },
   {
    "nombre": "Taftan Tehsil, Chagai District",
-   "termino": "Balochistan",
+   "termino": "Taftan Tehsil",
    "pais": "Pakistan",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Bacterial Diversity at Himalayan Pink Salt Extraction Site",
-    "year": 2025,
-    "doi": "https://doi.org/10.3390/biology14030316"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Matruh, Egypt",
    "termino": "Matruh",
    "pais": "Egypt",
-   "articulos": 1,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Caves and karsts of Northeast Africa",
-    "year": 2003,
-    "doi": "https://doi.org/10.5038/1827-806x.32.1.2"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Red Sea, Egypt",
    "termino": "Red Sea",
    "pais": "Egypt",
-   "articulos": 160,
+   "articulos": 7,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Extreme Arabian environments and their microbiomes: new frontiers for astrobiology and biosignature discovery",
-    "year": 2026,
-    "doi": "https://doi.org/10.1007/s00792-026-01426-5"
-   },
-   "clase": "muy estudiado",
+   "ejemplo": null,
+   "clase": "estudiado",
    "ya_estudiado": true
   },
   {
    "nombre": "Kunene Region, Namibia",
    "termino": "Kunene Region",
    "pais": "Namibia",
-   "articulos": 2,
-   "tipo": "candidato",
-   "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Gullies and badlands of India: Genesis, geomorphology and land management",
-    "year": 2023,
-    "doi": "https://doi.org/10.1002/esp.5579"
-   },
-   "clase": "poco estudiado",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Pishan County, Hotan Prefecture",
-   "termino": "Pishan County",
-   "pais": "China",
    "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
@@ -4999,15 +4846,11 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "دهستان اندوهجرد, بخش شهداد",
    "termino": "Kerman Province",
    "pais": "Iran",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_south_pole_base",
-   "ejemplo": {
-    "title": "Travel to Mars-like Places on Earth: A New Branch of Sustainable Ecotourism in Lut Desert World Heritage Site, Iran",
-    "year": 2023,
-    "doi": "https://doi.org/10.3390/su15129677"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
@@ -5025,29 +4868,21 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Tibesti, Chad",
    "termino": "Tibesti",
    "pais": "Chad",
-   "articulos": 9,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "The Faya Basin (N Chad) Revisited — Structural Insights from Central Peak Morphology and Potential Martian Analogs",
-    "year": 2010,
-    "doi": null
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
   },
   {
    "nombre": "Distrito Ciudad de Malargüe, Departamento Malargüe",
    "termino": "Llancanelo Volcanic Field",
    "pais": "Argentina",
-   "articulos": 2,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "A global database of Mars-relevant hydrovolcanic environments on Earth with potential biosignature preservation",
-    "year": 2024,
-    "doi": "https://doi.org/10.1130/ges02712.1"
-   },
+   "ejemplo": null,
    "clase": "poco estudiado",
    "ya_estudiado": false
   },
@@ -5055,46 +4890,34 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Maricopa County, Arizona",
    "termino": "Maricopa County",
    "pais": "United States",
-   "articulos": 3,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "New information resources of the U.S. Geological Survey Library System, June 1990",
-    "year": 1990,
-    "doi": "https://doi.org/10.3133/ofr90400f"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "District of Al-Jufra, Libya",
-   "termino": "Haruj",
+   "termino": "District of Al Jufra",
    "pais": "Libya",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Ring‐Moat Dome Structures (RMDSs) in the Lunar Maria: Statistical, Compositional, and Morphological Characterization and Assessment of Theories of Origin",
-    "year": 2020,
-    "doi": "https://doi.org/10.1029/2019je005967"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Municipio de Durango, Durango",
-   "termino": "Durango",
+   "termino": "Municipio de Durango",
    "pais": "Mexico",
-   "articulos": 25,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Microbial methanogenesis fueled by freshwater infiltration and oil biodegradation in the Siljan impact structure, Sweden",
-    "year": 2025,
-    "doi": "https://doi.org/10.1007/s42452-024-06418-8"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Ash Shamli, Ḥa'il Province",
@@ -5136,11 +4959,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Terrestrial Submarine Discontinuous Systems as Analogs for Similar Martian Channel Morphologies.",
-    "year": 2020,
-    "doi": "https://doi.org/10.5194/egusphere-egu2020-19893"
-   },
+   "ejemplo": null,
    "clase": "poco estudiado",
    "ya_estudiado": false
   },
@@ -5157,18 +4976,18 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   },
   {
    "nombre": "Lake County, Oregon",
-   "termino": "Lake County",
+   "termino": "Fort Rock Volcanic Field",
    "pais": "United States",
-   "articulos": 13,
+   "articulos": 2,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
    "ejemplo": {
-    "title": "TERRESTRIAL PLANET SERPENTINIZATION IN MELANGE SETTINGS",
-    "year": 2018,
-    "doi": "https://doi.org/10.23860/thesis-hart-roger-2018"
+    "title": "Putative Microbial Biosignatures in a Mars-Analogue Hydrovolcanic Environment — Fort Rock Volcanic Field, Oregon",
+    "year": 2021,
+    "doi": null
    },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "clase": "poco estudiado",
+   "ya_estudiado": false
   },
   {
    "nombre": "Al Mahd, Medina Province",
@@ -5185,31 +5004,23 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Shasta County, California",
    "termino": "Shasta County",
    "pais": "United States",
-   "articulos": 7,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Jarosite occurrence in the Deccan Volcanic Province of Kachchh, western India: Spectroscopic studies on a Martian analog locality",
-    "year": 2016,
-    "doi": "https://doi.org/10.1002/2015je004949"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Malha - مالحة, North Darfur",
    "termino": "Malha",
    "pais": "Sudan",
-   "articulos": 7,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Peat-forming environment of Permian coal seams from the Faxinal coalfield (Paraná Basin) in southern Brazil, based on palynology and palaeobotany",
-    "year": 2007,
-    "doi": "https://doi.org/10.4072/rbp.2007.2.05"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Lokori/Kochodin ward, Turkana East",
@@ -5246,60 +5057,48 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   },
   {
    "nombre": "Parroquia Tomás de Berlanga (Santo Tomás), Cantón Isabela",
-   "termino": "Azul, Cerro",
+   "termino": "Galapagos",
    "pais": "Ecuador",
    "articulos": 1,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "A 400‐Year Antarctic Ice‐Core Perchlorate Record Reveals Variability in Stratospheric Chlorine Chemistry",
-    "year": 2026,
-    "doi": "https://doi.org/10.1029/2026gl124717"
-   },
+   "ejemplo": null,
    "clase": "poco estudiado",
    "ya_estudiado": false
   },
   {
    "nombre": "Departamento Pehuenches, Neuquén",
-   "termino": "Neuquen",
+   "termino": "Departamento Pehuenches",
    "pais": "Argentina",
-   "articulos": 24,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "The Dallol Geothermal Area, Northern Afar (Ethiopia)—An Exceptional Planetary Field Analog on Earth",
-    "year": 2019,
-    "doi": "https://doi.org/10.1089/ast.2018.1926"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Gur, Biu",
    "termino": "Gur",
    "pais": "Nigeria",
-   "articulos": 54,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Increasing fidelity in lunar and martian analogs for behavioral health and performance research",
-    "year": 2025,
-    "doi": "https://doi.org/10.3389/frspt.2025.1505823"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Victoria, Australia",
    "termino": "Victoria",
    "pais": "Australia",
-   "articulos": 586,
+   "articulos": 25,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
    "ejemplo": {
-    "title": "Modern and Ancient Extremely Acid Saline Deposits: Terrestrial Analogs for Martian Environments?",
-    "year": 2003,
-    "doi": "https://doi.org/10.1089/153110703322610690"
+    "title": "Debris flows and water tracks in northern Victoria Land, continental East Antarctica: a new terrestrial analogue site for gullies and recurrent slope lineae on Mars",
+    "year": 2018,
+    "doi": "https://doi.org/10.1144/sp467.12"
    },
    "clase": "muy estudiado",
    "ya_estudiado": true
@@ -5308,46 +5107,38 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Malheur County, Oregon",
    "termino": "Malheur County",
    "pais": "United States",
-   "articulos": 3,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Structural and biological analysis of faults in basalts in Sheepshead Mountains, Oregon as an Earth analogue to Mars",
-    "year": 2022,
-    "doi": "https://doi.org/10.1016/j.icarus.2022.115121"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Queensland, Australia",
    "termino": "Queensland",
    "pais": "Australia",
-   "articulos": 163,
+   "articulos": 5,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
    "ejemplo": {
-    "title": "Jarosite occurrence in the Deccan Volcanic Province of Kachchh, western India: Spectroscopic studies on a Martian analog locality",
-    "year": 2016,
-    "doi": "https://doi.org/10.1002/2015je004949"
+    "title": "Importance of early rehabilitation planning - case studies from North West Queensland",
+    "year": 2012,
+    "doi": null
    },
-   "clase": "muy estudiado",
+   "clase": "estudiado",
    "ya_estudiado": true
   },
   {
    "nombre": "Municipio de Mulegé, Baja California Sur",
-   "termino": "Baja California Sur",
+   "termino": "Municipio de Mulege",
    "pais": "Mexico",
-   "articulos": 23,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Isotopic Composition of Methane and Inferred Methanogenic Substrates Along a Salinity Gradient in a Hypersaline Microbial Mat System",
-    "year": 2009,
-    "doi": "https://doi.org/10.1089/ast.2008.0260"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Wadi Al Fara, Medina Province",
@@ -5364,120 +5155,114 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Harney County, Oregon",
    "termino": "Harney County",
    "pais": "United States",
-   "articulos": 3,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Using an Instrumented Drone to Probe Dust Devils on Oregon’s Alvord Desert",
-    "year": 2018,
-    "doi": "https://doi.org/10.3390/rs10010065"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Al Wajh, Tabuk Province",
    "termino": "Al Wajh",
    "pais": "Saudi Arabia",
-   "articulos": 1,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Mineral classification on Martian surface using CRISM hyperspectral data: a survey",
-    "year": 2023,
-    "doi": "https://doi.org/10.1117/1.jrs.17.041501"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Fernley, Lyon County",
    "termino": "Soda Lakes",
    "pais": "United States",
-   "articulos": 176,
+   "articulos": 4,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
    "ejemplo": {
-    "title": "Nitrogen isotope ratios trace high-pH conditions in a terrestrial Mars analog site",
-    "year": 2020,
-    "doi": "https://doi.org/10.1126/sciadv.aay3440"
+    "title": "Introductory Chapter: Half a Lifetime in Soda Lakes",
+    "year": 2004,
+    "doi": "https://doi.org/10.1007/978-3-662-07656-9_1"
    },
-   "clase": "muy estudiado",
+   "clase": "estudiado",
    "ya_estudiado": true
   },
   {
    "nombre": "East Shewa, Oromia Region",
-   "termino": "Shala",
+   "termino": "East Shewa",
    "pais": "Ethiopia",
-   "articulos": 9,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Hot spring diatoms are linked to extreme cold conditions: A new perspective for astrobiological implication from the sinter deposit of Puga hot spring, Ladakh, India",
-    "year": 2023,
-    "doi": "https://doi.org/10.22541/essoar.170158324.46307742/v1"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "دهستان گاوکان, بخش رحمت آباد",
+   "termino": "Shahsavaran",
+   "pais": "Iran",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Jefferson County, Idaho",
    "termino": "Jefferson County",
    "pais": "United States",
-   "articulos": 10,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Microbial ecology of acidic, biogenic gypsum: community structure and distribution of extremophiles on freshly formed and relict sulfate deposits in a hydrogen sulfide-rich cave",
-    "year": 2025,
-    "doi": "https://doi.org/10.1128/aem.01397-25"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Municipio San Pablo de Lipez, Provincia Sur Lípez",
-   "termino": "Potosi",
+   "termino": "Municipio San Pablo de Lipez",
    "pais": "Bolivia",
-   "articulos": 8,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Estimated Detection Limits of Carboxylates in Palagonite by X-ray Diffraction and Reflectance Spectroscopy",
-    "year": 2023,
-    "doi": "https://doi.org/10.36939/ir.202312071601"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Lincoln County, Idaho",
    "termino": "Lincoln County",
    "pais": "United States",
-   "articulos": 11,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "The Howell Structure, Lincoln County, Tennessee: A Review of Past and Current Research",
-    "year": 2004,
-    "doi": null
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Atenco, State of Mexico",
-   "termino": "State of Mexico",
+   "termino": "Atenco",
    "pais": "Mexico",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "Extreme environments of Latin America: natural laboratories for astrobiology",
-    "year": 2026,
-    "doi": "https://doi.org/10.1017/s1473550426100330"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Municipio de Comondú, Baja California Sur",
+   "termino": "Municipio de Comondu",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
@@ -5504,18 +5289,14 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   },
   {
    "nombre": "Pajapan, Veracruz",
-   "termino": "Veracruz",
+   "termino": "Pajapan",
    "pais": "Mexico",
-   "articulos": 13,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "moon_mars_caves",
-   "ejemplo": {
-    "title": "An Ice Thickness Study Utilizing Ground Penetrating Radar on the Lower Jamapa Glacier of Citlaltépetl (El Pico de Orizaba), Mexico",
-    "year": 2005,
-    "doi": null
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Illizi, Illizi District",
@@ -5565,89 +5346,65 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Murzuq, Libya",
    "termino": "Murzuq",
    "pais": "Libya",
-   "articulos": 5,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Natural hydrogen in the Middle East and North Africa: Geological prospectivity, global analogues, and a play-based exploration roadmap",
-    "year": 2026,
-    "doi": "https://doi.org/10.1016/j.nxener.2026.101170"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "New Valley, Egypt",
    "termino": "New Valley",
    "pais": "Egypt",
-   "articulos": 4,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Groundwater seepage landscapes from distant and local sources in experiments and on Mars",
-    "year": 2015,
-    "doi": "https://doi.org/10.5194/esurf-3-389-2015"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Pozo Almonte, Provincia del Tamarugal",
-   "termino": "Tarapaca Region",
+   "termino": "Pozo Almonte",
    "pais": "Chile",
-   "articulos": 9,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Life at the dry edge: Microorganisms of the Atacama Desert",
-    "year": 2012,
-    "doi": "https://doi.org/10.1016/j.febslet.2012.07.025"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Idles, Tazrouk District",
    "termino": "Idles",
    "pais": "Algeria",
-   "articulos": 97,
+   "articulos": 4,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Acidic Aqueous Solutions and Sulfate-Rich Mineralogy: Raman Investigations of Rio Tinto, Spain, a Model for Acid Mine Drainage and a Potential Martian Analog",
-    "year": 2008,
-    "doi": "https://doi.org/10.35376/10324/2439"
-   },
-   "clase": "muy estudiado",
+   "ejemplo": null,
+   "clase": "estudiado",
    "ya_estudiado": true
   },
   {
    "nombre": "Tabelbala, Beni Abbes",
-   "termino": "Beni Abbes",
+   "termino": "Tabelbala",
    "pais": "Algeria",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Prokaryotic Communities from Pristine Cave Environments: Biotechnological Potential with Sustainable Production",
-    "year": 2023,
-    "doi": "https://doi.org/10.3390/su15097471"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Kufra, Libya",
    "termino": "Kufra",
    "pais": "Libya",
-   "articulos": 4,
+   "articulos": 1,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "OASIS AND B.P. IMPACT CRATERS IN LIBYA AS TERRESTRIAL ANALOGS FOR COMPLEX POLYGONAL IMPACT CRATERS: A REMOTE TECTONIC MAPPING TOOL FOR MARS AND OTHER ROCKY BODIES",
-    "year": 2026,
-    "doi": null
-   },
+   "ejemplo": null,
    "clase": "poco estudiado",
    "ya_estudiado": false
   },
@@ -5666,36 +5423,17 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Bilma, Niger",
    "termino": "Bilma",
    "pais": "Niger",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "The first terrestrial analogue to Martian dust devil tracks found in Ténéré Desert, Niger",
-    "year": 2004,
-    "doi": "https://doi.org/10.1029/2004gl019428"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Bordj El Haouas, Djanet District",
-   "termino": "Djanet",
+   "termino": "Bordj El Haouas",
    "pais": "Algeria",
-   "articulos": 1,
-   "tipo": "candidato",
-   "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "ADVANCING PLANETARY SUSTAINABILITY THROUGH LITHOLOGICAL MAPPING: ASTER REMOTE SENSING IN ANTARCTICA’S DRY VALLEYS",
-    "year": 2025,
-    "doi": "https://doi.org/10.46754/ps.2025.01.002"
-   },
-   "clase": "poco estudiado",
-   "ya_estudiado": false
-  },
-  {
-   "nombre": "Yuli County, Bayingolin",
-   "termino": "Yuli County",
-   "pais": "China",
    "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
@@ -5707,31 +5445,34 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "nombre": "Hurghada, Red Sea",
    "termino": "Hurghada",
    "pais": "Egypt",
-   "articulos": 2,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Sedimentation threats to Red Sea corals : an ecological study of reefs in the Hurghada Region, Egypt",
-    "year": 2007,
-    "doi": null
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "Sali, Reggane District",
    "termino": "Sali",
    "pais": "Algeria",
-   "articulos": 55,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Extreme Arabian environments and their microbiomes: new frontiers for astrobiology and biosignature discovery",
-    "year": 2026,
-    "doi": "https://doi.org/10.1007/s00792-026-01426-5"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Djanet, Djanet District",
+   "termino": "Djanet",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Suhaj, Egypt",
@@ -5745,49 +5486,48 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    "ya_estudiado": false
   },
   {
+   "nombre": "Nok Kundi Tehsil, Chagai District",
+   "termino": "Nok Kundi Tehsil",
+   "pais": "Pakistan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
    "nombre": "Aswan, Egypt",
    "termino": "Aswan",
    "pais": "Egypt",
-   "articulos": 14,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "The pristine interior of comet 67P revealed by the combined Aswan outburst and cliff collapse",
-    "year": 2017,
-    "doi": "https://doi.org/10.1038/s41550-017-0092"
-   },
-   "clase": "estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   },
   {
    "nombre": "Port Sudan, Red Sea State",
    "termino": "Port Sudan",
    "pais": "Sudan",
-   "articulos": 4,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Exploring Deep-Sea Brines as Potential Terrestrial Analogues of Oceans in the Icy Moons of the Outer Solar System",
-    "year": 2020,
-    "doi": "https://doi.org/10.21775/cimb.038.123"
-   },
-   "clase": "poco estudiado",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
    "ya_estudiado": false
   },
   {
    "nombre": "In Salah, d'In Salah District",
    "termino": "In Salah",
    "pais": "Algeria",
-   "articulos": 68,
+   "articulos": 0,
    "tipo": "candidato",
    "perfil": "mars_astrobiology",
-   "ejemplo": {
-    "title": "Fluvial Depositional Systems of the African Humid Period: An Analog for an Early, Wet Mars in the Eastern Sahara",
-    "year": 2022,
-    "doi": "https://doi.org/10.1029/2021je007087"
-   },
-   "clase": "muy estudiado",
-   "ya_estudiado": true
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
   }
  ]
 };</script>
@@ -7704,7 +7444,7 @@ if (window.METODO && $('#mtPasosLista')) {
   const M = window.METODO, EN = document.documentElement.lang === 'en';
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
-  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior',
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
     tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
     novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
@@ -7737,7 +7477,9 @@ if (window.METODO && $('#mtPasosLista')) {
   // F. Tres perfiles de misión
   $('#mtPerfilesLista').innerHTML = M.perfiles.map((p) => `<div class="card">
       <p class="kicker">${esc(p.corto)}</p><h3>${esc(p.titulo)}</h3>
+      <h4 class="mt-h4">${esc(L.compara)}</h4>
       <p class="refs"><b>${num(p.referencias.n_sitios)}</b> ${esc(L.sitios)}. ${esc(L.ejemplos)}: ${p.referencias.ejemplos.slice(0, 4).map(esc).join(', ')}.</p>
+      <h4 class="mt-h4">${esc(L.pesoTit)}</h4>
       <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
       <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
       <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');

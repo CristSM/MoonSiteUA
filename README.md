@@ -68,7 +68,7 @@ MoonSiteUA responde al reto «Identify Earth Locations that Analog the Permanent
 - **Huella de terreno:** pendientes, relieve local y rugosidad a dos escalas, medidas igual en la Tierra (Copernicus GLO-90), la Luna (LRO LOLA) y Marte (MGS MOLA) a ~400 m/píxel. Cada celda busca su **gemelo planetario**: el bloque lunar o marciano más parecido. El terreno se puntúa como percentil de la Tierra.
 - **Dimensiones ambientales:** frío y suelo congelado, sin vegetación, sol rasante, sin hielo, volcanes, tipo de roca, roca basáltica, aridez, amplitud térmica, albedo y polvo (MODIS, GPM IMERG, ASTER GED, GLiM, Smithsonian GVP, MERRA-2).
 - **Robustez:** 200 sorteos de pesos al azar.
-- **Validación:** el método recupera los análogos que ya usan las agencias (Atacama en el percentil 100 para Marte; Valles Secos de McMurdo en el 99,99 para la Luna). Con las cuevas de OpenStreetMap, el 80 % de los tubos de lava confirmados cae en el 5 % superior del mapa.
+- **Validación:** el método recupera los análogos que ya usan las agencias (Atacama en el percentil 100 para Marte; Valles Secos de McMurdo en el 99,99 para la Luna). Con las cuevas de OpenStreetMap, el 78 % de los tubos de lava confirmados (94 bocas en 34 zonas) cae en el 5 % superior del mapa.
 - **Novedad bibliográfica:** se excluyen 32 análogos conocidos y se cuenta en OpenAlex cuántos artículos citan cada candidata como análogo. `Descubrimiento = Índice × Novedad`.
 
 Los datos del motor están en `engine/metodo_data.json` (página Método), `engine/juego_data.json` (Juego), `engine/sites.json` (58 sitios con variables físicas reales y resultados por perfil) y `engine/analog_profiles.json` (los 3 perfiles). Se generan en el proyecto de datos con `scripts/export_*_data.py`.

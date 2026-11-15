@@ -451,6 +451,9 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 .mt-gemelos figcaption .mono { font-size: .76rem; color: var(--muted); }
 .mt-perfiles { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 .mt-perfiles .card h3 { font-size: 1.35rem; }
+.mt-leer { display: grid; gap: 8px; margin: 14px 0 22px; padding-left: 1.3em; max-width: 72ch; color: #cbc7bb; font-size: .95rem; }
+.mt-leer b { color: var(--text, #f2efe6); }
+.mt-leer li::marker { color: var(--accent); font-family: var(--f-mono); }
 .mt-perfiles .refs { font-size: .9rem; color: #cbc7bb; }
 .mt-perfiles .pesos { display: grid; gap: 6px; margin: 6px 0; }
 .mt-perfiles .peso { display: grid; grid-template-columns: 112px 1fr 38px; gap: 8px; align-items: center; font-size: .85rem; }
@@ -666,7 +669,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 
 <script>window.METODO = {
  "_doc": "Datos reales del método Analog Finder para la página MÉTODO de MoonSiteUA. Generado por scripts/export_metodo_data.py.",
- "generado_utc": "2026-11-14T20:47:14+00:00",
+ "generado_utc": "2026-11-15T08:24:40+00:00",
  "cifras": {
   "celdas_tierra": 8604242,
   "rejilla_tierra": "0,05° (~5,5 km)",
@@ -908,7 +911,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
      "CC0893",
      "CC0894",
      "CC0895",
-     "Cataln B 1",
+     "Catalán B 1",
      "CC0853",
      "CC0727"
     ]
@@ -1017,7 +1020,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "Presión atmosférica ~6 mbar y CO2",
     "Radiación UV sin capa de ozono",
     "Temperaturas medias ~210 K",
-    "Gravedad 0.38 g",
+    "Gravedad 0,38 g",
     "Percloratos y oxidantes en el suelo"
    ],
    "n_candidatas": 1018,
@@ -1362,57 +1365,57 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   "n_total": 73341,
   "tubos_de_lava": {
    "definicion": "geological=volcanic_lava_tube o nombre/descripción con «lava», «lava tube», «tunnel de lave», «jameo», «Lavahöhle»…",
-   "n": 49,
-   "auc_mean_percentile": 0.9486,
-   "median_percentile": 0.9958,
-   "frac_top10": 0.7959,
-   "frac_top5": 0.7959,
-   "frac_top1": 0.6939,
+   "n": 94,
+   "auc_mean_percentile": 0.9462,
+   "median_percentile": 0.9956,
+   "frac_top10": 0.8404,
+   "frac_top5": 0.7766,
+   "frac_top1": 0.6064,
    "por_zona_1grado": {
-    "n_zonas_1deg": 16,
-    "auc_mean_percentile": 0.9456,
-    "frac_top5": 0.75,
-    "frac_top1": 0.625
+    "n_zonas_1deg": 34,
+    "auc_mean_percentile": 0.9126,
+    "frac_top5": 0.6765,
+    "frac_top1": 0.4706
    },
-   "auc_vs_tierra": 0.9489,
-   "auc_vs_celdas_volcanicas": 0.8474
+   "auc_vs_tierra": 0.9465,
+   "auc_vs_celdas_volcanicas": 0.837
   },
   "auc_por_dimension": {
    "terrain": {
     "cuevas_volcanicas": 0.359,
-    "tubos_de_lava": 0.4669
+    "tubos_de_lava": 0.4389
    },
    "volcanic": {
     "cuevas_volcanicas": 0.7578,
-    "tubos_de_lava": 0.9042
+    "tubos_de_lava": 0.9092
    },
    "lithology": {
     "cuevas_volcanicas": 0.3886,
-    "tubos_de_lava": 0.689
+    "tubos_de_lava": 0.7691
    },
    "nonsilicic": {
     "cuevas_volcanicas": 0.5166,
-    "tubos_de_lava": 0.6735
+    "tubos_de_lava": 0.7144
    },
    "arid": {
     "cuevas_volcanicas": 0.312,
-    "tubos_de_lava": 0.3403
+    "tubos_de_lava": 0.492
    },
    "barren": {
     "cuevas_volcanicas": 0.0694,
-    "tubos_de_lava": 0.2164
+    "tubos_de_lava": 0.2903
    },
    "ice_free": {
     "cuevas_volcanicas": 0.7972,
-    "tubos_de_lava": 0.7903
+    "tubos_de_lava": 0.8051
    }
   },
   "densidad": "Recuentos agregados en celdas de 1° (data/derived/osm/cave_density_1deg.json); nunca coordenadas exactas.",
-  "lectura": "Con los tubos de lava confirmados (etiqueta geological=volcanic_lava_tube o nombre) el perfil acierta: 80 % en el 5 % superior del mapa y AUC 0.8474 incluso dentro de zonas volcánicas, aunque la muestra es pequeña (16 zonas). Con todas las cuevas «volcánicas por cercanía» distingue el entorno volcánico del karst, pero no predice dónde están cartografiadas: OSM refleja dónde vive y explora la gente (zonas húmedas y con vegetación) y el perfil busca a propósito lugares áridos y remotos."
+  "lectura": "Con los tubos de lava confirmados (etiqueta geological=volcanic_lava_tube o nombre) el perfil acierta: el 78 % cae en el 5 % superior del mapa y el AUC es de 0,84 incluso dentro de zonas volcánicas, con una muestra limitada (94 bocas en 34 zonas). Con todas las cuevas «volcánicas por cercanía» distingue el entorno volcánico del karst, pero no predice dónde están cartografiadas: OSM refleja dónde vive y explora la gente (zonas húmedas y con vegetación) y el perfil busca a propósito lugares áridos y remotos."
  },
  "novedad_bibliografica": {
   "fuente": "OpenAlex + topónimos de OpenStreetMap, GVP y Wikidata",
-  "contexto_busqueda": "topónimo junto a «Mars/Martian/lunar/terrestrial analog(ue)» o «analog(ue) site»",
+  "contexto_busqueda": "topónimo en el TÍTULO o el RESUMEN junto a «Mars/Martian/lunar/terrestrial analog(ue)» o «analog(ue) site»; los nombres administrativos genéricos (County, District…) se buscan con su estado o país",
   "clases": [
    {
     "clase": "sin estudios como análogo",
@@ -1420,145 +1423,145 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
    },
    {
     "clase": "poco estudiado",
-    "rango": "1–5"
+    "rango": "1–2"
    },
    {
     "clase": "estudiado",
-    "rango": "6–30"
+    "rango": "3–9"
    },
    {
     "clase": "muy estudiado",
-    "rango": "> 30"
+    "rango": "≥ 10"
    }
   ],
   "linea_base": [
    {
     "analogo": "Atacama",
-    "articulos": 972
-   },
-   {
-    "analogo": "Mojave",
-    "articulos": 498
+    "articulos": 131
    },
    {
     "analogo": "Rio Tinto",
-    "articulos": 444
+    "articulos": 94
    },
    {
     "analogo": "Svalbard",
-    "articulos": 409
-   },
-   {
-    "analogo": "McMurdo Dry Valleys",
-    "articulos": 385
-   },
-   {
-    "analogo": "Meteor Crater",
-    "articulos": 312
-   },
-   {
-    "analogo": "Kilauea",
-    "articulos": 310
-   },
-   {
-    "analogo": "Haughton",
-    "articulos": 276
-   },
-   {
-    "analogo": "Craters of the Moon",
-    "articulos": 257
-   },
-   {
-    "analogo": "Mauna Kea",
-    "articulos": 245
-   },
-   {
-    "analogo": "Pilbara",
-    "articulos": 238
-   },
-   {
-    "analogo": "Namib",
-    "articulos": 218
-   },
-   {
-    "analogo": "Death Valley",
-    "articulos": 202
+    "articulos": 83
    },
    {
     "analogo": "Mars Desert Research Station",
-    "articulos": 200
-   },
-   {
-    "analogo": "Qaidam",
-    "articulos": 176
-   },
-   {
-    "analogo": "Sudbury",
-    "articulos": 132
-   },
-   {
-    "analogo": "Lanzarote",
-    "articulos": 109
-   },
-   {
-    "analogo": "Ries crater",
-    "articulos": 97
-   },
-   {
-    "analogo": "Axel Heiberg",
-    "articulos": 89
-   },
-   {
-    "analogo": "Dhofar",
-    "articulos": 70
-   },
-   {
-    "analogo": "Lava Beds",
     "articulos": 63
    },
    {
-    "analogo": "Dallol",
-    "articulos": 56
+    "analogo": "Qaidam",
+    "articulos": 58
+   },
+   {
+    "analogo": "Mojave",
+    "articulos": 57
+   },
+   {
+    "analogo": "Haughton",
+    "articulos": 54
+   },
+   {
+    "analogo": "McMurdo Dry Valleys",
+    "articulos": 46
+   },
+   {
+    "analogo": "Mauna Kea",
+    "articulos": 38
+   },
+   {
+    "analogo": "Lanzarote",
+    "articulos": 25
+   },
+   {
+    "analogo": "Pilbara",
+    "articulos": 24
+   },
+   {
+    "analogo": "Kilauea",
+    "articulos": 23
+   },
+   {
+    "analogo": "Axel Heiberg",
+    "articulos": 22
+   },
+   {
+    "analogo": "Death Valley",
+    "articulos": 16
    },
    {
     "analogo": "Ladakh",
-    "articulos": 53
-   },
-   {
-    "analogo": "San Francisco Volcanic Field",
-    "articulos": 51
-   },
-   {
-    "analogo": "Holuhraun",
-    "articulos": 48
-   },
-   {
-    "analogo": "Uyuni",
-    "articulos": 35
-   },
-   {
-    "analogo": "Untersee",
-    "articulos": 32
+    "articulos": 16
    },
    {
     "analogo": "Arkaroola",
-    "articulos": 19
+    "articulos": 10
    },
    {
-    "analogo": "Pinacate",
-    "articulos": 18
+    "analogo": "Holuhraun",
+    "articulos": 9
    },
    {
-    "analogo": "Tabernas",
-    "articulos": 17
+    "analogo": "Meteor Crater",
+    "articulos": 9
    },
    {
-    "analogo": "Erfoud",
-    "articulos": 15
+    "analogo": "San Francisco Volcanic Field",
+    "articulos": 9
+   },
+   {
+    "analogo": "Craters of the Moon",
+    "articulos": 9
+   },
+   {
+    "analogo": "Ries crater",
+    "articulos": 8
+   },
+   {
+    "analogo": "Namib",
+    "articulos": 7
+   },
+   {
+    "analogo": "Dallol",
+    "articulos": 7
+   },
+   {
+    "analogo": "Dhofar",
+    "articulos": 6
+   },
+   {
+    "analogo": "Lava Beds",
+    "articulos": 5
    },
    {
     "analogo": "Ramon crater",
-    "articulos": 10
+    "articulos": 5
+   },
+   {
+    "analogo": "Sudbury",
+    "articulos": 4
+   },
+   {
+    "analogo": "Untersee",
+    "articulos": 2
+   },
+   {
+    "analogo": "Erfoud",
+    "articulos": 2
+   },
+   {
+    "analogo": "Uyuni",
+    "articulos": 2
+   },
+   {
+    "analogo": "Tabernas",
+    "articulos": 1
+   },
+   {
+    "analogo": "Pinacate",
+    "articulos": 0
    }
   ],
   "limitaciones": [
@@ -1582,12 +1585,48 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "moon"
    },
    {
+    "lugar": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canada",
+    "lat": 71.825,
+    "lon": -114.175,
+    "indice": 0.6192,
+    "puesto_analogia": 10,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
     "lugar": "Kitikmeot Region, Nunavut",
     "pais": "Canada",
     "lat": 73.225,
     "lon": -106.775,
     "indice": 0.6169,
     "puesto_analogia": 11,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Tsodrel Jangma, Shuanghu County",
+    "pais": "China",
+    "lat": 36.325,
+    "lon": 87.225,
+    "indice": 0.6163,
+    "puesto_analogia": 12,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canada",
+    "lat": 72.025,
+    "lon": -113.925,
+    "indice": 0.6109,
+    "puesto_analogia": 13,
     "articulos": 0,
     "clase_bibliografica": "sin estudios como análogo",
     "gemelo": "Slater Plain",
@@ -1604,42 +1643,6 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "clase_bibliografica": "sin estudios como análogo",
     "gemelo": "Slater Plain",
     "gemelo_cuerpo": "moon"
-   },
-   {
-    "lugar": "Burj Umar Idris, In Amenas District",
-    "pais": "Algeria",
-    "lat": 28.325,
-    "lon": 7.875,
-    "indice": 0.6,
-    "puesto_analogia": 16,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "Peak near Cabeus B",
-    "gemelo_cuerpo": "moon"
-   },
-   {
-    "lugar": "Halayeb District, Red Sea State",
-    "pais": "Sudan",
-    "lat": 21.925,
-    "lon": 36.075,
-    "indice": 0.6,
-    "puesto_analogia": 17,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "Haworth",
-    "gemelo_cuerpo": "moon"
-   },
-   {
-    "lugar": "Al Khurmah, Makkah Region",
-    "pais": "Saudi Arabia",
-    "lat": 22.025,
-    "lon": 43.025,
-    "indice": 0.6,
-    "puesto_analogia": 18,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "Peak near Cabeus B",
-    "gemelo_cuerpo": "moon"
    }
   ],
   "moon_mars_caves": [
@@ -1653,6 +1656,42 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "articulos": 0,
     "clase_bibliografica": "sin estudios como análogo",
     "gemelo": "candidato a cueva CC0783 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Maricopa County, Arizona",
+    "pais": "United States",
+    "lat": 32.725,
+    "lon": -113.125,
+    "indice": 0.8734,
+    "puesto_analogia": 4,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0843 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "District of Al-Jufra, Libya",
+    "pais": "Libya",
+    "lat": 27.175,
+    "lon": 17.225,
+    "indice": 0.8624,
+    "puesto_analogia": 5,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0190 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Municipio de Durango, Durango",
+    "pais": "Mexico",
+    "lat": 24.125,
+    "lon": -104.475,
+    "indice": 0.8517,
+    "puesto_analogia": 6,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0258 (catálogo MGC3)",
     "gemelo_cuerpo": "mars"
    },
    {
@@ -1678,42 +1717,6 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "clase_bibliografica": "sin estudios como análogo",
     "gemelo": "North Procellarum 1 Pit",
     "gemelo_cuerpo": "moon"
-   },
-   {
-    "lugar": "Umluj, Tabuk Province",
-    "pais": "Saudi Arabia",
-    "lat": 25.125,
-    "lon": 37.525,
-    "indice": 0.8254,
-    "puesto_analogia": 9,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "candidato a cueva CC0572 (catálogo MGC3)",
-    "gemelo_cuerpo": "mars"
-   },
-   {
-    "lugar": "Turkana County, Kenya",
-    "pais": "Kenya",
-    "lat": 3.525,
-    "lon": 35.925,
-    "indice": 0.825,
-    "puesto_analogia": 11,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "candidato a cueva CC0875 (catálogo MGC3)",
-    "gemelo_cuerpo": "mars"
-   },
-   {
-    "lugar": "Al Mahd, Medina Province",
-    "pais": "Saudi Arabia",
-    "lat": 22.975,
-    "lon": 41.075,
-    "indice": 0.8173,
-    "puesto_analogia": 13,
-    "articulos": 0,
-    "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "candidato a cueva CC0550 (catálogo MGC3)",
-    "gemelo_cuerpo": "mars"
    }
   ],
   "mars_astrobiology": [
@@ -1778,15 +1781,15 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     "gemelo_cuerpo": "mars"
    },
    {
-    "lugar": "Delgo - دلقو, Northern State",
-    "pais": "Sudan",
-    "lat": 20.075,
-    "lon": 30.525,
-    "indice": 0.8173,
-    "puesto_analogia": 19,
+    "lugar": "Murzuq, Libya",
+    "pais": "Libya",
+    "lat": 24.875,
+    "lon": 17.675,
+    "indice": 0.8412,
+    "puesto_analogia": 8,
     "articulos": 0,
     "clase_bibliografica": "sin estudios como análogo",
-    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo": "Meridiani Planum (Opportunity)",
     "gemelo_cuerpo": "mars"
    }
   ]
@@ -1795,7 +1798,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
   {
    "perfil": "moon_south_pole_base",
    "archivo": "img/gemelo_moon_south_pole_base.png",
-   "tierra": "sin topónimo (83.58°S, 50.98°O)",
+   "tierra": "Antártida (83,6°S · 51,0°O)",
    "tierra_coord": [
     -83.575,
     -50.975
@@ -1970,7 +1973,15 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     </div>
     <div class="mt-sec" id="mtPerfiles">
       <div class="mt-tit"><p class="kicker">Destinos</p><h3>Tres perfiles de misión</h3></div>
-      <div class="mt-cuerpo"><div class="grid3 mt-perfiles" id="mtPerfilesLista"></div></div>
+      <div class="mt-cuerpo">
+        <p class="read muted">Cada perfil es una pregunta distinta: no buscamos lo mismo para una base en el polo sur lunar que para una cueva o para un rover en Marte. Por eso cada uno se compara con sus propios sitios de la Luna o Marte y da más importancia a unas dimensiones que a otras.</p>
+        <ol class="mt-leer">
+          <li><b>Sitios de referencia.</b> Los lugares reales de la Luna o Marte con los que se compara el terreno de cada celda de la Tierra.</li>
+          <li><b>Peso en el índice.</b> Cuánto cuenta cada dimensión en la nota final del perfil. Los pesos de cada tarjeta suman 100 %. Una barra más larga significa que esa dimensión decide más; no es un resultado, es la receta del perfil.</li>
+          <li><b>Dónde se rompe la analogía.</b> Lo que ningún lugar de la Tierra puede imitar. Un análogo terrestre siempre es parcial y conviene decir en qué.</li>
+          <li><b>Candidatas.</b> Cuántos lugares de la Tierra deja el método para ese perfil al quedarse con lo mejor del mapa (el 1 % superior).</li>
+        </ol>
+        <div class="grid3 mt-perfiles" id="mtPerfilesLista"></div></div>
     </div>
     <div class="mt-sec" id="mtDims">
       <div class="mt-tit"><p class="kicker">Datos de entrada</p><h3>Dimensiones y reglas</h3></div>
@@ -3735,7 +3746,7 @@ if (window.METODO && $('#mtPasosLista')) {
   const M = window.METODO, EN = document.documentElement.lang === 'en';
   const BASE = location.pathname.includes('/en/') ? '../' : '';
   // textos fijos (el build los traduce en la versión inglesa)
-  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior',
+  const L = {sitios: 'sitios de referencia', ejemplos: 'Ejemplos', rompe: 'Dónde se rompe la analogía', candidatas: 'candidatas en el 1 % superior', compara: 'Se compara con', pesoTit: 'Peso de cada dimensión en el índice',
     tierra: 'Tierra', relieve: 'Relieve sombreado de', junto: 'junto a su gemelo', volc: 'Cuevas en entorno volcánico',
     novolc: 'Cuevas kársticas o no volcánicas', azar: 'lo que daría el azar', auc: 'AUC dentro de zonas volcánicas',
     parcial: 'datos parciales', conocidos: 'Análogos conocidos · percentil', cuevas: 'Cuevas de OpenStreetMap', articulos: 'artículos',
@@ -3768,7 +3779,9 @@ if (window.METODO && $('#mtPasosLista')) {
   // F. Tres perfiles de misión
   $('#mtPerfilesLista').innerHTML = M.perfiles.map((p) => `<div class="card">
       <p class="kicker">${esc(p.corto)}</p><h3>${esc(p.titulo)}</h3>
+      <h4 class="mt-h4">${esc(L.compara)}</h4>
       <p class="refs"><b>${num(p.referencias.n_sitios)}</b> ${esc(L.sitios)}. ${esc(L.ejemplos)}: ${p.referencias.ejemplos.slice(0, 4).map(esc).join(', ')}.</p>
+      <h4 class="mt-h4">${esc(L.pesoTit)}</h4>
       <div class="pesos">${p.pesos.map((w) => `<div class="peso"><span>${esc(w.nombre)}</span><span class="bar"><i style="width:${w.peso * 100}%"></i></span><b>${num(w.peso * 100)} %</b></div>`).join('')}</div>
       <h4 class="mt-h4">${esc(L.rompe)}</h4><ul class="mt-lista">${p.rompe.map((r) => `<li>${esc(r)}</li>`).join('')}</ul>
       <div class="num"><b>${num(p.n_candidatas)}</b><span>${esc(L.candidatas)}</span></div></div>`).join('');
