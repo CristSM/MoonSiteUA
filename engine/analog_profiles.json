@@ -1,0 +1,104 @@
+{
+ "_doc": "Perfiles de misión de Analog Finder. Índice = Σ peso·dimensión / Σ peso (dimensiones 0-1, ver Método).",
+ "dims": {
+  "terrain": "Terreno",
+  "cold": "Frío",
+  "frozen": "Suelo congelado",
+  "barren": "Sin vegetación",
+  "low_sun": "Sol rasante",
+  "ice_free": "Sin hielo",
+  "volcanic": "Volcanes",
+  "lithology": "Tipo de roca",
+  "nonsilicic": "Roca basáltica",
+  "arid": "Aridez",
+  "thermal": "Amplitud térmica",
+  "albedo": "Albedo",
+  "dust": "Polvo"
+ },
+ "profiles": [
+  {
+   "id": "moon_south_pole_base",
+   "nombre": "Base lunar permanente — polo sur (Artemis III)",
+   "corto": "Luna · polo sur",
+   "cuerpo": "Luna",
+   "contexto": "Bordes de cráter con luz casi permanente junto a zonas en sombra con hielo. Referencia de terreno: las nueve regiones candidatas de Artemis III y el borde de Shackleton (LRO LOLA).",
+   "fuentes": [
+    "LRO LOLA (relieve 80 m y 474 m)",
+    "LRO Diviner (temperatura)",
+    "MODIS (temperatura, nieve y vegetación en la Tierra)"
+   ],
+   "pesos": {
+    "terrain": 0.35,
+    "ice_free": 0.15,
+    "cold": 0.15,
+    "frozen": 0.1,
+    "barren": 0.1,
+    "low_sun": 0.15
+   },
+   "limites": [
+    "Vacío y ausencia de atmósfera",
+    "Gravedad 1/6 g",
+    "Temperaturas de 40 K en cráteres en sombra permanente (inalcanzables en la Tierra)",
+    "Radiación sin magnetosfera",
+    "Regolito lunar sin meteorización química"
+   ],
+   "destino_backend": "luna_polo_sur"
+  },
+  {
+   "id": "moon_mars_caves",
+   "nombre": "Cuevas y tubos de lava (pozos lunares y candidatos a cueva en Marte)",
+   "corto": "Cuevas y tubos de lava",
+   "cuerpo": "Luna y Marte",
+   "contexto": "Entradas a cavidades: 271 pozos lunares (LROC Lunar Pit Atlas) y 1.057 candidatos a cueva en Marte (catálogo MGC3). Interesan como refugio frente a la radiación.",
+   "fuentes": [
+    "LROC Lunar Pit Atlas",
+    "Mars Global Cave Candidate Catalog",
+    "Smithsonian GVP · GLiM · ASTER GED"
+   ],
+   "pesos": {
+    "terrain": 0.25,
+    "volcanic": 0.2,
+    "lithology": 0.2,
+    "nonsilicic": 0.1,
+    "arid": 0.1,
+    "barren": 0.05,
+    "ice_free": 0.1
+   },
+   "limites": [
+    "Gravedad: los tubos de lava lunares/marcianos pueden ser 10-100 veces más anchos",
+    "Sin agua líquida ni karst en la Luna",
+    "Radiación en superficie (las cuevas son refugio)"
+   ],
+   "destino_backend": "luna_mares_tubos"
+  },
+  {
+   "id": "mars_astrobiology",
+   "nombre": "Astrobiología y exploración en Marte (sitios de rovers)",
+   "corto": "Marte · astrobiología",
+   "cuerpo": "Marte",
+   "contexto": "Lugares de aterrizaje de rovers con interés astrobiológico: Jezero, Gale, Meridiani, Gusev, Oxia Planum, Utopia Planitia y Vastitas Borealis (MGS MOLA y TES).",
+   "fuentes": [
+    "MGS MOLA (relieve 463 m)",
+    "MGS TES (albedo)",
+    "GPM IMERG · MODIS · MERRA-2 · GLiM"
+   ],
+   "pesos": {
+    "terrain": 0.25,
+    "arid": 0.25,
+    "barren": 0.1,
+    "lithology": 0.15,
+    "thermal": 0.1,
+    "albedo": 0.1,
+    "dust": 0.05
+   },
+   "limites": [
+    "Presión atmosférica ~6 mbar y CO2",
+    "Radiación UV sin capa de ozono",
+    "Temperaturas medias ~210 K",
+    "Gravedad 0.38 g",
+    "Percloratos y oxidantes en el suelo"
+   ],
+   "destino_backend": "marte_jezero"
+  }
+ ]
+}

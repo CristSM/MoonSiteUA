@@ -1,0 +1,4864 @@
+{
+ "_doc": "Datos reales del juego (Analog Finder). Generado por scripts/export_juego_data.py.",
+ "generado_utc": "2026-11-15T08:24:42+00:00",
+ "perfiles": [
+  {
+   "id": "moon_south_pole_base",
+   "titulo": "Base lunar permanente — polo sur (Artemis III)",
+   "corto": "Polo sur lunar",
+   "pesos": {
+    "terrain": 0.35,
+    "ice_free": 0.15,
+    "cold": 0.15,
+    "frozen": 0.1,
+    "barren": 0.1,
+    "low_sun": 0.15
+   },
+   "rompe": [
+    "Vacío y ausencia de atmósfera",
+    "Gravedad 1/6 g",
+    "Temperaturas de 40 K en cráteres en sombra permanente (inalcanzables en la Tierra)",
+    "Radiación sin magnetosfera",
+    "Regolito lunar sin meteorización química"
+   ]
+  },
+  {
+   "id": "moon_mars_caves",
+   "titulo": "Cuevas y tubos de lava (pozos lunares y candidatos a cueva en Marte)",
+   "corto": "Cuevas y tubos de lava",
+   "pesos": {
+    "terrain": 0.25,
+    "volcanic": 0.2,
+    "lithology": 0.2,
+    "nonsilicic": 0.1,
+    "arid": 0.1,
+    "barren": 0.05,
+    "ice_free": 0.1
+   },
+   "rompe": [
+    "Gravedad: los tubos de lava lunares/marcianos pueden ser 10-100 veces más anchos",
+    "Sin agua líquida ni karst en la Luna",
+    "Radiación en superficie (las cuevas son refugio)"
+   ]
+  },
+  {
+   "id": "mars_astrobiology",
+   "titulo": "Astrobiología y exploración en Marte (sitios de rovers)",
+   "corto": "Marte",
+   "pesos": {
+    "terrain": 0.25,
+    "arid": 0.25,
+    "barren": 0.1,
+    "lithology": 0.15,
+    "thermal": 0.1,
+    "albedo": 0.1,
+    "dust": 0.05
+   },
+   "rompe": [
+    "Presión atmosférica ~6 mbar y CO2",
+    "Radiación UV sin capa de ozono",
+    "Temperaturas medias ~210 K",
+    "Gravedad 0.38 g",
+    "Percloratos y oxidantes en el suelo"
+   ]
+  }
+ ],
+ "duelo": {
+  "moon_south_pole_base": [
+   {
+    "id": "mcmurdo_dry_valleys",
+    "nombre": "Valles Secos de McMurdo",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7969,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.958,
+     "ice_free": 0.0,
+     "cold": 0.992,
+     "frozen": 1.0,
+     "barren": 1.0,
+     "low_sun": 0.753
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "haughton_devon",
+    "nombre": "Cráter Haughton, isla Devon",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6747,
+    "percentil": 99.4,
+    "dims": {
+     "terrain": 0.888,
+     "ice_free": 0.206,
+     "cold": 0.564,
+     "frozen": 0.442,
+     "barren": 1.0,
+     "low_sun": 0.696
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_8",
+    "nombre": "Kitikmeot Region, Nunavut",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6525,
+    "percentil": 99.0,
+    "dims": {
+     "terrain": 0.993,
+     "ice_free": 0.529,
+     "cold": 0.488,
+     "frozen": 0.0,
+     "barren": 0.588,
+     "low_sun": 0.625
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "iceland_holuhraun",
+    "nombre": "Islandia (Holuhraun / Askja)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6212,
+    "percentil": 98.0,
+    "dims": {
+     "terrain": 0.94,
+     "ice_free": 0.768,
+     "cold": 0.11,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.402
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_10",
+    "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6192,
+    "percentil": 98.0,
+    "dims": {
+     "terrain": 0.903,
+     "ice_free": 0.571,
+     "cold": 0.456,
+     "frozen": 0.0,
+     "barren": 0.615,
+     "low_sun": 0.585
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_11",
+    "nombre": "Kitikmeot Region, Nunavut",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6169,
+    "percentil": 97.8,
+    "dims": {
+     "terrain": 0.909,
+     "ice_free": 0.529,
+     "cold": 0.478,
+     "frozen": 0.0,
+     "barren": 0.547,
+     "low_sun": 0.62
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_12",
+    "nombre": "Tsodrel Jangma, Shuanghu County",
+    "pais": "China",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6163,
+    "percentil": 97.8,
+    "dims": {
+     "terrain": 0.919,
+     "ice_free": 0.717,
+     "cold": 0.301,
+     "frozen": 0.418,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_13",
+    "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6109,
+    "percentil": 97.5,
+    "dims": {
+     "terrain": 0.899,
+     "ice_free": 0.571,
+     "cold": 0.425,
+     "frozen": 0.0,
+     "barren": 0.583,
+     "low_sun": 0.59
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_14",
+    "nombre": "Kitikmeot Region, Nunavut",
+    "pais": "Canadá",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6055,
+    "percentil": 97.2,
+    "dims": {
+     "terrain": 0.881,
+     "ice_free": 0.5,
+     "cold": 0.467,
+     "frozen": 0.0,
+     "barren": 0.637,
+     "low_sun": 0.59
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_16",
+    "nombre": "Burj Umar Idris, In Amenas District",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 1.0,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_17",
+    "nombre": "Halayeb District, Red Sea State",
+    "pais": "Sudán",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 1.0,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_18",
+    "nombre": "Al Khurmah, Makkah Region",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 1.0,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_19",
+    "nombre": "Ranyah, Makkah Region",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.6,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 1.0,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_31",
+    "nombre": "Chira County, Hotan Prefecture",
+    "pais": "China",
+    "tipo": "candidato",
+    "articulos": 2,
+    "indice": 0.5998,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_37",
+    "nombre": "Abu Hamad, River Nile State",
+    "pais": "Sudán",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.5998,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_43",
+    "nombre": "Tamanrasset, Argelia",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.5997,
+    "percentil": 96.8,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_49",
+    "nombre": "Balkan Province, Turkmenistán",
+    "pais": "Turkmenistán",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.5996,
+    "percentil": 96.8,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_55",
+    "nombre": "Xinjiang, China",
+    "pais": "China",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.5995,
+    "percentil": 96.8,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "mojave",
+    "nombre": "Desierto de Mojave",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5951,
+    "percentil": 96.5,
+    "dims": {
+     "terrain": 0.986,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "pinacate",
+    "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5881,
+    "percentil": 95.8,
+    "dims": {
+     "terrain": 0.994,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.903,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "sf_volcanic_field",
+    "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5852,
+    "percentil": 95.5,
+    "dims": {
+     "terrain": 0.999,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.855,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "meteor_crater",
+    "nombre": "Meteor Crater (Arizona)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5799,
+    "percentil": 94.8,
+    "dims": {
+     "terrain": 0.989,
+     "ice_free": 0.998,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.842,
+     "low_sun": 0.0
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "lanzarote",
+    "nombre": "Lanzarote / Timanfaya",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5773,
+    "percentil": 94.4,
+    "dims": {
+     "terrain": 0.984,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.829,
+     "low_sun": 0.0
+    },
+    "gemelo": "Nobile Rim 1",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_desierto_blanco_(farafra",
+    "nombre": "Desierto Blanco (Farafra)",
+    "pais": "Egipto",
+    "tipo": "señuelo",
+    "indice": 0.5708,
+    "percentil": 93.4,
+    "dims": {
+     "terrain": 0.962,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.841,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_teide",
+    "nombre": "Teide",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.5688,
+    "percentil": 93.1,
+    "dims": {
+     "terrain": 0.976,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.77,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_wadi_rum",
+    "nombre": "Wadi Rum",
+    "pais": "Jordania",
+    "tipo": "señuelo",
+    "indice": 0.5684,
+    "percentil": 93.0,
+    "dims": {
+     "terrain": 0.93,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.928,
+     "low_sun": 0.0
+    },
+    "gemelo": "Nobile Rim 1",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_erg_chebbi",
+    "nombre": "Erg Chebbi",
+    "pais": "Marruecos",
+    "tipo": "señuelo",
+    "indice": 0.5665,
+    "percentil": 92.7,
+    "dims": {
+     "terrain": 0.904,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "hawaii_mauna_kea",
+    "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5632,
+    "percentil": 92.1,
+    "dims": {
+     "terrain": 0.895,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Nobile Rim 2",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "kilauea_lava_tubes",
+    "nombre": "Tubos de lava de Kilauea (Hawái)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5632,
+    "percentil": 92.1,
+    "dims": {
+     "terrain": 0.895,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 1.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Nobile Rim 2",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_lençóis_maranhenses",
+    "nombre": "Lençóis Maranhenses",
+    "pais": "Brasil",
+    "tipo": "señuelo",
+    "indice": 0.5608,
+    "percentil": 91.7,
+    "dims": {
+     "terrain": 0.924,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.876,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_dunas_de_khongoryn_els_(",
+    "nombre": "Dunas de Khongoryn Els (Gobi)",
+    "pais": "Mongolia",
+    "tipo": "señuelo",
+    "indice": 0.5561,
+    "percentil": 90.7,
+    "dims": {
+     "terrain": 0.967,
+     "ice_free": 0.833,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.927,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_bardenas_reales",
+    "nombre": "Bardenas Reales",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.5442,
+    "percentil": 88.2,
+    "dims": {
+     "terrain": 0.968,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.555,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_monument_valley",
+    "nombre": "Monument Valley",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.5408,
+    "percentil": 87.4,
+    "dims": {
+     "terrain": 0.924,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.675,
+     "low_sun": 0.0
+    },
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_sossusvlei",
+    "nombre": "Sossusvlei",
+    "pais": "Namibia",
+    "tipo": "señuelo",
+    "indice": 0.5373,
+    "percentil": 86.5,
+    "dims": {
+     "terrain": 0.858,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.869,
+     "low_sun": 0.0
+    },
+    "gemelo": "Mons Mouton Plateau",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_uluru",
+    "nombre": "Uluru",
+    "pais": "Australia",
+    "tipo": "señuelo",
+    "indice": 0.5261,
+    "percentil": 83.7,
+    "dims": {
+     "terrain": 0.941,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.469,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "lava_beds",
+    "nombre": "Lava Beds (California)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5068,
+    "percentil": 78.0,
+    "dims": {
+     "terrain": 0.953,
+     "ice_free": 0.86,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.441,
+     "low_sun": 0.0
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_capadocia",
+    "nombre": "Capadocia",
+    "pais": "Turquía",
+    "tipo": "señuelo",
+    "indice": 0.5035,
+    "percentil": 77.0,
+    "dims": {
+     "terrain": 0.933,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.269,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "ries_crater",
+    "nombre": "Cráter de Ries (Alemania)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4986,
+    "percentil": 75.3,
+    "dims": {
+     "terrain": 0.995,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.0,
+     "low_sun": 0.003
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_etna",
+    "nombre": "Etna",
+    "pais": "Italia",
+    "tipo": "señuelo",
+    "indice": 0.4843,
+    "percentil": 68.9,
+    "dims": {
+     "terrain": 0.955,
+     "ice_free": 1.0,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Mons Mouton Plateau",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "sudbury",
+    "nombre": "Sudbury (Canadá)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4697,
+    "percentil": 63.7,
+    "dims": {
+     "terrain": 0.996,
+     "ice_free": 0.808,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "craters_of_the_moon",
+    "nombre": "Craters of the Moon (Idaho)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.466,
+    "percentil": 62.5,
+    "dims": {
+     "terrain": 0.969,
+     "ice_free": 0.75,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.142,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_bryce_canyon",
+    "nombre": "Bryce Canyon",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.466,
+    "percentil": 62.5,
+    "dims": {
+     "terrain": 0.87,
+     "ice_free": 0.877,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.3,
+     "low_sun": 0.0
+    },
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_gran_cañón",
+    "nombre": "Gran Cañón",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.4473,
+    "percentil": 56.5,
+    "dims": {
+     "terrain": 0.913,
+     "ice_free": 0.853,
+     "cold": 0.0,
+     "frozen": 0.0,
+     "barren": 0.0,
+     "low_sun": 0.0
+    },
+    "gemelo": "Haworth",
+    "gemelo_cuerpo": "Luna"
+   }
+  ],
+  "moon_mars_caves": [
+   {
+    "id": "cand_1",
+    "nombre": "Southern Red Sea Region, Eritrea",
+    "pais": "Eritrea",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8823,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.942,
+     "volcanic": 0.796,
+     "lithology": 1.0,
+     "nonsilicic": 0.983,
+     "arid": 0.429,
+     "barren": 0.925,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0783",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_4",
+    "nombre": "Maricopa County, Arizona",
+    "pais": "Estados Unidos",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8734,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.946,
+     "volcanic": 0.804,
+     "lithology": 1.0,
+     "nonsilicic": 0.944,
+     "arid": 0.416,
+     "barren": 0.8,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0843",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_5",
+    "nombre": "District of Al-Jufra, Libya",
+    "pais": "Libia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8624,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.883,
+     "volcanic": 0.566,
+     "lithology": 1.0,
+     "nonsilicic": 0.984,
+     "arid": 0.828,
+     "barren": 0.944,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0190",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_6",
+    "nombre": "Municipio de Durango, Durango",
+    "pais": "México",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8517,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.995,
+     "volcanic": 0.927,
+     "lithology": 1.0,
+     "nonsilicic": 0.958,
+     "arid": 0.215,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0258",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "mcmurdo_dry_valleys",
+    "nombre": "Valles Secos de McMurdo",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8515,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.888,
+     "volcanic": 0.721,
+     "lithology": 1.0,
+     "arid": 1.0,
+     "barren": 1.0,
+     "ice_free": 0.5
+    },
+    "gemelo": "candidato a cueva CC0118",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_7",
+    "nombre": "Ash Shamli, Ḥa'il Province",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8447,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.933,
+     "volcanic": 0.666,
+     "lithology": 1.0,
+     "nonsilicic": 0.983,
+     "arid": 0.337,
+     "barren": 0.928,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva APC133",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "pinacate",
+    "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8416,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.971,
+     "volcanic": 0.6,
+     "lithology": 1.0,
+     "nonsilicic": 0.986,
+     "arid": 0.414,
+     "barren": 0.777,
+     "ice_free": 1.0
+    },
+    "gemelo": "North Procellarum 2 Pit",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "dallol",
+    "nombre": "Dallol / Danakil (Etiopía)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8349,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.892,
+     "volcanic": 0.653,
+     "lithology": 1.0,
+     "nonsilicic": 0.984,
+     "arid": 0.33,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0118",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_8",
+    "nombre": "Elmore County, Idaho",
+    "pais": "Estados Unidos",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8311,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.97,
+     "volcanic": 0.9,
+     "lithology": 1.0,
+     "nonsilicic": 0.993,
+     "arid": 0.176,
+     "barren": 0.0,
+     "ice_free": 0.917
+    },
+    "gemelo": "North Procellarum 1 Pit",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "cand_9",
+    "nombre": "Umluj, Tabuk Province",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8254,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.81,
+     "volcanic": 0.629,
+     "lithology": 1.0,
+     "nonsilicic": 0.945,
+     "arid": 0.527,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0572",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_11",
+    "nombre": "Turkana County, Kenya",
+    "pais": "Kenia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.825,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.83,
+     "volcanic": 0.774,
+     "lithology": 1.0,
+     "nonsilicic": 0.942,
+     "arid": 0.185,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0875",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "atacama_yungay",
+    "nombre": "Desierto de Atacama (Yungay)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8188,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.929,
+     "volcanic": 0.846,
+     "lithology": 0.6,
+     "nonsilicic": 0.996,
+     "arid": 0.527,
+     "barren": 0.901,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0424",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "altiplano_uyuni",
+    "nombre": "Altiplano / Salar de Uyuni",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8188,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.929,
+     "volcanic": 0.846,
+     "lithology": 0.6,
+     "nonsilicic": 0.996,
+     "arid": 0.527,
+     "barren": 0.901,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0424",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_13",
+    "nombre": "Al Mahd, Medina Province",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8173,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.973,
+     "volcanic": 0.479,
+     "lithology": 1.0,
+     "nonsilicic": 0.952,
+     "arid": 0.355,
+     "barren": 0.951,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0550",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_14",
+    "nombre": "Shasta County, California",
+    "pais": "Estados Unidos",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8078,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.977,
+     "volcanic": 0.793,
+     "lithology": 1.0,
+     "nonsilicic": 0.979,
+     "arid": 0.102,
+     "barren": 0.0,
+     "ice_free": 0.968
+    },
+    "gemelo": "candidato a cueva CC0686",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "death_valley",
+    "nombre": "Valle de la Muerte",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8016,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.993,
+     "volcanic": 0.471,
+     "lithology": 1.0,
+     "nonsilicic": 0.998,
+     "arid": 0.198,
+     "barren": 1.0,
+     "ice_free": 0.895
+    },
+    "gemelo": "candidato a cueva CC0118",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "lava_beds",
+    "nombre": "Lava Beds (California)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7882,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.882,
+     "volcanic": 0.752,
+     "lithology": 1.0,
+     "nonsilicic": 0.952,
+     "arid": 0.193,
+     "barren": 0.085,
+     "ice_free": 0.984
+    },
+    "gemelo": "candidato a cueva CC0325",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "mojave",
+    "nombre": "Desierto de Mojave",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7848,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.711,
+     "volcanic": 0.665,
+     "lithology": 1.0,
+     "nonsilicic": 0.992,
+     "arid": 0.305,
+     "barren": 0.886,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva APC064",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_31",
+    "nombre": "East Shewa, Oromia Region",
+    "pais": "Etiopía",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.768,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.943,
+     "volcanic": 0.66,
+     "lithology": 1.0,
+     "nonsilicic": 0.973,
+     "arid": 0.028,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0162",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_37",
+    "nombre": "Municipio de Comondú, Baja California Sur",
+    "pais": "México",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.7615,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.952,
+     "volcanic": 0.483,
+     "lithology": 1.0,
+     "nonsilicic": 0.58,
+     "arid": 0.501,
+     "barren": 0.38,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0622",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_43",
+    "nombre": "Queensland, Australia",
+    "pais": "Australia",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.7531,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.957,
+     "volcanic": 0.927,
+     "lithology": 1.0,
+     "nonsilicic": 0.18,
+     "arid": 0.105,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0607",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "craters_of_the_moon",
+    "nombre": "Craters of the Moon (Idaho)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.749,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.861,
+     "volcanic": 0.685,
+     "lithology": 1.0,
+     "nonsilicic": 0.978,
+     "arid": 0.222,
+     "barren": 0.0,
+     "ice_free": 0.766
+    },
+    "gemelo": "candidato a cueva CC0892",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_49",
+    "nombre": "Makkah Region, Arabia Saudí",
+    "pais": "Arabia Saudí",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.747,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.992,
+     "volcanic": 0.08,
+     "lithology": 1.0,
+     "nonsilicic": 0.997,
+     "arid": 0.358,
+     "barren": 0.949,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0857",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_55",
+    "nombre": "Champasak Province, Laos",
+    "pais": "Laos",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.7426,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.767,
+     "volcanic": 0.913,
+     "lithology": 1.0,
+     "nonsilicic": 0.683,
+     "arid": 0.0,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0852",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "iceland_holuhraun",
+    "nombre": "Islandia (Holuhraun / Askja)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7346,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.902,
+     "volcanic": 0.795,
+     "lithology": 1.0,
+     "nonsilicic": 0.359,
+     "arid": 0.079,
+     "barren": 1.0,
+     "ice_free": 0.564
+    },
+    "gemelo": "candidato a cueva CC0609",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_teide",
+    "nombre": "Teide",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.7185,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.27,
+     "volcanic": 0.878,
+     "lithology": 1.0,
+     "nonsilicic": 0.999,
+     "arid": 0.367,
+     "barren": 0.77,
+     "ice_free": 1.0
+    },
+    "gemelo": "Highland 1",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "pilbara",
+    "nombre": "Pilbara (Australia)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7108,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.991,
+     "volcanic": 0.0,
+     "lithology": 1.0,
+     "nonsilicic": 0.997,
+     "arid": 0.329,
+     "barren": 0.607,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0872",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "sf_volcanic_field",
+    "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6784,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.464,
+     "volcanic": 0.711,
+     "lithology": 1.0,
+     "nonsilicic": 0.939,
+     "arid": 0.257,
+     "barren": 0.231,
+     "ice_free": 0.889
+    },
+    "gemelo": "candidato a cueva CC0850",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "namib",
+    "nombre": "Desierto del Namib",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6721,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.959,
+     "volcanic": 0.0,
+     "arid": 0.807,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0887",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "hawaii_mauna_kea",
+    "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6682,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.622,
+     "volcanic": 0.65,
+     "arid": 0.323,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva APC085",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "meteor_crater",
+    "nombre": "Meteor Crater (Arizona)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6626,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.59,
+     "volcanic": 0.341,
+     "lithology": 1.0,
+     "nonsilicic": 0.942,
+     "arid": 0.281,
+     "barren": 0.659,
+     "ice_free": 0.917
+    },
+    "gemelo": "Lacus Mortis Pit",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "lanzarote",
+    "nombre": "Lanzarote / Timanfaya",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6536,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.683,
+     "volcanic": 0.44,
+     "nonsilicic": 0.974,
+     "arid": 0.373,
+     "barren": 0.59,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0854",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "qaidam",
+    "nombre": "Cuenca de Qaidam (China)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6521,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.961,
+     "volcanic": 0.007,
+     "lithology": 0.6,
+     "nonsilicic": 0.993,
+     "arid": 0.437,
+     "barren": 0.947,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0658",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "kilauea_lava_tubes",
+    "nombre": "Tubos de lava de Kilauea (Hawái)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6302,
+    "percentil": 99.8,
+    "dims": {
+     "terrain": 0.545,
+     "volcanic": 0.737,
+     "lithology": 1.0,
+     "nonsilicic": 0.124,
+     "arid": 0.0,
+     "barren": 0.684,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0498",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "svalbard_amase",
+    "nombre": "Svalbard (Bockfjord, AMASE)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.56,
+    "percentil": 99.4,
+    "dims": {
+     "terrain": 0.963,
+     "volcanic": 0.336,
+     "nonsilicic": 0.235,
+     "arid": 0.137,
+     "barren": 0.93,
+     "ice_free": 0.563
+    },
+    "gemelo": "candidato a cueva CC0886",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "oman_dhofar",
+    "nombre": "Desierto de Omán (AMADEE-18)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.553,
+    "percentil": 99.3,
+    "dims": {
+     "terrain": 0.996,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.942,
+     "arid": 0.659,
+     "barren": 0.874,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0188",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "arkaroola",
+    "nombre": "Arkaroola (Australia)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5451,
+    "percentil": 99.2,
+    "dims": {
+     "terrain": 1.0,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.999,
+     "arid": 0.48,
+     "barren": 0.946,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0887",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "axel_heiberg",
+    "nombre": "Isla Axel Heiberg",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5197,
+    "percentil": 98.8,
+    "dims": {
+     "terrain": 0.619,
+     "volcanic": 0.0,
+     "arid": 0.591,
+     "barren": 1.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva APC085",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_desierto_blanco_(farafra",
+    "nombre": "Desierto Blanco (Farafra)",
+    "pais": "Egipto",
+    "tipo": "señuelo",
+    "indice": 0.5165,
+    "percentil": 98.8,
+    "dims": {
+     "terrain": 0.908,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.686,
+     "arid": 0.902,
+     "barren": 0.614,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0162",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_etna",
+    "nombre": "Etna",
+    "pais": "Italia",
+    "tipo": "señuelo",
+    "indice": 0.5116,
+    "percentil": 98.7,
+    "dims": {
+     "terrain": 0.09,
+     "volcanic": 0.934,
+     "nonsilicic": 0.994,
+     "arid": 0.095,
+     "barren": 0.048,
+     "ice_free": 0.887
+    },
+    "gemelo": "candidato a cueva CC0895",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_capadocia",
+    "nombre": "Capadocia",
+    "pais": "Turquía",
+    "tipo": "señuelo",
+    "indice": 0.5079,
+    "percentil": 98.6,
+    "dims": {
+     "terrain": 0.317,
+     "volcanic": 0.442,
+     "lithology": 0.6,
+     "nonsilicic": 0.97,
+     "arid": 0.178,
+     "barren": 0.111,
+     "ice_free": 1.0
+    },
+    "gemelo": "Tycho 29c",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "mars_desert_morocco",
+    "nombre": "Desierto de Marruecos (MARS2013, Erfoud)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5074,
+    "percentil": 98.6,
+    "dims": {
+     "terrain": 0.792,
+     "volcanic": 0.012,
+     "lithology": 0.0,
+     "nonsilicic": 0.986,
+     "arid": 0.64,
+     "barren": 0.889,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0188",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "lake_untersee",
+    "nombre": "Lago Untersee (Antártida)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5042,
+    "percentil": 98.5,
+    "dims": {
+     "terrain": 0.862,
+     "volcanic": 0.0,
+     "lithology": 0.3,
+     "nonsilicic": 0.799,
+     "arid": 0.987,
+     "barren": 1.0,
+     "ice_free": 0.0
+    },
+    "gemelo": "candidato a cueva CC0642",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_lençóis_maranhenses",
+    "nombre": "Lençóis Maranhenses",
+    "pais": "Brasil",
+    "tipo": "señuelo",
+    "indice": 0.4877,
+    "percentil": 97.9,
+    "dims": {
+     "terrain": 0.977,
+     "volcanic": 0.0,
+     "nonsilicic": 0.028,
+     "arid": 0.0,
+     "barren": 0.864,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0881",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "negev_ramon",
+    "nombre": "Negev / Makhtesh Ramon (D-MARS)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4796,
+    "percentil": 97.3,
+    "dims": {
+     "terrain": 0.815,
+     "volcanic": 0.44,
+     "lithology": 0.0,
+     "nonsilicic": 0.036,
+     "arid": 0.382,
+     "barren": 0.923,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0252",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_erg_chebbi",
+    "nombre": "Erg Chebbi",
+    "pais": "Marruecos",
+    "tipo": "señuelo",
+    "indice": 0.4591,
+    "percentil": 93.4,
+    "dims": {
+     "terrain": 0.963,
+     "volcanic": 0.012,
+     "lithology": 0.0,
+     "nonsilicic": 0.054,
+     "arid": 0.628,
+     "barren": 0.958,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0793",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_dunas_de_khongoryn_els_(",
+    "nombre": "Dunas de Khongoryn Els (Gobi)",
+    "pais": "Mongolia",
+    "tipo": "señuelo",
+    "indice": 0.4531,
+    "percentil": 91.8,
+    "dims": {
+     "terrain": 0.676,
+     "volcanic": 0.001,
+     "lithology": 0.0,
+     "nonsilicic": 0.982,
+     "arid": 0.489,
+     "barren": 1.0,
+     "ice_free": 0.868
+    },
+    "gemelo": "candidato a cueva CC0022",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "haughton_devon",
+    "nombre": "Cráter Haughton, isla Devon",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4494,
+    "percentil": 90.8,
+    "dims": {
+     "terrain": 0.866,
+     "volcanic": 0.0,
+     "nonsilicic": 0.567,
+     "arid": 0.469,
+     "barren": 0.218,
+     "ice_free": 0.286
+    },
+    "gemelo": "candidato a cueva CC0165",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "tabernas_almeria",
+    "nombre": "Desierto de Tabernas / Almería",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4183,
+    "percentil": 81.6,
+    "dims": {
+     "terrain": 0.625,
+     "volcanic": 0.027,
+     "nonsilicic": 0.269,
+     "arid": 0.356,
+     "barren": 0.209,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0201",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "rio_tinto",
+    "nombre": "Río Tinto",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4089,
+    "percentil": 78.8,
+    "dims": {
+     "terrain": 0.287,
+     "volcanic": 0.011,
+     "lithology": 0.6,
+     "nonsilicic": 0.936,
+     "arid": 0.213,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "Tycho 17b",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_uluru",
+    "nombre": "Uluru",
+    "pais": "Australia",
+    "tipo": "señuelo",
+    "indice": 0.4052,
+    "percentil": 77.8,
+    "dims": {
+     "terrain": 0.975,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.077,
+     "arid": 0.323,
+     "barren": 0.43,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0665",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_wadi_rum",
+    "nombre": "Wadi Rum",
+    "pais": "Jordania",
+    "tipo": "señuelo",
+    "indice": 0.4041,
+    "percentil": 77.4,
+    "dims": {
+     "terrain": 0.329,
+     "volcanic": 0.065,
+     "lithology": 0.0,
+     "nonsilicic": 0.995,
+     "arid": 0.614,
+     "barren": 0.956,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0864",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "utah_mdrs",
+    "nombre": "Utah (MDRS, Hanksville)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.3959,
+    "percentil": 75.3,
+    "dims": {
+     "terrain": 0.482,
+     "volcanic": 0.197,
+     "lithology": 0.2,
+     "nonsilicic": 0.939,
+     "arid": 0.29,
+     "barren": 0.293,
+     "ice_free": 0.583
+    },
+    "gemelo": "candidato a cueva CC0689",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "ries_crater",
+    "nombre": "Cráter de Ries (Alemania)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.3691,
+    "percentil": 68.4,
+    "dims": {
+     "terrain": 0.895,
+     "volcanic": 0.024,
+     "lithology": 0.0,
+     "nonsilicic": 0.404,
+     "arid": 0.001,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0535",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "sudbury",
+    "nombre": "Sudbury (Canadá)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.3523,
+    "percentil": 63.9,
+    "dims": {
+     "terrain": 0.838,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.654,
+     "arid": 0.025,
+     "barren": 0.0,
+     "ice_free": 0.75
+    },
+    "gemelo": "Mare Serenitatis Pit",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_bryce_canyon",
+    "nombre": "Bryce Canyon",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.3428,
+    "percentil": 61.5,
+    "dims": {
+     "terrain": 0.359,
+     "volcanic": 0.48,
+     "lithology": 0.0,
+     "nonsilicic": 0.299,
+     "arid": 0.244,
+     "barren": 0.3,
+     "ice_free": 0.877
+    },
+    "gemelo": "Tycho 13",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "ladakh",
+    "nombre": "Ladakh (Tso Kar / Puga)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.3345,
+    "percentil": 59.3,
+    "dims": {
+     "terrain": 0.222,
+     "volcanic": 0.001,
+     "lithology": 0.0,
+     "nonsilicic": 0.955,
+     "arid": 0.403,
+     "barren": 0.96,
+     "ice_free": 0.952
+    },
+    "gemelo": "candidato a cueva CC0807",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_monument_valley",
+    "nombre": "Monument Valley",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.331,
+    "percentil": 58.5,
+    "dims": {
+     "terrain": 0.633,
+     "volcanic": 0.013,
+     "lithology": 0.0,
+     "nonsilicic": 0.069,
+     "arid": 0.345,
+     "barren": 0.659,
+     "ice_free": 0.959
+    },
+    "gemelo": "candidato a cueva CC0807",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_gran_cañón",
+    "nombre": "Gran Cañón",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.329,
+    "percentil": 57.9,
+    "dims": {
+     "terrain": 0.536,
+     "volcanic": 0.208,
+     "lithology": 0.0,
+     "nonsilicic": 0.508,
+     "arid": 0.253,
+     "barren": 0.0,
+     "ice_free": 0.772
+    },
+    "gemelo": "candidato a cueva CC0107",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_bardenas_reales",
+    "nombre": "Bardenas Reales",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.3207,
+    "percentil": 55.8,
+    "dims": {
+     "terrain": 0.46,
+     "volcanic": 0.002,
+     "lithology": 0.0,
+     "nonsilicic": 0.967,
+     "arid": 0.086,
+     "barren": 0.0,
+     "ice_free": 1.0
+    },
+    "gemelo": "Compton Pit",
+    "gemelo_cuerpo": "Luna"
+   },
+   {
+    "id": "senuelo_sossusvlei",
+    "nombre": "Sossusvlei",
+    "pais": "Namibia",
+    "tipo": "señuelo",
+    "indice": 0.3094,
+    "percentil": 52.8,
+    "dims": {
+     "terrain": 0.345,
+     "volcanic": 0.0,
+     "lithology": 0.0,
+     "nonsilicic": 0.039,
+     "arid": 0.773,
+     "barren": 0.837,
+     "ice_free": 1.0
+    },
+    "gemelo": "candidato a cueva CC0886",
+    "gemelo_cuerpo": "Marte"
+   }
+  ],
+  "mars_astrobiology": [
+   {
+    "id": "cand_1",
+    "nombre": "Burj Umar Idris, In Amenas District",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8619,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.964,
+     "arid": 1.0,
+     "barren": 0.962,
+     "lithology": 0.6,
+     "thermal": 0.598,
+     "albedo": 0.962,
+     "dust": 0.572
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_2",
+    "nombre": "Illizi, Illizi District",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8526,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.996,
+     "arid": 1.0,
+     "barren": 0.918,
+     "lithology": 0.6,
+     "thermal": 0.557,
+     "albedo": 0.903,
+     "dust": 0.518
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_3",
+    "nombre": "Chahar Burjak, Nimruz Province",
+    "pais": "Afganistán",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8491,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.986,
+     "arid": 0.717,
+     "barren": 1.0,
+     "lithology": 1.0,
+     "thermal": 0.546,
+     "albedo": 0.965,
+     "dust": 0.445
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_5",
+    "nombre": "Tombouctou Cercle, Taoudénit Region",
+    "pais": "Malí",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8445,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.945,
+     "arid": 0.995,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.45,
+     "albedo": 0.906,
+     "dust": 0.974
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_6",
+    "nombre": "Wadi al Shatii, Libya",
+    "pais": "Libia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8433,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.989,
+     "arid": 1.0,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.527,
+     "albedo": 0.812,
+     "dust": 0.443
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_8",
+    "nombre": "Murzuq, Libya",
+    "pais": "Libia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8412,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.958,
+     "arid": 0.932,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.533,
+     "albedo": 0.999,
+     "dust": 0.508
+    },
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_10",
+    "nombre": "New Valley, Egypt",
+    "pais": "Egipto",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8326,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.984,
+     "arid": 0.988,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.497,
+     "albedo": 0.973,
+     "dust": 0.35
+    },
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_11",
+    "nombre": "Pozo Almonte, Provincia del Tamarugal",
+    "pais": "Chile",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.832,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.982,
+     "arid": 0.824,
+     "barren": 0.914,
+     "lithology": 0.6,
+     "thermal": 0.987,
+     "albedo": 0.996,
+     "dust": 0.02
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_14",
+    "nombre": "Tabelbala, Beni Abbes",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8291,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.992,
+     "arid": 0.931,
+     "barren": 0.95,
+     "lithology": 0.6,
+     "thermal": 0.504,
+     "albedo": 0.774,
+     "dust": 0.709
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_18",
+    "nombre": "New Valley, Egypt",
+    "pais": "Egipto",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.8178,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.96,
+     "arid": 1.0,
+     "barren": 0.953,
+     "lithology": 0.5,
+     "thermal": 0.473,
+     "albedo": 0.928,
+     "dust": 0.35
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "atacama_yungay",
+    "nombre": "Desierto de Atacama (Yungay)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8096,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.954,
+     "arid": 0.541,
+     "barren": 0.954,
+     "lithology": 1.0,
+     "thermal": 0.999,
+     "albedo": 0.903,
+     "dust": 0.008
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "qaidam",
+    "nombre": "Cuenca de Qaidam (China)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8048,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.936,
+     "arid": 0.84,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.624,
+     "albedo": 0.82,
+     "dust": 0.526
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "altiplano_uyuni",
+    "nombre": "Altiplano / Salar de Uyuni",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.8047,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.89,
+     "arid": 0.823,
+     "barren": 0.938,
+     "lithology": 0.6,
+     "thermal": 0.915,
+     "albedo": 0.999,
+     "dust": 0.02
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_31",
+    "nombre": "Sali, Reggane District",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.802,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 1.0,
+     "arid": 0.753,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.508,
+     "albedo": 0.825,
+     "dust": 0.812
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_37",
+    "nombre": "Aswan, Egypt",
+    "pais": "Egipto",
+    "tipo": "candidato",
+    "articulos": 0,
+    "indice": 0.7994,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.996,
+     "arid": 1.0,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.406,
+     "albedo": 0.604,
+     "dust": 0.489
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_43",
+    "nombre": "Red Sea, Egipto",
+    "pais": "Egipto",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.7949,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.962,
+     "arid": 1.0,
+     "barren": 0.875,
+     "lithology": 0.6,
+     "thermal": 0.488,
+     "albedo": 0.571,
+     "dust": 0.422
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_49",
+    "nombre": "Tinduf, Argelia",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.7928,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.989,
+     "arid": 0.719,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.545,
+     "albedo": 0.999,
+     "dust": 0.726
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "cand_55",
+    "nombre": "Tinduf, Argelia",
+    "pais": "Argelia",
+    "tipo": "candidato",
+    "articulos": null,
+    "indice": 0.7904,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.975,
+     "arid": 0.741,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.495,
+     "albedo": 0.983,
+     "dust": 0.77
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "namib",
+    "nombre": "Desierto del Namib",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7811,
+    "percentil": 100.0,
+    "dims": {
+     "terrain": 0.989,
+     "arid": 0.807,
+     "barren": 0.881,
+     "thermal": 0.26,
+     "albedo": 0.941,
+     "dust": 0.135
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "mars_desert_morocco",
+    "nombre": "Desierto de Marruecos (MARS2013, Erfoud)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7563,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.922,
+     "arid": 0.661,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.554,
+     "albedo": 0.998,
+     "dust": 0.311
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_erg_chebbi",
+    "nombre": "Erg Chebbi",
+    "pais": "Marruecos",
+    "tipo": "señuelo",
+    "indice": 0.7563,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.922,
+     "arid": 0.661,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.554,
+     "albedo": 0.998,
+     "dust": 0.311
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "mcmurdo_dry_valleys",
+    "nombre": "Valles Secos de McMurdo",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7525,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.948,
+     "arid": 1.0,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.0,
+     "dust": 0.007
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_desierto_blanco_(farafra",
+    "nombre": "Desierto Blanco (Farafra)",
+    "pais": "Egipto",
+    "tipo": "señuelo",
+    "indice": 0.7393,
+    "percentil": 99.9,
+    "dims": {
+     "terrain": 0.976,
+     "arid": 0.922,
+     "barren": 0.993,
+     "lithology": 0.6,
+     "thermal": 0.512,
+     "albedo": 0.013,
+     "dust": 0.461
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "oman_dhofar",
+    "nombre": "Desierto de Omán (AMADEE-18)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.7046,
+    "percentil": 99.6,
+    "dims": {
+     "terrain": 0.991,
+     "arid": 0.788,
+     "barren": 0.96,
+     "lithology": 0.6,
+     "thermal": 0.376,
+     "albedo": 0.019,
+     "dust": 0.689
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "dallol",
+    "nombre": "Dallol / Danakil (Etiopía)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.703,
+    "percentil": 99.5,
+    "dims": {
+     "terrain": 0.995,
+     "arid": 0.413,
+     "barren": 1.0,
+     "thermal": 0.213,
+     "albedo": 0.991,
+     "dust": 0.503
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "death_valley",
+    "nombre": "Valle de la Muerte",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6695,
+    "percentil": 99.0,
+    "dims": {
+     "terrain": 0.923,
+     "arid": 0.41,
+     "barren": 0.841,
+     "lithology": 0.6,
+     "thermal": 0.62,
+     "albedo": 0.969,
+     "dust": 0.065
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "pinacate",
+    "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6649,
+    "percentil": 98.9,
+    "dims": {
+     "terrain": 0.933,
+     "arid": 0.413,
+     "barren": 0.79,
+     "lithology": 0.6,
+     "thermal": 0.583,
+     "albedo": 0.978,
+     "dust": 0.064
+    },
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "arkaroola",
+    "nombre": "Arkaroola (Australia)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6638,
+    "percentil": 98.9,
+    "dims": {
+     "terrain": 0.989,
+     "arid": 0.493,
+     "barren": 0.688,
+     "lithology": 0.6,
+     "thermal": 0.349,
+     "albedo": 0.967,
+     "dust": 0.054
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_dunas_de_khongoryn_els_(",
+    "nombre": "Dunas de Khongoryn Els (Gobi)",
+    "pais": "Mongolia",
+    "tipo": "señuelo",
+    "indice": 0.6553,
+    "percentil": 98.7,
+    "dims": {
+     "terrain": 0.736,
+     "arid": 0.489,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.528,
+     "albedo": 0.961,
+     "dust": 0.203
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "mojave",
+    "nombre": "Desierto de Mojave",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6488,
+    "percentil": 98.5,
+    "dims": {
+     "terrain": 0.94,
+     "arid": 0.342,
+     "barren": 0.952,
+     "lithology": 0.6,
+     "thermal": 0.411,
+     "albedo": 0.983,
+     "dust": 0.076
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "negev_ramon",
+    "nombre": "Negev / Makhtesh Ramon (D-MARS)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6434,
+    "percentil": 98.4,
+    "dims": {
+     "terrain": 0.942,
+     "arid": 0.622,
+     "barren": 0.906,
+     "lithology": 0.6,
+     "thermal": 0.336,
+     "albedo": 0.218,
+     "dust": 0.331
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "pilbara",
+    "nombre": "Pilbara (Australia)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6351,
+    "percentil": 98.1,
+    "dims": {
+     "terrain": 0.987,
+     "arid": 0.329,
+     "barren": 0.607,
+     "lithology": 0.6,
+     "thermal": 0.571,
+     "albedo": 0.971,
+     "dust": 0.026
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "sf_volcanic_field",
+    "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6301,
+    "percentil": 98.0,
+    "dims": {
+     "terrain": 0.977,
+     "arid": 0.306,
+     "barren": 0.853,
+     "lithology": 0.6,
+     "thermal": 0.571,
+     "albedo": 0.747,
+     "dust": 0.043
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "lake_untersee",
+    "nombre": "Lago Untersee (Antártida)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.6001,
+    "percentil": 96.9,
+    "dims": {
+     "terrain": 0.999,
+     "arid": 1.0,
+     "barren": 1.0,
+     "lithology": 0.0,
+     "thermal": 0.0,
+     "albedo": 0.0,
+     "dust": 0.008
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_sossusvlei",
+    "nombre": "Sossusvlei",
+    "pais": "Namibia",
+    "tipo": "señuelo",
+    "indice": 0.5957,
+    "percentil": 96.4,
+    "dims": {
+     "terrain": 0.343,
+     "arid": 0.773,
+     "barren": 0.884,
+     "lithology": 0.6,
+     "thermal": 0.601,
+     "albedo": 0.747,
+     "dust": 0.068
+    },
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_uluru",
+    "nombre": "Uluru",
+    "pais": "Australia",
+    "tipo": "señuelo",
+    "indice": 0.5747,
+    "percentil": 93.1,
+    "dims": {
+     "terrain": 0.928,
+     "arid": 0.315,
+     "barren": 0.479,
+     "lithology": 0.6,
+     "thermal": 0.304,
+     "albedo": 0.941,
+     "dust": 0.032
+    },
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "iceland_holuhraun",
+    "nombre": "Islandia (Holuhraun / Askja)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5677,
+    "percentil": 91.6,
+    "dims": {
+     "terrain": 0.945,
+     "arid": 0.175,
+     "barren": 1.0,
+     "lithology": 0.6,
+     "thermal": 0.0,
+     "albedo": 0.965,
+     "dust": 0.025
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "craters_of_the_moon",
+    "nombre": "Craters of the Moon (Idaho)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5624,
+    "percentil": 90.5,
+    "dims": {
+     "terrain": 0.892,
+     "arid": 0.211,
+     "barren": 0.956,
+     "lithology": 0.6,
+     "thermal": 0.239,
+     "albedo": 0.748,
+     "dust": 0.045
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "utah_mdrs",
+    "nombre": "Utah (MDRS, Hanksville)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5538,
+    "percentil": 88.5,
+    "dims": {
+     "terrain": 0.903,
+     "arid": 0.246,
+     "barren": 0.561,
+     "lithology": 0.5,
+     "thermal": 0.423,
+     "albedo": 0.91,
+     "dust": 0.041
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_monument_valley",
+    "nombre": "Monument Valley",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.5426,
+    "percentil": 85.7,
+    "dims": {
+     "terrain": 0.916,
+     "arid": 0.345,
+     "barren": 0.659,
+     "lithology": 0.3,
+     "thermal": 0.439,
+     "albedo": 0.705,
+     "dust": 0.04
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "lanzarote",
+    "nombre": "Lanzarote / Timanfaya",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5341,
+    "percentil": 83.4,
+    "dims": {
+     "terrain": 0.549,
+     "arid": 0.45,
+     "barren": 0.806,
+     "thermal": 0.161,
+     "albedo": 0.917,
+     "dust": 0.319
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "lava_beds",
+    "nombre": "Lava Beds (California)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5295,
+    "percentil": 82.1,
+    "dims": {
+     "terrain": 0.972,
+     "arid": 0.193,
+     "barren": 0.202,
+     "lithology": 0.6,
+     "thermal": 0.346,
+     "albedo": 0.914,
+     "dust": 0.039
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "ladakh",
+    "nombre": "Ladakh (Tso Kar / Puga)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5294,
+    "percentil": 82.1,
+    "dims": {
+     "terrain": 0.272,
+     "arid": 0.511,
+     "barren": 0.972,
+     "lithology": 0.4,
+     "thermal": 0.733,
+     "albedo": 0.999,
+     "dust": 0.063
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_wadi_rum",
+    "nombre": "Wadi Rum",
+    "pais": "Jordania",
+    "tipo": "señuelo",
+    "indice": 0.5282,
+    "percentil": 81.8,
+    "dims": {
+     "terrain": 0.252,
+     "arid": 0.602,
+     "barren": 0.928,
+     "lithology": 0.6,
+     "thermal": 0.251,
+     "albedo": 0.91,
+     "dust": 0.318
+    },
+    "gemelo": "Jezero (Perseverance)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "axel_heiberg",
+    "nombre": "Isla Axel Heiberg",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5217,
+    "percentil": 80.0,
+    "dims": {
+     "terrain": 0.992,
+     "arid": 0.669,
+     "barren": 0.451,
+     "lithology": 0.4,
+     "thermal": 0.0,
+     "albedo": 0.0,
+     "dust": 0.027
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "tabernas_almeria",
+    "nombre": "Desierto de Tabernas / Almería",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5132,
+    "percentil": 77.6,
+    "dims": {
+     "terrain": 0.999,
+     "arid": 0.294,
+     "barren": 0.0,
+     "lithology": 0.4,
+     "thermal": 0.244,
+     "albedo": 0.99,
+     "dust": 0.133
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_lençóis_maranhenses",
+    "nombre": "Lençóis Maranhenses",
+    "pais": "Brasil",
+    "tipo": "señuelo",
+    "indice": 0.5073,
+    "percentil": 75.9,
+    "dims": {
+     "terrain": 0.981,
+     "arid": 0.0,
+     "barren": 0.864,
+     "thermal": 0.0,
+     "albedo": 0.974,
+     "dust": 0.041
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "haughton_devon",
+    "nombre": "Cráter Haughton, isla Devon",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.5066,
+    "percentil": 75.7,
+    "dims": {
+     "terrain": 0.921,
+     "arid": 0.509,
+     "barren": 0.717,
+     "thermal": 0.0,
+     "albedo": 0.0,
+     "dust": 0.027
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "svalbard_amase",
+    "nombre": "Svalbard (Bockfjord, AMASE)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4977,
+    "percentil": 73.3,
+    "dims": {
+     "terrain": 0.861,
+     "arid": 0.223,
+     "barren": 1.0,
+     "lithology": 0.5,
+     "thermal": 0.0,
+     "albedo": 0.504,
+     "dust": 0.027
+    },
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "rio_tinto",
+    "nombre": "Río Tinto",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.4856,
+    "percentil": 71.0,
+    "dims": {
+     "terrain": 0.882,
+     "arid": 0.203,
+     "barren": 0.0,
+     "lithology": 0.6,
+     "thermal": 0.2,
+     "albedo": 0.98,
+     "dust": 0.123
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_teide",
+    "nombre": "Teide",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.4338,
+    "percentil": 65.4,
+    "dims": {
+     "terrain": 0.208,
+     "arid": 0.367,
+     "barren": 0.77,
+     "lithology": 0.6,
+     "thermal": 0.524,
+     "albedo": 0.592,
+     "dust": 0.227
+    },
+    "gemelo": "Jezero (Perseverance)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_gran_cañón",
+    "nombre": "Gran Cañón",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.4311,
+    "percentil": 65.1,
+    "dims": {
+     "terrain": 0.621,
+     "arid": 0.247,
+     "barren": 0.076,
+     "lithology": 0.5,
+     "thermal": 0.342,
+     "albedo": 0.951,
+     "dust": 0.044
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "hawaii_mauna_kea",
+    "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.408,
+    "percentil": 62.1,
+    "dims": {
+     "terrain": 0.746,
+     "arid": 0.292,
+     "barren": 0.221,
+     "thermal": 0.14,
+     "albedo": 0.504,
+     "dust": 0.017
+    },
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_bardenas_reales",
+    "nombre": "Bardenas Reales",
+    "pais": "España",
+    "tipo": "señuelo",
+    "indice": 0.3842,
+    "percentil": 58.8,
+    "dims": {
+     "terrain": 0.51,
+     "arid": 0.092,
+     "barren": 0.555,
+     "lithology": 0.5,
+     "thermal": 0.097,
+     "albedo": 0.898,
+     "dust": 0.073
+    },
+    "gemelo": "Oxia Planum (Rosalind Franklin)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "kilauea_lava_tubes",
+    "nombre": "Tubos de lava de Kilauea (Hawái)",
+    "pais": null,
+    "tipo": "conocido",
+    "indice": 0.3646,
+    "percentil": 55.8,
+    "dims": {
+     "terrain": 0.487,
+     "arid": 0.0,
+     "barren": 0.803,
+     "lithology": 0.6,
+     "thermal": 0.509,
+     "albedo": 0.209,
+     "dust": 0.015
+    },
+    "gemelo": "Gale (Curiosity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_bryce_canyon",
+    "nombre": "Bryce Canyon",
+    "pais": "Estados Unidos",
+    "tipo": "señuelo",
+    "indice": 0.3606,
+    "percentil": 55.1,
+    "dims": {
+     "terrain": 0.351,
+     "arid": 0.256,
+     "barren": 0.413,
+     "lithology": 0.3,
+     "thermal": 0.317,
+     "albedo": 0.888,
+     "dust": 0.041
+    },
+    "gemelo": "Gale (Curiosity)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_capadocia",
+    "nombre": "Capadocia",
+    "pais": "Turquía",
+    "tipo": "señuelo",
+    "indice": 0.3354,
+    "percentil": 50.8,
+    "dims": {
+     "terrain": 0.393,
+     "arid": 0.187,
+     "barren": 0.084,
+     "lithology": 0.4,
+     "thermal": 0.288,
+     "albedo": 0.878,
+     "dust": 0.105
+    },
+    "gemelo": "Jezero (Perseverance)",
+    "gemelo_cuerpo": "Marte"
+   },
+   {
+    "id": "senuelo_etna",
+    "nombre": "Etna",
+    "pais": "Italia",
+    "tipo": "señuelo",
+    "indice": 0.2531,
+    "percentil": 31.9,
+    "dims": {
+     "terrain": 0.24,
+     "arid": 0.137,
+     "barren": 0.0,
+     "lithology": 0.4,
+     "thermal": 0.081,
+     "albedo": 0.829,
+     "dust": 0.155
+    },
+    "gemelo": "Jezero (Perseverance)",
+    "gemelo_cuerpo": "Marte"
+   }
+  ]
+ },
+ "gemelo": [
+  {
+   "id": "gemelo_moon_south_pole_base_1",
+   "perfil": "moon_south_pole_base",
+   "tierra": {
+    "nombre": "Antártida (83,6°S · 51,0°O)",
+    "pais": "Antártida",
+    "lat": -83.575,
+    "lon": -50.975,
+    "img": "img/tierra_moon_south_pole_base_1.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_south_pole_base_1_1.png",
+     "nombre": "Mare Serenitatis Pit",
+     "cuerpo": "Luna",
+     "lat": 35.104,
+     "lon": 17.402,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_1_2.png",
+     "nombre": "candidato a cueva CC0875",
+     "cuerpo": "Marte",
+     "lat": 8.52,
+     "lon": 164.133,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_1_3.png",
+     "nombre": "Slater Plain",
+     "cuerpo": "Luna",
+     "lat": -88.079,
+     "lon": 111.288,
+     "correcta": true
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_south_pole_base_2",
+   "perfil": "moon_south_pole_base",
+   "tierra": {
+    "nombre": "Antártida (83,9°S · 48,0°O)",
+    "pais": "Antártida",
+    "lat": -83.925,
+    "lon": -47.975,
+    "img": "img/tierra_moon_south_pole_base_2.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_south_pole_base_2_1.png",
+     "nombre": "candidato a cueva CC0873",
+     "cuerpo": "Marte",
+     "lat": 8.546,
+     "lon": 164.198,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_2_2.png",
+     "nombre": "Slater Plain",
+     "cuerpo": "Luna",
+     "lat": -88.079,
+     "lon": 111.288,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_2_3.png",
+     "nombre": "candidato a cueva CC0888",
+     "cuerpo": "Marte",
+     "lat": 24.585,
+     "lon": -171.44,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_south_pole_base_3",
+   "perfil": "moon_south_pole_base",
+   "tierra": {
+    "nombre": "Antártida (83,1°S · 47,0°O)",
+    "pais": "Antártida",
+    "lat": -83.075,
+    "lon": -46.975,
+    "img": "img/tierra_moon_south_pole_base_3.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_south_pole_base_3_1.png",
+     "nombre": "Slater Plain",
+     "cuerpo": "Luna",
+     "lat": -88.079,
+     "lon": 111.288,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_3_2.png",
+     "nombre": "candidato a cueva CC0877",
+     "cuerpo": "Marte",
+     "lat": 8.501,
+     "lon": 164.146,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_3_3.png",
+     "nombre": "candidato a cueva CC0885",
+     "cuerpo": "Marte",
+     "lat": 24.598,
+     "lon": -171.483,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_south_pole_base_4",
+   "perfil": "moon_south_pole_base",
+   "tierra": {
+    "nombre": "Antártida (83,5°S · 48,0°O)",
+    "pais": "Antártida",
+    "lat": -83.475,
+    "lon": -47.975,
+    "img": "img/tierra_moon_south_pole_base_4.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_south_pole_base_4_1.png",
+     "nombre": "candidato a cueva CC0884",
+     "cuerpo": "Marte",
+     "lat": 24.596,
+     "lon": -171.485,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_4_2.png",
+     "nombre": "Slater Plain",
+     "cuerpo": "Luna",
+     "lat": -88.079,
+     "lon": 111.288,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_moon_south_pole_base_4_3.png",
+     "nombre": "candidato a cueva CC0737",
+     "cuerpo": "Marte",
+     "lat": -12.26,
+     "lon": -110.221,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_mars_caves_1",
+   "perfil": "moon_mars_caves",
+   "tierra": {
+    "nombre": "Southern Red Sea Region, Eritrea",
+    "pais": "Eritrea",
+    "lat": 13.525,
+    "lon": 41.675,
+    "img": "img/tierra_moon_mars_caves_1.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_mars_caves_1_1.png",
+     "nombre": "Shackleton (borde)",
+     "cuerpo": "Luna",
+     "lat": -89.67,
+     "lon": 129.78,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_1_2.png",
+     "nombre": "Das 1b",
+     "cuerpo": "Luna",
+     "lat": -26.31,
+     "lon": -136.74,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_1_3.png",
+     "nombre": "candidato a cueva CC0783",
+     "cuerpo": "Marte",
+     "lat": -2.997,
+     "lon": -123.964,
+     "correcta": true
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_mars_caves_2",
+   "perfil": "moon_mars_caves",
+   "tierra": {
+    "nombre": "Tibesti, Chad",
+    "pais": "Chad",
+    "lat": 20.925,
+    "lon": 17.275,
+    "img": "img/tierra_moon_mars_caves_2.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_mars_caves_2_1.png",
+     "nombre": "Messier A 4a",
+     "cuerpo": "Luna",
+     "lat": -2.044,
+     "lon": 46.883,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_2_2.png",
+     "nombre": "candidato a cueva CC0823",
+     "cuerpo": "Marte",
+     "lat": 33.814,
+     "lon": -120.68,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_2_3.png",
+     "nombre": "Lalande 2",
+     "cuerpo": "Luna",
+     "lat": -4.495,
+     "lon": -8.501,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_mars_caves_3",
+   "perfil": "moon_mars_caves",
+   "tierra": {
+    "nombre": "Distrito Ciudad de Malargüe, Departamento Malargüe",
+    "pais": "Argentina",
+    "lat": -35.675,
+    "lon": -69.175,
+    "img": "img/tierra_moon_mars_caves_3.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_mars_caves_3_1.png",
+     "nombre": "Messier A 2b",
+     "cuerpo": "Luna",
+     "lat": -2.017,
+     "lon": 46.902,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_3_2.png",
+     "nombre": "Lalande 13",
+     "cuerpo": "Luna",
+     "lat": -4.357,
+     "lon": -8.695,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_3_3.png",
+     "nombre": "candidato a cueva CC0686",
+     "cuerpo": "Marte",
+     "lat": 15.152,
+     "lon": -74.857,
+     "correcta": true
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_moon_mars_caves_4",
+   "perfil": "moon_mars_caves",
+   "tierra": {
+    "nombre": "Maricopa County, Arizona",
+    "pais": "Estados Unidos",
+    "lat": 32.725,
+    "lon": -113.125,
+    "img": "img/tierra_moon_mars_caves_4.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_moon_mars_caves_4_1.png",
+     "nombre": "Das 2",
+     "cuerpo": "Luna",
+     "lat": -26.252,
+     "lon": -136.909,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_4_2.png",
+     "nombre": "Messier A 4b",
+     "cuerpo": "Luna",
+     "lat": -2.046,
+     "lon": 46.884,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_moon_mars_caves_4_3.png",
+     "nombre": "candidato a cueva CC0843",
+     "cuerpo": "Marte",
+     "lat": 23.27,
+     "lon": -110.501,
+     "correcta": true
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_mars_astrobiology_1",
+   "perfil": "mars_astrobiology",
+   "tierra": {
+    "nombre": "Burj Umar Idris, In Amenas District",
+    "pais": "Argelia",
+    "lat": 26.775,
+    "lon": 6.225,
+    "img": "img/tierra_mars_astrobiology_1.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_mars_astrobiology_1_1.png",
+     "nombre": "Utopia Planitia (Zhurong)",
+     "cuerpo": "Marte",
+     "lat": 25.066,
+     "lon": 109.925,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_1_2.png",
+     "nombre": "Stefan L 2",
+     "cuerpo": "Luna",
+     "lat": 44.498,
+     "lon": -108.166,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_1_3.png",
+     "nombre": "Das 1b",
+     "cuerpo": "Luna",
+     "lat": -26.31,
+     "lon": -136.74,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_mars_astrobiology_2",
+   "perfil": "mars_astrobiology",
+   "tierra": {
+    "nombre": "Illizi, Illizi District",
+    "pais": "Argelia",
+    "lat": 26.675,
+    "lon": 8.975,
+    "img": "img/tierra_mars_astrobiology_2.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_mars_astrobiology_2_1.png",
+     "nombre": "Tycho 2",
+     "cuerpo": "Luna",
+     "lat": -42.598,
+     "lon": -12.18,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_2_2.png",
+     "nombre": "Lalande 3a",
+     "cuerpo": "Luna",
+     "lat": -4.532,
+     "lon": -8.511,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_2_3.png",
+     "nombre": "Utopia Planitia (Zhurong)",
+     "cuerpo": "Marte",
+     "lat": 25.066,
+     "lon": 109.925,
+     "correcta": true
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_mars_astrobiology_3",
+   "perfil": "mars_astrobiology",
+   "tierra": {
+    "nombre": "Chahar Burjak, Nimruz Province",
+    "pais": "Afganistán",
+    "lat": 29.625,
+    "lon": 62.375,
+    "img": "img/tierra_mars_astrobiology_3.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_mars_astrobiology_3_1.png",
+     "nombre": "Gusev (Spirit)",
+     "cuerpo": "Marte",
+     "lat": -14.572,
+     "lon": 175.478,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_3_2.png",
+     "nombre": "Palitzsch B 1",
+     "cuerpo": "Luna",
+     "lat": -26.316,
+     "lon": 68.191,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_3_3.png",
+     "nombre": "Lalande 1",
+     "cuerpo": "Luna",
+     "lat": -4.458,
+     "lon": -8.533,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  },
+  {
+   "id": "gemelo_mars_astrobiology_4",
+   "perfil": "mars_astrobiology",
+   "tierra": {
+    "nombre": "In Amguel, de Tamanrasset District",
+    "pais": "Argelia",
+    "lat": 24.275,
+    "lon": 2.075,
+    "img": "img/tierra_mars_astrobiology_4.png"
+   },
+   "opciones": [
+    {
+     "img": "img/opcion_mars_astrobiology_4_1.png",
+     "nombre": "Tharp 5",
+     "cuerpo": "Luna",
+     "lat": -30.611,
+     "lon": 145.72,
+     "correcta": false
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_4_2.png",
+     "nombre": "Vastitas Borealis (Phoenix)",
+     "cuerpo": "Marte",
+     "lat": 68.22,
+     "lon": -125.75,
+     "correcta": true
+    },
+    {
+     "img": "img/opcion_mars_astrobiology_4_3.png",
+     "nombre": "Adams B 1",
+     "cuerpo": "Luna",
+     "lat": -31.412,
+     "lon": 65.641,
+     "correcta": false
+    }
+   ],
+   "explicacion": "El gemelo es el sitio con la huella de terreno más parecida: misma distribución de pendientes, relieve local y rugosidad a dos escalas, medidas igual en los dos cuerpos."
+  }
+ ],
+ "novedad": [
+  {
+   "nombre": "Desierto de Atacama (Yungay)",
+   "termino": "Atacama",
+   "articulos": 131,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Wind-snow interactions at the Ojos del Salado region as a potential Mars analogue site in the Altiplano - Atacama desert region",
+    "year": 2022,
+    "doi": "https://doi.org/10.1016/j.icarus.2022.114941"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Río Tinto",
+   "termino": "Rio Tinto",
+   "articulos": 94,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The Rio Tinto Mars Analogue site: An extremophilic Raman spectroscopic study",
+    "year": 2007,
+    "doi": "https://doi.org/10.1016/j.saa.2006.12.080"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Svalbard (Bockfjord, AMASE)",
+   "termino": "Svalbard",
+   "articulos": 83,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Svalbard as a Mars Analogue Site and the Arctic Mars Analogue Svalbard Expedition (AMASE) Analogue Sites",
+    "year": 2011,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Utah (MDRS, Hanksville)",
+   "termino": "Mars Desert Research Station",
+   "articulos": 63,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Moon-Mars Analogue Mission (EuroMoonMars 1 at the Mars Desert Research Station)",
+    "year": 2010,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Cuenca de Qaidam (China)",
+   "termino": "Qaidam",
+   "articulos": 58,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "A new terrestrial analogue site for Mars research: The Qaidam Basin, Tibetan Plateau (NW China)",
+    "year": 2016,
+    "doi": "https://doi.org/10.1016/j.earscirev.2016.11.003"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Desierto de Mojave",
+   "termino": "Mojave",
+   "articulos": 57,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "THE MOJAVE DESERT: A MARTIAN ANALOG SITE FOR FUTURE ASTROBIOLOGY",
+    "year": 2011,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Cráter Haughton, isla Devon",
+   "termino": "Haughton",
+   "articulos": 54,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Haughton-Mars 97 -- I: Overview of Observations at the Haughton Impact Crater, a Unique Mars Analog Site in the Canadian High Arctic",
+    "year": 1998,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Valles Secos de McMurdo",
+   "termino": "McMurdo Dry Valleys",
+   "articulos": 46,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "McMurdo Dry Valleys: Exploring Antarctica as a Mars Analogue",
+    "year": 2018,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+   "termino": "Mauna Kea",
+   "articulos": 38,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Testing Heat Flow Probe in Lunar Analog Site on Mauna Kea, HI",
+    "year": 2010,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Lanzarote / Timanfaya",
+   "termino": "Lanzarote",
+   "articulos": 25,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Exploring biosignatures and biogeochemical processes in Lanzarote lava tubes: Implications for Martian analog research",
+    "year": 2024,
+    "doi": "https://doi.org/10.5038/fue3-2024-25"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Pilbara (Australia)",
+   "termino": "Pilbara",
+   "articulos": 24,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Martian analogue test site - pilbara craton, western Australia",
+    "year": 2004,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Tubos de lava de Kilauea (Hawái)",
+   "termino": "Kilauea",
+   "articulos": 23,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Silica in a Mars analog environment: Ka'u Desert, Kilauea Volcano, Hawaii",
+    "year": 2010,
+    "doi": "https://doi.org/10.1029/2009je003347"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Isla Axel Heiberg",
+   "termino": "Axel Heiberg",
+   "articulos": 22,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "A Martian analog for spatially varying methane microseepage - polygons at Expedition Strip, Axel Heiberg Island",
+    "year": 2025,
+    "doi": "https://doi.org/10.1016/j.actaastro.2025.07.050"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Valle de la Muerte",
+   "termino": "Death Valley",
+   "articulos": 16,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Thermography of Salt Pools, Bad Water, Death Valley, A Martian Analog?",
+    "year": 1971,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Ladakh (Tso Kar / Puga)",
+   "termino": "Ladakh",
+   "articulos": 16,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Spectroscopic Studies on the Puga Hot Spring Deposits, Ladakh, an Astrobiological Martian Analog Site in India",
+    "year": 2022,
+    "doi": "https://doi.org/10.1029/2022je007299"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Arkaroola (Australia)",
+   "termino": "Arkaroola",
+   "articulos": 10,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The Arkaroola Mars Analogue Region, South Australia",
+    "year": 2004,
+    "doi": null
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Islandia (Holuhraun / Askja)",
+   "termino": "Holuhraun",
+   "articulos": 9,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The potential for bioactivity and biological preservation in fumaroles at Holuhraun, a fissure eruption Mars analog site in the Icelandic Highlands",
+    "year": 2020,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Meteor Crater (Arizona)",
+   "termino": "Meteor Crater",
+   "articulos": 9,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The Role of debris flows in the origin and evolution of gully systems on crater walls: martian analogs in meteor crater, arizona (usa)",
+    "year": 2011,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+   "termino": "San Francisco Volcanic Field",
+   "articulos": 9,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Distributed Acoustic Sensing for Future Planetary Applications: Initial Results From the San Francisco Volcanic Field, a Lunar Analogue",
+    "year": 2024,
+    "doi": "https://doi.org/10.1029/2024ea003640"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Craters of the Moon (Idaho)",
+   "termino": "Craters of the Moon",
+   "articulos": 9,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Secondary sulfate mineralization and basaltic chemistry of craters of the Moon National Monument, Idaho: Potential martian analog",
+    "year": 2012,
+    "doi": "https://doi.org/10.1016/j.pss.2012.02.002"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Cráter de Ries (Alemania)",
+   "termino": "Ries crater",
+   "articulos": 8,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Terrestrial chondrules, glass spherules and accretionary lapilli from the suevite, Ries Crater, Germany",
+    "year": 1981,
+    "doi": "https://doi.org/10.1016/0012-821x(81)90168-0"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Desierto del Namib",
+   "termino": "Namib",
+   "articulos": 7,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Rivers Beyond Earth: Remote Sensing of Fluvial–Aeolian Interactions in the Namib Desert as a Terrestrial Analog for Titan",
+    "year": 2026,
+    "doi": "https://doi.org/10.26300/1ekh-7g23"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Dallol / Danakil (Etiopía)",
+   "termino": "Dallol",
+   "articulos": 7,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Sulphur springs, sulfates and iron oxides of the Dallol (Danakil Depression, Ethiopia): A spectacular Mars terrestrial analog",
+    "year": 2015,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Desierto de Omán (AMADEE-18)",
+   "termino": "Dhofar",
+   "articulos": 6,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "The AMADEE-18 Mars Analog Expedition in the Dhofar Region of Oman",
+    "year": 2020,
+    "doi": "https://doi.org/10.1089/ast.2019.2031"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Lava Beds (California)",
+   "termino": "Lava Beds",
+   "articulos": 5,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Taxonomic Characterization and Microbial Activity Determination of Cold-Adapted Microbial Communities in Lava Tube Ice Caves from Lava Beds National Monument, a High-Fidelity Mars Analogue Environment",
+    "year": 2021,
+    "doi": "https://doi.org/10.1089/ast.2020.2327"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Negev / Makhtesh Ramon (D-MARS)",
+   "termino": "Ramon crater",
+   "articulos": 5,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Mars Analogs at Ramon Crater Region: D-MARS",
+    "year": 2019,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Sudbury (Canadá)",
+   "termino": "Sudbury",
+   "articulos": 4,
+   "tipo": "conocido",
+   "ejemplo": {
+    "title": "Science Data Management During Real-Time Geological Lunar Analogue Missions to the Sudbury and Mistastin Lake Impact Structures: Recommendations for Future Ground Data Systems",
+    "year": 2012,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Lago Untersee (Antártida)",
+   "termino": "Untersee",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Desierto de Marruecos (MARS2013, Erfoud)",
+   "termino": "Erfoud",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Altiplano / Salar de Uyuni",
+   "termino": "Uyuni",
+   "articulos": 2,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Desierto de Tabernas / Almería",
+   "termino": "Tabernas",
+   "articulos": 1,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "El Pinacate (Sonora, entrenamiento Apolo)",
+   "termino": "Pinacate",
+   "articulos": 0,
+   "tipo": "conocido",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Kitikmeot Region, Nunavut",
+   "termino": "Kitikmeot Region",
+   "pais": "Canada",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Inuvialuit Settlement Region, Inuvik Region",
+   "termino": "Inuvialuit Settlement Region",
+   "pais": "Canada",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Tsodrel Jangma, Shuanghu County",
+   "termino": "Tsodrel Jangma",
+   "pais": "China",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Lopnur, Ruoqiang County",
+   "termino": "Xinjiang",
+   "pais": "China",
+   "articulos": 2,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Burj Umar Idris, In Amenas District",
+   "termino": "Burj Umar Idris",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Halayeb District, Red Sea State",
+   "termino": "Halayeb District",
+   "pais": "Sudan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Al Khurmah, Makkah Region",
+   "termino": "Al Khurmah",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Ranyah, Makkah Region",
+   "termino": "Ranyah",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Nara Taluka, Khairpur District",
+   "termino": "Nara Taluka",
+   "pais": "Pakistan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Ghat, Libya",
+   "termino": "Ghat",
+   "pais": "Libya",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Abu Hamad, River Nile State",
+   "termino": "Abu Hamad",
+   "pais": "Sudan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Bella Unión, Province of Caravelí",
+   "termino": "Arequipa",
+   "pais": "Peru",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Dongfeng, Ejina Banner",
+   "termino": "Inner Mongolia",
+   "pais": "China",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Taftan Tehsil, Chagai District",
+   "termino": "Taftan Tehsil",
+   "pais": "Pakistan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Matruh, Egypt",
+   "termino": "Matruh",
+   "pais": "Egypt",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Red Sea, Egypt",
+   "termino": "Red Sea",
+   "pais": "Egypt",
+   "articulos": 7,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Kunene Region, Namibia",
+   "termino": "Kunene Region",
+   "pais": "Namibia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "دهستان اندوهجرد, بخش شهداد",
+   "termino": "Kerman Province",
+   "pais": "Iran",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_south_pole_base",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Southern Red Sea Region, Eritrea",
+   "termino": "Southern Red Sea Region",
+   "pais": "Eritrea",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Tibesti, Chad",
+   "termino": "Tibesti",
+   "pais": "Chad",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Distrito Ciudad de Malargüe, Departamento Malargüe",
+   "termino": "Llancanelo Volcanic Field",
+   "pais": "Argentina",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Maricopa County, Arizona",
+   "termino": "Maricopa County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "District of Al-Jufra, Libya",
+   "termino": "District of Al Jufra",
+   "pais": "Libya",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Municipio de Durango, Durango",
+   "termino": "Municipio de Durango",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Ash Shamli, Ḥa'il Province",
+   "termino": "Ash Shamli",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Elmore County, Idaho",
+   "termino": "Elmore County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Umluj, Tabuk Province",
+   "termino": "Umluj",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Abalessa, Abalessa District",
+   "termino": "Tamanrasset",
+   "pais": "Algeria",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Turkana County, Kenya",
+   "termino": "Turkana County",
+   "pais": "Kenya",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Lake County, Oregon",
+   "termino": "Fort Rock Volcanic Field",
+   "pais": "United States",
+   "articulos": 2,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": {
+    "title": "Putative Microbial Biosignatures in a Mars-Analogue Hydrovolcanic Environment — Fort Rock Volcanic Field, Oregon",
+    "year": 2021,
+    "doi": null
+   },
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Al Mahd, Medina Province",
+   "termino": "Al Mahd",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Shasta County, California",
+   "termino": "Shasta County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Malha - مالحة, North Darfur",
+   "termino": "Malha",
+   "pais": "Sudan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Lokori/Kochodin ward, Turkana East",
+   "termino": "Lokori/Kochodin ward",
+   "pais": "Kenya",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Rwaished Sub-District, Rwaished District",
+   "termino": "Rwaished Sub District",
+   "pais": "Jordan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Khanfir District, Abyan Governorate",
+   "termino": "Khanfir District",
+   "pais": "Yemen",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Parroquia Tomás de Berlanga (Santo Tomás), Cantón Isabela",
+   "termino": "Galapagos",
+   "pais": "Ecuador",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Departamento Pehuenches, Neuquén",
+   "termino": "Departamento Pehuenches",
+   "pais": "Argentina",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Gur, Biu",
+   "termino": "Gur",
+   "pais": "Nigeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Victoria, Australia",
+   "termino": "Victoria",
+   "pais": "Australia",
+   "articulos": 25,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": {
+    "title": "Debris flows and water tracks in northern Victoria Land, continental East Antarctica: a new terrestrial analogue site for gullies and recurrent slope lineae on Mars",
+    "year": 2018,
+    "doi": "https://doi.org/10.1144/sp467.12"
+   },
+   "clase": "muy estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Malheur County, Oregon",
+   "termino": "Malheur County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Queensland, Australia",
+   "termino": "Queensland",
+   "pais": "Australia",
+   "articulos": 5,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": {
+    "title": "Importance of early rehabilitation planning - case studies from North West Queensland",
+    "year": 2012,
+    "doi": null
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Municipio de Mulegé, Baja California Sur",
+   "termino": "Municipio de Mulege",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Wadi Al Fara, Medina Province",
+   "termino": "Wadi Al Fara",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Harney County, Oregon",
+   "termino": "Harney County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Al Wajh, Tabuk Province",
+   "termino": "Al Wajh",
+   "pais": "Saudi Arabia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Fernley, Lyon County",
+   "termino": "Soda Lakes",
+   "pais": "United States",
+   "articulos": 4,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": {
+    "title": "Introductory Chapter: Half a Lifetime in Soda Lakes",
+    "year": 2004,
+    "doi": "https://doi.org/10.1007/978-3-662-07656-9_1"
+   },
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "East Shewa, Oromia Region",
+   "termino": "East Shewa",
+   "pais": "Ethiopia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "دهستان گاوکان, بخش رحمت آباد",
+   "termino": "Shahsavaran",
+   "pais": "Iran",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Jefferson County, Idaho",
+   "termino": "Jefferson County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Municipio San Pablo de Lipez, Provincia Sur Lípez",
+   "termino": "Municipio San Pablo de Lipez",
+   "pais": "Bolivia",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Lincoln County, Idaho",
+   "termino": "Lincoln County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Atenco, State of Mexico",
+   "termino": "Atenco",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Municipio de Comondú, Baja California Sur",
+   "termino": "Municipio de Comondu",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Klamath County, Oregon",
+   "termino": "Klamath County",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Unorganized Borough, Alaska",
+   "termino": "Unorganized Borough",
+   "pais": "United States",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Pajapan, Veracruz",
+   "termino": "Pajapan",
+   "pais": "Mexico",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "moon_mars_caves",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Illizi, Illizi District",
+   "termino": "Illizi",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Chahar Burjak, Nimruz Province",
+   "termino": "Chahar Burjak",
+   "pais": "Afghanistan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Tombouctou Cercle, Taoudénit Region",
+   "termino": "Tombouctou Cercle",
+   "pais": "Mali",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Wadi al Shatii, Libya",
+   "termino": "Wadi al Shatii",
+   "pais": "Libya",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Murzuq, Libya",
+   "termino": "Murzuq",
+   "pais": "Libya",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "New Valley, Egypt",
+   "termino": "New Valley",
+   "pais": "Egypt",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Pozo Almonte, Provincia del Tamarugal",
+   "termino": "Pozo Almonte",
+   "pais": "Chile",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Idles, Tazrouk District",
+   "termino": "Idles",
+   "pais": "Algeria",
+   "articulos": 4,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "estudiado",
+   "ya_estudiado": true
+  },
+  {
+   "nombre": "Tabelbala, Beni Abbes",
+   "termino": "Tabelbala",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Kufra, Libya",
+   "termino": "Kufra",
+   "pais": "Libya",
+   "articulos": 1,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "poco estudiado",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Delgo - دلقو, Northern State",
+   "termino": "Delgo",
+   "pais": "Sudan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Bilma, Niger",
+   "termino": "Bilma",
+   "pais": "Niger",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Bordj El Haouas, Djanet District",
+   "termino": "Bordj El Haouas",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Hurghada, Red Sea",
+   "termino": "Hurghada",
+   "pais": "Egypt",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Sali, Reggane District",
+   "termino": "Sali",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Djanet, Djanet District",
+   "termino": "Djanet",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Suhaj, Egypt",
+   "termino": "Suhaj",
+   "pais": "Egypt",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Nok Kundi Tehsil, Chagai District",
+   "termino": "Nok Kundi Tehsil",
+   "pais": "Pakistan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Aswan, Egypt",
+   "termino": "Aswan",
+   "pais": "Egypt",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "Port Sudan, Red Sea State",
+   "termino": "Port Sudan",
+   "pais": "Sudan",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  },
+  {
+   "nombre": "In Salah, d'In Salah District",
+   "termino": "In Salah",
+   "pais": "Algeria",
+   "articulos": 0,
+   "tipo": "candidato",
+   "perfil": "mars_astrobiology",
+   "ejemplo": null,
+   "clase": "sin estudios como análogo",
+   "ya_estudiado": false
+  }
+ ]
+}

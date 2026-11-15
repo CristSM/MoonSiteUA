@@ -1,0 +1,8 @@
+node_modules/
+__pycache__/
+.pytest_cache/
+app/moonsite.db
+app/uploads/
+web/i18n/_pendientes.json
+.venv/
+.claude/

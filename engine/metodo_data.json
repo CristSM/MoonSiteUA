@@ -1,0 +1,1284 @@
+{
+ "_doc": "Datos reales del método Analog Finder para la página MÉTODO de MoonSiteUA. Generado por scripts/export_metodo_data.py.",
+ "generado_utc": "2026-11-15T08:57:58+00:00",
+ "cifras": {
+  "celdas_tierra": 7884883,
+  "rejilla_tierra": "0,05° (~5,5 km)",
+  "escala_terreno_m": 400,
+  "sitios_referencia": 1345,
+  "bloques_referencia": 5585,
+  "analogos_conocidos_excluidos": 32,
+  "sorteos_robustez": 200,
+  "variables_tierra": 18
+ },
+ "formulas": {
+  "indice": "Índice = Σ wᵢ · dᵢ / Σ wᵢ",
+  "terreno": "dterreno = 1 − percentil(distancia al gemelo)",
+  "novedad": "Novedad = 1 / (1 + log₁₀(1 + nº de artículos))",
+  "descubrimiento": "Descubrimiento = Índice × Novedad"
+ },
+ "pasos": [
+  {
+   "n": 1,
+   "titulo": "Huella de terreno",
+   "texto": "Pendientes, relieve local y rugosidad a dos escalas, calculadas igual en la Tierra, la Luna y Marte a unos 400 m por píxel. No dependen de la altitud ni de la gravedad."
+  },
+  {
+   "n": 2,
+   "titulo": "Gemelo planetario",
+   "texto": "Para cada una de las 7,9 millones de celdas de tierra emergida buscamos el bloque lunar o marciano más parecido entre 1.345 sitios de referencia."
+  },
+  {
+   "n": 3,
+   "titulo": "Perfil de misión",
+   "texto": "Cada perfil suma el terreno y las dimensiones ambientales que importan para ese destino, con pesos explícitos."
+  },
+  {
+   "n": 4,
+   "titulo": "Robustez",
+   "texto": "Repetimos el cálculo con 200 combinaciones de pesos al azar. Solo cuentan los lugares que siguen arriba en la mayoría."
+  },
+  {
+   "n": 5,
+   "titulo": "Validación",
+   "texto": "Antes de buscar sitios nuevos, comprobamos que el método recupera los análogos que ya usan las agencias."
+  },
+  {
+   "n": 6,
+   "titulo": "Novedad",
+   "texto": "Excluimos 32 análogos conocidos y contamos en OpenAlex cuántos artículos citan cada candidata como análogo."
+  }
+ ],
+ "metricas_terreno": [
+  {
+   "metrica": "Pendiente media, mediana, percentil 90 y desviación",
+   "detalle": "grados, a ~400 m/píxel"
+  },
+  {
+   "metrica": "Fracción de terreno por clase de pendiente",
+   "detalle": "0–2°, 2–5°, 5–15°, 15–30°, > 30°"
+  },
+  {
+   "metrica": "Pendiente a escala doble (media y percentil 90)",
+   "detalle": "DEM agregado 2×2 (~800 m)"
+  },
+  {
+   "metrica": "Exponente de escalado de la rugosidad",
+   "detalle": "log₂(pendiente a escala doble / pendiente base)"
+  },
+  {
+   "metrica": "Relieve local (media y percentil 90)",
+   "detalle": "máx − mín en ventana 3×3 píxeles, en metros"
+  }
+ ],
+ "escalas_dem": [
+  {
+   "cuerpo": "Tierra",
+   "dem": "Copernicus GLO-90 (overview ×4)",
+   "m": 370
+  },
+  {
+   "cuerpo": "Luna",
+   "dem": "LRO LOLA LDEM_64 / polo sur 80 m agregado ×5",
+   "m": 474
+  },
+  {
+   "cuerpo": "Marte",
+   "dem": "MGS MOLA 128 ppd",
+   "m": 463
+  }
+ ],
+ "dimensiones": [
+  {
+   "dim": "terrain",
+   "nombre": "Terreno",
+   "dato": "Copernicus DEM GLO-90 (Tierra) · LRO LOLA (Luna) · MGS MOLA (Marte)",
+   "regla": "1 − percentil de la distancia al bloque lunar/marciano más parecido (0,99 = más parecido que el 99 % de la Tierra)"
+  },
+  {
+   "dim": "cold",
+   "nombre": "Frío",
+   "dato": "MODIS MOD11C3 (temperatura de superficie diurna, 2023)",
+   "regla": "1 si ≤ 235 K · 0 si ≥ 280 K"
+  },
+  {
+   "dim": "frozen",
+   "nombre": "Suelo congelado",
+   "dato": "MODIS MOD11C3 (máxima diurna mensual)",
+   "regla": "1 si nunca supera 263 K · 0 si llega a 283 K"
+  },
+  {
+   "dim": "barren",
+   "nombre": "Sin vegetación",
+   "dato": "MODIS MOD13C2 (NDVI máximo, 2023)",
+   "regla": "1 si NDVI ≤ 0,08 · 0 si ≥ 0,35"
+  },
+  {
+   "dim": "low_sun",
+   "nombre": "Sol rasante",
+   "dato": "Geometría solar (latitud)",
+   "regla": "Elevación solar máxima anual: 1 si ≤ 25° · 0 si ≥ 65°"
+  },
+  {
+   "dim": "ice_free",
+   "nombre": "Sin hielo",
+   "dato": "MODIS MCD43C3 (nieve) + GLiM (glaciares)",
+   "regla": "1 − fracción de nieve; sin dato: glaciar → 0, resto → 0,5"
+  },
+  {
+   "dim": "volcanic",
+   "nombre": "Volcanes",
+   "dato": "Smithsonian GVP (volcanes del Holoceno y Pleistoceno)",
+   "regla": "exp(−distancia / 50 km)"
+  },
+  {
+   "dim": "lithology",
+   "nombre": "Litología",
+   "dato": "GLiM (mapa litológico global, 0,5°)",
+   "regla": "Puntuación por clase de roca según el perfil"
+  },
+  {
+   "dim": "nonsilicic",
+   "nombre": "Roca basáltica",
+   "dato": "ASTER GED (emisividad térmica, índice de cuarzo)",
+   "regla": "1 − percentil del índice de cuarzo b11²/(b10·b12)"
+  },
+  {
+   "dim": "arid",
+   "nombre": "Aridez",
+   "dato": "GPM IMERG V07 (precipitación anual, 2023)",
+   "regla": "1 si ≤ 10 mm/año · 0 si ≥ 1000 mm/año (escala logarítmica)"
+  },
+  {
+   "dim": "thermal",
+   "nombre": "Amplitud térmica",
+   "dato": "MODIS MOD11C3 (día − noche)",
+   "regla": "(amplitud − 10 K) / 25 K, entre 0 y 1"
+  },
+  {
+   "dim": "albedo",
+   "nombre": "Albedo",
+   "dato": "MODIS MCD43C3 frente a MGS TES (albedo de los sitios de rovers)",
+   "regla": "Parecido gaussiano con el albedo TES medio de los sitios (σ = 0,08)"
+  },
+  {
+   "dim": "dust",
+   "nombre": "Polvo",
+   "dato": "MERRA-2 (espesor óptico de polvo, 2023)",
+   "regla": "AOD de polvo / 0,4, entre 0 y 1"
+  }
+ ],
+ "perfiles": [
+  {
+   "id": "moon_south_pole_base",
+   "titulo": "Base lunar permanente — polo sur (Artemis III)",
+   "corto": "Luna · polo sur",
+   "cuerpo": "luna",
+   "referencias": {
+    "n_sitios": 10,
+    "n_luna": 10,
+    "n_marte": 0,
+    "ejemplos": [
+     "Nobile Rim 2",
+     "Nobile Rim 1",
+     "Mons Mouton Plateau",
+     "Peak near Cabeus B",
+     "Haworth",
+     "Malapert Massif"
+    ]
+   },
+   "pesos": [
+    {
+     "dim": "terrain",
+     "nombre": "Terreno",
+     "peso": 0.35
+    },
+    {
+     "dim": "ice_free",
+     "nombre": "Sin hielo",
+     "peso": 0.15
+    },
+    {
+     "dim": "cold",
+     "nombre": "Frío",
+     "peso": 0.15
+    },
+    {
+     "dim": "frozen",
+     "nombre": "Suelo congelado",
+     "peso": 0.1
+    },
+    {
+     "dim": "barren",
+     "nombre": "Sin vegetación",
+     "peso": 0.1
+    },
+    {
+     "dim": "low_sun",
+     "nombre": "Sol rasante",
+     "peso": 0.15
+    }
+   ],
+   "rompe": [
+    "Vacío y ausencia de atmósfera",
+    "Gravedad 1/6 g",
+    "Temperaturas de 40 K en cráteres en sombra permanente (inalcanzables en la Tierra)",
+    "Radiación sin magnetosfera",
+    "Regolito lunar sin meteorización química"
+   ],
+   "n_candidatas": 1688,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (38.045) y quedan fuera de los 32 análogos conocidos (36.600 celdas en 14.328 grupos, de los que solo 1.688 alcanzan el tamaño mínimo); no son celdas ni sitios.",
+   "umbral_top": 0.01
+  },
+  {
+   "id": "moon_mars_caves",
+   "titulo": "Cuevas y tubos de lava (pozos lunares y candidatos a cueva en Marte)",
+   "corto": "Luna y Marte · cuevas y tubos de lava",
+   "cuerpo": "ambos",
+   "referencias": {
+    "n_sitios": 1328,
+    "n_luna": 271,
+    "n_marte": 1057,
+    "ejemplos": [
+     "CC0893",
+     "CC0894",
+     "CC0895",
+     "Catalán B 1",
+     "CC0853",
+     "CC0727"
+    ]
+   },
+   "pesos": [
+    {
+     "dim": "terrain",
+     "nombre": "Terreno",
+     "peso": 0.25
+    },
+    {
+     "dim": "volcanic",
+     "nombre": "Volcanes",
+     "peso": 0.2
+    },
+    {
+     "dim": "lithology",
+     "nombre": "Litología",
+     "peso": 0.2
+    },
+    {
+     "dim": "nonsilicic",
+     "nombre": "Roca basáltica",
+     "peso": 0.1
+    },
+    {
+     "dim": "arid",
+     "nombre": "Aridez",
+     "peso": 0.1
+    },
+    {
+     "dim": "barren",
+     "nombre": "Sin vegetación",
+     "peso": 0.05
+    },
+    {
+     "dim": "ice_free",
+     "nombre": "Sin hielo",
+     "peso": 0.1
+    }
+   ],
+   "rompe": [
+    "Gravedad: los tubos de lava lunares/marcianos pueden ser 10-100 veces más anchos",
+    "Sin agua líquida ni karst en la Luna",
+    "Radiación en superficie (las cuevas son refugio)"
+   ],
+   "n_candidatas": 693,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra sin casquete de hielo (5.211.730) que están en el 1 % superior del índice (52.118), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (33.731) y quedan fuera de los 32 análogos conocidos (31.106 celdas en 2.768 grupos, de los que solo 693 alcanzan el tamaño mínimo); no son celdas ni sitios.",
+   "umbral_top": 0.01
+  },
+  {
+   "id": "mars_astrobiology",
+   "titulo": "Astrobiología y exploración en Marte (sitios de rovers)",
+   "corto": "Marte · astrobiología",
+   "cuerpo": "marte",
+   "referencias": {
+    "n_sitios": 7,
+    "n_luna": 0,
+    "n_marte": 7,
+    "ejemplos": [
+     "Vastitas Borealis (Phoenix)",
+     "Utopia Planitia (Zhurong)",
+     "Jezero (Perseverance)",
+     "Oxia Planum (Rosalind Franklin)",
+     "Gusev (Spirit)",
+     "Meridiani Planum (Opportunity)"
+    ]
+   },
+   "pesos": [
+    {
+     "dim": "terrain",
+     "nombre": "Terreno",
+     "peso": 0.25
+    },
+    {
+     "dim": "arid",
+     "nombre": "Aridez",
+     "peso": 0.25
+    },
+    {
+     "dim": "barren",
+     "nombre": "Sin vegetación",
+     "peso": 0.1
+    },
+    {
+     "dim": "lithology",
+     "nombre": "Litología",
+     "peso": 0.15
+    },
+    {
+     "dim": "thermal",
+     "nombre": "Amplitud térmica",
+     "peso": 0.1
+    },
+    {
+     "dim": "albedo",
+     "nombre": "Albedo",
+     "peso": 0.1
+    },
+    {
+     "dim": "dust",
+     "nombre": "Polvo",
+     "peso": 0.05
+    }
+   ],
+   "rompe": [
+    "Presión atmosférica ~6 mbar y CO2",
+    "Radiación UV sin capa de ozono",
+    "Temperaturas medias ~210 K",
+    "Gravedad 0,38 g",
+    "Percloratos y oxidantes en el suelo"
+   ],
+   "n_candidatas": 1018,
+   "n_candidatas_def": "Número de zonas, es decir, grupos de celdas de 0,05° contiguas (incluidas las diagonales) con al menos 4 celdas y 100 km², formadas por las celdas de tierra (7.884.883) que están en el 1 % superior del índice (78.849), siguen en ese 1 % en al menos la mitad de los 200 sorteos de pesos (59.983) y quedan fuera de los 32 análogos conocidos (58.515 celdas en 4.768 grupos, de los que solo 1.018 alcanzan el tamaño mínimo); no son celdas ni sitios.",
+   "umbral_top": 0.01
+  }
+ ],
+ "validacion_analogos_conocidos": {
+  "moon_south_pole_base": [
+   {
+    "analogo": "Valles Secos de McMurdo",
+    "percentil": 99.99
+   },
+   {
+    "analogo": "Cráter Haughton, isla Devon",
+    "percentil": 98.85
+   },
+   {
+    "analogo": "Islandia (Holuhraun / Askja)",
+    "percentil": 98.04
+   },
+   {
+    "analogo": "Desierto de Mojave",
+    "percentil": 96.49
+   },
+   {
+    "analogo": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "percentil": 95.81
+   },
+   {
+    "analogo": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "percentil": 95.46
+   },
+   {
+    "analogo": "Lanzarote / Timanfaya",
+    "percentil": 92.72
+   },
+   {
+    "analogo": "Meteor Crater (Arizona)",
+    "percentil": 92.5
+   },
+   {
+    "analogo": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "percentil": 92.09
+   },
+   {
+    "analogo": "Tubos de lava de Kilauea (Hawái)",
+    "percentil": 92.09
+   },
+   {
+    "analogo": "Lava Beds (California)",
+    "percentil": 77.95
+   },
+   {
+    "analogo": "Cráter de Ries (Alemania)",
+    "percentil": 73.86
+   },
+   {
+    "analogo": "Sudbury (Canadá)",
+    "percentil": 63.68
+   },
+   {
+    "analogo": "Craters of the Moon (Idaho)",
+    "percentil": 62.49
+   }
+  ],
+  "moon_mars_caves": [
+   {
+    "analogo": "Desierto de Mojave",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Valle de la Muerte",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Valles Secos de McMurdo",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Lava Beds (California)",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Dallol / Danakil (Etiopía)",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Altiplano / Salar de Uyuni",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Craters of the Moon (Idaho)",
+    "percentil": 99.99
+   },
+   {
+    "analogo": "Desierto de Atacama (Yungay)",
+    "percentil": 99.99
+   },
+   {
+    "analogo": "Islandia (Holuhraun / Askja)",
+    "percentil": 99.98
+   },
+   {
+    "analogo": "Pilbara (Australia)",
+    "percentil": 99.96
+   },
+   {
+    "analogo": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "percentil": 99.91
+   },
+   {
+    "analogo": "Desierto del Namib",
+    "percentil": 99.9
+   },
+   {
+    "analogo": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "percentil": 99.89
+   },
+   {
+    "analogo": "Meteor Crater (Arizona)",
+    "percentil": 99.88
+   },
+   {
+    "analogo": "Lanzarote / Timanfaya",
+    "percentil": 99.86
+   },
+   {
+    "analogo": "Cuenca de Qaidam (China)",
+    "percentil": 99.86
+   },
+   {
+    "analogo": "Tubos de lava de Kilauea (Hawái)",
+    "percentil": 99.75
+   },
+   {
+    "analogo": "Svalbard (Bockfjord, AMASE)",
+    "percentil": 99.39
+   },
+   {
+    "analogo": "Desierto de Omán (AMADEE-18)",
+    "percentil": 99.31
+   },
+   {
+    "analogo": "Arkaroola (Australia)",
+    "percentil": 99.21
+   },
+   {
+    "analogo": "Isla Axel Heiberg",
+    "percentil": 98.83
+   },
+   {
+    "analogo": "Desierto de Marruecos (MARS2013, Erfoud)",
+    "percentil": 98.58
+   },
+   {
+    "analogo": "Lago Untersee (Antártida)",
+    "percentil": 98.51
+   },
+   {
+    "analogo": "Negev / Makhtesh Ramon (D-MARS)",
+    "percentil": 96.4
+   },
+   {
+    "analogo": "Cráter Haughton, isla Devon",
+    "percentil": 88.53
+   },
+   {
+    "analogo": "Desierto de Tabernas / Almería",
+    "percentil": 81.56
+   },
+   {
+    "analogo": "Río Tinto",
+    "percentil": 78.67
+   },
+   {
+    "analogo": "Utah (MDRS, Hanksville)",
+    "percentil": 75.26
+   },
+   {
+    "analogo": "Cráter de Ries (Alemania)",
+    "percentil": 68.43
+   },
+   {
+    "analogo": "Sudbury (Canadá)",
+    "percentil": 63.91
+   },
+   {
+    "analogo": "Ladakh (Tso Kar / Puga)",
+    "percentil": 59.35
+   }
+  ],
+  "mars_astrobiology": [
+   {
+    "analogo": "Desierto de Atacama (Yungay)",
+    "percentil": 100.0
+   },
+   {
+    "analogo": "Cuenca de Qaidam (China)",
+    "percentil": 99.99
+   },
+   {
+    "analogo": "Desierto del Namib",
+    "percentil": 99.98
+   },
+   {
+    "analogo": "Desierto de Marruecos (MARS2013, Erfoud)",
+    "percentil": 99.94
+   },
+   {
+    "analogo": "Valles Secos de McMurdo",
+    "percentil": 99.93
+   },
+   {
+    "analogo": "Altiplano / Salar de Uyuni",
+    "percentil": 99.89
+   },
+   {
+    "analogo": "Desierto de Omán (AMADEE-18)",
+    "percentil": 99.55
+   },
+   {
+    "analogo": "Dallol / Danakil (Etiopía)",
+    "percentil": 99.28
+   },
+   {
+    "analogo": "Valle de la Muerte",
+    "percentil": 98.99
+   },
+   {
+    "analogo": "El Pinacate (Sonora, entrenamiento Apolo)",
+    "percentil": 98.89
+   },
+   {
+    "analogo": "Arkaroola (Australia)",
+    "percentil": 98.87
+   },
+   {
+    "analogo": "Desierto de Mojave",
+    "percentil": 98.5
+   },
+   {
+    "analogo": "Negev / Makhtesh Ramon (D-MARS)",
+    "percentil": 98.2
+   },
+   {
+    "analogo": "Pilbara (Australia)",
+    "percentil": 98.12
+   },
+   {
+    "analogo": "Campo volcánico San Francisco / Cinder Lake / Black Point",
+    "percentil": 97.96
+   },
+   {
+    "analogo": "Lago Untersee (Antártida)",
+    "percentil": 96.87
+   },
+   {
+    "analogo": "Islandia (Holuhraun / Askja)",
+    "percentil": 91.64
+   },
+   {
+    "analogo": "Craters of the Moon (Idaho)",
+    "percentil": 90.49
+   },
+   {
+    "analogo": "Utah (MDRS, Hanksville)",
+    "percentil": 88.54
+   },
+   {
+    "analogo": "Lanzarote / Timanfaya",
+    "percentil": 83.45
+   },
+   {
+    "analogo": "Lava Beds (California)",
+    "percentil": 82.15
+   },
+   {
+    "analogo": "Isla Axel Heiberg",
+    "percentil": 77.51
+   },
+   {
+    "analogo": "Cráter Haughton, isla Devon",
+    "percentil": 75.7
+   },
+   {
+    "analogo": "Desierto de Tabernas / Almería",
+    "percentil": 73.63
+   },
+   {
+    "analogo": "Ladakh (Tso Kar / Puga)",
+    "percentil": 72.75
+   },
+   {
+    "analogo": "Svalbard (Bockfjord, AMASE)",
+    "percentil": 70.2
+   },
+   {
+    "analogo": "Río Tinto",
+    "percentil": 69.12
+   },
+   {
+    "analogo": "Hawái (Mauna Kea / HI-SEAS / Kilauea)",
+    "percentil": 62.15
+   },
+   {
+    "analogo": "Tubos de lava de Kilauea (Hawái)",
+    "percentil": 54.88
+   }
+  ]
+ },
+ "validacion_cuevas_osm": {
+  "modo": "completo",
+  "definicion_volcanica": "GLiM ['va', 'vb', 'vi'] o volcán GVP <= 30 km",
+  "volcanicas": {
+   "n": 5583,
+   "auc_mean_percentile": 0.7171,
+   "median_percentile": 0.7138,
+   "frac_top10": 0.2841,
+   "frac_top5": 0.2302,
+   "frac_top1": 0.1093
+  },
+  "no_volcanicas": {
+   "n": 64239,
+   "auc_mean_percentile": 0.1897,
+   "median_percentile": 0.1547,
+   "frac_top10": 0.0017,
+   "frac_top5": 0.0009,
+   "frac_top1": 0.0003
+  },
+  "linea_base_celdas_volcanicas": {
+   "n_cells": 496560,
+   "auc_mean_percentile": 0.7375,
+   "frac_top10": 0.3255,
+   "frac_top5": 0.2699,
+   "frac_top1": 0.1307
+  },
+  "auc_volcanicas_vs_celdas_volcanicas": 0.4663,
+  "n_total": 73341,
+  "tubos_de_lava": {
+   "definicion": "geological=volcanic_lava_tube o nombre/descripción con «lava», «lava tube», «tunnel de lave», «jameo», «Lavahöhle»…",
+   "n": 94,
+   "auc_mean_percentile": 0.9462,
+   "median_percentile": 0.9956,
+   "frac_top10": 0.8404,
+   "frac_top5": 0.7766,
+   "frac_top1": 0.6064,
+   "por_zona_1grado": {
+    "n_zonas_1deg": 34,
+    "auc_mean_percentile": 0.9126,
+    "frac_top5": 0.6765,
+    "frac_top1": 0.4706
+   },
+   "auc_vs_tierra": 0.9465,
+   "auc_vs_celdas_volcanicas": 0.837
+  },
+  "auc_por_dimension": {
+   "terrain": {
+    "cuevas_volcanicas": 0.359,
+    "tubos_de_lava": 0.4389
+   },
+   "volcanic": {
+    "cuevas_volcanicas": 0.7578,
+    "tubos_de_lava": 0.9092
+   },
+   "lithology": {
+    "cuevas_volcanicas": 0.3886,
+    "tubos_de_lava": 0.7691
+   },
+   "nonsilicic": {
+    "cuevas_volcanicas": 0.5166,
+    "tubos_de_lava": 0.7144
+   },
+   "arid": {
+    "cuevas_volcanicas": 0.312,
+    "tubos_de_lava": 0.492
+   },
+   "barren": {
+    "cuevas_volcanicas": 0.0694,
+    "tubos_de_lava": 0.2903
+   },
+   "ice_free": {
+    "cuevas_volcanicas": 0.7972,
+    "tubos_de_lava": 0.8051
+   }
+  },
+  "densidad": "Recuentos agregados en celdas de 1° (data/derived/osm/cave_density_1deg.json); nunca coordenadas exactas.",
+  "lectura": "Con los tubos de lava confirmados (etiqueta geological=volcanic_lava_tube o nombre) el perfil acierta: el 78 % cae en el 5 % superior del mapa y el AUC es de 0,84 incluso dentro de zonas volcánicas, con una muestra limitada (94 bocas en 34 zonas). Con todas las cuevas «volcánicas por cercanía» distingue el entorno volcánico del karst, pero no predice dónde están cartografiadas: OSM refleja dónde vive y explora la gente (zonas húmedas y con vegetación) y el perfil busca a propósito lugares áridos y remotos."
+ },
+ "novedad_bibliografica": {
+  "fuente": "OpenAlex + topónimos de OpenStreetMap, GVP y Wikidata",
+  "contexto_busqueda": "topónimo en el TÍTULO o el RESUMEN junto a «Mars/Martian/lunar/terrestrial analog(ue)» o «analog(ue) site»; los nombres administrativos genéricos (County, District…) se buscan con su estado o país",
+  "clases": [
+   {
+    "clase": "sin estudios como análogo",
+    "rango": "0"
+   },
+   {
+    "clase": "poco estudiado",
+    "rango": "1–2"
+   },
+   {
+    "clase": "estudiado",
+    "rango": "3–9"
+   },
+   {
+    "clase": "muy estudiado",
+    "rango": "≥ 10"
+   }
+  ],
+  "linea_base": [
+   {
+    "analogo": "Atacama",
+    "articulos": 131
+   },
+   {
+    "analogo": "Rio Tinto",
+    "articulos": 94
+   },
+   {
+    "analogo": "Svalbard",
+    "articulos": 83
+   },
+   {
+    "analogo": "Mars Desert Research Station",
+    "articulos": 63
+   },
+   {
+    "analogo": "Qaidam",
+    "articulos": 58
+   },
+   {
+    "analogo": "Mojave",
+    "articulos": 57
+   },
+   {
+    "analogo": "Haughton",
+    "articulos": 54
+   },
+   {
+    "analogo": "McMurdo Dry Valleys",
+    "articulos": 46
+   },
+   {
+    "analogo": "Mauna Kea",
+    "articulos": 38
+   },
+   {
+    "analogo": "Lanzarote",
+    "articulos": 25
+   },
+   {
+    "analogo": "Pilbara",
+    "articulos": 24
+   },
+   {
+    "analogo": "Kilauea",
+    "articulos": 23
+   },
+   {
+    "analogo": "Axel Heiberg",
+    "articulos": 22
+   },
+   {
+    "analogo": "Death Valley",
+    "articulos": 16
+   },
+   {
+    "analogo": "Ladakh",
+    "articulos": 16
+   },
+   {
+    "analogo": "Arkaroola",
+    "articulos": 10
+   },
+   {
+    "analogo": "Holuhraun",
+    "articulos": 9
+   },
+   {
+    "analogo": "Meteor Crater",
+    "articulos": 9
+   },
+   {
+    "analogo": "San Francisco Volcanic Field",
+    "articulos": 9
+   },
+   {
+    "analogo": "Craters of the Moon",
+    "articulos": 9
+   },
+   {
+    "analogo": "Ries crater",
+    "articulos": 8
+   },
+   {
+    "analogo": "Namib",
+    "articulos": 7
+   },
+   {
+    "analogo": "Dallol",
+    "articulos": 7
+   },
+   {
+    "analogo": "Dhofar",
+    "articulos": 6
+   },
+   {
+    "analogo": "Lava Beds",
+    "articulos": 5
+   },
+   {
+    "analogo": "Ramon crater",
+    "articulos": 5
+   },
+   {
+    "analogo": "Sudbury",
+    "articulos": 4
+   },
+   {
+    "analogo": "Untersee",
+    "articulos": 2
+   },
+   {
+    "analogo": "Erfoud",
+    "articulos": 2
+   },
+   {
+    "analogo": "Uyuni",
+    "articulos": 2
+   },
+   {
+    "analogo": "Tabernas",
+    "articulos": 1
+   },
+   {
+    "analogo": "Pinacate",
+    "articulos": 0
+   }
+  ],
+  "limitaciones": [
+   "Variantes ortográficas de los topónimos (p. ej. Lopnur / Lop Nur)",
+   "Lugares sin topónimo en OpenStreetMap (Antártida): no evaluables",
+   "0 artículos con estas frases no garantiza que nadie lo haya estudiado"
+  ]
+ },
+ "candidatas_descubrimiento": {
+  "moon_south_pole_base": [
+   {
+    "lugar": "Kitikmeot Region, Nunavut",
+    "pais": "Canada",
+    "lat": 73.425,
+    "lon": -106.175,
+    "indice": 0.6525,
+    "puesto_analogia": 8,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Peak near Cabeus B",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canada",
+    "lat": 71.825,
+    "lon": -114.175,
+    "indice": 0.6192,
+    "puesto_analogia": 10,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Kitikmeot Region, Nunavut",
+    "pais": "Canada",
+    "lat": 73.225,
+    "lon": -106.775,
+    "indice": 0.6169,
+    "puesto_analogia": 11,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Tsodrel Jangma, Shuanghu County",
+    "pais": "China",
+    "lat": 36.325,
+    "lon": 87.225,
+    "indice": 0.6163,
+    "puesto_analogia": 12,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Inuvialuit Settlement Region, Inuvik Region",
+    "pais": "Canada",
+    "lat": 72.025,
+    "lon": -113.925,
+    "indice": 0.6109,
+    "puesto_analogia": 13,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   },
+   {
+    "lugar": "Kitikmeot Region, Nunavut",
+    "pais": "Canada",
+    "lat": 72.025,
+    "lon": -98.475,
+    "indice": 0.6055,
+    "puesto_analogia": 14,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Slater Plain",
+    "gemelo_cuerpo": "moon"
+   }
+  ],
+  "moon_mars_caves": [
+   {
+    "lugar": "Southern Red Sea Region, Eritrea",
+    "pais": "Eritrea",
+    "lat": 13.525,
+    "lon": 41.675,
+    "indice": 0.8823,
+    "puesto_analogia": 1,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0783 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Maricopa County, Arizona",
+    "pais": "United States",
+    "lat": 32.725,
+    "lon": -113.125,
+    "indice": 0.8734,
+    "puesto_analogia": 4,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0843 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "District of Al-Jufra, Libya",
+    "pais": "Libya",
+    "lat": 27.175,
+    "lon": 17.225,
+    "indice": 0.8624,
+    "puesto_analogia": 5,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0190 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Municipio de Durango, Durango",
+    "pais": "Mexico",
+    "lat": 24.125,
+    "lon": -104.475,
+    "indice": 0.8517,
+    "puesto_analogia": 6,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva CC0258 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Ash Shamli, Ḥa'il Province",
+    "pais": "Saudi Arabia",
+    "lat": 26.725,
+    "lon": 40.325,
+    "indice": 0.8447,
+    "puesto_analogia": 7,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "candidato a cueva APC133 (catálogo MGC3)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Elmore County, Idaho",
+    "pais": "United States",
+    "lat": 43.225,
+    "lon": -115.925,
+    "indice": 0.8311,
+    "puesto_analogia": 8,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "North Procellarum 1 Pit",
+    "gemelo_cuerpo": "moon"
+   }
+  ],
+  "mars_astrobiology": [
+   {
+    "lugar": "Burj Umar Idris, In Amenas District",
+    "pais": "Algeria",
+    "lat": 26.775,
+    "lon": 6.225,
+    "indice": 0.8619,
+    "puesto_analogia": 1,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Illizi, Illizi District",
+    "pais": "Algeria",
+    "lat": 26.675,
+    "lon": 8.975,
+    "indice": 0.8526,
+    "puesto_analogia": 2,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Chahar Burjak, Nimruz Province",
+    "pais": "Afghanistan",
+    "lat": 29.625,
+    "lon": 62.375,
+    "indice": 0.8491,
+    "puesto_analogia": 3,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Gusev (Spirit)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Tombouctou Cercle, Taoudénit Region",
+    "pais": "Mali",
+    "lat": 24.675,
+    "lon": -4.575,
+    "indice": 0.8445,
+    "puesto_analogia": 5,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Utopia Planitia (Zhurong)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Wadi al Shatii, Libya",
+    "pais": "Libya",
+    "lat": 27.475,
+    "lon": 14.125,
+    "indice": 0.8433,
+    "puesto_analogia": 6,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Vastitas Borealis (Phoenix)",
+    "gemelo_cuerpo": "mars"
+   },
+   {
+    "lugar": "Murzuq, Libya",
+    "pais": "Libya",
+    "lat": 24.875,
+    "lon": 17.675,
+    "indice": 0.8412,
+    "puesto_analogia": 8,
+    "articulos": 0,
+    "clase_bibliografica": "sin estudios como análogo",
+    "gemelo": "Meridiani Planum (Opportunity)",
+    "gemelo_cuerpo": "mars"
+   }
+  ]
+ },
+ "gemelos": [
+  {
+   "perfil": "moon_south_pole_base",
+   "archivo": "img/gemelo_moon_south_pole_base.png",
+   "tierra": "Antártida (83,6°S · 51,0°O)",
+   "tierra_coord": [
+    -83.575,
+    -50.975
+   ],
+   "gemelo": "Slater Plain",
+   "gemelo_cuerpo": "Luna",
+   "gemelo_coord": [
+    -88.0792,
+    111.2881
+   ]
+  },
+  {
+   "perfil": "moon_mars_caves",
+   "archivo": "img/gemelo_moon_mars_caves.png",
+   "tierra": "Southern Red Sea Region, Eritrea",
+   "tierra_coord": [
+    13.525,
+    41.675
+   ],
+   "gemelo": "candidato a cueva CC0783 (catálogo MGC3)",
+   "gemelo_cuerpo": "Marte",
+   "gemelo_coord": [
+    -2.99695,
+    -123.96350000000001
+   ]
+  },
+  {
+   "perfil": "mars_astrobiology",
+   "archivo": "img/gemelo_mars_astrobiology.png",
+   "tierra": "Burj Umar Idris, In Amenas District",
+   "tierra_coord": [
+    26.775,
+    6.225
+   ],
+   "gemelo": "Utopia Planitia (Zhurong)",
+   "gemelo_cuerpo": "Marte",
+   "gemelo_coord": [
+    25.066,
+    109.925
+   ]
+  }
+ ],
+ "fuentes": [
+  {
+   "cuerpo": "Tierra",
+   "dato": "Relieve",
+   "fuente": "Copernicus DEM GLO-90 (ESA)",
+   "resolucion": "~370 m"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Temperatura de superficie",
+   "fuente": "MODIS MOD11C3 (NASA)",
+   "resolucion": "0,05°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Vegetación",
+   "fuente": "MODIS MOD13C2 (NASA)",
+   "resolucion": "0,05°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Albedo y nieve",
+   "fuente": "MODIS MCD43C3 (NASA)",
+   "resolucion": "0,05°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Emisividad / mineralogía",
+   "fuente": "ASTER GED AG5KMMOH (NASA/METI)",
+   "resolucion": "0,05°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Precipitación",
+   "fuente": "GPM IMERG V07 (NASA/JAXA)",
+   "resolucion": "0,1°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Polvo",
+   "fuente": "MERRA-2 (NASA GMAO)",
+   "resolucion": "0,5°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Litología",
+   "fuente": "GLiM (Hartmann & Moosdorf)",
+   "resolucion": "0,5°"
+  },
+  {
+   "cuerpo": "Tierra",
+   "dato": "Volcanes / impactos",
+   "fuente": "Smithsonian GVP · Wikidata",
+   "resolucion": "puntos"
+  },
+  {
+   "cuerpo": "Luna",
+   "dato": "Relieve",
+   "fuente": "LRO LOLA (global 474 m, polo sur 80 m)",
+   "resolucion": "~400–474 m"
+  },
+  {
+   "cuerpo": "Luna",
+   "dato": "Temperatura y rocas",
+   "fuente": "LRO Diviner",
+   "resolucion": "~950 m"
+  },
+  {
+   "cuerpo": "Luna",
+   "dato": "Pozos (cuevas)",
+   "fuente": "LROC Lunar Pit Atlas",
+   "resolucion": "278 pozos"
+  },
+  {
+   "cuerpo": "Marte",
+   "dato": "Relieve",
+   "fuente": "MGS MOLA",
+   "resolucion": "463 m"
+  },
+  {
+   "cuerpo": "Marte",
+   "dato": "Albedo",
+   "fuente": "MGS TES",
+   "resolucion": "7,4 km"
+  },
+  {
+   "cuerpo": "Marte",
+   "dato": "Química y agua somera",
+   "fuente": "Mars Odyssey GRS",
+   "resolucion": "5°"
+  },
+  {
+   "cuerpo": "Marte",
+   "dato": "Candidatos a cueva",
+   "fuente": "Mars Global Cave Candidate Catalog (MGC3)",
+   "resolucion": "1.062 puntos"
+  }
+ ],
+ "trazabilidad": "Cada archivo descargado tiene su URL, SHA-256, cabeceras HTTP, fecha, cita y licencia; cada producto derivado registra sus entradas, el script (con su SHA-256) y los parámetros.",
+ "limites_generales": [
+  "Gravedad (1/6 g en la Luna, 0,38 g en Marte)",
+  "Vacío / atmósfera de CO₂ a ~6 mbar",
+  "Radiación sin magnetosfera ni capa de ozono",
+  "Temperaturas lunares y marcianas fuera del rango terrestre",
+  "Resolución: rejilla de 5,5 km y litología a 0,5°"
+ ]
+}

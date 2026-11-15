@@ -1,0 +1,74 @@
+{
+  "_doc": "Perfiles objetivo de MoonSiteUA. Cada valor está en la misma escala 0-1 que los ejes terrestres (ver engine/analog_score.py). Los valores planetarios reales casi siempre superan el rango terrestre; en ese caso el eje se fija en el extremo terrestre (1.0) y el límite se documenta en 'limites'. Pesos: importancia relativa del eje para ese objetivo.",
+  "axes": {
+    "aridez":      "Aridez a partir de la precipitación anual (GPM IMERG). 1 = sin lluvia.",
+    "desnudez":    "Ausencia de vegetación a partir del NDVI (MODIS MOD13A2). 1 = suelo desnudo.",
+    "frio":        "Frío medio a partir de la temperatura de superficie (MODIS MOD11A2). 1 = -50 °C o menos.",
+    "amplitud":    "Amplitud térmica día-noche (MODIS MOD11A2). 1 = 40 °C o más.",
+    "mafico":      "Indicador de roca máfica/basáltica a partir de la emisividad térmica (ASTER GED). 1 = basáltico.",
+    "relieve":     "Pendiente media (NASADEM). 1 = 25° o más.",
+    "altitud":     "Altitud (NASADEM). Indicador de baja presión y UV alto. 1 = 5000 m o más.",
+    "polvo":       "Polvo/aerosoles (MODIS MOD08_M3, AOD). 1 = AOD 0.6 o más.",
+    "hielo":       "Fracción del año con nieve/hielo (MODIS MOD10A1). 1 = todo el año."
+  },
+  "targets": [
+    {
+      "id": "luna_polo_sur",
+      "nombre": "Luna · polo sur (regiones Artemis III)",
+      "cuerpo": "Luna",
+      "contexto": "Bordes de cráter con luz casi permanente junto a regiones en sombra permanente con hielo de agua. NASA evalúa nueve regiones candidatas (Peak near Cabeus B, Haworth, Malapert Massif, Mons Mouton Plateau, Mons Mouton, Nobile Rim 1 y 2, de Gerlache Rim 2, Slater Plain).",
+      "fuentes": ["LRO Diviner (temperatura)", "LRO LOLA (relieve e iluminación)", "LRO LEND y Mini-RF (hidrógeno/hielo)"],
+      "valores": {"aridez": 1.0, "desnudez": 1.0, "frio": 1.0, "amplitud": 0.45, "mafico": 0.2, "relieve": 0.8, "altitud": 1.0, "polvo": 0.0, "hielo": 1.0},
+      "pesos":   {"aridez": 1.0, "desnudez": 1.0, "frio": 1.5, "amplitud": 0.5, "mafico": 0.7, "relieve": 1.2, "altitud": 0.4, "polvo": 0.6, "hielo": 1.6},
+      "limites": [
+        "Las zonas en sombra permanente bajan de ~40 K (-233 °C); ningún lugar de la Tierra se acerca.",
+        "Vacío casi total: no hay atmósfera, viento ni erosión eólica.",
+        "Gravedad 1/6 g y radiación sin escudo magnético ni atmosférico.",
+        "Iluminación rasante casi horizontal durante todo el año."
+      ]
+    },
+    {
+      "id": "luna_mares_tubos",
+      "nombre": "Luna · mares basálticos y tubos de lava",
+      "cuerpo": "Luna",
+      "contexto": "Llanuras basálticas y simas que dan acceso a tubos de lava (p. ej. Marius Hills, Mare Tranquillitatis), candidatas a refugio natural contra radiación y cambios térmicos.",
+      "fuentes": ["LRO LROC (imágenes de simas)", "LRO Diviner (temperatura día/noche)", "GRAIL (anomalías de gravedad, opcional)"],
+      "valores": {"aridez": 1.0, "desnudez": 1.0, "frio": 0.55, "amplitud": 1.0, "mafico": 1.0, "relieve": 0.25, "altitud": 1.0, "polvo": 0.0, "hielo": 0.0},
+      "pesos":   {"aridez": 1.0, "desnudez": 1.0, "frio": 0.5, "amplitud": 1.3, "mafico": 1.8, "relieve": 0.8, "altitud": 0.3, "polvo": 0.5, "hielo": 0.6},
+      "limites": [
+        "En el ecuador lunar la superficie pasa de ~+120 °C de día a ~-170 °C de noche; la Tierra no alcanza ese salto.",
+        "El día lunar dura ~29,5 días terrestres.",
+        "Vacío, 1/6 g y radiación cósmica directa."
+      ]
+    },
+    {
+      "id": "marte_jezero",
+      "nombre": "Marte · cráter Jezero (delta antiguo)",
+      "cuerpo": "Marte",
+      "contexto": "Antiguo lago con delta, roca ígnea rica en olivino y carbonatos; lugar de aterrizaje de Perseverance y referencia para buscar biofirmas.",
+      "fuentes": ["Perseverance MEDA (meteorología)", "MRO CRISM (mineralogía)", "MRO HiRISE / CTX (morfología)"],
+      "valores": {"aridez": 1.0, "desnudez": 1.0, "frio": 1.0, "amplitud": 1.0, "mafico": 0.85, "relieve": 0.3, "altitud": 1.0, "polvo": 0.8, "hielo": 0.1},
+      "pesos":   {"aridez": 1.3, "desnudez": 1.0, "frio": 0.8, "amplitud": 1.0, "mafico": 1.4, "relieve": 0.6, "altitud": 0.6, "polvo": 1.2, "hielo": 0.4},
+      "limites": [
+        "Media del aire ~-55 °C, con oscilaciones día-noche de 50-60 °C.",
+        "Presión ~7 mbar (menos del 1 % de la terrestre): el agua líquida no es estable.",
+        "Gravedad 0,38 g y radiación UV y cósmica muy superiores.",
+        "La química del suelo (percloratos) no se mide desde satélites terrestres."
+      ]
+    },
+    {
+      "id": "marte_arcadia",
+      "nombre": "Marte · Arcadia Planitia (hielo para misiones humanas)",
+      "cuerpo": "Marte",
+      "contexto": "Llanura lisa de latitudes medias con hielo de agua a poca profundidad; una de las zonas más prometedoras del proyecto SWIM para aterrizajes humanos.",
+      "fuentes": ["SWIM (mapas de consistencia de hielo)", "MRO SHARAD (radar subsuperficial)", "MOLA (topografía)"],
+      "valores": {"aridez": 1.0, "desnudez": 1.0, "frio": 1.0, "amplitud": 0.8, "mafico": 0.7, "relieve": 0.05, "altitud": 1.0, "polvo": 0.6, "hielo": 0.85},
+      "pesos":   {"aridez": 1.0, "desnudez": 1.0, "frio": 1.2, "amplitud": 0.6, "mafico": 0.6, "relieve": 1.5, "altitud": 0.5, "polvo": 0.8, "hielo": 1.6},
+      "limites": [
+        "El hielo marciano está enterrado bajo regolito y estable por la baja presión; en la Tierra el permafrost depende de otros procesos.",
+        "Atmósfera de CO2 de ~6-7 mbar.",
+        "Gravedad 0,38 g y radiación superficial muy alta."
+      ]
+    }
+  ]
+}
