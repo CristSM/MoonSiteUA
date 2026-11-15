@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MoonSiteUA · Presentación</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Instrument+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Mismos tokens que la web («cartel de misión»): negro, hueso y un único amarillo.
+   Big Shoulders Display = titulares · DM Mono = etiquetas y cifras · Instrument Sans = texto.
+   Cada diapositiva es un lienzo de 1920 × 1080 que se escala a la ventana.
+   Teclas: → / espacio / clic = siguiente · ← = anterior · F = pantalla completa · N = guion. */
+:root { --bg: #0b0b0a; --text: #f2efe6; --accent: #ffd23f; --muted: #a9a59a; --line: #3a3934;
+  --f-display: "Big Shoulders Display", Impact, "Arial Narrow", sans-serif; --f-body: "Instrument Sans", "Segoe UI", sans-serif; --f-mono: "DM Mono", Consolas, monospace; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: #000; overflow: hidden; }
+#escena { position: absolute; left: 50%; top: 50%; width: 1920px; height: 1080px; transform-origin: 0 0; background: var(--bg); color: var(--text); font: 34px/1.4 var(--f-body); overflow: hidden; }
+.d { position: absolute; inset: 0; padding: 84px 96px 96px; display: none; }
+.d.on { display: grid; }
+.k { font: 500 26px/1 var(--f-mono); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+h1, h2, h3 { font-family: var(--f-display); font-weight: 900; text-transform: uppercase; line-height: .95; }
+h1 { font-size: 230px; } h2 { font-size: 112px; } h3 { font-size: 54px; line-height: 1; }
+.am { color: var(--accent); }
+.mono { font-family: var(--f-mono); }
+.muted { color: var(--muted); }
+.regla { height: 5px; background: var(--text); }
+.marca { font: 900 64px/1 var(--f-display); text-transform: uppercase; }
+.marca b { background: var(--accent); color: #0b0b0a; padding: 0 8px; margin-left: 3px; }
+.cab { display: grid; gap: 22px; align-content: start; }
+/* 1 portada */
+#d1 { align-content: space-between; }
+#d1 .marca { color: var(--text); }
+#d1 .pie { display: flex; justify-content: space-between; align-items: end; font: 500 26px/1.5 var(--f-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+/* 2 método I */
+#d2 { grid-template-rows: auto 1fr; gap: 50px; }
+#d2 .cols { display: grid; grid-template-columns: 1.25fr 1fr; gap: 80px; align-items: start; border-top: 5px solid var(--text); padding-top: 40px; }
+.cifra { font: 900 210px/.85 var(--f-display); color: var(--accent); }
+.cifra small { font-size: 84px; color: var(--text); margin-left: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.chips span { font: 500 26px/1 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; border: 2px solid var(--text); padding: 12px 16px; }
+.no { border-left: 5px solid var(--accent); padding-left: 34px; display: grid; gap: 18px; }
+.no li { list-style: none; font-size: 36px; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+/* 3 método II */
+#d3 { grid-template-rows: auto 1fr auto; gap: 36px; padding-bottom: 130px; }
+.pasos { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 5px solid var(--text); align-items: start; }
+.pasos > div { padding: 34px 34px 0 0; display: grid; gap: 14px; align-content: start; }
+.pasos > div + div { border-left: 1px solid var(--line); padding-left: 34px; }
+.pasos .n { font: 900 150px/.85 var(--f-display); color: var(--accent); }
+.pasos p { font-size: 28px; color: #cbc7bb; }
+.formula { font: 900 86px/1 var(--f-display); color: var(--accent); border-top: 3px solid var(--text); border-bottom: 3px solid var(--text); padding: 22px 0; }
+.formula small { font: 500 26px/1 var(--f-mono); letter-spacing: .1em; color: var(--muted); margin-left: 30px; text-transform: uppercase; }
+/* 4 validación y novedad */
+#d4 { grid-template-rows: auto 1fr; gap: 44px; }
+#d4 .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 90px; border-top: 5px solid var(--text); padding-top: 36px; align-items: start; }
+.barras { display: grid; gap: 14px; margin-top: 26px; }
+.barras .f { display: grid; grid-template-columns: 330px 1fr 150px; gap: 18px; align-items: center; font-size: 28px; }
+.barras .f i { display: block; height: 22px; background: var(--accent); }
+.barras .f b { font: 500 28px/1 var(--f-mono); text-align: right; }
+.barras .f.gris i { background: var(--muted); }
+/* 5 resultados */
+#d5 { grid-template-rows: auto 1fr; gap: 26px; padding-top: 64px; }
+.sitios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.sitio { border-top: 5px solid var(--text); padding-top: 18px; display: grid; gap: 10px; align-content: start; }
+.sitio .foto { height: 270px; background: #151513 center/cover no-repeat; position: relative; }
+.sitio .foto span { position: absolute; left: 0; bottom: 0; background: var(--bg); font: 500 17px/1.3 var(--f-mono); letter-spacing: .04em; color: var(--muted); padding: 6px 10px; }
+.sitio .gem { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.sitio .gem img { width: 100%; height: 118px; object-fit: cover; display: block; }
+.sitio .gem span { font: 500 19px/1.3 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.sitio .dat { display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+.sitio .dat b { font: 900 84px/.9 var(--f-display); color: var(--accent); }
+.sitio .dat span { font: 500 20px/1.35 var(--f-mono); letter-spacing: .06em; text-transform: uppercase; text-align: right; color: var(--muted); }
+.sitio p.c { font: 500 22px/1.2 var(--f-mono); color: var(--muted); letter-spacing: .04em; }
+/* 6 puente */
+#d6 { align-content: center; gap: 40px; }
+#d6 p { font-size: 44px; max-width: 1300px; color: #cbc7bb; }
+/* 7 vídeo */
+#d7 { padding: 0; }
+#d7 video { width: 1920px; height: 1080px; display: block; background: var(--bg); }
+/* 8 cierre */
+#d8 { align-content: center; gap: 30px; }
+/* 9 código QR */
+#d9 { grid-template-columns: 1fr auto; gap: 90px; align-items: center; }
+#d9 .qrtxt { display: grid; gap: 34px; justify-items: start; }
+#d9 .qr { background: var(--text); padding: 44px; border: 10px solid var(--accent); }
+#d9 .qr img { display: block; width: 560px; height: 560px; image-rendering: pixelated; }
+/* interfaz */
+#num { position: absolute; right: 96px; bottom: 40px; font: 500 22px/1 var(--f-mono); letter-spacing: .12em; color: var(--muted); }
+#prog { position: absolute; left: 0; bottom: 0; height: 8px; background: var(--accent); width: 0; transition: width .3s; }
+#notas { position: fixed; left: 0; right: 0; bottom: 0; max-height: 42%; overflow: auto; background: rgba(11,11,10,.96); color: var(--text); border-top: 4px solid var(--accent); padding: 22px 34px; font: 22px/1.5 var(--f-body); display: none; z-index: 5; }
+#notas.on { display: block; }
+#notas b { font: 500 15px/1 var(--f-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div id="escena">
+
+  <section class="d" id="d1" data-nota="Buenos días. Somos el grupo MoonSiteUA y os vamos a presentar nuestros resultados buscando localizaciones terrestres análogas a las bases lunares y marcianas, así como a los sitios de aterrizaje.">
+    <p class="k">NASA Space Apps Challenge 2026 · Análogos terrestres de la Luna y Marte</p>
+    <h1>La Tierra<br>es el campo<br><span class="am">de pruebas</span></h1>
+    <div class="pie"><span class="marca">MoonSite<b>UA</b></span><span>Universidad de Alicante</span></div>
+  </section>
+
+  <section class="d" id="d2" data-nota="Nuestro método se basa en discretizar toda la superficie terrestre en celdas de unos cinco kilómetros de lado, casi ocho millones en total. Partiendo de los datos proporcionados por la NASA y sus agencias colaboradoras, calculamos en cada celda parámetros representativos como la aridez, la pendiente o los minerales, con el relieve medido a unos 400 metros de detalle, para poder decidir de manera objetiva qué sitios merecen ser estudiados. Siendo realistas, hay parámetros que no pueden simularse en nuestro planeta, como la iluminación poco difusa del polo sur lunar o la abrasividad del regolito.">
+    <div class="cab"><p class="k">01 · Método</p><h2>Medimos la Tierra<br>como se mide la Luna</h2></div>
+    <div class="cols">
+      <div>
+        <div class="cifra">7,9<small>millones de celdas</small></div>
+        <p style="margin-top:22px">Toda la tierra emergida, con datos abiertos de la NASA y sus agencias socias. El relieve se mide a 400 m por píxel.</p>
+        <div class="chips"><span>Pendiente</span><span>Relieve</span><span>Aridez</span><span>Temperatura</span><span>Vegetación</span><span>Minerales</span><span>Volcanes</span><span>Polvo</span><span>Hielo</span></div>
+      </div>
+      <div class="no">
+        <p class="k">Lo que la Tierra no puede imitar</p>
+        <ul>
+          <li>La luz rasante y sin difusión del polo sur lunar</li>
+          <li>La abrasividad del regolito</li>
+          <li>La gravedad, el vacío y la radiación</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="d" id="d3" data-nota="Las características más relevantes de cada terreno se comparan una a una con las mismas características de más de mil puntos de interés de la Luna y Marte. Con ello obtenemos un vector con una puntuación para cada parámetro, que finalmente se pondera para obtener un indicador de similitud. Esa ponderación se repite 200 veces variando los pesos de cada característica, para asegurarnos de que nuestra elección de pesos no sesga los resultados.">
+    <div class="cab"><p class="k">01 · Método</p><h2>De cada celda,<br>un índice de similitud</h2></div>
+    <div class="pasos">
+      <div><span class="n">1</span><h3>Comparar</h3><p>Cada celda frente a 1.345 sitios de la Luna y Marte: regiones de Artemis III, pozos lunares, cuevas y lugares de aterrizaje de rovers.</p></div>
+      <div><span class="n">2</span><h3>Puntuar</h3><p>Un vector con una nota de 0 a 1 para cada característica: terreno, aridez, frío, roca, polvo…</p></div>
+      <div><span class="n">3</span><h3>Ponderar</h3><p>Los pesos dependen de la misión: polo sur lunar, cuevas y tubos de lava, o astrobiología en Marte.</p></div>
+      <div><span class="n">4</span><h3>Repetir</h3><p>200 sorteos de pesos. Solo cuenta lo que sigue arriba en la mayoría: la elección de pesos no sesga el resultado.</p></div>
+    </div>
+    <div class="formula">Índice = Σ wᵢ · dᵢ / Σ wᵢ<small>d = nota de cada característica · w = su peso</small></div>
+  </section>
+
+  <section class="d" id="d4" data-nota="Los resultados se validan con los sitios que las agencias espaciales usan en el día a día. Los más utilizados, como Atacama o los Valles Secos de la Antártida, quedan por encima del percentil 99 de nuestro método, y la mayoría de los demás, por encima del 95. Para asegurarnos de la novedad de nuestra propuesta usamos OpenAlex: revisamos cuántos estudios publicados tratan ya cada lugar como análogo y ponderamos de forma inversa a ese número de artículos.">
+    <div class="cab"><p class="k">02 · Validación y novedad</p><h2>Acierta con lo conocido.<br><span class="am">Busca lo que falta.</span></h2></div>
+    <div class="cols">
+      <div>
+        <p class="k">Análogos que ya usan las agencias · percentil</p>
+        <div class="barras">
+          <div class="f"><span>Atacama · Marte</span><i style="width:100%"></i><b>100,00</b></div>
+          <div class="f"><span>Valles Secos · Luna</span><i style="width:99.9%"></i><b>99,99</b></div>
+          <div class="f"><span>Qaidam · Marte</span><i style="width:99.9%"></i><b>99,99</b></div>
+          <div class="f"><span>Lava Beds · cuevas</span><i style="width:100%"></i><b>100,00</b></div>
+          <div class="f"><span>Cráter Haughton · Luna</span><i style="width:98.85%"></i><b>98,85</b></div>
+        </div>
+        <p class="muted" style="font-size:26px;margin-top:22px">Con las cuevas de OpenStreetMap: el 78 % de los tubos de lava confirmados cae en el 5 % superior del mapa.</p>
+      </div>
+      <div>
+        <p class="k">Artículos que ya los citan como análogo · OpenAlex</p>
+        <div class="barras">
+          <div class="f gris"><span>Atacama</span><i style="width:100%"></i><b>131</b></div>
+          <div class="f gris"><span>Río Tinto</span><i style="width:72%"></i><b>94</b></div>
+          <div class="f gris"><span>Svalbard</span><i style="width:63%"></i><b>83</b></div>
+          <div class="f"><span>Nuestras candidatas</span><i style="width:1%"></i><b>0</b></div>
+        </div>
+        <div class="formula" style="font-size:52px;margin-top:34px;white-space:nowrap">Descubrimiento = Índice × Novedad</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="d" id="d5" data-nota="De esta manera hemos detectado tres lugares que están en lo más alto de nuestro método, con un índice de similitud de entre 80 y 88 sobre 100, y que apenas se han estudiado: los montes Pensacola, en la Antártida, similares al polo sur lunar; el macizo volcánico del Nabro, en Eritrea, como análogo de las cuevas y tubos de lava marcianos; y Burj Umar Idris, en Argelia, como sitio de interés astrobiológico. De los dos últimos no hemos encontrado ni un solo artículo que los estudie como análogos.">
+    <div class="cab"><p class="k">03 · Resultados</p><h2>Tres lugares <span class="am">por descubrir</span></h2></div>
+    <div class="sitios">
+      <div class="sitio">
+        <p class="k">Luna · polo sur</p><h3>Montes Pensacola</h3><p class="c">Antártida · 83,6° S · 51,0° O</p>
+        <div class="foto" style="background-image:url(img/pensacola.jpg);background-position:30% 34%;background-size:190%"><span>Foto: NASA / John Sonntag · dominio público</span></div>
+        <div class="gem"><img src="img/af_moonbas_1.png" alt="Relieve del sitio junto al de su gemelo lunar"><span>Relieve del sitio ↔ gemelo: Slater Plain (Luna)</span></div>
+        <div class="dat"><b>79,9</b><span>Índice 0–100<br>nº 1 de su perfil</span></div>
+      </div>
+      <div class="sitio">
+        <p class="k">Cuevas y tubos de lava</p><h3>Macizo del Nabro</h3><p class="c">Eritrea · 13,5° N · 41,7° E</p>
+        <div class="foto" style="background-image:url(img/nabro.jpg)"><span>Foto desde la ISS: NASA JSC · dominio público</span></div>
+        <div class="gem"><img src="img/af_mooncav_1.png" alt="Relieve del sitio junto al de su gemelo marciano"><span>Relieve del sitio ↔ gemelo: cueva CC0783 (Marte)</span></div>
+        <div class="dat"><b>88,2</b><span>Índice 0–100<br>0 artículos</span></div>
+      </div>
+      <div class="sitio">
+        <p class="k">Marte · astrobiología</p><h3>Burj Umar Idris</h3><p class="c">Argelia · 26,8° N · 6,2° E</p>
+        <div class="foto" style="background-image:url(img/burj.jpg)"><span>Landsat: NASA HLS · dominio público</span></div>
+        <div class="gem"><img src="img/af_marsast_1.png" alt="Relieve del sitio junto al de su gemelo marciano"><span>Relieve del sitio ↔ gemelo: Utopia Planitia (Marte)</span></div>
+        <div class="dat"><b>86,2</b><span>Índice 0–100<br>0 artículos</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="d" id="d6" data-nota="Sin embargo, estos datos espaciales tienen limitaciones. No pueden decirnos qué cuevas tienen interés científico y cuáles no. Por ello, hemos ideado la siguiente propuesta.">
+    <p class="k">El límite</p>
+    <h1 style="font-size:200px">El satélite<br><span class="am">no lo ve todo</span></h1>
+    <p>Desde el espacio no sabemos qué cuevas tienen interés científico y cuáles no. Alguien tiene que ir.</p>
+  </section>
+
+  <section class="d" id="d7" data-nota="(Vídeo de fondo, 40 s.) La exploración espacial no debe ser un monopolio: es algo de la humanidad para la humanidad, y las personas debemos permanecer en el centro de ella. A día de hoy muy poca gente puede llegar a sentirse parte de estas misiones espaciales, y eso debe cambiar. Proponemos que la validación y la exploración de estos sitios las lleven a cabo personas. Nuestro concepto de app se basa en recompensar a los usuarios que decidan visitar estos sitios y documentar los datos que la NASA necesite, como la pendiente, la temperatura o la humedad, haciendo así partícipes a las personas de la carrera espacial. Nuestro método se encarga de proponer los lugares de estudio, que después deberán validarse in situ. Como esto puede conllevar riesgos, será necesario acreditar experiencia en espeleología o montañismo para poder acceder a las coordenadas de los sitios más complejos.">
+    <video src="fondo.mp4" muted playsinline preload="auto"></video>
+  </section>
+
+  <section class="d" id="d8" data-nota="Y ahora os enseñamos la web en vivo.">
+    <p class="k">Demostración</p>
+    <h1>La web,<br><span class="am">en vivo</span></h1>
+    <div class="regla" style="margin:20px 0"></div>
+    <span class="marca">MoonSite<b>UA</b></span>
+  </section>
+
+  <section class="d" id="d9" data-nota="Si queréis entrar en la web, podéis hacerlo con este código QR. Muchas gracias.">
+    <div class="qrtxt">
+      <p class="k">Pruébala tú</p>
+      <h1 style="font-size:190px">Entra en<br><span class="am">la web</span></h1>
+      <p style="font-size:40px;color:#cbc7bb;max-width:760px">Escanea el código con la cámara del móvil.</p>
+      <p class="mono am" style="font-size:34px;letter-spacing:.02em">cristsm.github.io/MoonSiteUA</p>
+      <span class="marca">MoonSite<b>UA</b></span>
+    </div>
+    <div class="qr"><img src="img/qr.png" alt="Código QR de la web de MoonSiteUA"></div>
+  </section>
+
+  <div id="num"></div>
+  <div id="prog"></div>
+</div>
+<div id="notas"></div>
+<script>
+const E = document.getElementById('escena'), D = [...document.querySelectorAll('.d')], V = document.querySelector('#d7 video');
+let i = Math.max(0, Math.min(D.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+function ajusta() { const s = Math.min(innerWidth / 1920, innerHeight / 1080); E.style.transform = `scale(${s}) translate(-50%, -50%)`; }
+function ve(n) {
+  i = Math.max(0, Math.min(D.length - 1, n));
+  D.forEach((d, j) => d.classList.toggle('on', j === i));
+  document.getElementById('num').textContent = D[i].id === 'd7' ? '' : `${String(i + 1).padStart(2, '0')} / ${String(D.length).padStart(2, '0')}`;
+  document.getElementById('prog').style.width = D[i].id === 'd7' ? '0' : `${(i + 1) / D.length * 100}%`;
+  document.getElementById('notas').innerHTML = `<b>Guion · diapositiva ${i + 1}</b>${D[i].dataset.nota || ''}`;
+  history.replaceState(null, '', '#' + (i + 1));
+  // el vídeo empieza al entrar en su diapositiva y se queda en el último fotograma
+  if (D[i].id === 'd7') { V.currentTime = 0; V.play().catch(() => {}); } else V.pause();
+}
+addEventListener('resize', ajusta);
+addEventListener('keydown', (e) => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); ve(i + 1); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); ve(i - 1); }
+  else if (e.key === 'Home') ve(0); else if (e.key === 'End') ve(D.length - 1);
+  else if (e.key.toLowerCase() === 'f') (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen());
+  else if (e.key.toLowerCase() === 'n') document.getElementById('notas').classList.toggle('on');
+});
+E.addEventListener('click', (e) => ve(i + (e.clientX < innerWidth * 0.25 ? -1 : 1)));
+ajusta(); ve(i);
+</script>
+</body>
+</html>
