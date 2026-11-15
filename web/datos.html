@@ -655,6 +655,63 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); border: var(--rule); }
 
+/* flota robótica (visor 3D) */
+.flota-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr); gap: 0 28px; align-items: start; border-top: var(--rule); padding-top: 24px; }
+@media (max-width: 960px) { .flota-grid { grid-template-columns: 1fr; gap: 24px; } }
+.flota-grid > * { min-width: 0; }
+.visor { overflow: hidden; display: grid; background: var(--panel); border: 1px solid var(--line); }
+.visor-stage { position: relative; height: clamp(380px, 62vh, 660px); background: radial-gradient(120% 90% at 50% 15%, #2e2d29 0%, #161614 55%, #0b0b0a 100%); touch-action: none; }
+.visor-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.visor-stage canvas:active { cursor: grabbing; }
+.visor:fullscreen { grid-template-rows: 1fr auto auto; }
+.visor:fullscreen .visor-stage { height: auto; }
+.visor-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font: 500 .8rem var(--f-mono); text-transform: uppercase; letter-spacing: .1em; }
+.hs-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+.hs { position: absolute; left: 0; top: 0; pointer-events: auto; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--accent); background: rgba(11,11,10,.8); color: #fff; font: 500 .76rem var(--f-mono); cursor: pointer; display: grid; place-items: center; padding: 0; box-shadow: 0 0 0 4px rgba(255,210,63,.2); transition: opacity .25s, background .2s; }
+.hs:hover, .hs.on { background: var(--accent); color: var(--on-accent); }
+.hs.on { box-shadow: 0 0 0 6px rgba(255,210,63,.3); }
+.hs.oc { opacity: .35; }
+@media (prefers-reduced-motion: no-preference) { .hs:not(.on):not(.oc) { animation: hsPulse 2.4s ease-in-out infinite; } }
+@keyframes hsPulse { 50% { box-shadow: 0 0 0 9px rgba(255,210,63,0); } }
+.visor-cap { position: absolute; left: 10px; bottom: 10px; z-index: 2; display: none; gap: 8px; align-items: center; max-width: calc(100% - 20px); background: rgba(11,11,10,.88); color: #fff; border: 2px solid var(--accent); padding: 7px 10px; font: 500 .85rem var(--f-body); cursor: pointer; text-align: left; }
+@media (max-width: 960px) { .visor-cap:not([hidden]) { display: inline-flex; } }
+.visor-bar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-top: 1px solid var(--line); align-items: center; }
+.visor-bar .btn { padding: 7px 11px; font-size: .92rem; border-width: 2px; }
+.visor-bar .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.visor-bar .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.visor-bar .btn:disabled { opacity: .35; cursor: default; }
+.visor-bar .vistas { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.visor-bar [data-accion="full"] { margin-left: auto; }
+.visor-hint { margin: 0; padding: 0 12px 12px; font: 500 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.flota-panel { display: grid; gap: 14px; align-content: start; }
+.flota-panel h3 { font-size: clamp(2.4rem, 4vw, 3.2rem); font-weight: 900; line-height: .95; }
+.flota-panel .sub { font-weight: 600; }
+.flota-panel h4 { margin: 8px 0 0; padding-top: 12px; border-top: var(--rule); font: 500 .74rem var(--f-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--accent); }
+.flota-panel .n { display: inline-grid; place-items: center; min-width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); font: 500 .72rem var(--f-mono); }
+.piezas { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+@media (max-width: 420px) { .piezas { grid-template-columns: 1fr; } }
+.pieza { display: flex; gap: 8px; align-items: center; text-align: left; background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 8px 10px; font: inherit; font-size: .86rem; cursor: pointer; line-height: 1.25; }
+.pieza:hover { border-color: var(--text); }
+.pieza[aria-pressed="true"] { border-color: var(--accent); }
+.pieza[aria-pressed="true"] .n { background: var(--accent); color: var(--on-accent); }
+.parte { border: 2px solid var(--accent); padding: 14px; display: grid; gap: 10px; font-size: .95rem; }
+.parte.vacia { border: 1px dashed var(--line); font-size: .9rem; }
+.parte .ph { display: flex; gap: 10px; align-items: center; }
+.parte .ph b { font: 800 1.35rem/1 var(--f-display); text-transform: uppercase; flex: 1; }
+.parte .x { background: none; border: 0; color: var(--muted); font-size: 1.5rem; line-height: 1; cursor: pointer; padding: 0 4px; }
+.parte .curio { background: var(--panel-2); padding: 10px 12px; display: grid; gap: 6px; }
+.specs { display: grid; grid-template-columns: auto 1fr; margin: 0; font-size: .88rem; }
+.specs dt, .specs dd { margin: 0; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.specs dt { color: var(--muted); padding-right: 14px; }
+.specs dd { text-align: right; font-variant-numeric: tabular-nums; }
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.paso { display: grid; grid-template-columns: auto 1fr; gap: 10px; text-align: left; width: 100%; background: var(--panel); border: 1px solid var(--line); padding: 12px; color: var(--text); font: inherit; font-size: .9rem; cursor: pointer; }
+.paso b { display: block; font: 800 1.2rem/1.1 var(--f-display); text-transform: uppercase; margin-bottom: 4px; }
+.paso:hover { border-color: var(--text); }
+.paso[aria-pressed="true"] { border-color: var(--accent); }
+.paso[aria-pressed="true"] .n { background: var(--accent); color: var(--on-accent); }
+.nota { font-size: .85rem; }
+
 footer { padding: 40px 0 56px; color: var(--muted); font: 500 .76rem/1.6 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; border-top: var(--rule); }
 footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: uppercase; }
 @media (prefers-reduced-motion: no-preference) { .site, .rank button, .gcard, .btn { transition: opacity .2s, background .2s, border-color .2s, color .2s; } }
@@ -664,7 +721,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 <nav class="top" aria-label="Secciones">
   <div class="wrap">
     <a class="brand" href="index.html">MoonSite<span>UA</span></a>
-    <a href="demo.html">Explorar</a><a href="juego.html">Juego</a><a href="recompensas.html">Recompensas</a><a href="metodo.html">Método</a><a href="validacion.html">Validación</a><a href="comunidad.html">Comunidad</a><a href="seguridad.html">Seguridad</a><a href="datos.html" aria-current="page">Datos</a><a href="video.html">Vídeo</a><a href="explorador.html">Explorador</a>
+    <a href="demo.html">Explorar</a><a href="juego.html">Juego</a><a href="recompensas.html">Recompensas</a><a href="metodo.html">Método</a><a href="validacion.html">Validación</a><a href="flota.html">Flota</a><a href="comunidad.html">Comunidad</a><a href="seguridad.html">Seguridad</a><a href="datos.html" aria-current="page">Datos</a><a href="video.html">Vídeo</a><a href="explorador.html">Explorador</a>
     <span class="prefs"><a class="lang" href="en/datos.html" hreflang="en" lang="en" title="English">EN</a></span>
   </div>
 </nav>
@@ -2024,6 +2081,7 @@ const FIG = {
   seguridad: (el) => { const o = document.createElementNS(NS, 'svg'); o.id = 'geoMini'; el.append(o); geovalla(o, 1.5); },
   datos: (el) => { el.innerHTML = `<div class="tags">${['Copernicus DEM', 'MODIS', 'GPM', 'ASTER', 'MERRA-2', 'LRO', 'MGS', 'MGC3', 'OpenAlex'].map((t) => `<span>${t}</span>`).join('')}</div>`; },
   video: (el) => { el.innerHTML = '<canvas aria-hidden="true"></canvas><svg viewBox="0 0 400 300" style="position:absolute;inset:0" aria-hidden="true"><path d="M182 124v52l44-26z" style="fill:var(--accent)"/></svg>'; lunaTramada(el.querySelector('canvas'), 7); },
+  flota: (el) => { el.innerHTML = `<div class="tags">${['Céfiro', 'LiDAR', 'Sonda', 'Talpa', 'Rápel', 'LIBS'].map((x) => `<span>${x}</span>`).join('')}</div>`; },
   explorador: (el) => { el.innerHTML = Disenos.parche(); el.firstElementChild.removeAttribute('width'); el.firstElementChild.removeAttribute('height'); },
 };
 document.querySelectorAll('details.ap').forEach((d) => d.addEventListener('toggle', () => {

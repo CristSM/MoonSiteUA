@@ -76,6 +76,15 @@ Algunas zonas tienen un IAP alto o ya están parcialmente validadas, pero son de
 
 Con esto se conecta la ciencia ciudadana con la investigación profesional: los exploradores señalan desde el perímetro seguro y los robots llegan donde las personas no deben ir. Criterio implementado en `escalado_robotico()`: zona restringida + (IAP ≥ 65 o baliza naranja/verde).
 
+#### La flota: dron Céfiro y robot Talpa (`web/flota.html`)
+
+Diseños conceptuales propios para estas misiones, en un visor 3D dentro de la web:
+- **Céfiro (MSU-D01):** dron de rotores carenados con rejilla, LiDAR 360° para volar sin GPS, góndola multiespectral y térmica, patas de posado con garras y una sonda de gases que baja colgada de un cable de 40 m.
+- **Talpa (MSU-R01):** robot de seis patas con rueda (rueda, camina y hace rápel con su cabrestante), mástil con visión estéreo y LIBS, brazo con taladro de testigos, radar de subsuelo, repetidores de radio desechables y plataforma de carga para el dron.
+- **El visor:** giro libre y vista 360° automática, vistas frontal, lateral, superior y trasera, despiece, pantalla completa y modo «Trabajo en equipo» con los cuatro pasos de una misión. Cada pieza se puede pulsar (en el modelo o en la lista) para ver qué hace y una curiosidad sobre misiones reales.
+- **Cómo está hecho:** los modelos se construyen por código con Three.js en `web/flota3d.js` (sin archivos 3D externos); los materiales y texturas (pintura con paneles, fibra de carbono, lámina dorada, suelo volcánico) se generan en el navegador. `build.mjs` empaqueta el visor con esbuild y lo incluye solo en `flota.html`. Los textos (piezas, especificaciones, curiosidades) están en `window.FLOTA` dentro de `template.html`, así que se traducen con el mismo diccionario que el resto. La dirección admite `#dron`, `#robot` y `#equipo`.
+- Las cifras son objetivos de diseño, no medidas de un prototipo.
+
 ## 4. Gamificación
 
 - **Puntos de Exploración** (virtuales): validar, fotografiar, medir. Las medidas que resultan inconsistentes no puntúan.
@@ -235,7 +244,8 @@ backend/
 web/
   template.html         Plantilla de la web, con bloques <!--PAGE id--> por apartado
   build.mjs             Genera una página por apartado (index, demo, juego, recompensas, metodo,
-                        validacion, comunidad, seguridad, datos, video, explorador) en web/ y docs/
+                        validacion, flota, comunidad, seguridad, datos, video, explorador) en web/ y docs/
+  flota3d.js            Visor 3D del dron y el robot (Three.js; build.mjs lo empaqueta con esbuild)
   explorador.css/.js    Estilos y lógica de la zona de exploradores (se incluyen en el build)
   i18n/en.py            Diccionario español -> inglés (genera i18n/en.json)
   i18n/extraer.py       Lista los textos de la web para traducir

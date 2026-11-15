@@ -581,6 +581,63 @@ th { font: 500 .72rem var(--f-mono); text-transform: uppercase; letter-spacing: 
 /* vídeo */
 .video { aspect-ratio: 16 / 9; display: grid; place-items: center; text-align: center; padding: 24px; background: repeating-linear-gradient(135deg, var(--panel), var(--panel) 14px, var(--panel-2) 14px, var(--panel-2) 28px); border: var(--rule); }
 
+/* flota robótica (visor 3D) */
+.flota-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(300px, 1fr); gap: 0 28px; align-items: start; border-top: var(--rule); padding-top: 24px; }
+@media (max-width: 960px) { .flota-grid { grid-template-columns: 1fr; gap: 24px; } }
+.flota-grid > * { min-width: 0; }
+.visor { overflow: hidden; display: grid; background: var(--panel); border: 1px solid var(--line); }
+.visor-stage { position: relative; height: clamp(380px, 62vh, 660px); background: radial-gradient(120% 90% at 50% 15%, #2e2d29 0%, #161614 55%, #0b0b0a 100%); touch-action: none; }
+.visor-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.visor-stage canvas:active { cursor: grabbing; }
+.visor:fullscreen { grid-template-rows: 1fr auto auto; }
+.visor:fullscreen .visor-stage { height: auto; }
+.visor-load { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); font: 500 .8rem var(--f-mono); text-transform: uppercase; letter-spacing: .1em; }
+.hs-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 1; }
+.hs { position: absolute; left: 0; top: 0; pointer-events: auto; width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--accent); background: rgba(11,11,10,.8); color: #fff; font: 500 .76rem var(--f-mono); cursor: pointer; display: grid; place-items: center; padding: 0; box-shadow: 0 0 0 4px rgba(255,210,63,.2); transition: opacity .25s, background .2s; }
+.hs:hover, .hs.on { background: var(--accent); color: var(--on-accent); }
+.hs.on { box-shadow: 0 0 0 6px rgba(255,210,63,.3); }
+.hs.oc { opacity: .35; }
+@media (prefers-reduced-motion: no-preference) { .hs:not(.on):not(.oc) { animation: hsPulse 2.4s ease-in-out infinite; } }
+@keyframes hsPulse { 50% { box-shadow: 0 0 0 9px rgba(255,210,63,0); } }
+.visor-cap { position: absolute; left: 10px; bottom: 10px; z-index: 2; display: none; gap: 8px; align-items: center; max-width: calc(100% - 20px); background: rgba(11,11,10,.88); color: #fff; border: 2px solid var(--accent); padding: 7px 10px; font: 500 .85rem var(--f-body); cursor: pointer; text-align: left; }
+@media (max-width: 960px) { .visor-cap:not([hidden]) { display: inline-flex; } }
+.visor-bar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border-top: 1px solid var(--line); align-items: center; }
+.visor-bar .btn { padding: 7px 11px; font-size: .92rem; border-width: 2px; }
+.visor-bar .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.visor-bar .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.visor-bar .btn:disabled { opacity: .35; cursor: default; }
+.visor-bar .vistas { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+.visor-bar [data-accion="full"] { margin-left: auto; }
+.visor-hint { margin: 0; padding: 0 12px 12px; font: 500 .7rem var(--f-mono); text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+.flota-panel { display: grid; gap: 14px; align-content: start; }
+.flota-panel h3 { font-size: clamp(2.4rem, 4vw, 3.2rem); font-weight: 900; line-height: .95; }
+.flota-panel .sub { font-weight: 600; }
+.flota-panel h4 { margin: 8px 0 0; padding-top: 12px; border-top: var(--rule); font: 500 .74rem var(--f-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--accent); }
+.flota-panel .n { display: inline-grid; place-items: center; min-width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--accent); color: var(--accent); font: 500 .72rem var(--f-mono); }
+.piezas { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+@media (max-width: 420px) { .piezas { grid-template-columns: 1fr; } }
+.pieza { display: flex; gap: 8px; align-items: center; text-align: left; background: var(--panel); border: 1px solid var(--line); color: var(--text); padding: 8px 10px; font: inherit; font-size: .86rem; cursor: pointer; line-height: 1.25; }
+.pieza:hover { border-color: var(--text); }
+.pieza[aria-pressed="true"] { border-color: var(--accent); }
+.pieza[aria-pressed="true"] .n { background: var(--accent); color: var(--on-accent); }
+.parte { border: 2px solid var(--accent); padding: 14px; display: grid; gap: 10px; font-size: .95rem; }
+.parte.vacia { border: 1px dashed var(--line); font-size: .9rem; }
+.parte .ph { display: flex; gap: 10px; align-items: center; }
+.parte .ph b { font: 800 1.35rem/1 var(--f-display); text-transform: uppercase; flex: 1; }
+.parte .x { background: none; border: 0; color: var(--muted); font-size: 1.5rem; line-height: 1; cursor: pointer; padding: 0 4px; }
+.parte .curio { background: var(--panel-2); padding: 10px 12px; display: grid; gap: 6px; }
+.specs { display: grid; grid-template-columns: auto 1fr; margin: 0; font-size: .88rem; }
+.specs dt, .specs dd { margin: 0; padding: 7px 0; border-bottom: 1px solid var(--line); }
+.specs dt { color: var(--muted); padding-right: 14px; }
+.specs dd { text-align: right; font-variant-numeric: tabular-nums; }
+.pasos { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.paso { display: grid; grid-template-columns: auto 1fr; gap: 10px; text-align: left; width: 100%; background: var(--panel); border: 1px solid var(--line); padding: 12px; color: var(--text); font: inherit; font-size: .9rem; cursor: pointer; }
+.paso b { display: block; font: 800 1.2rem/1.1 var(--f-display); text-transform: uppercase; margin-bottom: 4px; }
+.paso:hover { border-color: var(--text); }
+.paso[aria-pressed="true"] { border-color: var(--accent); }
+.paso[aria-pressed="true"] .n { background: var(--accent); color: var(--on-accent); }
+.nota { font-size: .85rem; }
+
 footer { padding: 40px 0 56px; color: var(--muted); font: 500 .76rem/1.6 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; border-top: var(--rule); }
 footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: uppercase; }
 @media (prefers-reduced-motion: no-preference) { .site, .rank button, .gcard, .btn { transition: opacity .2s, background .2s, border-color .2s, color .2s; } }
@@ -980,6 +1037,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <p class="kicker">Nivel 3 · Escalado robótico</p>
         <h3>Donde no debe ir una persona, va un robot</h3>
         <p class="muted">Si una zona tiene un índice alto o ya está parcialmente validada, pero es peligrosa (cuevas profundas, chimeneas volcánicas, acantilados), se cierra al público y se deriva a una Misión Automatizada con universidades y agencias espaciales. Drones y rovers terrestres con cámaras multiespectrales, espectrómetros y LiDAR analizan la composición de rocas y suelo y completan el perfil del análogo. Los exploradores aportan desde el perímetro seguro; los robots llegan al resto.</p>
+        <p><a class="btn primary" href="flota.html">Conoce el dron y el robot en 3D →</a></p>
       </div>
       <div><div class="lienzo" id="robotLienzo"><svg id="robotSvg" viewBox="0 0 520 300" role="img" aria-label="Corte del terreno: el explorador se queda en el perímetro seguro y los robots entran en la zona cerrada">
   <defs><pattern id="rayasCierre" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="8" style="stroke:var(--bad)" stroke-width="1.5" opacity=".5"/></pattern></defs>
@@ -1002,6 +1060,152 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>
   </div>
 </section>
+<!--/PAGE-->
+
+<!--PAGE flota-->
+<section id="flota">
+  <div class="wrap stack" style="gap:28px">
+    <div class="head">
+      <p class="kicker">Nivel 3 · Misiones automatizadas</p>
+      <h2>La flota robótica</h2>
+      <p class="muted">Cuando una zona es demasiado peligrosa para los exploradores (simas, tubos de lava, chimeneas volcánicas o acantilados), entran dos máquinas diseñadas por el equipo para trabajar juntas: un dron que vuela sin GPS y un robot que rueda, camina y hace rápel.</p>
+    </div>
+    <div class="seg" id="flotaModo" role="group" aria-label="Modelo">
+      <button type="button" data-modo="dron" aria-pressed="true">Dron Céfiro</button>
+      <button type="button" data-modo="robot" aria-pressed="false">Robot Talpa</button>
+      <button type="button" data-modo="equipo" aria-pressed="false">Trabajo en equipo</button>
+    </div>
+    <div class="flota-grid">
+      <div class="visor card" id="flota3d">
+        <div class="visor-stage">
+          <div class="hs-layer"></div>
+          <p class="visor-load">Cargando modelo 3D…</p>
+          <button type="button" class="visor-cap" hidden></button>
+        </div>
+        <div class="visor-bar" role="toolbar" aria-label="Controles del visor">
+          <button type="button" class="btn" data-accion="auto" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Vista 360°</button>
+          <button type="button" class="btn" data-accion="despiece" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="6" height="6"/><path d="M4 4l3 3M20 4l-3 3M4 20l3-3M20 20l-3-3"/></svg>Despiece</button>
+          <span class="vistas">
+            <button type="button" class="btn" data-accion="frontal">Frontal</button>
+            <button type="button" class="btn" data-accion="lateral">Lateral</button>
+            <button type="button" class="btn" data-accion="superior">Superior</button>
+            <button type="button" class="btn" data-accion="trasera">Trasera</button>
+          </span>
+          <button type="button" class="btn" data-accion="reset">Restablecer</button>
+          <button type="button" class="btn" data-accion="full" aria-label="Pantalla completa" title="Pantalla completa"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+        </div>
+        <p class="visor-hint">Arrastra para girar · rueda o pellizca para acercar · pulsa un número o una pieza</p>
+      </div>
+      <aside class="flota-panel" id="flotaPanel" aria-live="polite"></aside>
+    </div>
+    <p class="muted read nota">Diseños conceptuales del equipo MoonSiteUA para las Misiones Automatizadas de nivel 3. Las cifras son objetivos de diseño, no medidas de un prototipo; las curiosidades hablan de misiones y robots reales.</p>
+  </div>
+</section>
+<script>
+window.FLOTA = {
+  ui: {
+    verDetalles: 'Ver detalles', piezas: 'Piezas', specs: 'Especificaciones', curiosidad: '¿Sabías que…?', cerrar: 'Cerrar',
+    pista: 'Pulsa un número sobre el modelo o una pieza de la lista para ver qué hace y una curiosidad.',
+    sinWebgl: 'Tu navegador no puede mostrar gráficos 3D (WebGL desactivado).'
+  },
+  dron: {
+    codigo: 'MSU-D01 · Dron de reconocimiento', nombre: 'Céfiro',
+    subtitulo: 'Dron carenado para cuevas, simas y volcanes',
+    desc: 'Vuela donde no llegan ni el GPS ni la luz. Sus hélices van protegidas para poder rozar paredes sin romperse, cartografía en 3D a oscuras y baja una sonda colgada de un cable a simas y chimeneas sin tener que entrar en ellas.',
+    specs: [
+      ['Envergadura', '81 cm (48 cm plegado)'],
+      ['Peso al despegue', '4,6 kg'],
+      ['Carga útil', '0,9 kg'],
+      ['Autonomía', '34 min (26 min con la sonda)'],
+      ['Velocidad máxima', '65 km/h'],
+      ['Viento máximo', '45 km/h'],
+      ['Temperatura de trabajo', '−25 °C a +55 °C'],
+      ['Protección', 'IP55 (polvo y chorros de agua)'],
+      ['Navegación', 'LiDAR y visión, sin GPS'],
+      ['Enlace', 'Radio en malla, hasta 2 km'],
+      ['Sonda', 'Cable de 40 m con fibra óptica']
+    ],
+    partes: [
+      { id: 'lidar', titulo: 'Cúpula LiDAR 360°',
+        texto: 'Gira diez veces por segundo y lanza cientos de miles de pulsos láser para medir la distancia a todo lo que le rodea. Con eso construye un mapa 3D de la cueva mientras vuela, sin necesitar luz ni GPS.',
+        curiosidad: 'En el DARPA Subterranean Challenge (2018-2021), equipos de robots y drones exploraron minas, túneles y cuevas sin GPS. Los mapas hechos con LiDAR fueron clave para no perderse.' },
+      { id: 'rotores', titulo: 'Rotores carenados con rejilla',
+        texto: 'Cada hélice gira dentro de un anillo aerodinámico y bajo una rejilla. Si el dron roza una pared o una estalactita, rebota en lugar de partir las palas. El anillo, además, reduce las pérdidas de empuje en la punta de las palas.',
+        curiosidad: 'Las luces siguen el código de los aviones: roja a la izquierda, verde a la derecha y blancas detrás. Así se sabe hacia dónde va aunque solo se vean sus luces en la oscuridad.' },
+      { id: 'brazos', titulo: 'Brazos plegables de carbono',
+        texto: 'Se pliegan hacia atrás para que el dron ocupe 48 cm y viaje sobre el robot Talpa. Las bisagras se bloquean solas al desplegarse y el dron no despega si alguna no ha quedado bien cerrada.',
+        curiosidad: 'La fibra de carbono pesa unas cinco veces menos que el acero y es muy rígida. Por eso se usa en bicicletas de competición, aviones y cohetes.' },
+      { id: 'camara', titulo: 'Góndola multiespectral y térmica',
+        texto: 'Cámara estabilizada con cinco bandas, del azul al infrarrojo cercano, y una cámara térmica. Las bandas delatan minerales como óxidos de hierro o arcillas; la térmica encuentra grietas por las que sale aire, una pista de que hay una cueva debajo.',
+        curiosidad: 'Los orbitadores de Marte usan la misma idea: el espectrómetro CRISM de la NASA cartografió arcillas y sulfatos desde la órbita, pistas de que allí hubo agua.' },
+      { id: 'sonda', titulo: 'Sonda colgante con cabrestante',
+        texto: 'Una cápsula baja hasta 40 m colgada de un cable de kevlar con fibra óptica. Mide gases (CO₂, SO₂ y H₂S), temperatura y humedad, y lleva cámara y luz. El dron se queda arriba, a salvo, mientras la sonda entra en la sima.',
+        curiosidad: 'En la Luna hay más de 200 fosas que podrían ser entradas a tubos de lava. La primera, en las colinas Marius, la descubrió la sonda japonesa Kaguya en 2009.' },
+      { id: 'patas', titulo: 'Patas de posado con garras',
+        texto: 'Cuatro patas con garras de tres dedos que se cierran sobre rocas y salientes. Posado, el dron apaga los motores y sigue midiendo como una estación fija, gastando muy poca batería.',
+        curiosidad: 'La idea viene de las aves: un pájaro dormido no se cae de la rama porque, al doblar las patas, sus tendones le cierran los dedos sin esfuerzo.' },
+      { id: 'bateria', titulo: 'Batería intercambiable',
+        texto: 'Se cambia en segundos y sin herramientas, o se carga por inducción al posarse sobre el robot Talpa. Lleva calefacción para poder trabajar con frío.',
+        curiosidad: 'El helicóptero Ingenuity de la NASA voló 72 veces en Marte entre 2021 y 2024, aunque solo estaba previsto que hiciera cinco vuelos de prueba.' }
+    ]
+  },
+  robot: {
+    codigo: 'MSU-R01 · Robot de exploración', nombre: 'Talpa',
+    subtitulo: 'Seis patas con rueda: rueda, camina y hace rápel',
+    desc: 'Rueda deprisa por terreno llano, camina cuando el suelo se rompe y baja paredes verticales colgado de su propio cable. Lleva un pequeño laboratorio de geología y transporta al dron Céfiro hasta la entrada de la zona peligrosa.',
+    specs: [
+      ['Dimensiones', '1,5 × 1,2 × 0,8 m'],
+      ['Peso', '74 kg'],
+      ['Velocidad', '6 km/h rodando · 1,5 km/h caminando'],
+      ['Pendiente máxima', '40° (90° con cable)'],
+      ['Escalón máximo', '35 cm'],
+      ['Autonomía', '9 h · batería de 3,2 kWh'],
+      ['Cable de rápel', '120 m de Dyneema'],
+      ['Brazo', '5 articulaciones, 1,1 m de alcance'],
+      ['Temperatura de trabajo', '−30 °C a +60 °C'],
+      ['Protección', 'IP67 (sumergible 1 m)'],
+      ['Instrumentos', 'LIBS, radar de subsuelo y taladro']
+    ],
+    partes: [
+      { id: 'mastil', titulo: 'Mástil con visión estéreo y LIBS',
+        texto: 'Dos cámaras separadas como nuestros ojos calculan a qué distancia está cada cosa. En el centro, un láser dispara a una roca a varios metros, la convierte en un punto de plasma y, por la luz que emite, sabe de qué elementos está hecha.',
+        curiosidad: 'El instrumento ChemCam del rover Curiosity hace lo mismo en Marte desde 2012 y analiza rocas a unos 7 m de distancia.' },
+      { id: 'brazo', titulo: 'Brazo con taladro de testigos',
+        texto: 'Cinco articulaciones y un taladro hueco que saca cilindros de roca de hasta 30 cm. La muñeca lleva una cámara de aumento con luz para ver los granos de la roca antes de perforar.',
+        curiosidad: 'El rover Perseverance guarda muestras de roca marciana en tubos sellados para que una futura misión pueda traerlas a la Tierra.' },
+      { id: 'patas', titulo: 'Seis patas con rueda',
+        texto: 'Cada pata tiene tres articulaciones y un motor dentro de la rueda. En llano, rueda; si hay bloques o grietas, frena las ruedas y camina. Puede levantar la panza para pasar por encima de rocas.',
+        curiosidad: 'Al caminar mueve las patas de tres en tres, como los insectos: siempre quedan tres apoyadas formando un triángulo, así que nunca pierde el equilibrio.' },
+      { id: 'rapel', titulo: 'Cabrestante de rápel',
+        texto: 'Clava un ancla en la roca, se ata a ella y baja paredes verticales soltando cable poco a poco. Para volver, recoge el cable mientras sube caminando por la pared.',
+        curiosidad: 'El JPL de la NASA ha probado Axel, un rover que baja por las paredes de los cráteres colgado de un cable, pensado para lugares como los barrancos de Marte.' },
+      { id: 'radar', titulo: 'Radar de subsuelo',
+        texto: 'Envía ondas de radio hacia abajo y escucha los ecos. Así ve capas de roca, huecos y hielo enterrado hasta unos 10 m de profundidad, sin cavar.',
+        curiosidad: 'Perseverance lleva un radar parecido, RIMFAX, que ha descubierto capas de roca inclinadas bajo el suelo del cráter Jezero.' },
+      { id: 'plataforma', titulo: 'Plataforma del dron',
+        texto: 'Céfiro aterriza aquí guiado por luces y conos de centrado. Se carga por inducción, sin contactos que se llenen de polvo, y el robot hace de repetidor para que el dron no pierda la señal dentro de la cueva.',
+        curiosidad: 'El polvo es uno de los grandes enemigos en la Luna: el regolito es abrasivo y se pega a todo por electricidad estática. Por eso se evitan los conectores al aire.' },
+      { id: 'balizas', titulo: 'Repetidores de radio',
+        texto: 'Lleva cuatro repetidores del tamaño de un disco de hockey. Al entrar en una cueva deja uno cada vez que la señal se debilita, formando una cadena de radio hasta la salida.',
+        curiosidad: 'Los equipos del DARPA SubT llamaban a estos repetidores migas de pan, como las del cuento de Pulgarcito.' },
+      { id: 'chasis', titulo: 'Chasis articulado y sellado',
+        texto: 'Dos módulos unidos por una cintura flexible que se tuerce para que las seis ruedas sigan pisando en terreno irregular. Dentro van las baterías, el ordenador y los radiadores; la lámina dorada es aislamiento multicapa, como el de los satélites.',
+        curiosidad: 'Talpa significa topo en latín. El topo casi no ve, pero se orienta perfectamente bajo tierra: justo lo que se le pide a un robot de cuevas.' }
+    ]
+  },
+  equipo: {
+    kicker: 'Misión automatizada', titulo: 'Trabajo en equipo',
+    desc: 'Así entrarían Talpa y Céfiro en una zona cerrada al público, por ejemplo un tubo volcánico con un IAP alto. Pulsa cada paso.',
+    pasos: [
+      { titulo: 'Aproximación', texto: 'Talpa lleva a Céfiro sobre su plataforma hasta el borde de la zona cerrada, rodando por pistas y caminando sobre la lava.' },
+      { titulo: 'Reconocimiento', texto: 'Céfiro despega, cartografía la entrada con el LiDAR y busca con la cámara térmica por dónde sale aire de la cueva.' },
+      { titulo: 'Descenso', texto: 'Talpa ancla su cable y baja por la pared dejando repetidores. Céfiro baja la sonda a la sima para medir los gases antes de que entre nadie.' },
+      { titulo: 'Datos al mapa', texto: 'Las medidas llegan a MoonSiteUA, completan el perfil del análogo y pueden poner su baliza en verde sin que ninguna persona haya corrido riesgos.' }
+    ]
+  }
+};
+</script>
+<!--FLOTA3D-->
 <!--/PAGE-->
 
 <!--PAGE comunidad-->
@@ -1766,6 +1970,7 @@ const FIG = {
   seguridad: (el) => { const o = document.createElementNS(NS, 'svg'); o.id = 'geoMini'; el.append(o); geovalla(o, 1.5); },
   datos: (el) => { el.innerHTML = `<div class="tags">${['Copernicus DEM', 'MODIS', 'GPM', 'ASTER', 'MERRA-2', 'LRO', 'MGS', 'MGC3', 'OpenAlex'].map((t) => `<span>${t}</span>`).join('')}</div>`; },
   video: (el) => { el.innerHTML = '<canvas aria-hidden="true"></canvas><svg viewBox="0 0 400 300" style="position:absolute;inset:0" aria-hidden="true"><path d="M182 124v52l44-26z" style="fill:var(--accent)"/></svg>'; lunaTramada(el.querySelector('canvas'), 7); },
+  flota: (el) => { el.innerHTML = `<div class="tags">${['Céfiro', 'LiDAR', 'Sonda', 'Talpa', 'Rápel', 'LIBS'].map((x) => `<span>${x}</span>`).join('')}</div>`; },
   explorador: (el) => { el.innerHTML = Disenos.parche(); el.firstElementChild.removeAttribute('width'); el.firstElementChild.removeAttribute('height'); },
 };
 document.querySelectorAll('details.ap').forEach((d) => d.addEventListener('toggle', () => {

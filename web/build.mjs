@@ -6,6 +6,8 @@
 import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync } from 'node:fs';
 import { geoNaturalEarth1, geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
+import { buildSync } from 'esbuild';
+import { fileURLToPath } from 'node:url';
 
 const here = new URL('.', import.meta.url);
 const read = (p) => readFileSync(new URL(p, here), 'utf8');
@@ -65,6 +67,7 @@ const PAGES = [
   ['app', 'recompensas.html', 'Recompensas', 'Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
   ['metodo', 'metodo.html', 'Método', 'Huellas de terreno, gemelos planetarios, validación y novedad bibliográfica.'],
   ['validacion', 'validacion.html', 'Validación', 'Balizas por consenso y escalado robótico.'],
+  ['flota', 'flota.html', 'Flota', 'El dron Céfiro y el robot Talpa en 3D: piezas, datos y curiosidades.'],
   ['comunidad', 'comunidad.html', 'Comunidad', 'Puntos, misiones, insignias y bases virtuales.'],
   ['seguridad', 'seguridad.html', 'Seguridad', 'Una persona, una cuenta; modo expedición offline; privacidad.'],
   ['datos', 'datos.html', 'Datos', 'Las fuentes de la NASA y las agencias socias.'],
@@ -78,6 +81,7 @@ const MAS = {
   app: 'Moon Coins para decorar y Mars Coins para premios físicos. Cada zona tiene una base que crece una planta cada cinco exploradores, con habitaciones que cada uno decora a su gusto.',
   metodo: 'Comparamos 7,9 millones de celdas de la Tierra con 1.345 sitios de la Luna y Marte usando las mismas métricas de relieve, puntuamos tres perfiles de misión con pesos explícitos, comprobamos que el método recupera los análogos conocidos y medimos cuánto se ha estudiado ya cada candidata.',
   validacion: 'Nadie confirma un análogo en solitario: hacen falta varios exploradores independientes que coincidan. Las zonas peligrosas se cierran al público y pasan a misiones con robots.',
+  flota: 'Dos máquinas diseñadas por el equipo para las zonas a las que no debe ir una persona: un dron que vuela sin GPS y baja una sonda a las simas, y un robot de seis patas que rueda, camina y hace rápel. Gíralos en 3D, despiézalos y pulsa cada pieza.',
   comunidad: 'Misiones que llevan a la gente a los datos que faltan, insignias para quien descubre primero y bases virtuales que crecen con cada explorador que llega.',
   seguridad: 'Una persona, una cuenta; captura de datos sin cobertura móvil; una geovalla que impide enviar datos desde casa; y ninguna misión en zonas peligrosas o protegidas.',
   datos: 'Todo sale de datos abiertos: satélites de la NASA y Copernicus DEM para la Tierra, LRO para la Luna y MGS para Marte, con datos de la ESA, la JAXA y Japón (METI).',
@@ -122,21 +126,27 @@ function traducirTexto(page) {
   page = page.replace(RUN, (run) => { const k = run.trim(); return EN.textos[k] ? run.replace(k, EN.textos[k]) : run; });
   return page.replace('window.I18N = /*__I18N__*/null;', () => `window.I18N = ${JSON.stringify({ textos: EN.textos, patrones: EN.patrones })};`);
 }
+// Visor 3D de la flota (Three.js empaquetado con esbuild): solo va en flota.html,
+// y se inserta después de traducir para que el diccionario no toque la librería.
+const flota3d = buildSync({ entryPoints: [fileURLToPath(new URL('flota3d.js', here))], bundle: true, minify: true, format: 'iife', target: 'es2020', write: false, legalComments: 'none' })
+  .outputFiles[0].text.replace(/<\/script/gi, '<\\/script');
+const conVisor = (p) => p.replace('<!--FLOTA3D-->', () => `<script>${flota3d}</script>`);
 const out = [new URL('./', here), new URL('../docs/', here)];
 for (const dir of out) mkdirSync(new URL('en/', dir), { recursive: true });
 for (const [id, file, label] of PAGES) {
   const nav = PAGES.filter(([pid]) => pid !== 'inicio')
     .map(([pid, f, l]) => `<a href="${f}"${pid === id ? ' aria-current="page"' : ''}>${l}</a>`).join('');
-  // Índice de la portada: dos columnas de cinco apartados que se despliegan (uno abierto a la vez)
+  // Índice de la portada: dos columnas de apartados que se despliegan (uno abierto a la vez)
   const items = PAGES.filter(([pid]) => pid !== 'inicio')
     .map(([pid, f, l, d], i) => `<details class="ap" name="apartados"><summary><span class="n">${String(i + 1).padStart(2, '0')}</span><b>${l}</b><span class="muted">${d}</span><span class="mas" aria-hidden="true"></span></summary>`
       + `<div class="ap-body"><div class="ap-fig" data-fig="${pid}"></div><div class="ap-txt"><p>${MAS[pid]}</p><a class="btn primary" href="${f}">Ir al apartado</a></div></div></details>`);
-  const apartados = `<div class="ap-col">${items.slice(0, 5).join('')}</div><div class="ap-col">${items.slice(5).join('')}</div>`;
+  const mitad = Math.ceil(items.length / 2);
+  const apartados = `<div class="ap-col">${items.slice(0, mitad).join('')}</div><div class="ap-col">${items.slice(mitad).join('')}</div>`;
   const page = (head.replace('<!--NAV-->', nav).replace('<title>MoonSiteUA</title>', `<title>${id === 'inicio' ? 'MoonSiteUA' : `MoonSiteUA · ${label}`}</title>`)
     + blocks[id].join('\n') + tail).replace('<!--APARTADOS-->', apartados);
   const es = page.replace('<!--LANG-->', `<a class="lang" href="en/${file}" hreflang="en" lang="en" title="English">EN</a>`);
   const en = traducir(page.replace('<!--LANG-->', `<a class="lang" href="../${file}" hreflang="es" lang="es" title="Español">ES</a>`));
-  for (const dir of out) { writeFileSync(new URL(file, dir), es); writeFileSync(new URL('en/' + file, dir), en); }
+  for (const dir of out) { writeFileSync(new URL(file, dir), conVisor(es)); writeFileSync(new URL('en/' + file, dir), conVisor(en)); }
 }
 console.log(`${PAGES.length} páginas × 2 idiomas · ${sites.sites.length} sitios · demo=${data.demo}`);
 // las imágenes y three.js (web/vendor) no las escribe el build: se copian a la versión de GitHub Pages
