@@ -637,7 +637,7 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
 <section id="demo">
   <div class="wrap">
     <div class="head read">
-      <p class="kicker">Demo interactiva</p>
+      <p class="kicker">Explorar análogos</p>
       <h2>¿Qué lugar de la Tierra se parece más a…?</h2>
       <p class="muted">Elige un destino. El color de cada punto es su índice de analogía, calculado con datos abiertos de la NASA y la ESA. Pulsa un sitio para ver su ficha y su gemelo en la Luna o Marte.</p>
     </div>
@@ -649,8 +649,6 @@ footer b { font: 900 1.6rem/1 var(--f-display) !important; text-transform: upper
     <div class="demo">
       <div class="card maps" style="grid-area:maps">
         <svg id="worldMap" role="img" aria-label="Mapa mundial de sitios candidatos"></svg>
-        <span class="cap">Detalle · España peninsular y Canarias</span>
-        <svg id="iberiaMap" role="img" aria-label="Mapa de España con sitios candidatos"></svg>
         <div class="legend"><span>Índice</span><span class="mono" id="rampLo">35</span><span class="ramp"></span><span class="mono" id="rampHi">85</span>
           <span><span class="beacon" style="background:var(--ok)"></span>confirmado</span>
           <span><span class="beacon" style="background:var(--warn)"></span>en verificación</span>
@@ -915,7 +913,7 @@ document.addEventListener('DOMContentLoaded', () => {
     <div class="head read" style="margin:0">
       <p class="kicker">Recompensas</p>
       <h2>Tu cuenta, tus fotos, tu base</h2>
-      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Desde la Demo aporta fotos y datos o crea puntos nuevos, y gana monedas.</p>
+      <p class="muted">Cada explorador se registra con nombre, apellido, usuario, correo, teléfono y contraseña. Usuario, correo y teléfono no se pueden repetir. Desde Explorar aporta fotos y datos o crea puntos nuevos, y gana monedas.</p>
       <div class="cta" style="margin-top:6px"><a class="btn primary" href="explorador.html">Ir a la zona de exploradores</a></div>
     </div>
     <div class="monedas3d">
@@ -1386,7 +1384,6 @@ function render() {
   renderAporte();
   if ($('#rampLo')) { $('#rampLo').textContent = state.rango[0]; $('#rampHi').textContent = state.rango[1]; }
   drawMap($('#worldMap'), D.map.world, rows);
-  drawMap($('#iberiaMap'), D.map.iberia, rows);
   renderRank(rows);
 }
 function select(id) { state.sel = id; render(); }

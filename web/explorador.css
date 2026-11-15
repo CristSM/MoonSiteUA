@@ -4,6 +4,8 @@
 .xp p { margin: 0; }
 .xp .stack { display: grid; gap: 14px; align-content: start; }
 .xp .row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.xp .fila-moneda { display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: center; }
+.xp .fila-moneda svg { width: 40px; height: 40px; }
 .xp .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
 .xp .card { background: var(--panel); border: 1px solid var(--line); padding: 16px; }
 .xp .btn { display: inline-flex; gap: 8px; align-items: center; justify-content: center; padding: 10px 16px; border: 3px solid var(--text); background: transparent; color: var(--text); font: 800 1.05rem/1 var(--f-display); text-transform: uppercase; letter-spacing: .06em; cursor: pointer; text-decoration: none; }

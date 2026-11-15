@@ -66,7 +66,7 @@ const html = read('template.html')
 // lleva la cabecera y el pie comunes más sus bloques.
 const PAGES = [
   ['inicio', 'index.html', 'Inicio', 'La idea, cómo funciona y la hoja de ruta.'],
-  ['demo', 'demo.html', 'Demo', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
+  ['demo', 'demo.html', 'Explorar', 'Mapa interactivo: qué lugar de la Tierra se parece más a cada destino.'],
   ['juego', 'juego.html', 'Juego', 'Tres juegos con datos reales: duelo de análogos, encuentra el gemelo y ¿estudiado o por descubrir?'],
   ['app', 'recompensas.html', 'Recompensas', 'Moon y Mars Coins, bases por niveles, habitaciones y premios.'],
   ['metodo', 'metodo.html', 'Método', 'Huellas de terreno, gemelos planetarios, validación y novedad bibliográfica.'],

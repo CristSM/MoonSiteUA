@@ -46,9 +46,9 @@ function fieldErrors(form, e) {
 function vistaEntrar() {
   view.innerHTML = `<div class="hero">
     <div class="stack"><h1 style="font-size:clamp(2.6rem,5vw,4rem);line-height:.95">Sé un <span style="color:var(--accent)">rover humano</span></h1>
-      <p class="muted">Aporta fotos y datos de terrenos parecidos a la Luna y Marte desde la Demo, crea puntos nuevos y construye tu base con otros exploradores.</p>
-      <div class="row">${Disenos.moneda('moon', 40)}<span class="muted">Moon Coins: por entrar cada día, registrarte y objetivos sencillos.</span></div>
-      <div class="row">${Disenos.moneda('mars', 40)}<span class="muted">Mars Coins: objetivos difíciles. Se canjean por pins, parches y camisetas.</span></div></div>
+      <p class="muted">Aporta fotos y datos de terrenos parecidos a la Luna y Marte desde Explorar, crea puntos nuevos y construye tu base con otros exploradores.</p>
+      <div class="fila-moneda">${Disenos.moneda('moon', 40)}<span class="muted">Moon Coins: por entrar cada día, registrarte y objetivos sencillos.</span></div>
+      <div class="fila-moneda">${Disenos.moneda('mars', 40)}<span class="muted">Mars Coins: objetivos difíciles. Se canjean por pins, parches y camisetas.</span></div></div>
     <div class="card"><form class="stack" id="fLogin" novalidate>
       <h2>Iniciar sesión</h2>
       <label>Usuario o correo<input name="usuario" id="lUser" autocomplete="username" required></label>
@@ -122,7 +122,7 @@ async function vistaZonas() {
   const zonas = await api('/api/zonas');
   const mias = zonas.filter((z) => z.mio), resto = zonas.filter((z) => !z.mio);
   view.innerHTML = `<div class="stack"><h2>Zonas</h2>
-    <p class="muted">Los puntos recomendados salen del motor de similitud con datos de la NASA. Los puntos de la comunidad los crean exploradores desde la <a href="demo.html">Demo</a>. Puedes fundar la base de cualquier zona que no tenga una, o unirte a la que ya exista.</p>
+    <p class="muted">Los puntos recomendados salen del motor de similitud con datos de la NASA. Los puntos de la comunidad los crean exploradores desde <a href="demo.html">Explorar</a>. Puedes fundar la base de cualquier zona que no tenga una, o unirte a la que ya exista.</p>
     ${mias.length ? `<h3>Mis puntos</h3><p class="muted" style="font-size:.88rem">Solo tú puedes editar los puntos que has creado. Después de guardar cambios hay que esperar 12 horas para volver a cambiarlos.</p>
       <div class="grid">${mias.map(tarjetaZona).join('')}</div><h3>Todas las zonas</h3>` : ''}
     <div class="grid">${resto.map(tarjetaZona).join('')}</div></div>`;
@@ -183,14 +183,14 @@ async function vistaAportaciones() {
   const lista = await api('/api/aportaciones/mias');
   const dato = (v, u) => (v == null ? '' : `<span class="pill">${v}${u}</span>`);
   view.innerHTML = `<div class="stack"><h2>Mis aportaciones</h2>
-    <p class="muted">Fotos y datos que has subido desde la <a href="demo.html">Demo</a>, con su fecha de subida.</p>
+    <p class="muted">Fotos y datos que has subido desde <a href="demo.html">Explorar</a>, con su fecha de subida.</p>
     ${lista.length ? `<div class="grid">${lista.map((a) => `<article class="card stack" style="gap:8px">
       ${a.foto ? `<img class="photo" src="${esc(a.foto)}" alt="Foto en ${esc(tr(a.zona))}">` : ''}
       <div class="row" style="justify-content:space-between"><b>${esc(tr(a.zona))}</b>${a.crea_punto ? '<span class="pill ok">Punto creado</span>' : ''}</div>
       <p class="muted mono" style="font-size:.8rem">${fechaLocal(a.fecha)} · ${(+a.lat).toFixed(4)}, ${(+a.lon).toFixed(4)}</p>
       <div class="row">${dato(a.temperatura_c, ' °C')}${dato(a.humedad_rel, ' % humedad')}${a.calidad_aire == null ? '' : `<span class="pill">Aire ${a.calidad_aire}</span>`}</div>
       <span class="coin">${Disenos.moneda('moon', 20)}+${a.moon_ganadas}</span></article>`).join('')}</div>`
-      : '<div class="card"><p class="muted">Aún no has aportado datos. Elige un punto en la <a href="demo.html">Demo</a> y sube una foto o tus medidas.</p></div>'}</div>`;
+      : '<div class="card"><p class="muted">Aún no has aportado datos. Elige un punto en <a href="demo.html">Explorar</a> y sube una foto o tus medidas.</p></div>'}</div>`;
 }
 
 // ================================================================ bases
